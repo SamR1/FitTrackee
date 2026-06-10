@@ -750,6 +750,34 @@ class TestWorkoutCreationServiceProcess(
         assert workout.media_visibility == VisibilityLevel.PRIVATE
         assert workout.workout_visibility == VisibilityLevel.FOLLOWERS
 
+    def test_it_creates_workout_with_sport_preferences_visibility_levels(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        user_1_sport_1_preference: "UserSportPreference",
+    ) -> None:
+        user_1.media_visibility = VisibilityLevel.PUBLIC
+        user_1.workouts_visibility = VisibilityLevel.PUBLIC
+        user_1_sport_1_preference.media_visibility = VisibilityLevel.FOLLOWERS
+        user_1_sport_1_preference.workouts_visibility = (
+            VisibilityLevel.FOLLOWERS
+        )
+        workout_data = {
+            "distance": 15,
+            "duration": 3000,
+            "sport_id": sport_1_cycling.id,
+            "workout_date": "2025-02-08 09:00",
+        }
+        service = WorkoutCreationService(user_1, workout_data)
+
+        service.process()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert workout.media_visibility == VisibilityLevel.FOLLOWERS
+        assert workout.workout_visibility == VisibilityLevel.FOLLOWERS
+
     def test_it_raises_error_when_equipment_is_invalid_for_sport(
         self,
         app: "Flask",

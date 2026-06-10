@@ -146,16 +146,12 @@ class WorkoutCreationService(CheckWorkoutMixin, BaseWorkoutService):
         if equipments is not None:
             new_workout.equipments = equipments
 
-        new_workout.workout_visibility = (
-            self.workout_data.workout_visibility
-            if self.workout_data.workout_visibility
-            else self.auth_user.workouts_visibility
+        new_workout.workout_visibility = self.get_visibility_level(
+            "workout_visibility", self.workout_data
         )
         new_workout.media_visibility = get_calculated_visibility(
-            visibility=(
-                self.workout_data.media_visibility
-                if self.workout_data.media_visibility
-                else self.auth_user.media_visibility
+            visibility=self.get_visibility_level(
+                "media_visibility", self.workout_data
             ),
             parent_visibility=new_workout.workout_visibility,
         )

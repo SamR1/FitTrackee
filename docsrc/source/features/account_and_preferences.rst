@@ -77,6 +77,9 @@ For workouts, it is possible to choose:
 
 - default visibility for workout data, media (photos), analysis, map and heart rate.
 
+  .. note::
+    | These visibility settings can be customized for each sport in the sports preferences.
+
 The type of events that generate segment when uploading .fit files can also be set:
 
 - all pause events,
@@ -90,6 +93,7 @@ Sports preferences
 .. versionadded:: 0.5.0
 .. versionchanged:: 0.8.0 added default equipment
 .. versionchanged:: 1.1.0 added pace/speed display
+.. versionchanged:: 1.4.0 added visibility levels
 
 .. figure:: ../_images/sport-preference.png
    :alt: Sport Preferences on FitTrackee
@@ -105,6 +109,7 @@ The following sport preferences can be set:
   - pace
   - speed
   - pace and speed
+- set default visibility for workout data, media (photos), analysis and map.
 
   .. note::
     | If a sport is disabled by an administrator, it can not be enabled by a user. In this case, it will only appear in preferences if the user has workouts and only sport color can be changed.

@@ -1064,6 +1064,26 @@ class UserSportPreference(BaseModel):
         server_default="SPEED",
         nullable=False,
     )
+    workouts_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
+        nullable=False,
+    )
+    analysis_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
+        nullable=False,
+    )
+    map_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
+        nullable=False,
+    )
+    media_visibility: Mapped[VisibilityLevel] = mapped_column(
+        Enum(VisibilityLevel, name="visibility_levels"),
+        server_default="PRIVATE",
+        nullable=False,
+    )
 
     default_equipments = relationship(
         "Equipment",
@@ -1103,6 +1123,10 @@ class UserSportPreference(BaseModel):
                 equipment.serialize(current_user=self.user)
                 for equipment in self.default_equipments.all()
             ],
+            "workouts_visibility": self.workouts_visibility.value,
+            "media_visibility": self.media_visibility.value,
+            "analysis_visibility": self.analysis_visibility.value,
+            "map_visibility": self.map_visibility.value,
         }
 
 

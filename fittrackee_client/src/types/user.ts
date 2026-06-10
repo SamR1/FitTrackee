@@ -162,6 +162,10 @@ export interface IUserSportPreferencesPayload {
   stopped_speed_threshold: number
   fromSport: boolean
   default_equipment_ids?: string[]
+  analysis_visibility: TVisibilityLevels
+  map_visibility: TVisibilityLevels
+  media_visibility: TVisibilityLevels
+  workouts_visibility: TVisibilityLevels
 }
 
 export interface IUserPicturePayload {

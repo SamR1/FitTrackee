@@ -374,7 +374,7 @@ Visibility level can be set separately for workout data, analysis and map:
 
 In addition, the visibility level can be set for all workouts for heart rate (average and max values and values displayed in chart) and total calories (value displayed in the workout detail).
 
-Default visibility can be set in the `user preferences <account_and_preferences.html#preferences>`__.
+Default visibility can be set in the `user preferences <account_and_preferences.html#preferences>`__ and `sports preferences <account_and_preferences.html#sports-preferences>`__.
 
 .. note::
   | A workout with a file whose visibility for map and analysis data does not allow them to be viewed appears as a workout without a file.

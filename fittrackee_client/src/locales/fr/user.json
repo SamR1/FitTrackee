@@ -240,6 +240,7 @@
       "LABEL": "Stratégie de calcul de la vitesse maximale",
       "RAW_SPEED": "Brut"
     },
+    "VISIBILITY_LEVELS_CAN_BE_OVERRIDEN_BY_SPORT_PREFERENCES": "Les niveaux de visibilité peuvent être surchargés par ceux définis dans les préférences sportives.",
     "WORKOUT_CHARTS_DISPLAY": {
       "LABEL": "Affichage des graphiques d'analyse de la séance",
       "MULTIPLE": "Chaque donnée est affichée sur un graphique différent",

@@ -1249,10 +1249,16 @@ def edit_user_sport_preferences(
         "status": "success"
       }
 
+    :<json string analysis_visibility: sport analysis visibility
+                  (``public``, ``followers_only``, ``private``)
     :<json int sport_id: id of the sport for which preferences are
            created/modified
     :<json string color: valid hexadecimal color
     :<json boolean is_active: is sport available when adding a workout
+    :<json string map_visibility: sport map visibility
+                  (``public``, ``followers_only``, ``private``)
+    :<json string media_visibility: sport media visibility
+                  (``public``, ``followers_only``, ``private``)
     :<json float stopped_speed_threshold: stopped speed threshold used by gpxpy
     :<json string pace_speed_display: Pace/Speed display in workout detail,
            sport statistics and records for following sports: Hiking, Running,
@@ -1262,6 +1268,8 @@ def edit_user_sport_preferences(
            **Note**: Only one piece of equipment per type can be added to a
            sport, with the exception of the "Misc" type, for which up to 5
            pieces of equipment can be added.
+    :<json string workouts_visibility: sport workouts visibility
+                  (``public``, ``followers_only``, ``private``)
 
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
@@ -1321,6 +1329,10 @@ def edit_user_sport_preferences(
 
     default_equipment_ids = post_data.get("default_equipment_ids")
     pace_speed_display = post_data.get("pace_speed_display")
+    workouts_visibility = post_data.get("workouts_visibility")
+    analysis_visibility = post_data.get("analysis_visibility")
+    map_visibility = post_data.get("map_visibility")
+    media_visibility = post_data.get("media_visibility")
 
     try:
         user_sport = UserSportPreference.query.filter_by(
@@ -1355,6 +1367,25 @@ def edit_user_sport_preferences(
                     "only speed can be displayed."
                 )
             user_sport.pace_speed_display = pace_speed_display
+        if workouts_visibility:
+            user_sport.workouts_visibility = VisibilityLevel(
+                workouts_visibility
+            )
+        if media_visibility:
+            user_sport.media_visibility = get_calculated_visibility(
+                visibility=VisibilityLevel(media_visibility),
+                parent_visibility=user_sport.workouts_visibility,
+            )
+        if analysis_visibility:
+            user_sport.analysis_visibility = get_calculated_visibility(
+                visibility=VisibilityLevel(analysis_visibility),
+                parent_visibility=user_sport.workouts_visibility,
+            )
+        if map_visibility:
+            user_sport.map_visibility = get_calculated_visibility(
+                visibility=VisibilityLevel(map_visibility),
+                parent_visibility=user_sport.analysis_visibility,
+            )
 
         if default_equipment_ids is not None:
             existing_default_equipments = user_sport.default_equipments.all()

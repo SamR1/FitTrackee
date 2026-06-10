@@ -2498,6 +2498,73 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
             "please use 'PATCH' instead."
         )
 
+    def test_it_updates_visibility_levels(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            "/api/auth/profile/edit/sports",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    workouts_visibility=VisibilityLevel.PUBLIC.value,
+                    analysis_visibility=VisibilityLevel.FOLLOWERS.value,
+                    map_visibility=VisibilityLevel.PRIVATE.value,
+                    media_visibility=VisibilityLevel.FOLLOWERS.value,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_1_cycling.id, user_id=user_1.id
+        ).one()
+        assert preference.workouts_visibility == VisibilityLevel.PUBLIC
+        assert preference.analysis_visibility == VisibilityLevel.FOLLOWERS
+        assert preference.map_visibility == VisibilityLevel.PRIVATE
+        assert preference.media_visibility == VisibilityLevel.FOLLOWERS
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["message"] == "user sport preferences updated"
+
+    def test_it_updates_visibility_levels_with_valid_value(
+        self, app: Flask, user_1: User, sport_1_cycling: Sport
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            "/api/auth/profile/edit/sports",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    sport_id=sport_1_cycling.id,
+                    workouts_visibility=VisibilityLevel.FOLLOWERS.value,
+                    map_visibility=VisibilityLevel.PUBLIC.value,
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        preference = UserSportPreference.query.filter_by(
+            sport_id=sport_1_cycling.id, user_id=user_1.id
+        ).one()
+        assert preference.workouts_visibility == VisibilityLevel.FOLLOWERS
+        assert preference.analysis_visibility == VisibilityLevel.PRIVATE
+        # map_visibility can not be public when analysis_visibility is private
+        assert preference.map_visibility == VisibilityLevel.PRIVATE
+        assert preference.media_visibility == VisibilityLevel.PRIVATE
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
+        assert data["message"] == "user sport preferences updated"
+
     def test_expected_scope_is_profile_write(
         self, app: Flask, user_1: User
     ) -> None:

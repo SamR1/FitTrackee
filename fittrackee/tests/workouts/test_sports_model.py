@@ -2,6 +2,7 @@ from typing import TYPE_CHECKING
 
 from fittrackee import db
 from fittrackee.constants import PaceSpeedDisplay
+from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import EquipmentMixin
@@ -31,13 +32,17 @@ class TestSportModel:
         serialized_sport = sport_1_cycling.serialize()
 
         assert serialized_sport == {
+            "analysis_visibility": None,
             "color": None,
             "default_equipments": [],
             "id": sport_1_cycling.id,
             "is_active": True,
             "is_active_for_user": True,
             "label": sport_1_cycling.label,
+            "map_visibility": None,
+            "media_visibility": None,
             "stopped_speed_threshold": 1.0,
+            "workouts_visibility": None,
         }
 
     def test_it_serializes_sport_with_workouts_and_check_workouts_as_false(
@@ -52,13 +57,17 @@ class TestSportModel:
         serialized_sport = sport_1_cycling.serialize(check_workouts=False)
 
         assert serialized_sport == {
+            "analysis_visibility": None,
             "color": None,
             "default_equipments": [],
             "id": sport_1_cycling.id,
             "is_active": True,
             "is_active_for_user": True,
             "label": sport_1_cycling.label,
+            "map_visibility": None,
+            "media_visibility": None,
             "stopped_speed_threshold": 1.0,
+            "workouts_visibility": None,
         }
 
     def test_it_serializes_sport_with_workouts_and_check_workouts_as_true(
@@ -73,6 +82,7 @@ class TestSportModel:
         serialized_sport = sport_1_cycling.serialize(check_workouts=True)
 
         assert serialized_sport == {
+            "analysis_visibility": None,
             "color": None,
             "default_equipments": [],
             "id": sport_1_cycling.id,
@@ -80,7 +90,10 @@ class TestSportModel:
             "is_active_for_user": True,
             "has_workouts": True,
             "label": sport_1_cycling.label,
+            "map_visibility": None,
+            "media_visibility": None,
             "stopped_speed_threshold": 1.0,
+            "workouts_visibility": None,
         }
 
     def test_it_serializes_running(
@@ -92,14 +105,18 @@ class TestSportModel:
         serialized_sport = sport_2_running.serialize()
 
         assert serialized_sport == {
+            "analysis_visibility": None,
             "color": None,
             "default_equipments": [],
             "id": sport_2_running.id,
             "is_active": True,
             "is_active_for_user": True,
             "label": sport_2_running.label,
+            "map_visibility": None,
+            "media_visibility": None,
             "pace_speed_display": sport_2_running.pace_speed_display,
             "stopped_speed_threshold": sport_2_running.stopped_speed_threshold,
+            "workouts_visibility": None,
         }
 
 
@@ -118,13 +135,23 @@ class TestSportModelWithPreferences(EquipmentMixin):
         )
 
         assert serialized_sport == {
+            "analysis_visibility": (
+                user_1_sport_1_preference.analysis_visibility.value
+            ),
             "color": "#00000",
             "default_equipments": [],
             "id": sport_1_cycling.id,
             "is_active": True,
             "is_active_for_user": True,
             "label": sport_1_cycling.label,
+            "map_visibility": user_1_sport_1_preference.map_visibility.value,
+            "media_visibility": (
+                user_1_sport_1_preference.media_visibility.value
+            ),
             "stopped_speed_threshold": 1.0,
+            "workouts_visibility": (
+                user_1_sport_1_preference.workouts_visibility.value
+            ),
         }
 
     def test_sport_model_with_is_active_preference(
@@ -141,13 +168,23 @@ class TestSportModelWithPreferences(EquipmentMixin):
         )
 
         assert serialized_sport == {
+            "analysis_visibility": (
+                user_1_sport_1_preference.analysis_visibility.value
+            ),
             "color": None,
             "default_equipments": [],
             "id": sport_1_cycling.id,
             "is_active": True,
             "is_active_for_user": False,
             "label": sport_1_cycling.label,
+            "map_visibility": user_1_sport_1_preference.map_visibility.value,
+            "media_visibility": (
+                user_1_sport_1_preference.media_visibility.value
+            ),
             "stopped_speed_threshold": 1.0,
+            "workouts_visibility": (
+                user_1_sport_1_preference.workouts_visibility.value
+            ),
         }
 
     def test_inactive_sport_model_with_is_active_preference(
@@ -165,13 +202,23 @@ class TestSportModelWithPreferences(EquipmentMixin):
         )
 
         assert serialized_sport == {
+            "analysis_visibility": (
+                user_1_sport_1_preference.analysis_visibility.value
+            ),
             "color": None,
             "default_equipments": [],
             "id": sport_1_cycling.id,
             "is_active": False,
             "is_active_for_user": False,
             "label": sport_1_cycling.label,
+            "map_visibility": user_1_sport_1_preference.map_visibility.value,
+            "media_visibility": (
+                user_1_sport_1_preference.media_visibility.value
+            ),
             "stopped_speed_threshold": 1.0,
+            "workouts_visibility": (
+                user_1_sport_1_preference.workouts_visibility.value
+            ),
         }
 
     def test_sport_model_with_threshold_preference(
@@ -189,13 +236,23 @@ class TestSportModelWithPreferences(EquipmentMixin):
         )
 
         assert serialized_sport == {
+            "analysis_visibility": (
+                user_1_sport_1_preference.analysis_visibility.value
+            ),
             "color": None,
             "default_equipments": [],
             "id": sport_1_cycling.id,
             "is_active": True,
             "is_active_for_user": True,
             "label": sport_1_cycling.label,
+            "map_visibility": user_1_sport_1_preference.map_visibility.value,
+            "media_visibility": (
+                user_1_sport_1_preference.media_visibility.value
+            ),
             "stopped_speed_threshold": 0.5,
+            "workouts_visibility": (
+                user_1_sport_1_preference.workouts_visibility.value
+            ),
         }
 
     def test_sport_model_with_default_equipments(
@@ -241,12 +298,56 @@ class TestSportModelWithPreferences(EquipmentMixin):
         )
 
         assert serialized_sport == {
+            "analysis_visibility": (
+                user_1_sport_2_preference.analysis_visibility.value
+            ),
             "color": None,
             "default_equipments": [],
             "id": sport_2_running.id,
             "is_active": True,
             "is_active_for_user": True,
             "label": sport_2_running.label,
+            "map_visibility": user_1_sport_2_preference.map_visibility.value,
+            "media_visibility": (
+                user_1_sport_2_preference.media_visibility.value
+            ),
             "pace_speed_display": PaceSpeedDisplay.SPEED,
             "stopped_speed_threshold": 0.1,
+            "workouts_visibility": (
+                user_1_sport_2_preference.workouts_visibility.value
+            ),
+        }
+
+    def test_sport_model_with_visibility_levels(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_2_running: "Sport",
+        user_1_sport_2_preference: "UserSportPreference",
+    ) -> None:
+        user_1_sport_2_preference.analysis_visibility = (
+            VisibilityLevel.FOLLOWERS
+        )
+        user_1_sport_2_preference.map_visibility = VisibilityLevel.FOLLOWERS
+        user_1_sport_2_preference.media_visibility = VisibilityLevel.PUBLIC
+        user_1_sport_2_preference.workouts_visibility = VisibilityLevel.PUBLIC
+        db.session.commit()
+
+        serialized_sport = sport_2_running.serialize(
+            sport_preferences=user_1_sport_2_preference.serialize()
+        )
+
+        assert serialized_sport == {
+            "analysis_visibility": "followers_only",
+            "color": None,
+            "default_equipments": [],
+            "id": sport_2_running.id,
+            "is_active": True,
+            "is_active_for_user": True,
+            "label": sport_2_running.label,
+            "map_visibility": "followers_only",
+            "media_visibility": "public",
+            "pace_speed_display": PaceSpeedDisplay.SPEED,
+            "stopped_speed_threshold": 0.1,
+            "workouts_visibility": "public",
         }

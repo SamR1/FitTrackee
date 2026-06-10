@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Literal, Optional, Tuple, Union
 
 import pytz
 
@@ -15,7 +15,11 @@ from .mixins import WorkoutMediaAttachmentsMixin
 if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
     from fittrackee.users.models import User
+    from fittrackee.visibility_levels import VisibilityLevel
     from fittrackee.workouts.models import Workout
+
+    from .workout_creation_service import WorkoutData
+    from .workouts_from_file_creation_service import WorkoutsData
 
 
 class BaseWorkoutService(ABC, WorkoutMediaAttachmentsMixin):
@@ -68,6 +72,30 @@ class BaseWorkoutService(ABC, WorkoutMediaAttachmentsMixin):
             else workout_date
         ).strftime("%Y-%m-%d %H:%M:%S")
         return f"{self.sport.label} - {workout_datetime}"
+
+    def get_visibility_level(
+        self,
+        visibility_level: Literal[
+            "workout_visibility",
+            "media_visibility",
+            "analysis_visibility",
+            "map_visibility",
+        ],
+        workout_data: Union["WorkoutsData", "WorkoutData"],
+    ) -> "VisibilityLevel":
+        if getattr(workout_data, visibility_level):
+            return getattr(workout_data, visibility_level)
+
+        level = (
+            "workouts_visibility"
+            if visibility_level == "workout_visibility"
+            else visibility_level
+        )
+
+        if self.sport_preferences and getattr(self.sport_preferences, level):
+            return getattr(self.sport_preferences, level)
+
+        return getattr(self.auth_user, level)
 
     @abstractmethod
     def process(self) -> Tuple[List["Workout"], Dict]:
