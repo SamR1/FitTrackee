@@ -248,7 +248,7 @@
     if (displayedData === 'average_cadence') {
       if (sportLabel) {
         const cadenceUnit = getCadenceUnit(sportLabel)
-        return t(`workouts.UNITS.${cadenceUnit}.UNIT`)
+        return cadenceUnit ? t(`workouts.UNITS.${cadenceUnit}.UNIT`) : ''
       }
       return ''
     }
