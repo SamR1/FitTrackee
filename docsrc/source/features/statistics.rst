@@ -12,6 +12,7 @@ By time period
 .. versionchanged:: 0.5.1 added average distance, duration, workouts, ascent and descent
 .. versionchanged:: 0.9.3 added day as time period
 .. versionchanged:: 1.1.0 added total calories and average pace
+.. versionchanged:: 1.4.0 added average cadence
 
 User statistics, by period (day, week, month, year) and by sport, display:
 
@@ -33,6 +34,7 @@ User statistics, by period (day, week, month, year) and by sport, display:
   - average ascent
   - average descent
   - average pace
+  - average cadence
 
 .. figure:: ../_images/statistics-by-time-period.png
    :alt: Statistics on FitTrackee
@@ -42,6 +44,7 @@ By sport
 
 .. versionadded:: 0.8.5
 .. versionchanged:: 1.1.0 added average pace and total calories
+.. versionchanged:: 1.4.0 added average cadence
 
 User statistics by sport display:
 
@@ -52,6 +55,7 @@ User statistics by sport display:
 - ascent (total and average)
 - descent (total and average)
 - average pace (if 'pace' is set in the sport preference)
+- average cadence (if available for the selected sport)
 - total calories
 - records
 

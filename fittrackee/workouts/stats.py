@@ -1,5 +1,5 @@
 from datetime import timedelta
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 from flask import Blueprint, current_app, request
 from sqlalchemy import func
@@ -32,6 +32,7 @@ def get_stats_from_row(
     with_elevation_data: bool,
     with_pace_data: bool,
     with_speed_data: bool,
+    with_cadence_data: Optional[str],
 ) -> Dict:
     row_stats = {
         "total_workouts": row[2],
@@ -53,6 +54,12 @@ def get_stats_from_row(
             row_stats["average_speed"] = round(float(row[1]), 2)
         if with_pace_data and row[8]:
             row_stats["average_pace"] = int(row[8].total_seconds())
+        if with_cadence_data and row[10] is not None:
+            row_stats["average_cadence"] = round(
+                row[10] * (2 if with_cadence_data == "spm" else 1)
+            )
+        else:
+            row_stats["average_cadence"] = None
     if stats_type == "total":
         row_stats["total_calories"] = row[9]
 
@@ -145,6 +152,7 @@ def get_workouts_by_time(
             "2017": {
               "3": {
                 "average_ascent": 101.5,
+                "average_cadence": null,
                 "average_ascent": 78.0,
                 "average_distance": 15.282,
                 "average_duration": 7641,
@@ -156,6 +164,7 @@ def get_workouts_by_time(
             "2019": {
               "1": {
                 "average_ascent": 50.0,
+                "average_cadence": null,
                 "average_descent": 59.33,
                 "average_distance": 15.67,
                 "average_duration": 3320,
@@ -164,6 +173,7 @@ def get_workouts_by_time(
               },
               "2": {
                 "average_ascent": 46.0,
+                "average_cadence": null,
                 "average_descent": 78.0,
                 "average_distance": 5.613,
                 "average_duration": 1267,
@@ -298,6 +308,11 @@ def get_workouts_by_time(
                     if stats_type == "total"
                     else True
                 ),
+                (
+                    func.avg(Workout.ave_cadence)  # type: ignore
+                    if stats_type == "average"
+                    else True
+                ),
             )
             .filter(*filters)
             .group_by(stats_key, Workout.sport_id)
@@ -333,6 +348,14 @@ def get_workouts_by_time(
             ].display_elevation
             with_pace_data = sports_displayed_data[sport_key].display_pace
             with_speed_data = sports_displayed_data[sport_key].display_speed
+            if sports_displayed_data[sport_key].display_cadence:
+                with_cadence_data = (
+                    "spm"
+                    if sports_displayed_data[sport_key].display_spm_cadence
+                    else "rpm"
+                )
+            else:
+                with_cadence_data = None
 
             if date_key not in statistics:
                 statistics[date_key] = {
@@ -342,6 +365,7 @@ def get_workouts_by_time(
                         with_elevation_data,
                         with_pace_data,
                         with_speed_data,
+                        with_cadence_data,
                     )
                 }
             elif sport_key not in statistics[date_key]:
@@ -351,6 +375,7 @@ def get_workouts_by_time(
                     with_elevation_data,
                     with_pace_data,
                     with_speed_data,
+                    with_cadence_data,
                 )
             else:
                 statistics[date_key][sport_key]["total_workouts"] += row[2]
@@ -382,6 +407,16 @@ def get_workouts_by_time(
                     ] += round(float(row[6]), 2)
                 if stats_type == "total":
                     statistics[date_key][sport_key]["total_calories"] = row[9]
+                if (
+                    stats_type == "average"
+                    and with_cadence_data
+                    and row[10] is not None
+                ):
+                    statistics[date_key][sport_key]["average_cadence"] = round(
+                        row[10] * (2 if with_cadence_data == "spm" else 1)
+                    )
+                else:
+                    statistics[date_key][sport_key]["average_cadence"] = None
 
         return {
             "status": "success",
@@ -432,6 +467,7 @@ def get_workouts_by_sport(
           "statistics": {
             "1": {
               "average_ascent": 50.0,
+              "average_cadence": null,
               "average_descent": 59.33,
               "average_distance": 15.67,
               "average_duration": 3320,
@@ -446,6 +482,7 @@ def get_workouts_by_sport(
             },
             "2": {
               "average_ascent": 46.0,
+              "average_cadence": 160,
               "average_descent": 78.0,
               "average_distance": 5.613,
               "average_duration": 1267,
@@ -460,6 +497,7 @@ def get_workouts_by_sport(
             },
             "3": {
               "average_ascent": 101.5,
+              "average_cadence": null,
               "average_ascent": 78.0,
               "average_distance": 15.282,
               "average_duration": 7641,
@@ -489,6 +527,7 @@ def get_workouts_by_sport(
           "statistics": {
             "2": {
               "average_ascent": 46.0,
+              "average_cadence": 160,
               "average_descent": 78.0,
               "average_distance": 5.613,
               "average_duration": 1267,
@@ -585,6 +624,7 @@ def get_workouts_by_sport(
                 func.avg(workouts_subquery.c.ave_pace),
                 func.sum(workouts_subquery.c.calories),
                 func.count(workouts_subquery.c.id),
+                func.avg(workouts_subquery.c.ave_cadence),
             )
             .group_by(workouts_subquery.c.sport_id)
             .all()
@@ -597,6 +637,14 @@ def get_workouts_by_sport(
             ].display_elevation
             return_pace_data = sports_displayed_data[row[0]].display_pace
             return_pace_speed = sports_displayed_data[row[0]].display_speed
+            if sports_displayed_data[row[0]].display_cadence:
+                with_cadence_data = (
+                    "spm"
+                    if sports_displayed_data[row[0]].display_spm_cadence
+                    else "rpm"
+                )
+            else:
+                with_cadence_data = None
             statistics[row[0]] = {
                 "average_speed": (
                     round(float(row[1]), 2) if return_pace_speed else None
@@ -605,6 +653,16 @@ def get_workouts_by_sport(
                     None
                     if row[2] is None or not return_elevation_data
                     else round(float(row[2]), 2)
+                ),
+                "average_cadence": (
+                    None
+                    if row[13] is None or not with_cadence_data
+                    else round(
+                        float(
+                            row[13] * (2 if with_cadence_data == "spm" else 1)
+                        ),
+                        2,
+                    )
                 ),
                 "average_descent": (
                     None
