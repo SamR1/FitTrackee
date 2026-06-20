@@ -2,6 +2,7 @@ import { zxcvbnOptions } from '@zxcvbn-ts/core'
 
 export const loadLanguagePackage = async (language: string) => {
   // no package available for:
+  // - Belarusian
   // - Basque
   // - Bengali
   // - Bulgarian

@@ -1,5 +1,6 @@
 import type { Locale } from 'date-fns'
 import {
+  // be,
   bg,
   // bn,
   ca,
@@ -31,6 +32,7 @@ export const isLanguageSupported = (
   language: string
 ): language is TLanguage => {
   return [
+    // 'be',
     'bg',
     // 'bn',
     'ca',
@@ -59,6 +61,7 @@ export const isLanguageSupported = (
 }
 
 export const localeFromLanguage: Record<TLanguage, Locale> = {
+  // be: be,
   bg: bg,
   // bn: bn,
   ca: ca,
@@ -86,6 +89,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 }
 
 export const languageLabels: Record<TLanguage, string> = {
+  // be: 'Беларуская мова', // Belarusian
   bg: 'български (50%)', // Bulgarian
   // bn: 'বাংলা',  // Bengali
   ca: 'Català (58%)', // Catalan
