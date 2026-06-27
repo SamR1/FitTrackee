@@ -15,7 +15,9 @@ from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.comments.mixins import CommentMixin
-from fittrackee.tests.fixtures.fixtures_workouts import update_workout
+from fittrackee.tests.fixtures.fixtures_workouts import (
+    update_workout,
+)
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.utils import encode_uuid
 from fittrackee.visibility_levels import VisibilityLevel
@@ -35,7 +37,16 @@ from .utils import add_follower
 
 @pytest.mark.disable_autouse_update_records_patch
 class WorkoutModelTestCase(WorkoutMixin, ReportMixin, MediaMixin):
-    pass
+    @staticmethod
+    def assert_private_data_are_not_returned(serialized_workout: Dict) -> None:
+        assert "elevation_data_source" not in serialized_workout
+        assert "stats_from_file" not in serialized_workout
+        assert "suspended_at" not in serialized_workout
+
+        assert serialized_workout["next_workout"] is None
+        assert serialized_workout["previous_workout"] is None
+        assert serialized_workout["notes"] is None
+        assert serialized_workout["original_file"] is None
 
 
 class TestWorkoutModelForOwner(WorkoutModelTestCase):
@@ -162,17 +173,18 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "segments": [],
             "source": workout.source,
             "sport_id": workout.sport_id,
+            "stats_from_file": False,
             "suspended": False,
             "suspended_at": None,
             "title": None,
             "user": user_1.serialize(),
             "weather_end": None,
             "weather_start": None,
+            "with_analysis": False,
+            "with_file": False,
+            "with_geometry": False,
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
-            "with_analysis": False,
-            "with_geometry": False,
-            "with_file": False,
         }
 
     def test_it_serializes_workout_without_file_and_with_ascent_and_descent(
@@ -235,17 +247,18 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "segments": [],
             "source": workout.source,
             "sport_id": workout.sport_id,
+            "stats_from_file": False,
             "suspended": False,
             "suspended_at": None,
             "title": None,
             "user": user_1.serialize(),
             "weather_end": None,
             "weather_start": None,
+            "with_analysis": False,
+            "with_file": False,
+            "with_geometry": False,
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
-            "with_analysis": False,
-            "with_geometry": False,
-            "with_file": False,
         }
 
     def test_it_serializes_workout_with_file_for_cycling_and_geometry(
@@ -324,17 +337,18 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             ],
             "source": workout.source,
             "sport_id": workout.sport_id,
+            "stats_from_file": False,
             "suspended": False,
             "suspended_at": None,
             "title": None,
             "user": user_1.serialize(),
             "weather_end": None,
             "weather_start": None,
+            "with_analysis": True,
+            "with_file": True,
+            "with_geometry": True,
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
-            "with_analysis": True,
-            "with_geometry": True,
-            "with_file": True,
         }
 
     def test_it_serializes_workout_with_file_for_outdoor_tennis(
@@ -409,17 +423,18 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             ],
             "source": workout.source,
             "sport_id": workout.sport_id,
+            "stats_from_file": False,
             "suspended": False,
             "suspended_at": None,
             "title": None,
             "user": user_1.serialize(),
             "weather_end": None,
             "weather_start": None,
+            "with_analysis": True,
+            "with_file": True,
+            "with_geometry": False,
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
-            "with_analysis": True,
-            "with_geometry": False,
-            "with_file": True,
         }
 
     def test_it_serializes_workout_with_file_for_running(
@@ -495,17 +510,18 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             ],
             "source": workout.source,
             "sport_id": workout.sport_id,
+            "stats_from_file": False,
             "suspended": False,
             "suspended_at": None,
             "title": None,
             "user": user_1.serialize(),
             "weather_end": None,
             "weather_start": None,
+            "with_analysis": True,
+            "with_file": True,
+            "with_geometry": False,
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
-            "with_analysis": True,
-            "with_geometry": False,
-            "with_file": True,
         }
 
     def test_it_serializes_workout_with_file_for_running_when_pace_speed_display_is_pace(  # noqa
@@ -667,17 +683,18 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             ],
             "source": workout.source,
             "sport_id": workout.sport_id,
+            "stats_from_file": False,
             "suspended": False,
             "suspended_at": None,
             "title": None,
             "user": user_1.serialize(),
             "weather_end": None,
             "weather_start": None,
+            "with_analysis": True,
+            "with_file": True,
+            "with_geometry": False,
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
-            "with_analysis": True,
-            "with_geometry": False,
-            "with_file": True,
         }
 
     def test_it_serializes_workout_with_file_for_paragliding(
@@ -754,17 +771,18 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             ],
             "source": workout.source,
             "sport_id": workout.sport_id,
+            "stats_from_file": False,
             "suspended": False,
             "suspended_at": None,
             "title": None,
             "user": user_1.serialize(),
             "weather_end": None,
             "weather_start": None,
+            "with_analysis": True,
+            "with_file": True,
+            "with_geometry": False,
             "workout_date": workout.workout_date,
             "workout_visibility": workout.workout_visibility.value,
-            "with_analysis": True,
-            "with_geometry": False,
-            "with_file": True,
         }
 
     @pytest.mark.parametrize(
@@ -922,6 +940,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "segments": [],
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
+            "stats_from_file": False,
             "suspended": True,
             "suspended_at": workout_cycling_user_1.suspended_at,
             "suspension": expected_report_action.serialize(user_1, full=False),
@@ -929,13 +948,13 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "user": user_1.serialize(),
             "weather_end": None,
             "weather_start": None,
+            "with_analysis": False,
+            "with_file": False,
+            "with_geometry": False,
             "workout_date": workout_cycling_user_1.workout_date,
             "workout_visibility": (
                 workout_cycling_user_1.workout_visibility.value
             ),
-            "with_analysis": False,
-            "with_geometry": False,
-            "with_file": False,
         }
 
     def test_it_serializes_minimal_workout(
@@ -1546,6 +1565,21 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             media_user_1_2.serialize(can_see_map_data=True),
         ]
 
+    def test_it_returns_stats_from_file_when_true(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        workout_cycling_user_1.workout_stats_from_file = True
+
+        serialized_workout = workout_cycling_user_1.serialize(
+            user=user_1, light=False
+        )
+
+        assert serialized_workout["stats_from_file"] is True
+
 
 class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
     def test_it_raises_exception_when_workout_visibility_is_private(
@@ -1562,22 +1596,24 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(user=user_2, light=False)
 
-    def test_serializer_does_not_return_notes(
+    def test_serializer_does_not_private_data(
         self,
         app: Flask,
-        sport_1_cycling: Sport,
         user_1: User,
         user_2: User,
+        workout_running_user_1: Workout,
         workout_cycling_user_1: Workout,
+        workout_outdoor_tennis_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.notes = random_string()
         workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
         add_follower(user_1, user_2)
+
         serialized_workout = workout_cycling_user_1.serialize(
             user=user_2, light=False
         )
 
-        assert serialized_workout["notes"] is None
+        self.assert_private_data_are_not_returned(serialized_workout)
 
     @pytest.mark.parametrize(
         "input_analysis_visibility,input_workout_visibility",
@@ -1967,60 +2003,6 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
 
         assert serialized_workout["calories"] is None
 
-    def test_serializer_does_not_return_next_workout(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        user_1: User,
-        workout_cycling_user_1: Workout,
-        workout_running_user_1: Workout,
-        user_2: User,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
-        add_follower(user_1, user_2)
-        serialized_workout = workout_cycling_user_1.serialize(
-            user=user_2, light=False
-        )
-
-        assert serialized_workout["next_workout"] is None
-
-    def test_serializer_does_not_return_previous_workout(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        user_1: User,
-        user_2: User,
-        workout_cycling_user_1: Workout,
-        workout_running_user_1: Workout,
-    ) -> None:
-        workout_running_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
-        add_follower(user_1, user_2)
-
-        serialized_workout = workout_running_user_1.serialize(
-            user=user_2, light=False
-        )
-
-        assert serialized_workout["previous_workout"] is None
-
-    def test_serializer_does_not_return_suspended_at(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        user_1: User,
-        user_2: User,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
-        add_follower(user_1, user_2)
-
-        serialized_workout = workout_cycling_user_1.serialize(
-            user=user_2, light=False
-        )
-
-        assert "suspended_at" not in serialized_workout
-
     @pytest.mark.parametrize(
         "input_workout_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PUBLIC],
@@ -2343,13 +2325,15 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize(user=user_2, light=False)
 
-    def test_serializer_does_not_return_notes(
+    def test_serializer_does_not_private_data(
         self,
         app: Flask,
         sport_1_cycling: Sport,
         user_1: User,
         user_2: User,
+        workout_running_user_1: Workout,
         workout_cycling_user_1: Workout,
+        workout_outdoor_tennis_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.notes = random_string()
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
@@ -2358,7 +2342,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             user=user_2, light=False
         )
 
-        assert serialized_workout["notes"] is None
+        self.assert_private_data_are_not_returned(serialized_workout)
 
     def test_serializer_returns_analysis_related_data_when_visibility_is_public(  # noqa
         self,
@@ -2683,58 +2667,6 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
 
         assert serialized_workout["calories"] is None
 
-    def test_serializer_does_not_return_next_workout(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        user_1: User,
-        user_2: User,
-        workout_cycling_user_1: Workout,
-        workout_running_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-
-        serialized_workout = workout_cycling_user_1.serialize(
-            user=user_2, light=False
-        )
-
-        assert serialized_workout["next_workout"] is None
-
-    def test_serializer_does_not_return_previous_workout(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        user_1: User,
-        user_2: User,
-        workout_cycling_user_1: Workout,
-        workout_running_user_1: Workout,
-    ) -> None:
-        workout_running_user_1.workout_visibility = VisibilityLevel.PUBLIC
-
-        serialized_workout = workout_running_user_1.serialize(
-            user=user_2, light=False
-        )
-
-        assert serialized_workout["previous_workout"] is None
-
-    def test_serializer_does_not_return_suspended_at(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        user_1: User,
-        user_2: User,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-
-        serialized_workout = workout_cycling_user_1.serialize(
-            user=user_2, light=False
-        )
-
-        assert "suspended_at" not in serialized_workout
-
     @pytest.mark.parametrize("input_for_report", [True, False])
     def test_it_raises_exception_when_workout_is_suspended(
         self,
@@ -3025,19 +2957,20 @@ class TestWorkoutModelAsUnauthenticatedUser(
         with pytest.raises(WorkoutForbiddenException):
             workout_cycling_user_1.serialize()
 
-    def test_serializer_does_not_return_notes(
+    def test_serializer_does_not_private_data(
         self,
         app: Flask,
-        sport_1_cycling: Sport,
         user_1: User,
+        workout_running_user_1: Workout,
         workout_cycling_user_1: Workout,
+        workout_outdoor_tennis_user_1: Workout,
     ) -> None:
         workout_cycling_user_1.notes = random_string()
         workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
 
         serialized_workout = workout_cycling_user_1.serialize(light=False)
 
-        assert serialized_workout["notes"] is None
+        self.assert_private_data_are_not_returned(serialized_workout)
 
     def test_serializer_returns_analysis_related_data_when_visibility_is_public(  # noqa
         self,
@@ -3358,36 +3291,6 @@ class TestWorkoutModelAsUnauthenticatedUser(
 
         assert serialized_workout["calories"] is None
 
-    def test_serializer_does_not_return_next_workout(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        user_1: User,
-        workout_cycling_user_1: Workout,
-        workout_running_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-
-        serialized_workout = workout_cycling_user_1.serialize()
-
-        assert serialized_workout["next_workout"] is None
-
-    def test_serializer_does_not_return_previous_workout(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        sport_2_running: Sport,
-        user_1: User,
-        workout_cycling_user_1: Workout,
-        workout_running_user_1: Workout,
-    ) -> None:
-        workout_running_user_1.workout_visibility = VisibilityLevel.PUBLIC
-
-        serialized_workout = workout_running_user_1.serialize()
-
-        assert serialized_workout["previous_workout"] is None
-
     def test_it_returns_likes_count(
         self,
         app: Flask,
@@ -3407,19 +3310,6 @@ class TestWorkoutModelAsUnauthenticatedUser(
 
         assert serialized_workout["liked"] is False
         assert serialized_workout["likes_count"] == 1
-
-    def test_serializer_does_not_return_suspended_at(
-        self,
-        app: Flask,
-        sport_1_cycling: Sport,
-        user_1: User,
-        workout_cycling_user_1: Workout,
-    ) -> None:
-        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
-
-        serialized_workout = workout_cycling_user_1.serialize()
-
-        assert "suspended_at" not in serialized_workout
 
     @pytest.mark.parametrize("input_for_report", [True, False])
     def test_it_raises_exception_when_workout_is_suspended(

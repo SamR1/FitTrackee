@@ -78,12 +78,12 @@ from .services import (
     WorkoutsFromFileCreationService,
     WorkoutUpdateService,
 )
-from .services.workout_from_file.workout_gpx_service import remove_microseconds
 from .services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
 )
 from .utils.chart import get_chart_data
 from .utils.convert import convert_in_duration, convert_pace_in_duration
+from .utils.duration import remove_microseconds
 from .utils.geometry import (
     get_buffered_location,
     get_geojson_from_segments,
@@ -1423,6 +1423,7 @@ def get_workout(
                 "records": [],
                 "segments": [],
                 "sport_id": 1,
+                "stats_from_file": False,
                 "suspended": false,
                 "suspended_at": null,
                 "title": "biking on sunday morning",
@@ -2224,6 +2225,7 @@ def post_workout(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
                   }
                 ],
                 "sport_id": 4,
+                "stats_from_file": False,
                 "suspended": false,
                 "suspended_at": null,
                 "title": "VTT dans le Gard",
@@ -2522,6 +2524,7 @@ def post_workout_no_gpx(
                 ],
                 "segments": [],
                 "sport_id": 1,
+                "stats_from_file": False,
                 "suspended": false,
                 "suspended_at": null,
                 "title": null,
@@ -2762,6 +2765,7 @@ def update_workout(
                 ],
                 "segments": [],
                 "sport_id": 1,
+                "stats_from_file": False,
                 "suspended": false,
                 "suspended_at": null,
                 "title": null,

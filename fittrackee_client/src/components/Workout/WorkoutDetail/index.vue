@@ -241,6 +241,7 @@
       segmentId: segment ? segment.segment_id : null,
       segmentNumber: segment ? segment.segment_number : null,
       source: segment ? null : workout.source || null,
+      statsFromFile: segment ? undefined : workout.stats_from_file || false,
       suspended: workout.suspended === undefined ? false : workout.suspended,
       title: workout.title,
       type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',

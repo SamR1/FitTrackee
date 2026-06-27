@@ -297,6 +297,7 @@ class WorkoutGpxServiceProcessFileTestCase(
         assert workout.source is None
         assert workout.ave_pace == timedelta(minutes=7, seconds=52)
         assert workout.best_pace == timedelta(minutes=4, seconds=20)
+        assert workout.workout_stats_from_file is False
         # workout segments
         workout_segments = WorkoutSegment.query.all()
         assert len(workout_segments) == 2

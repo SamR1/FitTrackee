@@ -1,5 +1,5 @@
 import re
-from typing import IO, Dict, Optional
+from typing import IO, Dict, Optional, Tuple
 
 import gpxpy.gpx
 import xmltodict
@@ -27,7 +27,7 @@ class WorkoutTcxService(WorkoutGpxService):
     @classmethod
     def parse_file(
         cls, workout_file: IO[bytes], segments_creation_event: str
-    ) -> "gpxpy.gpx.GPX":
+    ) -> Tuple["gpxpy.gpx.GPX", dict]:
         """
         Tcx files contain activities that contain laps containing tracks.
         A gpx file generated from tcx file contains one track containing one
@@ -177,4 +177,4 @@ class WorkoutTcxService(WorkoutGpxService):
         gpx.creator = creator if creator else author
         gpx.nsmap = NSMAP
         gpx.tracks.append(gpx_track)
-        return gpx
+        return gpx, {}

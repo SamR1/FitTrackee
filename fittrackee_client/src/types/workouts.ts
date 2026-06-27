@@ -129,6 +129,7 @@ export interface IWorkout {
   segments: IWorkoutSegment[]
   source?: string | null
   sport_id: number
+  stats_from_file?: boolean
   suspended?: boolean
   suspended_at?: string | null
   suspension?: IUserReportAction
@@ -176,6 +177,7 @@ export interface IWorkoutObject {
   segmentId: string | null
   segmentNumber: number | null
   source: string | null
+  statsFromFile: boolean | undefined
   suspended: boolean
   title: string
   type: string

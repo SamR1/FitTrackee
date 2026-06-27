@@ -67,7 +67,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_2_with_one_track: str,
     ) -> None:
-        gpx = WorkoutKmlService.parse_file(
+        gpx, file_stats = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_2_with_one_track),
             segments_creation_event="none",
         )
@@ -80,6 +80,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         moving_data = gpx.get_moving_data()
         assert moving_data.moving_time == 250.0
         assert round(moving_data.moving_distance, 1) == 320.0
+        assert file_stats == {}
 
     def test_it_returns_gpx_with_kml_2_2_with_two_tracks(
         self,
@@ -88,7 +89,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_2_with_two_tracks: str,
     ) -> None:
-        gpx = WorkoutKmlService.parse_file(
+        gpx, _ = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_2_with_two_tracks),
             segments_creation_event="none",
         )
@@ -106,7 +107,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_3_with_one_track: str,
     ) -> None:
-        gpx = WorkoutKmlService.parse_file(
+        gpx, _ = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_3_with_one_track),
             segments_creation_event="none",
         )
@@ -124,7 +125,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_3_with_two_tracks: str,
     ) -> None:
-        gpx = WorkoutKmlService.parse_file(
+        gpx, _ = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_3_with_two_tracks),
             segments_creation_event="none",
         )
@@ -142,7 +143,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_3_wo_name_and_description: str,
     ) -> None:
-        gpx = WorkoutKmlService.parse_file(
+        gpx, _ = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_3_wo_name_and_description),
             segments_creation_event="none",
         )
@@ -157,7 +158,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_2_with_extended_data: str,
     ) -> None:
-        gpx = WorkoutKmlService.parse_file(
+        gpx, file_stats = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_2_with_extended_data),
             segments_creation_event="none",
         )
@@ -190,6 +191,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         last_point_cad = last_point.extensions[0][2]
         assert last_point_cad.tag == "{gpxtpx}power"
         assert last_point_cad.text == "90"
+        assert file_stats == {}
 
 
 class TestWorkoutKmlServiceInstantiation(WorkoutFileMixin):

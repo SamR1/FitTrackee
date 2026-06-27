@@ -19,9 +19,11 @@ from ...exceptions import (
 )
 from ...models import WORKOUT_VALUES_LIMIT, Workout, WorkoutSegment
 from ...utils.convert import (
+    convert_speed_in_km_h,
     convert_speed_into_pace_duration,
     convert_speed_into_pace_in_sec_per_meter,
 )
+from ...utils.duration import remove_microseconds
 from ...utils.gpx import get_track_extension
 from ..elevation.elevation_service import ElevationService
 from .base_workout_with_segment_service import (
@@ -49,10 +51,6 @@ class GpxInfo:
     descent: Optional[float] = None
 
 
-def remove_microseconds(delta: "timedelta") -> "timedelta":
-    return delta - timedelta(microseconds=delta.microseconds)
-
-
 class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
     def __init__(
         self,
@@ -75,7 +73,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             get_elevation_on_refresh,
             change_elevation_source,
         )
-        self.gpx: "gpxpy.gpx.GPX" = self.parse_file(
+        self.gpx, self.file_stats = self.parse_file(
             workout_file, auth_user.segments_creation_event
         )
         self.cadences: List[int] = []
@@ -113,10 +111,11 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         cls,
         workout_file: IO[bytes],
         segments_creation_event: str,
-    ) -> "gpxpy.gpx.GPX":
+    ) -> Tuple["gpxpy.gpx.GPX", dict]:
         """
-        Note:
+        Notes:
         - segments_creation_event is not used (only for .fit files)
+        - file_stats are only available for .fit file
         """
         try:
             gpx = gpxpy.parse(workout_file)  # type: ignore
@@ -128,7 +127,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             raise WorkoutFileException(
                 "error", "no tracks in gpx file"
             ) from None
-        return gpx
+        return gpx, {}
 
     @staticmethod
     def get_gpx_info(
@@ -165,11 +164,16 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         return gpx_info
 
     @staticmethod
-    def check_gpx_info(gpx_info: "GpxInfo") -> None:
+    def check_gpx_info(gpx_info: Union["GpxInfo", Dict]) -> None:
+        is_dict = isinstance(gpx_info, dict)
         for key, value in WORKOUT_VALUES_LIMIT.items():
             if key == "calories":
                 continue
-            gpx_info_value = getattr(gpx_info, key)
+            gpx_info_value = (
+                gpx_info.get(key)  # type: ignore[union-attr]
+                if is_dict
+                else getattr(gpx_info, key)
+            )
             if gpx_info_value and gpx_info_value > value:
                 raise WorkoutExceedingValueException(
                     f"'{key}' exceeds max value ({value})"
@@ -186,52 +190,116 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         hr_cadence_power_stats: dict,
         raw_max_speed: Optional[float] = None,
     ) -> Union["Workout", "WorkoutSegment"]:
+        """
+        object_to_update is 'Workout' and user preferences
+        'workout_stats_from_file' is True, data are extracted from file (except
+        from elevation)
+
+        object_to_update is 'WorkoutSegment', data are always calculated.
+        """
+
         gpx_info = self.get_gpx_info(
             parsed_gpx=parsed_gpx,
             stopped_speed_threshold=stopped_speed_threshold,
             use_raw_gpx_speed=use_raw_gpx_speed,
         )
-        self.check_gpx_info(gpx_info)
 
-        if isinstance(object_to_update, WorkoutSegment):
-            max_speed = (
-                raw_max_speed
-                if use_raw_gpx_speed and raw_max_speed is not None
-                else (gpx_info.max_speed / 1000) * 3600
+        if (
+            self.file_stats
+            and isinstance(object_to_update, Workout)
+            and self.auth_user.workout_stats_from_file
+        ):
+            self.check_gpx_info(self.file_stats)
+
+            object_to_update.ascent = self.file_stats["ascent"]
+            object_to_update.ave_speed = (
+                convert_speed_in_km_h(self.file_stats["ave_speed"])
+                if self.file_stats.get("ave_speed")
+                else 0
             )
-            object_to_update.max_speed = max_speed
-            object_to_update.best_pace = convert_speed_into_pace_duration(
-                object_to_update.max_speed
+            object_to_update.ave_pace = convert_speed_into_pace_duration(
+                object_to_update.ave_speed
+            )
+            object_to_update.descent = self.file_stats["descent"]
+            object_to_update.distance = (
+                self.file_stats["distance"] / 1000
+                if self.file_stats["distance"]
+                else 0
+            )
+            object_to_update.duration = remove_microseconds(
+                timedelta(
+                    seconds=self.file_stats["duration"]
+                    if self.file_stats["duration"]
+                    else 0
+                )
+            )
+            object_to_update.max_alt = gpx_info.max_alt
+            object_to_update.min_alt = gpx_info.min_alt
+            object_to_update.moving = remove_microseconds(
+                timedelta(
+                    seconds=self.file_stats["moving"]
+                    if self.file_stats["moving"]
+                    else 0
+                )
+            )
+            object_to_update.pauses = remove_microseconds(
+                timedelta(
+                    seconds=self.file_stats["pauses"]
+                    if self.file_stats["pauses"]
+                    else 0
+                )
             )
 
-        object_to_update.ascent = gpx_info.ascent
-        object_to_update.ave_speed = (
-            (
+            object_to_update.ave_cadence = self.file_stats["ave_cadence"]
+            object_to_update.ave_hr = self.file_stats["ave_hr"]
+            object_to_update.ave_power = self.file_stats["ave_power"]
+            object_to_update.max_cadence = self.file_stats["max_cadence"]
+            object_to_update.max_hr = self.file_stats["max_hr"]
+            object_to_update.max_power = self.file_stats["max_power"]
+            object_to_update.workout_stats_from_file = True
+
+        else:
+            self.check_gpx_info(gpx_info)
+
+            if isinstance(object_to_update, WorkoutSegment):
+                max_speed = (
+                    raw_max_speed
+                    if use_raw_gpx_speed and raw_max_speed is not None
+                    else convert_speed_in_km_h(gpx_info.max_speed)
+                )
+                object_to_update.max_speed = max_speed
+                object_to_update.best_pace = convert_speed_into_pace_duration(
+                    object_to_update.max_speed
+                )
+            else:
+                object_to_update.workout_stats_from_file = False
+
+            object_to_update.ascent = gpx_info.ascent
+            object_to_update.ave_speed = convert_speed_in_km_h(
                 gpx_info.distance / gpx_info.moving_time
                 if gpx_info.moving_time > 0
                 else 0
             )
-            / 1000
-            * 3600
-        )
-        object_to_update.ave_pace = convert_speed_into_pace_duration(
-            object_to_update.ave_speed
-        )
-        object_to_update.descent = gpx_info.descent
-        object_to_update.distance = gpx_info.distance / 1000
-        object_to_update.duration = remove_microseconds(
-            timedelta(seconds=gpx_info.duration if gpx_info.duration else 0)
-            + stopped_time_between_segments
-        )
-        object_to_update.max_alt = gpx_info.max_alt
-        object_to_update.min_alt = gpx_info.min_alt
-        object_to_update.moving = remove_microseconds(
-            timedelta(seconds=gpx_info.moving_time)
-        )
-        object_to_update.pauses = remove_microseconds(
-            timedelta(seconds=gpx_info.stopped_time)
-            + stopped_time_between_segments
-        )
+            object_to_update.ave_pace = convert_speed_into_pace_duration(
+                object_to_update.ave_speed
+            )
+            object_to_update.descent = gpx_info.descent
+            object_to_update.distance = gpx_info.distance / 1000
+            object_to_update.duration = remove_microseconds(
+                timedelta(
+                    seconds=gpx_info.duration if gpx_info.duration else 0
+                )
+                + stopped_time_between_segments
+            )
+            object_to_update.max_alt = gpx_info.max_alt
+            object_to_update.min_alt = gpx_info.min_alt
+            object_to_update.moving = remove_microseconds(
+                timedelta(seconds=gpx_info.moving_time)
+            )
+            object_to_update.pauses = remove_microseconds(
+                timedelta(seconds=gpx_info.stopped_time)
+                + stopped_time_between_segments
+            )
 
         object_to_update.ave_cadence = hr_cadence_power_stats["ave_cadence"]
         object_to_update.ave_hr = hr_cadence_power_stats["ave_hr"]
@@ -249,14 +317,32 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             )
         return self.start_point.time.astimezone(timezone.utc)
 
-    @staticmethod
     def _get_hr_cadence_power_data(
-        heart_rates: List[int], cadences: List[int], powers: List[int]
+        self,
+        heart_rates: List[int],
+        cadences: List[int],
+        powers: List[int],
+        *,
+        is_workout: bool,
     ) -> Dict:
         """
         Some files contain only zero cadence values. In this case, workout
         average and max cadences is None and cadence is not displayed.
         """
+        if (
+            is_workout
+            and self.auth_user.workout_stats_from_file
+            and self.file_stats
+        ):
+            return {
+                "ave_cadence": self.file_stats["ave_cadence"],
+                "ave_hr": self.file_stats["ave_hr"],
+                "ave_power": self.file_stats["ave_power"],
+                "max_cadence": self.file_stats["max_cadence"],
+                "max_hr": self.file_stats["max_hr"],
+                "max_power": self.file_stats["max_power"],
+            }
+
         ave_cadence = mean(cadences) if cadences else None
         return {
             "ave_cadence": ave_cadence if ave_cadence else None,
@@ -419,7 +505,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             speed = (
                 0.0
                 if calculated_speed is None
-                else round((calculated_speed / 1000) * 3600, 2)
+                else round(convert_speed_in_km_h(calculated_speed), 2)
             )
             raw_max_speed = speed if speed > raw_max_speed else raw_max_speed
             pace = convert_speed_into_pace_in_sec_per_meter(speed)
@@ -490,7 +576,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             previous_distance = distance
 
         hr_cadence_stats = self._get_hr_cadence_power_data(
-            heart_rates, cadences, powers
+            heart_rates, cadences, powers, is_workout=False
         )
         self.cadences.extend(cadences)
         self.heart_rates.extend(heart_rates)
@@ -733,7 +819,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         )
 
         hr_cadence_power_stats = self._get_hr_cadence_power_data(
-            self.heart_rates, self.cadences, self.powers
+            self.heart_rates, self.cadences, self.powers, is_workout=True
         )
         self.set_calculated_data(
             parsed_gpx=track,
@@ -743,8 +829,17 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             use_raw_gpx_speed=self.auth_user.use_raw_gpx_speed,
             hr_cadence_power_stats=hr_cadence_power_stats,
         )
-        self.workout.max_speed = max_speed
-        self.workout.best_pace = convert_speed_into_pace_duration(max_speed)
+        if self.file_stats and self.auth_user.workout_stats_from_file:
+            self.workout.max_speed = (
+                convert_speed_in_km_h(self.file_stats["max_speed"])
+                if self.file_stats.get("max_speed")
+                else 0
+            )
+        else:
+            self.workout.max_speed = max_speed
+        self.workout.best_pace = convert_speed_into_pace_duration(
+            self.workout.max_speed
+        )
         self.workout.calories = self._get_calories(track)
         bounds = track.get_bounds()
         self.workout.bounds = (

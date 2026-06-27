@@ -64,3 +64,9 @@ def convert_speed_into_pace_in_sec_per_meter(
     if not speed:
         return None
     return round(1 / (speed / 3.6), 10)
+
+
+def convert_speed_in_km_h(
+    speed: float,
+) -> float:
+    return (speed / 1000) * 3600

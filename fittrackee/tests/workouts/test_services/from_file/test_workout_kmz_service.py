@@ -41,12 +41,13 @@ class TestWorkoutKmzServiceParseFile(WorkoutFileMixin):
     def test_it_returns_gpx_with_kml_content_from_file_path(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
-        gpx = WorkoutKmzService.parse_file(
+        gpx, file_stats = WorkoutKmzService.parse_file(
             self.get_kmz_file_content(app, file_name="example.kmz"),
             segments_creation_event="none",
         )
 
         self.assert_gpx(gpx)
+        assert file_stats == {}
 
     def test_it_returns_gpx_when_content_is_already_unzipped(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
@@ -54,7 +55,7 @@ class TestWorkoutKmzServiceParseFile(WorkoutFileMixin):
         file_path = os.path.join(app.root_path, "tests/files", "example.kmz")
         with zipfile.ZipFile(file_path, "r") as kmz_ref:
             kml_content = kmz_ref.open("doc.kml")
-            gpx = WorkoutKmzService.parse_file(
+            gpx, _ = WorkoutKmzService.parse_file(
                 kml_content, segments_creation_event="none"
             )
 
