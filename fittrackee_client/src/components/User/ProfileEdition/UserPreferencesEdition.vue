@@ -227,6 +227,32 @@
         </div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
+            {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.LABEL') }}<sup>1</sup>
+          </span>
+          <div class="checkboxes">
+            <label v-for="status in workoutStatsFromFile" :key="status.label">
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.workout_stats_from_file"
+                :disabled="authUserLoading"
+                @input="updateValue('workout_stats_from_file', status.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`user.PROFILE.WORKOUT_STATS_FROM_FILE.${status.label}`) }}
+              </span>
+            </label>
+          </div>
+          <div class="info-box raw-speed-help">
+            <span>
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.HELP') }}
+            </span>
+          </div>
+        </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
             {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}<sup>1</sup>
           </span>
           <div class="checkboxes">
@@ -284,32 +310,6 @@
             <i class="fa fa-info-circle" aria-hidden="true" />
             {{ $t('user.PROFILE.NO_ELEVATION_SERVICE_AVAILABLE') }}
           </span>
-        </div>
-        <div class="form-items form-checkboxes">
-          <span class="checkboxes-label">
-            {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.LABEL') }}<sup>1</sup>
-          </span>
-          <div class="checkboxes">
-            <label v-for="status in workoutStatsFromFile" :key="status.label">
-              <input
-                type="radio"
-                :id="status.label"
-                :name="status.label"
-                :checked="status.value === userForm.workout_stats_from_file"
-                :disabled="authUserLoading"
-                @input="updateValue('workout_stats_from_file', status.value)"
-              />
-              <span class="checkbox-label">
-                {{ $t(`user.PROFILE.WORKOUT_STATS_FROM_FILE.${status.label}`) }}
-              </span>
-            </label>
-          </div>
-          <div class="info-box raw-speed-help">
-            <span>
-              <i class="fa fa-info-circle" aria-hidden="true" />
-              {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.HELP') }}
-            </span>
-          </div>
         </div>
         <label class="form-items">
           <span>
