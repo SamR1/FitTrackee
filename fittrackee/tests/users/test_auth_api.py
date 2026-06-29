@@ -1592,6 +1592,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     calories_visibility="followers_only",
                     media_visibility="followers_only",
                     workout_stats_from_file=True,
+                    elevation_processing="flat_windows",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1621,6 +1622,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data["data"]["calories_visibility"] == VisibilityLevel.FOLLOWERS
         assert data["data"]["media_visibility"] == VisibilityLevel.FOLLOWERS
         assert data["data"]["workout_stats_from_file"] is True
+        assert data["data"]["elevation_processing"] == "flat_windows"
 
     @pytest.mark.parametrize(
         "input_map_visibility,input_analysis_visibility,"
@@ -1697,6 +1699,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     calories_visibility=VisibilityLevel.PRIVATE,
                     media_visibility=VisibilityLevel.PRIVATE,
                     workout_stats_from_file=False,
+                    elevation_processing="none",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1778,6 +1781,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     calories_visibility=VisibilityLevel.PRIVATE,
                     media_visibility=input_media_visibility.value,
                     workout_stats_from_file=False,
+                    elevation_processing="none",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1828,6 +1832,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     calories_visibility=VisibilityLevel.PRIVATE.value,
                     media_visibility=VisibilityLevel.PRIVATE.value,
                     workout_stats_from_file=False,
+                    elevation_processing="none",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),

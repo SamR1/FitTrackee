@@ -2946,7 +2946,8 @@ def update_workout(
 
         if "elevation_data_source" in workout_data:
             elevation_service = ElevationService(
-                workout_data["elevation_data_source"]
+                workout_data["elevation_data_source"],
+                workout.elevation_processing,  # TODO
             )
             if (
                 workout_data["elevation_data_source"]

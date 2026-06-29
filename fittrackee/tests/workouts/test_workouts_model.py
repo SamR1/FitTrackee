@@ -11,7 +11,11 @@ from shapely import LineString, Point
 from sqlalchemy.exc import IntegrityError
 
 from fittrackee import db
-from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
+from fittrackee.constants import (
+    ElevationDataSource,
+    ElevationProcessing,
+    PaceSpeedDisplay,
+)
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.comments.mixins import CommentMixin
@@ -42,6 +46,7 @@ class WorkoutModelTestCase(WorkoutMixin, ReportMixin, MediaMixin):
         assert "elevation_data_source" not in serialized_workout
         assert "stats_from_file" not in serialized_workout
         assert "suspended_at" not in serialized_workout
+        assert "elevation_processing" not in serialized_workout
 
         assert serialized_workout["next_workout"] is None
         assert serialized_workout["previous_workout"] is None
@@ -144,6 +149,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "distance": workout.distance,
             "duration": str(workout.duration),
             "elevation_data_source": workout.elevation_data_source,
+            "elevation_processing": workout.elevation_processing,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -218,6 +224,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "distance": workout.distance,
             "duration": str(workout.duration),
             "elevation_data_source": workout.elevation_data_source,
+            "elevation_processing": workout.elevation_processing,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -302,6 +309,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "distance": float(workout.distance),  # type: ignore[arg-type]
             "duration": str(workout.duration),
             "elevation_data_source": workout.elevation_data_source,
+            "elevation_processing": workout.elevation_processing,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -388,6 +396,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "distance": float(workout.distance),  # type: ignore
             "duration": str(workout.duration),
             "elevation_data_source": workout.elevation_data_source,
+            "elevation_processing": workout.elevation_processing,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -489,6 +498,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "media_visibility": workout.media_visibility.value,
             "min_alt": workout.min_alt,
             "elevation_data_source": workout.elevation_data_source,
+            "elevation_processing": workout.elevation_processing,
             "modification_date": workout.modification_date,
             "moving": str(workout.moving),
             "next_workout": None,
@@ -652,6 +662,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "distance": workout.distance,
             "duration": str(workout.duration),
             "elevation_data_source": workout.elevation_data_source,
+            "elevation_processing": workout.elevation_processing,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -736,6 +747,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "distance": workout.distance,
             "duration": str(workout.duration),
             "elevation_data_source": workout.elevation_data_source,
+            "elevation_processing": workout.elevation_processing,
             "equipments": [],
             "id": workout.short_id,
             "liked": False,
@@ -924,6 +936,9 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             "min_alt": None,
             "elevation_data_source": (
                 workout_cycling_user_1.elevation_data_source
+            ),
+            "elevation_processing": (
+                workout_cycling_user_1.elevation_processing
             ),
             "modification_date": workout_cycling_user_1.modification_date,
             "moving": str(workout_cycling_user_1.moving),
@@ -1490,6 +1505,25 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         assert (
             serialized_workout["elevation_data_source"]
             == ElevationDataSource.FILE
+        )
+
+    def test_it_returns_elevation_gain_calculation_when_sport_without_elevation(  # noqa
+        self,
+        app: Flask,
+        user_1: User,
+        workout_outdoor_tennis_user_1: Workout,
+    ) -> None:
+        workout_outdoor_tennis_user_1.elevation_processing = (
+            ElevationProcessing.FLAT_WINDOWS
+        )
+
+        serialized_workout = workout_outdoor_tennis_user_1.serialize(
+            user=user_1, light=False
+        )
+
+        assert (
+            serialized_workout["elevation_processing"]
+            == ElevationProcessing.NONE
         )
 
     @pytest.mark.parametrize(

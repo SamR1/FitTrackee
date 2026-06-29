@@ -3,7 +3,7 @@ from unittest.mock import patch, sentinel
 
 import pytest
 
-from fittrackee.constants import ElevationDataSource
+from fittrackee.constants import ElevationDataSource, ElevationProcessing
 from fittrackee.workouts.services.elevation.elevation_service import (
     ElevationService,
 )
@@ -23,52 +23,59 @@ if TYPE_CHECKING:
 
 class TestElevationServiceInstantiation:
     def test_it_instantiates_service_when_no_elevation_api_urls_set_in_env_var(
-        self, app: "Flask", user_1: "User"
+        self, app: "Flask"
     ) -> None:
-        # user preference is None
-        service = ElevationService(user_1.missing_elevations_processing)
-
-        assert service.elevation_service is None
-        assert service.smooth is False
-        assert service.elevation_data_source == ElevationDataSource.FILE
-
-    def test_it_instantiates_service_when_all_elevation_api_urls_set_and_preference_is_none(  # noqa
-        self, app_with_open_elevation_and_valhalla_url: "Flask", user_1: "User"
-    ) -> None:
-        # user preference is None
-        service = ElevationService(user_1.missing_elevations_processing)
-
-        assert service.elevation_service is None
-        assert service.smooth is False
-        assert service.elevation_data_source == ElevationDataSource.FILE
-
-    def test_it_instantiates_service_when_no_elevation_api_urls_set_and_preference_is_not_none(  # noqa
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        user_1.missing_elevations_processing = (
-            ElevationDataSource.OPEN_ELEVATION
+        service = ElevationService(
+            ElevationDataSource.FILE, ElevationProcessing.NONE
         )
-        service = ElevationService(user_1.missing_elevations_processing)
+
+        assert service.elevation_service is None
+        assert service.smooth is False
+        assert service.elevation_data_source == ElevationDataSource.FILE
+
+    def test_it_instantiates_service_when_all_elevation_api_urls_set_and_preference_is_file(  # noqa
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
+    ) -> None:
+        # user preference is None
+        service = ElevationService(
+            ElevationDataSource.FILE, ElevationProcessing.NONE
+        )
+
+        assert service.elevation_service is None
+        assert service.smooth is False
+        assert service.elevation_data_source == ElevationDataSource.FILE
+
+    def test_it_instantiates_service_when_no_elevation_api_urls_set_and_preference_is_not_file(  # noqa
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        service = ElevationService(
+            ElevationDataSource.OPEN_ELEVATION, ElevationProcessing.NONE
+        )
 
         assert service.elevation_service is None
         assert service.smooth is False
         assert service.elevation_data_source == ElevationDataSource.FILE
 
     @pytest.mark.parametrize(
-        "input_preference,expected_service,expected_smooth",
+        "input_elevation_data_source,input_elevation_processing,"
+        "expected_service,expected_smooth",
         [
             (
                 ElevationDataSource.OPEN_ELEVATION,
+                ElevationProcessing.NONE,
                 OpenElevationService,
                 False,
             ),
             (
-                ElevationDataSource.OPEN_ELEVATION_SMOOTH,
+                ElevationDataSource.OPEN_ELEVATION,
+                ElevationProcessing.FLAT_WINDOWS,
                 OpenElevationService,
                 True,
             ),
             (
                 ElevationDataSource.VALHALLA,
+                ElevationProcessing.NONE,
                 ValhallaElevationService,
                 False,
             ),
@@ -78,18 +85,20 @@ class TestElevationServiceInstantiation:
         self,
         app_with_open_elevation_and_valhalla_url: "Flask",
         user_1: "User",
-        input_preference: "ElevationDataSource",
+        input_elevation_data_source: "ElevationDataSource",
+        input_elevation_processing: "ElevationProcessing",
         expected_service: Tuple[
             "OpenElevationService", "ValhallaElevationService"
         ],
         expected_smooth: bool,
     ) -> None:
-        user_1.missing_elevations_processing = input_preference
-        service = ElevationService(user_1.missing_elevations_processing)
+        service = ElevationService(
+            input_elevation_data_source, input_elevation_processing
+        )
 
         assert isinstance(service.elevation_service, expected_service)  # type: ignore[arg-type]
         assert service.smooth is expected_smooth
-        assert service.elevation_data_source == input_preference
+        assert service.elevation_data_source == input_elevation_data_source
 
 
 class TestElevationServiceGetElevations:
@@ -108,7 +117,9 @@ class TestElevationServiceGetElevations:
         input_preferences: "ElevationDataSource",
     ) -> None:
         user_1.missing_elevations_processing = input_preferences
-        service = ElevationService(user_1.missing_elevations_processing)
+        service = ElevationService(
+            user_1.missing_elevations_processing, ElevationProcessing.NONE
+        )
 
         with (
             patch.object(
@@ -129,13 +140,11 @@ class TestElevationServiceGetElevations:
     def test_it_calls_open_elevation(
         self,
         app_with_open_elevation_and_valhalla_url: "Flask",
-        user_1: "User",
         gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
-        user_1.missing_elevations_processing = (
-            ElevationDataSource.OPEN_ELEVATION
+        service = ElevationService(
+            ElevationDataSource.OPEN_ELEVATION, ElevationProcessing.NONE
         )
-        service = ElevationService(user_1.missing_elevations_processing)
 
         with (
             patch.object(
@@ -152,16 +161,15 @@ class TestElevationServiceGetElevations:
         )
         get_valhalla_elevations_mock.assert_not_called()
 
-    def test_it_calls_open_elevation_with_smooth_as_true(
+    def test_it_calls_open_elevation_with_flat_windows_processing(
         self,
         app_with_open_elevation_and_valhalla_url: "Flask",
-        user_1: "User",
         gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
-        user_1.missing_elevations_processing = (
-            ElevationDataSource.OPEN_ELEVATION_SMOOTH
+        service = ElevationService(
+            ElevationDataSource.OPEN_ELEVATION,
+            ElevationProcessing.FLAT_WINDOWS,
         )
-        service = ElevationService(user_1.missing_elevations_processing)
 
         with (
             patch.object(
@@ -184,8 +192,9 @@ class TestElevationServiceGetElevations:
         user_1: "User",
         gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
-        service = ElevationService(user_1.missing_elevations_processing)
+        service = ElevationService(
+            ElevationDataSource.VALHALLA, ElevationProcessing.NONE
+        )
 
         with (
             patch.object(
@@ -203,7 +212,7 @@ class TestElevationServiceGetElevations:
         get_open_elevations_mock.assert_not_called()
 
     @pytest.mark.parametrize(
-        "input_preferences,expected_response",
+        "input_elevation_data_source,expected_response",
         [
             (ElevationDataSource.OPEN_ELEVATION, "open_api_response"),
             (ElevationDataSource.VALHALLA, "valhalla_response"),
@@ -212,13 +221,13 @@ class TestElevationServiceGetElevations:
     def test_it_returns_elevation_service_response(
         self,
         app_with_open_elevation_and_valhalla_url: "Flask",
-        user_1: "User",
         gpx_track_points_without_elevations: List["GPXTrackPoint"],
-        input_preferences: "ElevationDataSource",
+        input_elevation_data_source: "ElevationDataSource",
         expected_response: str,
     ) -> None:
-        user_1.missing_elevations_processing = input_preferences
-        service = ElevationService(user_1.missing_elevations_processing)
+        service = ElevationService(
+            input_elevation_data_source, ElevationProcessing.NONE
+        )
 
         with (
             patch.object(

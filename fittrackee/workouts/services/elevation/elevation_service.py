@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING, List, Tuple, Union
 
-from fittrackee.constants import ElevationDataSource
+from fittrackee.constants import ElevationDataSource, ElevationProcessing
 
 from .open_elevation_service import OpenElevationService
 from .valhalla_elevation_service import ValhallaElevationService
@@ -18,44 +18,39 @@ class ElevationService:
     - Valhalla
     """
 
-    def __init__(self, elevation_data_source: "ElevationDataSource") -> None:
-        self.elevation_service, self.smooth, self.elevation_data_source = (
+    def __init__(
+        self,
+        elevation_data_source: "ElevationDataSource",
+        elevation_processing: "ElevationProcessing",
+    ) -> None:
+        self.elevation_service, self.elevation_data_source = (
             self._get_elevation_service(elevation_data_source)
         )
+        self.elevation_processing = elevation_processing
+        self.smooth = elevation_processing == elevation_processing.FLAT_WINDOWS
 
     @staticmethod
     def _get_elevation_service(
         elevation_data_source: "ElevationDataSource",
     ) -> Tuple[
         Union["OpenElevationService", "ValhallaElevationService", None],
-        bool,
         "ElevationDataSource",
     ]:
         if elevation_data_source == ElevationDataSource.FILE:
-            return None, False, elevation_data_source
+            return None, elevation_data_source
 
         service: Union[
             "OpenElevationService", "ValhallaElevationService", None
         ] = None
-        if elevation_data_source in [
-            ElevationDataSource.OPEN_ELEVATION,
-            ElevationDataSource.OPEN_ELEVATION_SMOOTH,
-        ]:
+        if elevation_data_source == ElevationDataSource.OPEN_ELEVATION:
             service = OpenElevationService()
 
         if elevation_data_source == ElevationDataSource.VALHALLA:
             service = ValhallaElevationService()
 
         if service and service.is_enabled:
-            return (
-                service,
-                (
-                    elevation_data_source
-                    == ElevationDataSource.OPEN_ELEVATION_SMOOTH
-                ),
-                elevation_data_source,
-            )
-        return None, False, ElevationDataSource.FILE
+            return (service, elevation_data_source)
+        return None, ElevationDataSource.FILE
 
     def get_elevations(self, points: List["GPXTrackPoint"]) -> List[int]:
         if not self.elevation_service:

@@ -13,7 +13,6 @@ class TaskPriority(IntEnum):
 class ElevationDataSource(str, Enum):  # to make enum serializable
     FILE = "file"
     OPEN_ELEVATION = "open_elevation"
-    OPEN_ELEVATION_SMOOTH = "open_elevation_smooth"
     VALHALLA = "valhalla"
 
 
@@ -30,3 +29,8 @@ IMAGE_MIMETYPES = {
     "png": ["image/png"],
     "webp": ["image/webp"],
 }
+
+
+class ElevationProcessing(str, Enum):  # to make enum serializable
+    NONE = "none"  # elevations remain unchanged
+    FLAT_WINDOWS = "flat_windows"

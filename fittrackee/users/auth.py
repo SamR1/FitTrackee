@@ -1064,6 +1064,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
                   (``public``, ``followers_only``, ``private``)
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
+    :<json string elevation_processing: method used when processing elevations
+                  (``none`` (missing elevation are not processed),
+                  ``flat_windows``)
     :<json boolean hide_profile_in_users_directory: if ``true``, user does not
                   appear in users directory
     :<json boolean hr_visibility: heart rate visibility
@@ -1076,10 +1079,10 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
                   (``public``, ``followers_only``, ``private``)
     :<json string media_visibility: workout media visibility
                   (``public``, ``followers_only``, ``private``)
-    :<json string missing_elevations_processing: source and method for missing
+    :<json string missing_elevations_processing: source for missing
                   elevations, depending on application configuration
                   (``file`` (missing elevation are not processed),
-                  ``open_elevation``, ``open_elevation_smooth``, ``valhalla``)
+                  ``open_elevation``, ``valhalla``)
     :<json string segments_creation_event: event triggering a segment creation
                   for .fit files (``all``, ``only_manual``, ``none``)
     :<json boolean split_workout_charts: if ``true``, multiple charts are
@@ -1112,6 +1115,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "calories_visibility",
         "date_format",
         "display_ascent",
+        "elevation_processing",
         "hide_profile_in_users_directory",
         "hr_visibility",
         "imperial_units",
@@ -1158,6 +1162,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     calories_visibility = post_data.get("calories_visibility")
     media_visibility = post_data.get("media_visibility")
     workout_stats_from_file = post_data.get("workout_stats_from_file")
+    elevation_processing = post_data.get("elevation_processing")
 
     try:
         auth_user.date_format = date_format
@@ -1186,6 +1191,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.segments_creation_event = segments_creation_event
         auth_user.split_workout_charts = split_workout_charts
         auth_user.missing_elevations_processing = missing_elevations_processing
+        auth_user.elevation_processing = elevation_processing
         auth_user.calories_visibility = VisibilityLevel(calories_visibility)
         auth_user.media_visibility = get_calculated_visibility(
             visibility=VisibilityLevel(media_visibility),
