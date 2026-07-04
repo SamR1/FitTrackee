@@ -766,6 +766,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     authApi
       .patch(`workouts/${payload.workoutId}`, {
         elevation_data_source: payload.elevationDataSource,
+        elevation_processing: payload.elevationDataProcessing,
       })
       .then(() => {
         context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})

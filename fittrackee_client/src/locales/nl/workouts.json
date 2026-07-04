@@ -52,8 +52,7 @@
     "LABEL": "Hoogtedata geüpdatet uit",
     "file": "Uit bestand",
     "none": "Geen (hoogtedata uit bestand)",
-    "open_elevation": "OpenElevation (ruwe data)",
-    "open_elevation_smooth": "OpenElevation (vervlakte data)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "einde",

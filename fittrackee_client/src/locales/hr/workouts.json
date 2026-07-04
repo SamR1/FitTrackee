@@ -52,8 +52,7 @@
     "LABEL": "Podatci elevacije ažurirani sa",
     "file": "Iz datoteke",
     "none": "Nema (podatci o elevaciji su iz datoteke)",
-    "open_elevation": "OpenElevation (sirovi podatci)",
-    "open_elevation_smooth": "OpenElevation (izglađeni podaci)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "odredište",

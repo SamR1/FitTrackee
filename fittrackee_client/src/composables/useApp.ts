@@ -6,6 +6,10 @@ import { ROOT_STORE } from '@/store/constants'
 import type { IDisplayOptions, TAppConfig } from '@/types/application'
 import type { IEquipmentError } from '@/types/equipments'
 import type { TLanguage } from '@/types/locales'
+import type {
+  TElevationDataSource,
+  TElevationProcessing,
+} from '@/types/user.ts'
 import { useStore } from '@/use/useStore'
 
 export default function useApp() {
@@ -37,16 +41,21 @@ export default function useApp() {
     }
     return services
   })
-  const elevationsProcessingItems: ComputedRef<string[]> = computed(() => {
-    let items = ['file']
-    if (elevationServices.value.includes('Open Elevation')) {
-      items = items.concat(['open_elevation', 'open_elevation_smooth'])
-    }
-    if (elevationServices.value.includes('Valhalla')) {
-      items.push('valhalla')
-    }
-    return items
-  })
+  const elevationDataSourcesItems: ComputedRef<TElevationDataSource[]> =
+    computed(() => {
+      const items: TElevationDataSource[] = ['file']
+      if (elevationServices.value.includes('Open Elevation')) {
+        items.push('open_elevation')
+      }
+      if (elevationServices.value.includes('Valhalla')) {
+        items.push('valhalla')
+      }
+      return items
+    })
+  const elevationProcessingItems: TElevationProcessing[] = [
+    'none',
+    'flat_windows',
+  ]
 
   const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =
     computed(() => store.getters[ROOT_STORE.GETTERS.ERROR_MESSAGES])
@@ -71,8 +80,9 @@ export default function useApp() {
     darkMode,
     darkTheme,
     displayOptions,
+    elevationDataSourcesItems,
     elevationServices,
-    elevationsProcessingItems,
+    elevationProcessingItems,
     errorMessages,
     locale,
   }

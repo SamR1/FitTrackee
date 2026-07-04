@@ -52,8 +52,7 @@
     "LABEL": "Höhendaten aktualisiert von",
     "file": "Aus Datei",
     "none": "Keine (Höhendaten aus Datei)",
-    "open_elevation": "OpenElevation (Rohdaten)",
-    "open_elevation_smooth": "OpenElevation (geglättete Daten)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "Ende",

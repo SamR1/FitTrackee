@@ -52,8 +52,7 @@
     "LABEL": "Elevacions actualitzades des de",
     "file": "Des de l'arxiu",
     "none": "Cap (dades d'elevació des de l'arxiu)",
-    "open_elevation": "OpenElevation (dades crues)",
-    "open_elevation_smooth": "OpenElevation (dades suavitzades)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "final",

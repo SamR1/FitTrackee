@@ -52,8 +52,7 @@
     "LABEL": "Elevación actualizada desde",
     "file": "Desde ficheiro",
     "none": "Ningunha (datos desde o ficheiro)",
-    "open_elevation": "OpenElevation (datos en cru)",
-    "open_elevation_smooth": "OpenElevation (datos suavizados)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "fin",

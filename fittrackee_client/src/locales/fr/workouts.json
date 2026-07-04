@@ -52,11 +52,16 @@
   "ELEVATION_DATA_SOURCE": {
     "CHANGE_SOURCE": "Changer la source des données d'altitude",
     "LABEL": "Altitudes mises à jour à partir de",
-    "file": "A partir du fichier",
+    "MODAL_LABEL": "Mettre à jour les données d'altitude",
+    "file": "à partir du fichier",
     "none": "Aucun (données d'altitude à partir du fichier)",
-    "open_elevation": "OpenElevation (données brutes)",
-    "open_elevation_smooth": "OpenElevation (données lissées)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
+  },
+  "ELEVATION_DATA_PROCESSING": {
+    "LABEL": "Traitement des données d'altitude",
+    "none": "aucun",
+    "flat_windows": "données lissées (\"flat windows\")"
   },
   "END": "fin",
   "EXIT_FULLSCREEN": "Sortir du plein-écran",

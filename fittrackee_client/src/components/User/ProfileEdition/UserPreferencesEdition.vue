@@ -288,7 +288,7 @@
             :disabled="elevationServices.length === 0 || authUserLoading"
           >
             <option
-              v-for="item in elevationsProcessingItems"
+              v-for="item in elevationDataSourcesItems"
               :value="item"
               :key="item"
             >
@@ -495,7 +495,7 @@
 
   const store = useStore()
 
-  const { elevationServices, elevationsProcessingItems, errorMessages } =
+  const { elevationServices, elevationDataSourcesItems, errorMessages } =
     useApp()
   const { authUserLoading } = useAuthUser()
 

@@ -151,9 +151,9 @@
               <button
                 id="change-elevation-source-button"
                 class="transparent icon-button"
-                @click="toggleChangeElevationSourceButtons"
+                @click="emit('displayModal', 'updateElevation')"
                 :disabled="isRefreshing"
-                :title="$t('workouts.ELEVATION_DATA_SOURCE.CHANGE_SOURCE')"
+                :title="$t('workouts.ELEVATION_DATA_SOURCE.MODAL_LABEL')"
               >
                 <img
                   id="change-elevation-source-icon"
@@ -162,31 +162,6 @@
                   :alt="$t('workouts.ELEVATION')"
                 />
               </button>
-              <div
-                class="change-elevation-source-buttons"
-                v-if="displayChangeElevationSourceButtons"
-                v-click-outside="hideChangeElevationSourceButtons"
-              >
-                <span class="change-elevation-source-label">
-                  {{ $t('workouts.ELEVATION_DATA_SOURCE.CHANGE_SOURCE') }}:
-                </span>
-                <button
-                  v-for="item in elevationsProcessingItems.filter(
-                    (i) => i !== workoutObject.elevationDataSource
-                  )"
-                  :key="item"
-                  class="transparent icon-button"
-                  :disabled="isRefreshing"
-                  @click.prevent="
-                    updateElevationDataSource(
-                      workoutObject.workoutId,
-                      item as TElevationDataSource
-                    )
-                  "
-                >
-                  {{ $t(`workouts.ELEVATION_DATA_SOURCE.${item}`) }}
-                </button>
-              </div>
             </div>
             <button
               v-if="isWorkoutOwner"
@@ -302,8 +277,7 @@
   import useAuthUser from '@/composables/useAuthUser'
   import { REPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { ISport } from '@/types/sports'
-  import type { TElevationDataSource } from '@/types/user.ts'
-  import type { IWorkoutObject } from '@/types/workouts'
+  import type { IWorkoutObject, TWorkoutModal } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { sportsWithoutElevation } from '@/utils/sports.ts'
 
@@ -312,22 +286,17 @@
     workoutObject: IWorkoutObject
     isWorkoutOwner: boolean
     refreshLoading: boolean
-    elevationLoading: boolean
   }
   const props = defineProps<Props>()
-  const {
-    elevationLoading,
-    isWorkoutOwner,
-    refreshLoading,
-    sport,
-    workoutObject,
-  } = toRefs(props)
+  const { isWorkoutOwner, refreshLoading, sport, workoutObject } = toRefs(props)
 
-  const emit = defineEmits(['displayModal'])
+  const emit = defineEmits<{
+    displayModal: [value: TWorkoutModal]
+  }>()
 
   const store = useStore()
 
-  const { elevationsProcessingItems, errorMessages } = useApp()
+  const { errorMessages } = useApp()
   const { isAuthenticated } = useAuthUser()
 
   const workoutFileMimetypes = {
@@ -337,7 +306,7 @@
     tcx: 'application/vnd.garmin.tcx+xml',
   }
   const isRefreshing: ComputedRef<boolean> = computed(
-    () => refreshLoading.value || elevationLoading.value
+    () => refreshLoading.value
   )
   const currentlyReporting: ComputedRef<boolean> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.CURRENT_REPORTING]
@@ -347,15 +316,12 @@
   )
   const displayDownloadButtons: Ref<boolean> = ref(false)
   const displayChangeElevationSource: ComputedRef<boolean> = computed(() => {
-    return !(
-      !isWorkoutOwner.value ||
-      !workoutObject.value.with_file ||
-      sportsWithoutElevation.includes(sport.value.label) ||
-      (elevationsProcessingItems.value.length === 1 &&
-        elevationsProcessingItems.value[0] == 'file')
+    return (
+      isWorkoutOwner.value &&
+      workoutObject.value.with_file &&
+      !sportsWithoutElevation.includes(sport.value.label)
     )
   })
-  const displayChangeElevationSourceButtons: Ref<boolean> = ref(false)
 
   async function downloadWorkoutFile(
     workoutId: string,
@@ -390,7 +356,7 @@
   }
 
   function displayDeleteModal() {
-    emit('displayModal', true)
+    emit('displayModal', 'deleteWorkout')
   }
   function updateLike(workout: IWorkoutObject) {
     store.dispatch(
@@ -417,35 +383,6 @@
       return
     }
     displayDownloadButtons.value = false
-  }
-
-  function toggleChangeElevationSourceButtons() {
-    displayChangeElevationSourceButtons.value =
-      !displayChangeElevationSourceButtons.value
-  }
-  function hideChangeElevationSourceButtons(event: Event) {
-    event.stopPropagation()
-    if (
-      (event.target as Element).id !== null &&
-      [
-        'change-elevation-source',
-        'change-elevation-source-icon',
-        'change-elevation-source-button',
-      ].includes((event.target as Element).id)
-    ) {
-      return
-    }
-    displayChangeElevationSourceButtons.value = false
-  }
-  async function updateElevationDataSource(
-    workoutId: string,
-    elevationDataSource: TElevationDataSource
-  ) {
-    store.dispatch(WORKOUTS_STORE.ACTIONS.UPDATE_ELEVATION_DATA_SOURCES, {
-      workoutId,
-      elevationDataSource,
-    })
-    displayChangeElevationSourceButtons.value = false
   }
 
   watch(
@@ -515,9 +452,7 @@
           min-width: 22px;
         }
 
-        .change-elevation-source,
         .download-files {
-          .change-elevation-source-buttons,
           .download-files-buttons {
             position: absolute;
             z-index: 1010;
@@ -543,16 +478,6 @@
               &:focus {
                 background-color: var(--dropdown-hover-color);
               }
-            }
-          }
-
-          .change-elevation-source-buttons {
-            font-size: 0.9em;
-            .change-elevation-source-label {
-              padding: $default-padding;
-              font-weight: normal;
-              font-style: italic;
-              cursor: pointer;
             }
           }
         }
@@ -584,13 +509,6 @@
         .fa-trash,
         .fa-edit {
           padding: 0 $default-padding * 0.7;
-        }
-        .workout-buttons {
-          .change-elevation-source {
-            .change-elevation-source-buttons {
-              margin-left: -30px;
-            }
-          }
         }
       }
     }

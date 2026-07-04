@@ -15,11 +15,8 @@ export type TFollowRequestAction = 'accept' | 'reject'
 export type TUserRole = 'user' | 'moderator' | 'admin' | 'owner'
 export type TVisibilityLevels = 'private' | 'followers_only' | 'public'
 export type TSegmentsCreationEvent = 'all' | 'none' | 'only_manual'
-export type TElevationDataSource =
-  | 'file'
-  | 'open_elevation'
-  | 'open_elevation_smooth'
-  | 'valhalla'
+export type TElevationDataSource = 'file' | 'open_elevation' | 'valhalla'
+export type TElevationProcessing = 'none' | 'flat_windows'
 
 export interface IUserLightProfile {
   blocked: boolean
