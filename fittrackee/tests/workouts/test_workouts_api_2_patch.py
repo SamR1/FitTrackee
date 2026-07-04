@@ -6,7 +6,7 @@ from unittest.mock import patch
 import pytest
 
 from fittrackee import db
-from fittrackee.constants import ElevationDataSource
+from fittrackee.constants import ElevationDataSource, ElevationProcessing
 from fittrackee.tests.fixtures.fixtures_workouts import VALHALLA_VALUES
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import WorkoutSegment
@@ -762,7 +762,48 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
         )
 
     @pytest.mark.parametrize(
-        "input_elevation_data_source", ["invalid", "valhalla"]
+        "input_elevation_key",
+        ["elevation_data_source", "elevation_processing"],
+    )
+    def test_it_returns_400_when_elevation_keys_are_not_provided_together(
+        self,
+        app_with_open_elevation_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+        input_elevation_key: str,
+    ) -> None:
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_open_elevation_url, user_1.email
+        )
+        params = {
+            "elevation_data_source": "open_elevation",
+            "elevation_processing": "none",
+        }
+        del params[input_elevation_key]
+
+        response = client.patch(
+            f"/api/workouts/{workout.short_id}",
+            content_type="application/json",
+            json=params,
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            (
+                "'elevation_data_source' and 'elevation_processing' must be "
+                "provided together"
+            ),
+        )
+
+    @pytest.mark.parametrize(
+        "input_elevation_data_source",
+        [
+            "invalid",  # invalid value
+            "valhalla",  # service not set
+        ],
     )
     def test_it_returns_400_when_elevation_data_source_is_invalid(
         self,
@@ -780,7 +821,10 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
         response = client.patch(
             f"/api/workouts/{workout.short_id}",
             content_type="application/json",
-            json={"elevation_data_source": input_elevation_data_source},
+            json={
+                "elevation_data_source": input_elevation_data_source,
+                "elevation_processing": ElevationProcessing.NONE,
+            },
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -788,6 +832,33 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
             response,
             f"'{input_elevation_data_source}' as elevation "
             f"data source is not valid",
+        )
+
+    def test_it_returns_400_when_elevation_processing_is_invalid(
+        self,
+        app_with_open_elevation_url: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file: str,
+    ) -> None:
+        workout = create_a_workout_with_file(user_1, gpx_file)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_open_elevation_url, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout.short_id}",
+            content_type="application/json",
+            json={
+                "elevation_data_source": ElevationDataSource.OPEN_ELEVATION,
+                "elevation_processing": "invalid",
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            "'invalid' as elevation processing is not valid",
         )
 
     def test_it_updates_elevation_data_source_from_elevation_service(
@@ -812,7 +883,10 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
             response = client.patch(
                 f"/api/workouts/{workout.short_id}",
                 content_type="application/json",
-                json={"elevation_data_source": "valhalla"},
+                json={
+                    "elevation_data_source": "valhalla",
+                    "elevation_processing": "none",
+                },
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
@@ -824,6 +898,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
         assert (
             data["data"]["workouts"][0]["elevation_data_source"] == "valhalla"
         )
+        assert data["data"]["workouts"][0]["elevation_processing"] == "none"
 
     def test_it_updates_elevation_data_source_from_file(
         self,
@@ -845,7 +920,10 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
             response = client.patch(
                 f"/api/workouts/{workout.short_id}",
                 content_type="application/json",
-                json={"elevation_data_source": "file"},
+                json={
+                    "elevation_data_source": "file",
+                    "elevation_processing": "none",
+                },
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
@@ -855,6 +933,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
         assert "success" in data["status"]
         assert len(data["data"]["workouts"]) == 1
         assert data["data"]["workouts"][0]["elevation_data_source"] == "file"
+        assert data["data"]["workouts"][0]["elevation_processing"] == "none"
 
 
 class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):

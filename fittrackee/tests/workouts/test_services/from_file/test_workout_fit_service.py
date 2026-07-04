@@ -7,7 +7,7 @@ import pytest
 import requests
 
 from fittrackee import db
-from fittrackee.constants import ElevationDataSource
+from fittrackee.constants import ElevationDataSource, ElevationProcessing
 from fittrackee.tests.fixtures.fixtures_workouts import (
     FILE_STATS_WITH_DATA,
     FILE_STATS_WITH_NONE,
@@ -159,8 +159,9 @@ class TestWorkoutFitServiceInstantiation(WorkoutFileMixin):
         assert service.workout is None
         assert service.is_creation is True
         assert service.get_weather is True
-        assert service.get_elevation_on_refresh is True
+        assert service.get_elevation_on_refresh is False
         assert service.change_elevation_source is None
+        assert service.elevation_processing is None
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)
 
@@ -340,6 +341,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
                 get_elevation_on_refresh=True,
                 workout=workout_cycling_user_1_with_coordinates,
                 change_elevation_source=ElevationDataSource.VALHALLA,
+                elevation_processing=ElevationProcessing.NONE,
             )
 
         with (

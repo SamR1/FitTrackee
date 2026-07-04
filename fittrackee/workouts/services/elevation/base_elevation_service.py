@@ -2,19 +2,16 @@ import os
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, List
 
-import numpy as np
-
 from fittrackee import appLog
 
+from .elevation_mixin import ElevationMixin
 from .exceptions import ElevationServiceException
 
 if TYPE_CHECKING:
     from gpxpy.gpx import GPXTrackPoint
 
-WINDOW_LEN = 51
 
-
-class BaseElevationService(ABC):
+class BaseElevationService(ABC, ElevationMixin):
     config_key: str = ""
     url_pattern: str = ""
     log_label: str = ""
@@ -31,33 +28,6 @@ class BaseElevationService(ABC):
         if not base_url:
             return ""
         return self.url_pattern.format(base_url=base_url)
-
-    @staticmethod
-    def smooth_elevations(points: List[int]) -> List[int]:
-        """
-        smooth elevations using 'flat' window
-
-        based on SciPy Cookbook:
-        https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html
-        """
-        if len(points) < 3:
-            return [int(p) for p in points]
-
-        points_array = np.array(points)
-        window_len = len(points) if len(points) < WINDOW_LEN else WINDOW_LEN
-
-        s = np.r_[
-            points_array[window_len - 1 : 0 : -1],
-            points_array,
-            points_array[-2 : -window_len - 1 : -1],
-        ]
-        w = np.ones(window_len, "d")
-        y = np.convolve(w / w.sum(), s, mode="valid")
-        start = window_len // 2 + 1
-        end = start + len(points_array)
-        smooth_array = y[start:end]
-
-        return [int(p) for p in smooth_array]
 
     @abstractmethod
     def _get_elevations_for_api(

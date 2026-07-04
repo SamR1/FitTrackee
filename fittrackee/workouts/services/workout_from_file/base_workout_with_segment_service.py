@@ -7,9 +7,10 @@ from flask import current_app
 from staticmap3 import Line, StaticMap
 
 from fittrackee import VERSION, appLog, db
-from fittrackee.constants import ElevationDataSource
+from fittrackee.constants import ElevationProcessing
 from fittrackee.files import get_absolute_file_path
 
+from ...exceptions import WorkoutRefreshException
 from ..weather import WeatherService
 from .workout_point import WorkoutPoint
 
@@ -18,6 +19,7 @@ if TYPE_CHECKING:
 
     from gpxpy.gpx import GPX
 
+    from fittrackee.constants import ElevationDataSource
     from fittrackee.users.models import User
     from fittrackee.workouts.models import Sport, Workout
 
@@ -37,12 +39,12 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         # stopped_speed_threshold based on the user's sports preferences,
         # if any. Otherwise, based on the sport
         stopped_speed_threshold: float,
-        # in case of refresh (workout is None on creation)
-        workout: Optional["Workout"],
+        workout: Optional["Workout"],  # for refresh
         get_weather: bool = True,
-        # for refresh
+        # only for refresh
         get_elevation_on_refresh: bool = False,  # for refresh with CLI
-        change_elevation_source: Optional[ElevationDataSource] = None,
+        change_elevation_source: Optional["ElevationDataSource"] = None,
+        elevation_processing: Optional["ElevationProcessing"] = None,
     ) -> None:
         self.auth_user = auth_user
         self.sport = sport
@@ -53,10 +55,69 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         self.start_point: Optional["WorkoutPoint"] = None
         self.end_point: Optional["WorkoutPoint"] = None
         self.get_weather = get_weather
-        self.get_elevation_on_refresh = get_elevation_on_refresh
         self.workout = workout
-        self.is_creation = workout is None
-        self.change_elevation_source = change_elevation_source
+
+        # refresh
+        if self.workout:
+            self._check_elevation_parameters(
+                change_elevation_source, elevation_processing
+            )
+            self.is_creation = False
+            self.get_elevation_on_refresh = get_elevation_on_refresh
+            self.change_elevation_source = (
+                None
+                if (
+                    self.workout.elevation_data_source
+                    == change_elevation_source
+                )
+                else change_elevation_source
+            )
+            self.elevation_processing = elevation_processing
+            self.processing_existing_elevation = (
+                not self.change_elevation_source
+                and (
+                    self.workout.elevation_processing
+                    == ElevationProcessing.NONE
+                )
+                and (
+                    (
+                        elevation_processing
+                        and self.workout.elevation_processing
+                        != elevation_processing
+                    )
+                    or (
+                        self.workout.elevation_processing
+                        != self.auth_user.elevation_processing
+                    )
+                )
+            )
+        # creation
+        else:
+            self.is_creation = True
+            self.get_elevation_on_refresh = False
+            self.change_elevation_source = None
+            self.elevation_processing = None
+            self.processing_existing_elevation = False
+
+    @staticmethod
+    def _check_elevation_parameters(
+        change_elevation_source: Optional["ElevationDataSource"] = None,
+        elevation_processing: Optional["ElevationProcessing"] = None,
+    ) -> None:
+        if (
+            change_elevation_source is None
+            and elevation_processing is not None
+        ) or (
+            elevation_processing is None
+            and change_elevation_source is not None
+        ):
+            raise WorkoutRefreshException(
+                "error",
+                (
+                    "'change_elevation_source' and 'elevation_processing' "
+                    "must be provided together"
+                ),
+            )
 
     @abstractmethod
     def get_workout_date(self) -> "datetime":

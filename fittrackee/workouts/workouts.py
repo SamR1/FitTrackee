@@ -55,7 +55,11 @@ from fittrackee.workouts.services.elevation.elevation_service import (
     ElevationService,
 )
 
-from ..constants import ElevationDataSource, PaceSpeedDisplay
+from ..constants import (
+    ElevationDataSource,
+    ElevationProcessing,
+    PaceSpeedDisplay,
+)
 from ..files import get_file_extension
 from .constants import (
     SPORTS_WITHOUT_ELEVATION_DATA,
@@ -2872,10 +2876,13 @@ def update_workout(
         (only for workout without gpx)
     :<json integer duration: workout duration in seconds
         (only for workout without gpx)
-    :<json string elevation_data_source: source and method for elevations,
-              depending on application configuration
-              (``file``, ``open_elevation``, ``open_elevation_smooth``,
-              ``valhalla``)
+    :<json string elevation_data_source: elevation data source
+              depending on application configuration (``file``,
+              ``open_elevation````valhalla``). Must be provided with
+              'elevation_processing'
+    :<json string elevation_processing: method used when processing elevations
+              (``none``, ``flat_windows``). Must be provided with
+              'elevation_data_source'
     :<json array of strings equipment_ids:
         the id of the equipment to associate with this workout (any existing
         equipment for this workout will be replaced).
@@ -2914,6 +2921,7 @@ def update_workout(
         - ``one or more values, entered or calculated, exceed the limits``
         - ``'elevation_data_source' can not be provided for workout without file``
         - ``'<ELEVATION_DATA_SOURCE>' as elevation data source is not valid``
+        - ``'elevation_data_source' and 'elevation_processing' must be provided together``
         - ``up to 20 media attachments can be associated with a workout``
     :statuscode 401:
         - ``provide a valid auth token``
@@ -2933,6 +2941,17 @@ def update_workout(
             "'elevation_data_source' can not be provided "
             "for workout without file"
         )
+    if (
+        "elevation_data_source" in workout_data
+        and "elevation_processing" not in workout_data
+    ) or (
+        "elevation_processing" in workout_data
+        and "elevation_data_source" not in workout_data
+    ):
+        return InvalidPayloadErrorResponse(
+            "'elevation_data_source' and 'elevation_processing' must be "
+            "provided together"
+        )
 
     error_response = check_media_attachments(workout_data)
     if error_response:
@@ -2945,9 +2964,16 @@ def update_workout(
         service.update()
 
         if "elevation_data_source" in workout_data:
+            if workout_data["elevation_processing"] not in [
+                item.value for item in ElevationProcessing
+            ]:
+                return InvalidPayloadErrorResponse(
+                    f"'{workout_data['elevation_processing']}' as elevation "
+                    f"processing is not valid"
+                )
             elevation_service = ElevationService(
                 workout_data["elevation_data_source"],
-                workout.elevation_processing,  # TODO
+                workout_data["elevation_processing"],
             )
             if (
                 workout_data["elevation_data_source"]
@@ -2955,7 +2981,8 @@ def update_workout(
                 and not elevation_service.elevation_service
             ):
                 return InvalidPayloadErrorResponse(
-                    f"'{workout_data['elevation_data_source']}' as elevation data source is not valid"
+                    f"'{workout_data['elevation_data_source']}' as elevation "
+                    f"data source is not valid"
                 )
             db.session.flush()
             refresh_service = WorkoutFromFileRefreshService(
@@ -2963,6 +2990,7 @@ def update_workout(
                 update_weather=False,
                 get_elevation_on_refresh=True,
                 change_elevation_source=workout_data["elevation_data_source"],
+                elevation_processing=workout_data["elevation_processing"],
             )
             refresh_service.refresh()
         elif (

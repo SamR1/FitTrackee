@@ -8,8 +8,6 @@ from .valhalla_elevation_service import ValhallaElevationService
 if TYPE_CHECKING:
     from gpxpy.gpx import GPXTrackPoint
 
-WINDOW_LEN = 51
-
 
 class ElevationService:
     """
@@ -27,7 +25,7 @@ class ElevationService:
             self._get_elevation_service(elevation_data_source)
         )
         self.elevation_processing = elevation_processing
-        self.smooth = elevation_processing == elevation_processing.FLAT_WINDOWS
+        self.smooth = elevation_processing == ElevationProcessing.FLAT_WINDOWS
 
     @staticmethod
     def _get_elevation_service(
@@ -49,7 +47,7 @@ class ElevationService:
             service = ValhallaElevationService()
 
         if service and service.is_enabled:
-            return (service, elevation_data_source)
+            return service, elevation_data_source
         return None, ElevationDataSource.FILE
 
     def get_elevations(self, points: List["GPXTrackPoint"]) -> List[int]:
