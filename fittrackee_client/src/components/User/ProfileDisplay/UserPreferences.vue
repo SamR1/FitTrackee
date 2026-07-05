@@ -99,16 +99,29 @@
     </dl>
     <dl>
       <dt>
-        {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL')
+        {{ $t('user.PROFILE.MISSING_ELEVATIONS_DATA_SOURCE_LABEL')
         }}<sup>2</sup>:
       </dt>
       <dd>
         {{
           $t(
             `workouts.ELEVATION_DATA_SOURCE.${
-              user.missing_elevations_processing === 'file'
+              user.missing_elevations_data_source === 'file'
                 ? 'none'
-                : user.missing_elevations_processing
+                : user.missing_elevations_data_source
+            }`
+          )
+        }}
+      </dd>
+      <dt>
+        {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING.LABEL')
+        }}<sup>2</sup>:
+      </dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.MISSING_ELEVATIONS_PROCESSING.${
+              user.elevation_processing
             }`
           )
         }}

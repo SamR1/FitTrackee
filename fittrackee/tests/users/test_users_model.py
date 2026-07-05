@@ -226,7 +226,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             == user_1.split_workout_charts
         )
         assert serialized_user["messages_preferences"] == {}
-        assert serialized_user["missing_elevations_processing"] == "file"
+        assert serialized_user["missing_elevations_data_source"] == "file"
         assert serialized_user["elevation_processing"] == "none"
         assert (
             serialized_user["calories_visibility"]
@@ -343,11 +343,11 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         user_1: User,
         input_preference: "ElevationDataSource",
     ) -> None:
-        user_1.missing_elevations_processing = input_preference
+        user_1.missing_elevations_data_source = input_preference
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert (
-            serialized_user["missing_elevations_processing"]
+            serialized_user["missing_elevations_data_source"]
             == ElevationDataSource.FILE
         )
 
@@ -364,11 +364,11 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         user_1: User,
         input_preference: "ElevationDataSource",
     ) -> None:
-        user_1.missing_elevations_processing = input_preference
+        user_1.missing_elevations_data_source = input_preference
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert (
-            serialized_user["missing_elevations_processing"]
+            serialized_user["missing_elevations_data_source"]
             == input_preference
         )
 
@@ -433,7 +433,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
         assert "display_ascent" not in serialized_user
-        assert "missing_elevations_processing" not in serialized_user
+        assert "missing_elevations_data_source" not in serialized_user
         assert "calories_visibility" not in serialized_user
         assert "media_visibility" not in serialized_user
         assert "workout_stats_from_file" not in serialized_user
@@ -529,7 +529,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
         assert "display_ascent" not in serialized_user
-        assert "missing_elevations_processing" not in serialized_user
+        assert "missing_elevations_data_source" not in serialized_user
         assert "calories_visibility" not in serialized_user
         assert "media_visibility" not in serialized_user
         assert "workout_stats_from_file" not in serialized_user
@@ -618,7 +618,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
         assert "display_ascent" not in serialized_user
-        assert "missing_elevations_processing" not in serialized_user
+        assert "missing_elevations_data_source" not in serialized_user
         assert "calories_visibility" not in serialized_user
         assert "media_visibility" not in serialized_user
         assert "workout_stats_from_file" not in serialized_user

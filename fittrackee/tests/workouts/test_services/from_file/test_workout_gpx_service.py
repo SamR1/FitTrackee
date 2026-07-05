@@ -848,7 +848,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.FLAT_WINDOWS
@@ -874,7 +874,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         user_1.elevation_processing = ElevationProcessing.NONE
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
@@ -898,7 +898,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.FILE
+        user_1.missing_elevations_data_source = ElevationDataSource.FILE
         user_1.elevation_processing = ElevationProcessing.NONE
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
@@ -926,7 +926,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         gpx_file_without_elevation: str,
         input_get_elevation_on_refresh: bool,
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.NONE
@@ -953,7 +953,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.NONE
@@ -985,7 +985,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.NONE
@@ -1093,7 +1093,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file: str,  # file w/ elevation
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.NONE
@@ -1123,7 +1123,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.NONE
@@ -1151,7 +1151,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.NONE
@@ -1210,7 +1210,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.FLAT_WINDOWS
@@ -1243,7 +1243,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         user_1.elevation_processing = ElevationProcessing.NONE
         service = self.init_service_with_gpx(
             user_1, sport_1_cycling, gpx_file_without_elevation
@@ -1280,7 +1280,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_without_elevation: str,
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.NONE
@@ -1311,7 +1311,7 @@ class TestWorkoutGpxServiceProcessFileOnCreation(
         user_1: "User",
         gpx_file_with_3_segments: str,
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.NONE
@@ -2041,7 +2041,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         user_1.elevation_processing = ElevationProcessing.NONE
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.FILE
@@ -2070,7 +2070,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         db.session.refresh(workout_cycling_user_1_with_coordinates)
         assert (
             workout_cycling_user_1_with_coordinates.elevation_data_source
-            == user_1.missing_elevations_processing
+            == user_1.missing_elevations_data_source
         )
         assert (
             workout_cycling_user_1_with_coordinates.elevation_processing
@@ -2089,7 +2089,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         gpx_file_without_elevation: str,
         workout_cycling_user_1: "Workout",
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         user_1.elevation_processing = ElevationProcessing.FLAT_WINDOWS
         workout_cycling_user_1.elevation_data_source = (
             ElevationDataSource.OPEN_ELEVATION
@@ -2134,7 +2134,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
@@ -2181,7 +2181,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
@@ -2224,7 +2224,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         user_1.elevation_processing = ElevationProcessing.NONE
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.VALHALLA
@@ -2271,7 +2271,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         user_1.elevation_processing = ElevationProcessing.FLAT_WINDOWS
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.VALHALLA
@@ -2322,7 +2322,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         service = self.init_service_with_gpx(
             user_1,
             sport_1_cycling,
@@ -2370,7 +2370,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
             ElevationDataSource.VALHALLA
         )
         # user remove elevation service from preference
-        user_1.missing_elevations_processing = ElevationDataSource.FILE
+        user_1.missing_elevations_data_source = ElevationDataSource.FILE
         service = self.init_service_with_gpx(
             user_1,
             sport_1_cycling,
@@ -2414,7 +2414,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.VALHALLA
         )
@@ -2463,7 +2463,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_segment_1_without_elevation: "WorkoutSegment",
     ) -> None:
         # due to rate limits issues, not all data could be collected
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.VALHALLA
         )
@@ -2526,7 +2526,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         gpx_file_without_elevation: str,
         workout_cycling_user_1: "Workout",
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         # This case should not happen
         workout_cycling_user_1.elevation_data_source = (
             ElevationDataSource.VALHALLA
@@ -2589,7 +2589,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
         input_params: Dict,
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.FILE
+        user_1.missing_elevations_data_source = ElevationDataSource.FILE
         user_1.elevation_processing = ElevationProcessing.FLAT_WINDOWS
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.FILE
@@ -2677,7 +2677,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
         # check on change_elevation_source is made before calling service
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.NONE
@@ -2746,7 +2746,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.NONE
@@ -2813,7 +2813,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         workout_cycling_user_1_with_coordinates: "Workout",
         workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.FILE
+        user_1.missing_elevations_data_source = ElevationDataSource.FILE
         user_1.elevation_processing = ElevationProcessing.NONE
         service = self.init_service_with_gpx(
             user_1,
@@ -2877,7 +2877,7 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParams(
         gpx_file: str,
         workout_cycling_user_1: "Workout",
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.elevation_processing = ElevationProcessing.NONE

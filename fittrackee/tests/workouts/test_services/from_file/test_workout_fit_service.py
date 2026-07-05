@@ -273,7 +273,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
         workout_cycling_user_1_segment_0_coordinates: "WorkoutSegment",
         input_workout_stats_from_file: bool,
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         user_1.workout_stats_from_file = input_workout_stats_from_file
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.FILE
@@ -318,7 +318,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
         """
         It ignores 'workout_stats_from_file' when True
         """
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.workout_stats_from_file = input_workout_stats_from_file

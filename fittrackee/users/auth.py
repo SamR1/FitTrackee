@@ -356,7 +356,7 @@ def get_authenticated_user_profile(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "file",
+          "missing_elevations_data_source": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -502,7 +502,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "file",
+          "missing_elevations_data_source": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -717,7 +717,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "file",
+          "missing_elevations_data_source": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -977,7 +977,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "file",
+          "missing_elevations_data_source": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -1065,8 +1065,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
     :<json string elevation_processing: method used when processing elevations
-                  (``none`` (missing elevation are not processed),
-                  ``flat_windows``)
+                  (``none`` (elevation are not processed), ``flat_windows``)
     :<json boolean hide_profile_in_users_directory: if ``true``, user does not
                   appear in users directory
     :<json boolean hr_visibility: heart rate visibility
@@ -1079,10 +1078,13 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
                   (``public``, ``followers_only``, ``private``)
     :<json string media_visibility: workout media visibility
                   (``public``, ``followers_only``, ``private``)
-    :<json string missing_elevations_processing: source for missing
+    :<json string missing_elevations_data_source: source for missing
                   elevations, depending on application configuration
                   (``file`` (missing elevation are not processed),
-                  ``open_elevation``, ``valhalla``)
+                  ``open_elevation``, ``valhalla``).
+                  **Note**: it replaces missing_elevations_processing, which
+                  is deprecated. If both keys are provided,
+                  'missing_elevations_data_source' is used.
     :<json string segments_creation_event: event triggering a segment creation
                   for .fit files (``all``, ``only_manual``, ``none``)
     :<json boolean split_workout_charts: if ``true``, multiple charts are
@@ -1123,7 +1125,6 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "manually_approves_followers",
         "map_visibility",
         "media_visibility",
-        "missing_elevations_processing",
         "segments_creation_event",
         "split_workout_charts",
         "start_elevation_at_zero",
@@ -1136,6 +1137,18 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     }
     if not post_data or not post_data.keys() >= user_mandatory_data:
         return InvalidPayloadErrorResponse()
+
+    if (
+        "missing_elevations_data_source" not in post_data
+        and "missing_elevations_processing" not in post_data
+    ):
+        return InvalidPayloadErrorResponse()
+
+    if "missing_elevations_processing" in post_data:
+        appLog.warning(
+            "'missing_elevations_processing' is deprecated, "
+            "please use 'missing_elevations_data_source' instead."
+        )
 
     date_format = post_data.get("date_format")
     display_ascent = post_data.get("display_ascent")
@@ -1156,8 +1169,10 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     hr_visibility = post_data.get("hr_visibility")
     segments_creation_event = post_data.get("segments_creation_event")
     split_workout_charts = post_data.get("split_workout_charts")
-    missing_elevations_processing = post_data.get(
-        "missing_elevations_processing"
+    missing_elevations_data_source = (
+        post_data.get("missing_elevations_data_source")
+        if "missing_elevations_data_source" in post_data
+        else post_data.get("missing_elevations_processing")
     )
     calories_visibility = post_data.get("calories_visibility")
     media_visibility = post_data.get("media_visibility")
@@ -1190,7 +1205,9 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         auth_user.hr_visibility = VisibilityLevel(hr_visibility)
         auth_user.segments_creation_event = segments_creation_event
         auth_user.split_workout_charts = split_workout_charts
-        auth_user.missing_elevations_processing = missing_elevations_processing
+        auth_user.missing_elevations_data_source = (
+            missing_elevations_data_source
+        )
         auth_user.elevation_processing = elevation_processing
         auth_user.calories_visibility = VisibilityLevel(calories_visibility)
         auth_user.media_visibility = get_calculated_visibility(
@@ -1511,7 +1528,7 @@ def edit_user_notifications_preferences(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "file",
+          "missing_elevations_data_source": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {
@@ -1693,7 +1710,7 @@ def edit_user_messages_preferences(
           "messages_preferences": {
             "warning_about_large_number_of_workouts_on_map": true
           },
-          "missing_elevations_processing": "file",
+          "missing_elevations_data_source": "file",
           "nb_sports": 3,
           "nb_workouts": 6,
           "notification_preferences": {

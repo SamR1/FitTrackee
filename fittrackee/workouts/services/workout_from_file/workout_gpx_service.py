@@ -420,7 +420,7 @@ class WorkoutGpxService(
                 )
             ) and has_missing_elevations:
                 elevation_service = ElevationService(
-                    self.auth_user.missing_elevations_processing,
+                    self.auth_user.missing_elevations_data_source,
                     self.auth_user.elevation_processing,
                 )
             elif (
@@ -642,7 +642,7 @@ class WorkoutGpxService(
         # disabled (i.e. elevation API URLs have been removed, no elevation
         # service available)
         if not ElevationService(
-            self.auth_user.missing_elevations_processing,
+            self.auth_user.missing_elevations_data_source,
             self.auth_user.elevation_processing,
         ).elevation_service:
             return True
@@ -652,7 +652,7 @@ class WorkoutGpxService(
         # service and no elevation is missing
         if (
             self.workout.elevation_data_source
-            == self.auth_user.missing_elevations_processing
+            == self.auth_user.missing_elevations_data_source
         ):
             has_missing_elevation = any(
                 point.get("elevation") is None

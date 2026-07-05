@@ -53,6 +53,8 @@ def upgrade():
             ALTER COLUMN missing_elevations_processing DROP DEFAULT,
             ALTER COLUMN missing_elevations_processing TYPE elevation_data_source USING missing_elevations_processing::text::elevation_data_source,
             ALTER COLUMN missing_elevations_processing SET DEFAULT 'FILE';
+        ALTER TABLE users
+            RENAME COLUMN missing_elevations_processing TO missing_elevations_data_source;
         ALTER TABLE workouts 
             ALTER COLUMN elevation_data_source DROP DEFAULT,
             ALTER COLUMN elevation_data_source TYPE elevation_data_source USING elevation_data_source::text::elevation_data_source,
@@ -69,14 +71,16 @@ def downgrade():
     op.execute("CREATE TYPE elevation_data_source AS ENUM('FILE', 'OPEN_ELEVATION', 'OPEN_ELEVATION_SMOOTH', 'VALHALLA')")
     op.execute(
         """
-        ALTER TABLE users 
-            ALTER COLUMN missing_elevations_processing DROP DEFAULT,
-            ALTER COLUMN missing_elevations_processing TYPE elevation_data_source USING missing_elevations_processing::text::elevation_data_source,
-            ALTER COLUMN missing_elevations_processing SET DEFAULT 'FILE';
         ALTER TABLE workouts 
             ALTER COLUMN elevation_data_source DROP DEFAULT,
             ALTER COLUMN elevation_data_source TYPE elevation_data_source USING elevation_data_source::text::elevation_data_source,
             ALTER COLUMN elevation_data_source SET DEFAULT 'FILE';
+        ALTER TABLE users
+            RENAME COLUMN missing_elevations_data_source TO  missing_elevations_processing;
+        ALTER TABLE users 
+            ALTER COLUMN missing_elevations_processing DROP DEFAULT,
+            ALTER COLUMN missing_elevations_processing TYPE elevation_data_source USING missing_elevations_processing::text::elevation_data_source,
+            ALTER COLUMN missing_elevations_processing SET DEFAULT 'FILE';
     """
     )
 

@@ -385,11 +385,12 @@ class User(BaseModel):
     messages_preferences: Mapped[Optional[Dict]] = mapped_column(
         postgresql.JSONB, nullable=True
     )
-    # TODO: to rename to avoid confusion with 'elevation_processing'
-    missing_elevations_processing: Mapped[ElevationDataSource] = mapped_column(
-        Enum(ElevationDataSource, name="elevation_data_source"),
-        server_default="FILE",
-        nullable=False,
+    missing_elevations_data_source: Mapped[ElevationDataSource] = (
+        mapped_column(
+            Enum(ElevationDataSource, name="elevation_data_source"),
+            server_default="FILE",
+            nullable=False,
+        )
     )
     calories_visibility: Mapped[VisibilityLevel] = mapped_column(
         Enum(VisibilityLevel, name="visibility_levels"),
@@ -856,19 +857,19 @@ class User(BaseModel):
         self,
     ) -> "ElevationDataSource":
         if (
-            self.missing_elevations_processing
+            self.missing_elevations_data_source
             == ElevationDataSource.OPEN_ELEVATION
             and not current_app.config["OPEN_ELEVATION_API_URL"]
         ):
             return ElevationDataSource.FILE
 
         if (
-            self.missing_elevations_processing == ElevationDataSource.VALHALLA
+            self.missing_elevations_data_source == ElevationDataSource.VALHALLA
             and not current_app.config["VALHALLA_API_URL"]
         ):
             return ElevationDataSource.FILE
 
-        return self.missing_elevations_processing
+        return self.missing_elevations_data_source
 
     def serialize(
         self,
@@ -1015,7 +1016,7 @@ class User(BaseModel):
                     if self.messages_preferences
                     else {}
                 ),
-                "missing_elevations_processing": (
+                "missing_elevations_data_source": (
                     self.calculated_missing_elevations_processing
                 ),
                 "calories_visibility": self.calories_visibility.value,

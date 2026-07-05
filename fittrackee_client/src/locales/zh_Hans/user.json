@@ -131,7 +131,9 @@
     },
     "MESSAGES_EDITION": "消息偏好编辑",
     "MESSAGES_PREFERENCES": "消息偏好",
-    "MISSING_ELEVATIONS_PROCESSING_LABEL": "创建时处理缺失的海拔数据",
+    "MISSING_ELEVATIONS_PROCESSING": {
+      "LABEL": "创建时处理缺失的海拔数据"
+    },
     "MONDAY": "星期一",
     "NOTIFICATIONS": {
       "account_creation": "有人注册",

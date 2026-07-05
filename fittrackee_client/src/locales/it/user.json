@@ -130,7 +130,9 @@
     },
     "MESSAGES_EDITION": "Modifica delle preferenze dei messaggi",
     "MESSAGES_PREFERENCES": "Preferenze sui messaggi",
-    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Mancanza del processamento del dislivello in fase di creazione",
+    "MISSING_ELEVATIONS_PROCESSING": {
+      "LABEL": "Mancanza del processamento del dislivello in fase di creazione"
+    },
     "MONDAY": "Lunedì",
     "NOTIFICATIONS": {
       "account_creation": "Qualcuno si registra",
