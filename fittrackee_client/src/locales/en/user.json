@@ -249,7 +249,7 @@
     "WORKOUT_STATS_FROM_FILE": {
       "CALCULATED": "Calculated",
       "FROM_FILE": "From file",
-      "HELP": "If from file, the durations, speeds/paces and ascents/descents are extracted from the .fit file.",
+      "HELP": "If from file, the durations, speeds/paces, elevation and ascents/descents are extracted from the .fit file.",
       "LABEL": "Workout statistics (.fit files only)"
     }
   },

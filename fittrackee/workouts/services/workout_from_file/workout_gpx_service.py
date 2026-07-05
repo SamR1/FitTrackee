@@ -287,13 +287,18 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         use_raw_gpx_speed: bool,
         hr_cadence_power_stats: dict,
         raw_max_speed: Optional[float] = None,
+        workout_update_missing_elevations: "ElevationDataSource" = (
+            ElevationDataSource.FILE
+        ),
     ) -> Union["Workout", "WorkoutSegment"]:
         """
         if object_to_update is 'Workout' and user preferences
-        'workout_stats_from_file' is True, statistics are extracted from file.
+        'workout_stats_from_file' is True and
+        'workout_update_missing_elevations' if 'file', statistics and elevation
+        for charts are extracted from file.
         Otherwise, they are calculated by gpxpy according to user preferences.
 
-        object_to_update is 'WorkoutSegment', data are always calculated.
+        if object_to_update is 'WorkoutSegment', data are always calculated.
         """
 
         gpx_info = self.get_gpx_info(
@@ -306,6 +311,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             self.file_stats
             and isinstance(object_to_update, Workout)
             and self.auth_user.workout_stats_from_file
+            and workout_update_missing_elevations == ElevationDataSource.FILE
         ):
             self.set_stats_from_file(object_to_update, gpx_info)
         else:
@@ -680,7 +686,7 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
         new_workout_id: int,
         new_workout_uuid: "UUID",
         first_point: "gpxpy.gpx.GPXTrackPoint",
-    ) -> Tuple[timedelta, float]:
+    ) -> Tuple[timedelta, float, "ElevationDataSource"]:
         max_speed = 0.0
         previous_segment_last_point_time: Optional["datetime"] = None
         stopped_time_between_segments = timedelta(seconds=0)
@@ -767,7 +773,11 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             self.workout.elevation_data_source = (
                 workout_update_missing_elevations
             )
-        return stopped_time_between_segments, max_speed
+        return (
+            stopped_time_between_segments,
+            max_speed,
+            workout_update_missing_elevations,
+        )
 
     @staticmethod
     def _get_calories(track: "gpxpy.gpx.GPXTrack") -> Optional[int]:
@@ -830,7 +840,11 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
                 [self.start_point.longitude, self.start_point.latitude]
             )
 
-        stopped_time_between_segments, max_speed = self._process_segments(
+        (
+            stopped_time_between_segments,
+            max_speed,
+            workout_update_missing_elevations,
+        ) = self._process_segments(
             track.segments, self.workout.id, self.workout.uuid, start_point
         )
 
@@ -844,8 +858,13 @@ class WorkoutGpxService(BaseWorkoutWithSegmentsCreationService):
             stopped_speed_threshold=self.stopped_speed_threshold,
             use_raw_gpx_speed=self.auth_user.use_raw_gpx_speed,
             hr_cadence_power_stats=hr_cadence_power_stats,
+            workout_update_missing_elevations=workout_update_missing_elevations,
         )
-        if self.file_stats and self.auth_user.workout_stats_from_file:
+        if (
+            self.file_stats
+            and self.auth_user.workout_stats_from_file
+            and workout_update_missing_elevations == ElevationDataSource.FILE
+        ):
             self.workout.max_speed = (
                 convert_speed_in_km_h(self.file_stats["max_speed"])
                 if self.file_stats.get("max_speed")

@@ -249,7 +249,7 @@
     "WORKOUT_STATS_FROM_FILE": {
       "CALCULATED": "Calculées",
       "FROM_FILE": "Extraites du fichier",
-      "HELP": "Si extraites du fichier, les durées, les vitesses/allures et les dénivelés sont extraits du fichier .fit.",
+      "HELP": "Si extraites du fichier, les durées, les vitesses/allures, l'altitude et les dénivelés sont extraits du fichier .fit. De plus, le paramètre de traitement des altitudes manquantes est ignoré.",
       "LABEL": "Statistiques de la séance (fichiers .fit uniquement)"
     }
   },
