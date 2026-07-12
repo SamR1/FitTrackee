@@ -145,6 +145,7 @@ class TestGetChartDataFromSegmentPoints:
             user=None,
             workout_ave_cadence=None,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
         assert chart_data == []
@@ -163,6 +164,7 @@ class TestGetChartDataFromSegmentPoints:
             user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
         assert chart_data == []
@@ -180,6 +182,7 @@ class TestGetChartDataFromSegmentPoints:
             user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
         first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
@@ -230,6 +233,7 @@ class TestGetChartDataFromSegmentPoints:
             user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
         first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
@@ -263,6 +267,49 @@ class TestGetChartDataFromSegmentPoints:
             "time": last_point["time"],
         }
 
+    def test_it_does_not_return_elevation_when_can_see_map_data_is_false(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        chart_data = get_chart_data_from_segment_points(
+            [workout_cycling_user_1_segment_0_with_coordinates.points],
+            sport_1_cycling,
+            user=None,
+            workout_ave_cadence=70,
+            can_see_heart_rate=True,
+            can_see_map_data=False,
+        )
+
+        first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            0
+        ]
+        assert chart_data[0] == {
+            "cadence": first_point["cadence"],
+            "distance": first_point["distance"],
+            "duration": 0,
+            "elevation": first_point["elevation"],
+            "hr": first_point["heart_rate"],
+            "power": first_point["power"],
+            "speed": first_point["speed"],
+            "time": first_point["time"],
+        }
+        last_point = workout_cycling_user_1_segment_0_with_coordinates.points[
+            -1
+        ]
+        assert chart_data[-1] == {
+            "cadence": last_point["cadence"],
+            "distance": 0.11,
+            "duration": last_point["duration"],
+            "elevation": last_point["elevation"],
+            "hr": last_point["heart_rate"],
+            "power": last_point["power"],
+            "speed": last_point["speed"],
+            "time": last_point["time"],
+        }
+
     def test_it_does_not_return_heart_rate_when_flag_is_false(
         self,
         app: "Flask",
@@ -277,6 +324,7 @@ class TestGetChartDataFromSegmentPoints:
             user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=False,
+            can_see_map_data=True,
         )
 
         first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
@@ -322,6 +370,7 @@ class TestGetChartDataFromSegmentPoints:
             user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
         first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
@@ -365,6 +414,7 @@ class TestGetChartDataFromSegmentPoints:
             user=None,
             workout_ave_cadence=0,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
         first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
@@ -408,6 +458,7 @@ class TestGetChartDataFromSegmentPoints:
             user=None,
             workout_ave_cadence=70,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
         first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
@@ -449,6 +500,7 @@ class TestGetChartDataFromSegmentPoints:
             user=None,
             workout_ave_cadence=140,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
         first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
@@ -492,6 +544,7 @@ class TestGetChartDataFromSegmentPoints:
             user=None,
             workout_ave_cadence=140,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
         first_point = workout_cycling_user_1_segment_0_with_coordinates.points[
@@ -574,6 +627,7 @@ class TestGetChartDataFromSegmentPoints:
             user=None,
             workout_ave_cadence=110,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
         first_point = segments_points[0]
