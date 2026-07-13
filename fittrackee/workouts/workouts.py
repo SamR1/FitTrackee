@@ -1,7 +1,7 @@
 import json
 from datetime import timedelta
 from decimal import Decimal
-from typing import TYPE_CHECKING, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Mapping, Optional, Tuple, Union
 
 import geopandas as gpd
 import requests
@@ -109,6 +109,13 @@ DEFAULT_WORKOUTS_PER_PAGE = 5
 MAX_WORKOUTS_PER_PAGE = 100
 MAX_WORKOUTS_TO_SEND = 5
 DEFAULT_WORKOUT_LIKES_PER_PAGE = 10
+TILE_RESPONSE_HEADERS = [
+    "Cache-Control",
+    "ETag",
+    "Expires",
+    "Last-Modified",
+    "Age",
+]
 NO_STATISTICS = {
     "average_ascent": None,
     "average_descent": None,
@@ -128,6 +135,16 @@ NO_STATISTICS = {
 DEFAULT_TASKS_PER_PAGE = 5
 ERROR_MESSAGE_ON_REFRESH = "Error when refreshing workout"
 MAX_MEDIA_ATTACHMENTS = 20
+
+
+def get_tile_response_headers(headers: Mapping[str, str]) -> Dict[str, str]:
+    response_headers = {}
+
+    for header in TILE_RESPONSE_HEADERS:
+        if header in headers:
+            response_headers[header] = headers[header]
+
+    return response_headers
 
 
 def get_rounded_float_value(row_value: Optional[Decimal]) -> Optional[float]:
@@ -2076,6 +2093,7 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
         Response(
             response.content,
             content_type=response.headers["content-type"],
+            headers=get_tile_response_headers(response.headers),
         ),
         response.status_code,
     )
