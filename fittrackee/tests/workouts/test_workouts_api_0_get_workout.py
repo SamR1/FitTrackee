@@ -1558,7 +1558,7 @@ class TestGetWorkoutChartDataAsFollower(
         self.init_test_data_for_follower(
             workout_cycling_user_1_with_coordinates,
             analysis_visibility=input_analysis_visibility,
-            map_visibility=VisibilityLevel.PRIVATE,
+            map_visibility=VisibilityLevel.FOLLOWERS,
             follower=user_2,
             followed=user_1,
         )
@@ -1579,6 +1579,45 @@ class TestGetWorkoutChartDataAsFollower(
         assert (
             data["data"]["chart_data"]
             == workout_cycling_user_1_segment_0_chart_data_wo_hr
+        )
+
+    def test_it_returns_chart_data_when_map_visibility_private(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords: List[
+            Dict
+        ],
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        self.init_test_data_for_follower(
+            workout_cycling_user_1_with_coordinates,
+            analysis_visibility=VisibilityLevel.FOLLOWERS,
+            map_visibility=VisibilityLevel.PRIVATE,
+            follower=user_2,
+            followed=user_1,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert (
+            data["data"]["chart_data"]
+            == workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords
         )
 
     @pytest.mark.parametrize(
@@ -1629,6 +1668,7 @@ class TestGetWorkoutChartDataAsFollower(
             workout_cycling_user_1_with_coordinates,
             user=user_2,
             can_see_heart_rate=expected_can_see_heart_rate,
+            can_see_map_data=True,
             segment_short_id=None,
         )
 
@@ -1704,7 +1744,7 @@ class TestGetWorkoutChartDataAsUser(
         self.init_test_data_for_public_workout(
             workout_cycling_user_1_with_coordinates,
             analysis_visibility=input_analysis_visibility,
-            map_visibility=VisibilityLevel.PRIVATE,
+            map_visibility=VisibilityLevel.FOLLOWERS,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
@@ -1769,6 +1809,7 @@ class TestGetWorkoutChartDataAsUser(
             workout_cycling_user_1_with_coordinates,
             user=user_2,
             can_see_heart_rate=expected_can_see_heart_rate,
+            can_see_map_data=False,
             segment_short_id=None,
         )
 
@@ -1780,15 +1821,17 @@ class TestGetWorkoutChartDataAsUser(
         sport_1_cycling: Sport,
         workout_cycling_user_1_with_coordinates: Workout,
         workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
-        workout_cycling_user_1_segment_0_chart_data: List[Dict],
+        workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords: List[
+            Dict
+        ],
     ) -> None:
         self.init_test_data_for_public_workout(
             workout_cycling_user_1_with_coordinates,
             analysis_visibility=VisibilityLevel.PUBLIC,
-            map_visibility=VisibilityLevel.PRIVATE,
+            map_visibility=VisibilityLevel.FOLLOWERS,
         )
         client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
+            app, user_2.email
         )
 
         response = client.get(
@@ -1803,7 +1846,41 @@ class TestGetWorkoutChartDataAsUser(
         assert "success" in data["status"]
         assert (
             data["data"]["chart_data"]
-            == workout_cycling_user_1_segment_0_chart_data
+            == workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords
+        )
+
+    def test_it_returns_chart_data_when_map_visibility_is_public(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_chart_data_wo_hr: List[Dict],
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1_with_coordinates,
+            analysis_visibility=VisibilityLevel.PUBLIC,
+            map_visibility=VisibilityLevel.PUBLIC,
+        )
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert (
+            data["data"]["chart_data"]
+            == workout_cycling_user_1_segment_0_chart_data_wo_hr
         )
 
     def test_it_returns_error_when_user_is_suspended(
@@ -1930,6 +2007,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
             workout_cycling_user_1_with_coordinates,
             user=None,
             can_see_heart_rate=expected_can_see_heart_rate,
+            can_see_map_data=False,
             segment_short_id=None,
         )
 
@@ -1940,7 +2018,9 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         sport_1_cycling: Sport,
         workout_cycling_user_1_with_coordinates: Workout,
         workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
-        workout_cycling_user_1_segment_0_chart_data_wo_hr: List[Dict],
+        workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords: List[
+            Dict
+        ],
     ) -> None:
         self.init_test_data_for_public_workout(
             workout_cycling_user_1_with_coordinates,
@@ -1960,7 +2040,7 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         assert "success" in data["status"]
         assert (
             data["data"]["chart_data"]
-            == workout_cycling_user_1_segment_0_chart_data_wo_hr
+            == workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords
         )
 
 
@@ -2122,7 +2202,8 @@ class TestGetWorkoutSegmentChartDataAsFollower(
 
         response = client.get(
             self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+                workout_uuid=workout_cycling_user_1.short_id,
+                segment_id=workout_cycling_user_1_segment.short_id,
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
@@ -2147,12 +2228,16 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment: WorkoutSegment,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_1_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords: List[
+            Dict
+        ],
         follow_request_from_user_2_to_user_1: FollowRequest,
     ) -> None:
         self.init_test_data_for_follower(
-            workout_cycling_user_1,
+            workout_cycling_user_1_with_coordinates,
             analysis_visibility=input_analysis_visibility,
             map_visibility=VisibilityLevel.PRIVATE,
             follower=user_2,
@@ -2161,26 +2246,23 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
-        chart_data: List = []
-        workout_cycling_user_1.original_file = "file.gpx"
-        with (
-            patch("builtins.open", new_callable=mock_open),
-            patch(
-                "fittrackee.workouts.workouts.get_chart_data",
-                return_value=chart_data,
+        workout_cycling_user_1_with_coordinates.original_file = "file.gpx"
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
+                segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
-        ):
-            response = client.get(
-                self.route.format(
-                    workout_uuid=workout_cycling_user_1.short_id, segment_id=1
-                ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["chart_data"] == chart_data
+        assert (
+            data["data"]["chart_data"]
+            == workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords
+        )
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -2205,21 +2287,14 @@ class TestGetWorkoutSegmentChartDataAsFollower(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
-        chart_data: List = []
 
-        with (
-            patch("builtins.open", new_callable=mock_open),
-            patch(
-                "fittrackee.workouts.workouts.get_chart_data",
-                return_value=chart_data,
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id,
+                segment_id=workout_cycling_user_1_segment.short_id,
             ),
-        ):
-            response = client.get(
-                self.route.format(
-                    workout_uuid=workout_cycling_user_1.short_id, segment_id=1
-                ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         self.assert_403(response)
 
@@ -2236,7 +2311,9 @@ class TestGetWorkoutSegmentChartDataAsUser(
         )
 
         response = client.get(
-            self.route.format(workout_uuid=random_short_id, segment_id=1),
+            self.route.format(
+                workout_uuid=random_short_id, segment_id=self.random_short_id()
+            ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -2260,11 +2337,11 @@ class TestGetWorkoutSegmentChartDataAsUser(
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment: WorkoutSegment,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
     ) -> None:
         self.init_test_data_for_public_workout(
-            workout_cycling_user_1,
+            workout_cycling_user_1_with_coordinates,
             analysis_visibility=input_analysis_visibility,
             map_visibility=VisibilityLevel.PRIVATE,
         )
@@ -2274,14 +2351,16 @@ class TestGetWorkoutSegmentChartDataAsUser(
 
         response = client.get(
             self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
+                segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_404_with_message(
             response,
-            f"workout not found (id: {workout_cycling_user_1.short_id})",
+            f"workout not found (id: "
+            f"{workout_cycling_user_1_with_coordinates.short_id})",
         )
 
     def test_it_returns_chart_data_when_analysis_visibility_is_public(
@@ -2290,37 +2369,37 @@ class TestGetWorkoutSegmentChartDataAsUser(
         user_1: User,
         user_2: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment: WorkoutSegment,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords: List[
+            Dict
+        ],
     ) -> None:
-        chart_data: List = []
         self.init_test_data_for_public_workout(
-            workout_cycling_user_1,
+            workout_cycling_user_1_with_coordinates,
             analysis_visibility=VisibilityLevel.PUBLIC,
             map_visibility=VisibilityLevel.PRIVATE,
         )
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
-        workout_cycling_user_1.original_file = "file.gpx"
-        with (
-            patch("builtins.open", new_callable=mock_open),
-            patch(
-                "fittrackee.workouts.workouts.get_chart_data",
-                return_value=chart_data,
+        workout_cycling_user_1_with_coordinates.original_file = "file.gpx"
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
+                segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
-        ):
-            response = client.get(
-                self.route.format(
-                    workout_uuid=workout_cycling_user_1.short_id, segment_id=1
-                ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["chart_data"] == chart_data
+        assert (
+            data["data"]["chart_data"]
+            == workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords
+        )
 
     def test_it_returns_error_when_user_is_suspended(
         self,
@@ -2331,7 +2410,6 @@ class TestGetWorkoutSegmentChartDataAsUser(
         workout_cycling_user_1: Workout,
         workout_cycling_user_1_segment: WorkoutSegment,
     ) -> None:
-        chart_data: List = []
         self.init_test_data_for_public_workout(
             workout_cycling_user_1,
             analysis_visibility=VisibilityLevel.PUBLIC,
@@ -2343,19 +2421,14 @@ class TestGetWorkoutSegmentChartDataAsUser(
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
-        with (
-            patch("builtins.open", new_callable=mock_open),
-            patch(
-                "fittrackee.workouts.workouts.get_chart_data",
-                return_value=chart_data,
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id,
+                segment_id=workout_cycling_user_1_segment.short_id,
             ),
-        ):
-            response = client.get(
-                self.route.format(
-                    workout_uuid=workout_cycling_user_1.short_id, segment_id=1
-                ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
-            )
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
 
         self.assert_403(response)
 
@@ -2370,7 +2443,9 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
         client = app.test_client()
 
         response = client.get(
-            self.route.format(workout_uuid=random_short_id, segment_id=1),
+            self.route.format(
+                workout_uuid=random_short_id, segment_id=self.random_short_id()
+            ),
         )
 
         data = self.assert_404_with_message(
@@ -2404,7 +2479,8 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
 
         response = client.get(
             self.route.format(
-                workout_uuid=workout_cycling_user_1.short_id, segment_id=1
+                workout_uuid=workout_cycling_user_1.short_id,
+                segment_id=workout_cycling_user_1_segment.short_id,
             ),
         )
 
@@ -2418,33 +2494,34 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
         app: Flask,
         user_1: User,
         sport_1_cycling: Sport,
-        workout_cycling_user_1: Workout,
-        workout_cycling_user_1_segment: WorkoutSegment,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_1_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords: List[
+            Dict
+        ],
     ) -> None:
-        chart_data: List = []
         self.init_test_data_for_public_workout(
-            workout_cycling_user_1,
+            workout_cycling_user_1_with_coordinates,
             analysis_visibility=VisibilityLevel.PUBLIC,
             map_visibility=VisibilityLevel.PRIVATE,
         )
         client = app.test_client()
-        with (
-            patch("builtins.open", new_callable=mock_open),
-            patch(
-                "fittrackee.workouts.workouts.get_chart_data",
-                return_value=chart_data,
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
+                segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
-        ):
-            response = client.get(
-                self.route.format(
-                    workout_uuid=workout_cycling_user_1.short_id, segment_id=1
-                ),
-            )
+        )
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
         assert "success" in data["status"]
-        assert data["data"]["chart_data"] == chart_data
+        assert (
+            data["data"]["chart_data"]
+            == workout_cycling_user_1_segment_0_chart_data_wo_hr_and_wo_coords
+        )
 
 
 class TestGetWorkoutMap(WorkoutApiTestCaseMixin):

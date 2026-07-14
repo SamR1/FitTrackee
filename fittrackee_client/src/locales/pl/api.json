@@ -1,6 +1,7 @@
 {
   "ERROR": {
     "<time> is missing in gpx file": "Brakuje elementu <time> w pliku .gpx.",
+    "Error when updating elevation data source": "Błąd podczas aktualizacji źródła danych wysokościowych",
     "Network Error": "Błąd sieciowy.",
     "UNKNOWN": "Błąd. Spróbuj ponownie lub skontaktuj się z administratorem.",
     "a report already exists": "Błąd. Ten raport już został wysłany.",
@@ -15,12 +16,14 @@
     "error during gpx file parsing": "Błąd podczas parsowania pliku gpx.",
     "error during gpx processing": "Błąd podczas przetwarzania pliku gpx.",
     "error on getting configuration": "Błąd przy pobieraniu konfiguracji.",
+    "error when generating map image": "Błąd przy generowanie obrazu mapy",
     "error when getting timezones": "Błąd przy pobieraniu stref czasowych.",
     "error when parsing fit file": "Błąd podczas parsowania pliku .fit.",
     "error when parsing gpx file": "Błąd podczas parsowania pliku .gpx.",
     "error when parsing kml file": "Błąd podczas parsowania pliku .kml.",
     "error when parsing kmz file": "Błąd podczas parsowania pliku .kmz.",
     "error when parsing tcx file": "Błąd podczas parsowania pliku .tcx.",
+    "error when processing workout": "Błąd podczas przetwarzania treningu",
     "error when saving workout": "Błąd przy zapisie treningu.",
     "error when updating configuration": "Błąd przy aktualizacji konfiguracji.",
     "error while fetching comments": "Błąd przy pobieraniu komentarzy.",
