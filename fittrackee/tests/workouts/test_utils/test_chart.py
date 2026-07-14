@@ -26,6 +26,7 @@ class TestGetChartData:
                 workout_cycling_user_1,
                 user=user_1,
                 can_see_heart_rate=True,
+                can_see_map_data=True,
             )
 
     def test_it_raises_error_when_segment_not_found(
@@ -43,6 +44,7 @@ class TestGetChartData:
                 workout_cycling_user_1,
                 user=user_1,
                 can_see_heart_rate=True,
+                can_see_map_data=True,
                 segment_short_id="C4asMMbRJsxTirSjTVWeWU",
             )
 
@@ -60,6 +62,7 @@ class TestGetChartData:
             workout_cycling_user_1,
             user=user_1,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
         assert chart_data == []
@@ -79,6 +82,7 @@ class TestGetChartData:
             get_chart_data(
                 workout_cycling_user_1_with_coordinates,
                 user=user_1,
+                can_see_map_data=True,
                 can_see_heart_rate=True,
             )
         get_chart_data_from_segment_points_mock.assert_called_once_with(
@@ -90,6 +94,7 @@ class TestGetChartData:
             user=user_1,
             workout_ave_cadence=None,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )
 
     def test_it_calls_get_chart_data_from_segment_points_with_segment_id(
@@ -106,6 +111,7 @@ class TestGetChartData:
             get_chart_data(
                 workout_cycling_user_1_with_coordinates,
                 user=user_1,
+                can_see_map_data=True,
                 can_see_heart_rate=True,
                 segment_short_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             )
@@ -115,4 +121,5 @@ class TestGetChartData:
             user=user_1,
             workout_ave_cadence=None,
             can_see_heart_rate=True,
+            can_see_map_data=True,
         )

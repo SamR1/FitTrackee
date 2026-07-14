@@ -1519,9 +1519,11 @@ def get_workout_data(
 
     if not can_view(
         workout,
-        "calculated_analysis_visibility"
-        if data_type == "chart_data"
-        else "calculated_map_visibility",
+        (
+            "calculated_analysis_visibility"
+            if data_type == "chart_data"
+            else "calculated_map_visibility"
+        ),
         auth_user,
     ):
         return not_found_response
@@ -1536,10 +1538,16 @@ def get_workout_data(
             "hr", workout.user, auth_user
         )
         if data_type == "chart_data":
+            can_see_map_data = can_view(
+                workout,
+                "calculated_map_visibility",
+                user=auth_user,
+            )
             data: "Dict" = {
                 "chart_data": get_chart_data(
                     workout,
                     user=auth_user,
+                    can_see_map_data=can_see_map_data,
                     can_see_heart_rate=can_see_heart_rate,
                     segment_short_id=segment_short_id,
                 )
