@@ -1,6 +1,24 @@
 name: Python - unit tests
 
 on:
+  push:
+    branches:
+      - main
+      - dev
+      - release-v*
+      - v*
+    paths: [
+      'fittrackee/**',
+      'pyproject.toml',
+      'poetry.lock',
+    ]
+  pull_request:
+    paths: [
+      'fittrackee/**',
+      'pyproject.toml',
+      'poetry.lock',
+    ]
+    types: [ opened, synchronize, reopened ]
   workflow_dispatch:  # manual trigger only
 
 permissions:
