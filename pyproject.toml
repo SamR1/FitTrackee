@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "fittrackee"
-version = "1.3.2"
+version = "1.3.3"
 description = "Self-hosted outdoor workout/activity tracker"
 authors = ["SamR1"]
 license = "AGPL-3.0-only"
@@ -35,8 +35,8 @@ python = "^3.11"
 
 authlib = "1.7.2"
 babel = "2.18.0"
-click = "8.3.3"
-dramatiq = "2.1.0"
+click = "8.4.2"
+dramatiq = "2.2.0"
 dramatiq-abort = {extras = ["redis"], version = "1.2.1"}
 feedgenerator = "2.2.1"
 fitdecode = "0.11.0"
@@ -46,36 +46,36 @@ flask-bcrypt = "1.0.1"
 flask-limiter = {version = "4.1.1", extras = ["redis"]}
 flask-migrate = "4.1.0"
 flask-sqlalchemy = "3.1.1"
-geoalchemy2 = {extras = ["shapely"], version = "0.19.0"}
-geopandas = "=1.1.3"
+geoalchemy2 = {extras = ["shapely"], version = "0.20.0"}
+geopandas = "1.1.4"
 gpxpy = "1.6.2"
 gunicorn = "25.3.0"
-humanize = "4.15.0"
+humanize = "4.16.0"
 jsonschema = "4.26.0"
-lxml = "6.1.0"
-mistune = "3.2.1"
-nh3 = "0.3.5"
-numpy = "2.4.4"
-pandas = "3.0.2"
-pillow = "12.2.0"
+lxml = "6.1.1"
+mistune = "3.3.2"
+nh3 = "0.3.6"
+numpy = "2.4.6"  # numpy 2.5+ requires python 3.12+
+pandas = "3.0.3"
+pillow = "12.3.0"
 psycopg2-binary = "2.9.12"
 pycryptodome = "3.23.0"
-pyjwt = "2.12.1"
+pyjwt = "2.13.0"
 python-magic = "0.4.27"
 pyproj = "3.7.2"
-pyopenssl = "26.2.0"
-pytz = "2026.1.post1"
+pyopenssl = "26.3.0"
+pytz = "2026.2"
 shortuuid = "1.0.13"
-sqlalchemy = "2.0.49"
+sqlalchemy = "2.0.51"
 staticmap3 = {extras = ["filecache"], version = "0.2.0"}
 ua-parser = "1.0.2"
 xmltodict = "1.0.4"
 
 [tool.poetry.group.dev.dependencies]
 codespell = "2.4.2"
-debugpy = "1.8.20"
+debugpy = "1.8.21"
 furo = "2025.12.19"
-mypy = "2.0.0"
+mypy = "2.1.0"
 pytest = "9.0.3"
 pytest-cov = "7.1.0"
 pytest-html = "4.2.0"
@@ -83,8 +83,8 @@ pytest-runner = "6.0.1"
 pytest-selenium = "4.1.0"
 pytest-xdist = {extras = ["psutil"], version = "3.8.0"}
 recommonmark = "0.7.1"
-ruff = "0.15.12"
-selenium = "4.43.0"
+ruff = "0.15.20"
+selenium = "4.45.0"
 sphinx = "9.0.4" # sphinx 9.1+ requires python 3.12+
 sphinx-copybutton = "0.5.2"
 sphinx-intl = "2.3.2"
@@ -151,6 +151,7 @@ quote-style = "double"
 "fittrackee/__main__.py" = ["E501"]
 "fittrackee/activities/stats.py" = ["E501"]
 "fittrackee/application/app_config.py" = ["E501"]
+"fittrackee/languages.py" = ["RUF003"]
 "fittrackee/tests/test_email.py" = ["E501"]
 "fittrackee/tests/test_email_template_password_request.py" = ["E501"]
 "fittrackee/tests/fixtures/fixtures_workouts.py" = ["E501"]

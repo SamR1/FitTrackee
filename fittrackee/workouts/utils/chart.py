@@ -18,6 +18,7 @@ def get_chart_data(
     workout: "Workout",
     *,
     user: Optional["User"],
+    can_see_map_data: bool,
     can_see_heart_rate: bool,
     segment_short_id: Optional[str] = None,
 ) -> Optional[List]:
@@ -57,6 +58,7 @@ def get_chart_data(
             user=user,
             workout_ave_cadence=workout.ave_cadence,
             can_see_heart_rate=can_see_heart_rate,
+            can_see_map_data=can_see_map_data,
         )
 
     return []

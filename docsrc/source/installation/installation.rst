@@ -79,6 +79,15 @@ For instance, copy and update ``.env`` file from ``.env.example`` and source the
 
     $ fittrackee
 
+Alternatively, `gunicorn <https://gunicorn.org/run/#gunicorn>`__ can be used directly, for instance:
+
+.. code-block:: bash
+
+    $ gunicorn -b $HOST:$PORT "fittrackee:create_app()"
+
+.. note::
+    | Since **gunicorn** 25.1.0, a `control interface <https://gunicorn.org/guides/gunicornc/>`__ is started by default. It can be disabled by adding `--no-control-socket <https://gunicorn.org/guides/gunicornc/#configuration>`__ option.
+
 - Start task queue workers **if email sending is enabled**, with **Dramatiq** CLI (see `documentation <https://dramatiq.io/guide.html#workers>`__) :
 
 .. code-block:: bash
@@ -121,12 +130,12 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v1.3.2):
+-  Download the last release (for now, it is the release v1.3.3):
 
 .. code:: bash
 
-   $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.3.2.tar.gz
-   $ tar -xzf v1.3.2.tar.gz
+   $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.3.3.tar.gz
+   $ tar -xzf v1.3.3.tar.gz
    $ cd fittrackee
 
 -  Create **.env** from example and update it

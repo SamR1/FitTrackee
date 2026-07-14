@@ -8,17 +8,18 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-03-04 23:57+0100\n"
-"PO-Revision-Date: 2026-01-18 03:02+0000\n"
-"Last-Translator: Eduard <eduard.krimmel@gmail.com>\n"
+"PO-Revision-Date: 2026-06-28 20:01+0000\n"
+"Last-Translator: Nikolay Korotkiy <sikmir@gmail.com>\n"
 "Language: ru\n"
-"Language-Team: Russian <https://hosted.weblate.org/projects/fittrackee"
-"/fittrackee-api-emails/ru/>\n"
+"Language-Team: Russian <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/ru/>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+"X-Generator: Weblate 2026.7.dev0\n"
 
 #: fittrackee/emails/templates/layout.html:232
 #: fittrackee/emails/templates/layout.txt:1
@@ -505,15 +506,15 @@ msgstr "Гребля на каяке"
 
 #: fittrackee/feeds/feeds/constants.py:14
 msgid "Ice Skating"
-msgstr ""
+msgstr "Катание на коньках"
 
 #: fittrackee/feeds/feeds/constants.py:15
 msgid "Inline Skating"
-msgstr ""
+msgstr "Роллерблейдинг"
 
 #: fittrackee/feeds/feeds/constants.py:16
 msgid "Kayaking (Whitewater)"
-msgstr ""
+msgstr "Каякинг (по бурной воде)"
 
 #: fittrackee/feeds/feeds/constants.py:17
 msgid "Mountain Biking"
@@ -624,4 +625,3 @@ msgstr "спуск"
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
 msgstr "Описание"
-

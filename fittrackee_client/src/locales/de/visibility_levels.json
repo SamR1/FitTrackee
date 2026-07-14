@@ -1,6 +1,6 @@
 {
-  "ANALYSIS_VISIBILITY": "Analyse-Sichtbarkeit",
-  "CALORIES_VISIBILITY": "Kalorien-Sichtbarkeit",
+  "ANALYSIS_VISIBILITY": "Sichtbarkeit der Analysen",
+  "CALORIES_VISIBILITY": "Sichtbarkeit der Kalorien",
   "COMMENT_LEVELS": {
     "followers_only": "Nur Follower",
     "private": "Privat (nur erwähnte Nutzer)",
@@ -12,7 +12,7 @@
     "private": "Privat (nur ich)",
     "public": "Öffentlich (jeder)"
   },
-  "MAP_VISIBILITY": "Karten-Sichtbarkeit",
+  "MAP_VISIBILITY": "Sichtbarkeit der Karte",
   "MEDIA_VISIBILITY": "Sichtbarkeit von Medien",
   "VISIBILITY": "Sichtbarkeit",
   "WORKOUTS_VISIBILITY": "Sichtbarkeit von Workoutdaten",

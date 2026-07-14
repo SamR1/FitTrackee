@@ -35,7 +35,7 @@
   "DELETE_WORKOUT": "Workout löschen",
   "DESCENT": "Abstieg",
   "DESCRIPTION": "Beschreibung",
-  "DESCRIPTION_FIELD_HELP": "Wenn gegeben, ersetzt die Beschreibung die der Datei.",
+  "DESCRIPTION_FIELD_HELP": "Wenn du eine Beschreibung angibst, wird die Beschreibung der Datei dadurch ersetzt.",
   "DISPLAY_DESCRIPTION": "Beschreibung anzeigen",
   "DISPLAY_FILTERS": "zeige Filter",
   "DISPLAY_MORE_FILTERS": "mehr Filter anzeigen",
@@ -91,8 +91,8 @@
   "MEDIA_INFORMATION": "Während des Hochladens eines ZIP-Archivs können keine Fotos hinzugefügt werden.",
   "MIN_ALTITUDE": "minimale Höhe",
   "MULTISELECT": {
-    "deselectLabel": "Enger zum Entfernen drücken",
-    "selectLabel": "Enger zum Auswählen drücken",
+    "deselectLabel": "Enter zum Entfernen drücken",
+    "selectLabel": "Enter zum Auswählen drücken",
     "selectedLabel": "Ausgewählt"
   },
   "MY_WORKOUTS": "Meine Trainings",
@@ -124,7 +124,7 @@
   "NO_NEXT_WORKOUT": "Kein nächstes Training",
   "NO_PREVIOUS_SEGMENT": "Kein vorheriges Segment",
   "NO_PREVIOUS_WORKOUT": "Kein vorheriges Training",
-  "NO_RECORDS": "Keine Aufzeichnungen.",
+  "NO_RECORDS": "Keine Rekorde.",
   "NO_WEATHER_WITH_ASYNCHRONOUS_UPLOAD": "Beim asynchronen hochladen werden keine Wetterdaten abgefragt.",
   "NO_WORKOUTS": "Kein Training. | Keine Trainings.",
   "NO_WORKOUTS_TO_DISPLAY": "Keine Trainings vorhanden",
@@ -142,7 +142,7 @@
   "PRIVATE_NOTES_FIELD_HELP": "diese Anmerkungen sind nur für dich sichtbar.",
   "PUBLIC_WORKOUTS_ATOM_FEED": "Öffentlicher Trainings-Atom-Feed",
   "RADIUS": "Radius",
-  "RECORD": "Aufzeichnung | Aufzeichnungen",
+  "RECORD": "Rekord | Rekorde",
   "RECORD_AP": "Durchschn. Pace",
   "RECORD_AS": "Durchschn. Geschwindigkeit",
   "RECORD_BP": "Beste Pace",
@@ -169,7 +169,7 @@
   "SUPPORTED_FILE_EXTENSIONS": "Unterstützte Erweiterungen",
   "SUSPENDED_BY_ADMIN": "Das Workout wurde von einem Administrator gesperrt.",
   "TITLE": "Titel",
-  "TITLE_FIELD_HELP": "Wenn gegeben, ersetzt der Titel den der Datei.",
+  "TITLE_FIELD_HELP": "Wenn du einen Titel angibst, wird der Titel der Datei dadurch ersetzt.",
   "TO": "bis",
   "TOTAL_ASCENT": "Gesamtanstieg",
   "TOTAL_CALORIES_MAY_BE_INCOMPLETE_IF_FILES_DO_NOT_CONTAIN_DATA": "Die Gesamtkalorienzahl ist möglicherweise unvollständig, wenn einige Dateien die entsprechenden Daten nicht enthalten.",
@@ -255,5 +255,5 @@
   "WORKOUT_FILE": "Workout Datei",
   "WORKOUT_MAP": "Workout-Karte",
   "ZIP_ARCHIVE": ".zip Datei",
-  "ZIP_ARCHIVE_DESCRIPTION": "oder .zip Datei mit Dateien"
+  "ZIP_ARCHIVE_DESCRIPTION": "oder ZIP-Archiv mit Dateien"
 }

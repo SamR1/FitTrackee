@@ -1,5 +1,6 @@
 {
   "ANALYSIS_VISIBILITY": "分析可见性",
+  "CALORIES_VISIBILITY": "卡路里可见性",
   "COMMENT_LEVELS": {
     "followers_only": "仅关注者",
     "private": "私密（仅提到的用户）",
@@ -12,6 +13,7 @@
     "public": "公开（所有人）"
   },
   "MAP_VISIBILITY": "地图可见性",
+  "MEDIA_VISIBILITY": "媒体可见性",
   "VISIBILITY": "可见性",
   "WORKOUTS_VISIBILITY": "锻炼相关数据可见性",
   "WORKOUT_VISIBILITY": "锻炼可见性"

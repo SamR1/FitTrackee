@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   checks:
-    runs-on: codeberg-medium
+    runs-on: ft-ubuntu-amd64-latest
     env:
       working-directory: fittrackee_client
 
