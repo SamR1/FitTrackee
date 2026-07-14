@@ -1,4 +1,5 @@
 LANGUAGES_DATE_STRING = {
+    # "be": r"d MMMM y 'г'.",   # Belarusian  # disabled for now
     "bg": "d MMM yyyy",  # Bulgarian
     # "bn": "d MMM, yyyy",  # Bengali  # disabled for now
     "ca": "d MMM yyyy",  # Catalan

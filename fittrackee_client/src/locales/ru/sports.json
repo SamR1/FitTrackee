@@ -20,8 +20,17 @@
   "Hiking": {
     "LABEL": "Хайкинг"
   },
+  "Ice Skating": {
+    "LABEL": "Катание на коньках"
+  },
+  "Inline Skating": {
+    "LABEL": "Роллерблейдинг"
+  },
   "Kayaking": {
     "LABEL": "Гребля на каяке"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": "Каякинг (по бурной воде)"
   },
   "Mountain Biking": {
     "LABEL": "Горный велосипед"

@@ -1,5 +1,6 @@
 import type { Locale } from 'date-fns'
 import {
+  // be,
   bg,
   // bn,
   ca,
@@ -31,6 +32,7 @@ export const isLanguageSupported = (
   language: string
 ): language is TLanguage => {
   return [
+    // 'be',
     'bg',
     // 'bn',
     'ca',
@@ -59,6 +61,7 @@ export const isLanguageSupported = (
 }
 
 export const localeFromLanguage: Record<TLanguage, Locale> = {
+  // be: be,
   bg: bg,
   // bn: bn,
   ca: ca,
@@ -86,6 +89,7 @@ export const localeFromLanguage: Record<TLanguage, Locale> = {
 }
 
 export const languageLabels: Record<TLanguage, string> = {
+  // be: 'Беларуская мова', // Belarusian
   bg: 'български (50%)', // Bulgarian
   // bn: 'বাংলা',  // Bengali
   ca: 'Català (58%)', // Catalan
@@ -101,15 +105,15 @@ export const languageLabels: Record<TLanguage, string> = {
   it: 'Italiano (97%)', // Italian
   nl: 'Nederlands', // Dutch
   nb: 'Norsk bokmål (42%)', // Norwegian Bokmål
-  pl: 'Polski (92%)', // Polish
+  pl: 'Polski (93%)', // Polish
   pt: 'Português (50%)', // Portuguese
-  ru: 'Русский (93%)', // Russian
+  ru: 'Русский (94%)', // Russian
   // sl: 'Slovenščina', // Slovenian
   // sv: 'Svenska', // Swedish
   // fi: 'Suomi', // Finnish
   kab: 'Taqbaylit (5%)', // Kabyle
   tr: 'Türkçe (1%)', // Turkish
-  zh_Hans: '中文（简体）(95%)', // Chinese (Simplified Han script)
+  zh_Hans: '中文（简体）', // Chinese (Simplified Han script)
 }
 
 export const availableLanguages = Object.keys(languageLabels).map((l) => {

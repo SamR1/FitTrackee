@@ -1,6 +1,28 @@
 name: Python - end-to-end tests
 
 on:
+  push:
+    branches:
+      - main
+      - dev
+      - release-v*
+      - v*
+    paths: [
+      'fittrackee/**',
+      'fittrackee_client/**',
+      'e2e/**',
+      'pyproject.toml',
+      'poetry.lock',
+    ]
+  pull_request:
+    paths: [
+      'fittrackee/**',
+      'fittrackee_client/**',
+      'e2e/**',
+      'pyproject.toml',
+      'poetry.lock',
+    ]
+    types: [ opened, synchronize, reopened ]
   workflow_dispatch:  # manual trigger only
 
 permissions:
