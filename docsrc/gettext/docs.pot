@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: FitTrackee 1.3.3\n"
 "\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-07-14 17:09+0200\n"
+"POT-Creation-Date: 2026-07-15 07:03+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -3306,7 +3306,7 @@ msgid "Version 1.3.3 (2026/07/14)"
 msgstr ""
 
 #: ../source/changelog.md:5
-msgid "This version contains fixes including a security fix.<br />Thanks to @pythonruban for the report."
+msgid "This version contains fixes including a security fix (GHSA-ccv3-xq4j-5gw7).<br />Thanks to @pythonruban for the report."
 msgstr ""
 
 #: ../source/changelog.md:8
@@ -3543,7 +3543,7 @@ msgid "PR#1190 - Init Belarusian translations files"
 msgstr ""
 
 #: ../source/changelog.md:23
-msgid "PR#1192 - Translations update from Hosted Weblate (Polish)"
+msgid "PR#1192 - Translations update from Hosted Weblate (Russian)"
 msgstr ""
 
 #: ../source/changelog.md:25
