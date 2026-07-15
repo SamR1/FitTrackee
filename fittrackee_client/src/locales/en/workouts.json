@@ -52,8 +52,9 @@
   "ELEVATION_DATA_PROCESSING": {
     "LABEL": "Elevation data processing",
     "PROCESSING_WORKOUT": "processing workout…",
-    "flat_windows": "smoothed data",
-    "none": "none"
+    "flat_windows": "smoothed data (\"flat\" window)",
+    "none": "none",
+    "savitzky_golay": "smoothed data (Savitzky–Golay filter)"
   },
   "ELEVATION_DATA_SOURCE": {
     "CHANGE_SOURCE": "Change elevation data source",

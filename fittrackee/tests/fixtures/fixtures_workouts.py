@@ -5775,6 +5775,18 @@ SMOOTHED_ELEVATION_WITH_FLAT_WINDOWS = [
     1095,
     1095,
 ]
+SMOOTHED_ELEVATION_WITH_SAVITZKY_GOLAY_FILTER = [
+    982,
+    992,
+    1006,
+    1022,
+    1042,
+    1065,
+    1090,
+    1119,
+    1152,
+]
+
 
 FILE_STATS_WITH_DATA = {
     "ascent": 0.1,

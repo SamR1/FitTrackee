@@ -16,7 +16,7 @@ export type TUserRole = 'user' | 'moderator' | 'admin' | 'owner'
 export type TVisibilityLevels = 'private' | 'followers_only' | 'public'
 export type TSegmentsCreationEvent = 'all' | 'none' | 'only_manual'
 export type TElevationDataSource = 'file' | 'open_elevation' | 'valhalla'
-export type TElevationProcessing = 'none' | 'flat_windows'
+export type TElevationProcessing = 'none' | 'flat_windows' | 'savitzky_golay'
 
 export interface IUserLightProfile {
   blocked: boolean

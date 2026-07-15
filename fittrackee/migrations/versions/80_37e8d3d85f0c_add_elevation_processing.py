@@ -18,7 +18,7 @@ branch_labels = None
 depends_on = None
 
 elevation_processing = postgresql.ENUM(
-    'NONE', 'FLAT_WINDOWS',
+    'NONE', 'FLAT_WINDOWS', 'SAVITZKY_GOLAY',
     name="elevation_processing"
 )
 try:

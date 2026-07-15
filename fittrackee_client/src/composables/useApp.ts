@@ -55,6 +55,7 @@ export default function useApp() {
   const elevationProcessingItems: TElevationProcessing[] = [
     'none',
     'flat_windows',
+    'savitzky_golay',
   ]
 
   const errorMessages: ComputedRef<string | string[] | IEquipmentError | null> =

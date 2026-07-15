@@ -745,8 +745,9 @@ class WorkoutGpxService(
             # remove existing segments
             WorkoutSegment.query.filter_by(workout_id=self.workout.id).delete()
 
-        # in case elevation processing changed (from 'none' to 'flat_windows'),
-        # the exiting elevation can be reused with calling elevation service
+        # in case elevation processing changed (from 'none' to 'flat_windows'
+        # or 'savitzky_golay'), the exiting elevation can be reused with
+        # calling elevation service
         if self.reuse_existing_elevation:
             existing_elevations = self.get_smoothed_elevations_from_df(
                 existing_elevations, self.elevation_processing

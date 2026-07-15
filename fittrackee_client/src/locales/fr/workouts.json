@@ -52,8 +52,9 @@
   "ELEVATION_DATA_PROCESSING": {
     "LABEL": "Traitement des données d'altitude",
     "PROCESSING_WORKOUT": "séances en cours de traitement…",
-    "flat_windows": "données lissées",
-    "none": "aucun"
+    "flat_windows": "données lissées (\"flat window\")",
+    "none": "aucun",
+    "savitzky_golay": "données lissées (algorithme de Savitzky-Golay)"
   },
   "ELEVATION_DATA_SOURCE": {
     "CHANGE_SOURCE": "Changer la source des données d'altitude",

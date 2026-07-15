@@ -34,3 +34,4 @@ IMAGE_MIMETYPES = {
 class ElevationProcessing(str, Enum):  # to make enum serializable
     NONE = "none"  # elevations remain unchanged
     FLAT_WINDOWS = "flat_windows"
+    SAVITZKY_GOLAY = "savitzky_golay"
