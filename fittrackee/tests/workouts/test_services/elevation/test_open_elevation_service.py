@@ -6,6 +6,11 @@ import pytest
 import requests
 from gpxpy.gpx import GPXTrackPoint
 
+from fittrackee.constants import ElevationProcessing
+from fittrackee.tests.fixtures.fixtures_workouts import (
+    ELEVATIONS,
+    SMOOTHED_ELEVATION_WITH_FLAT_WINDOWS,
+)
 from fittrackee.tests.mixins import ResponseMockMixin
 from fittrackee.workouts.services.elevation.exceptions import (
     ElevationServiceException,
@@ -135,7 +140,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
             )
 
         assert post_mock.call_count == 2
-        assert result == [998, 998, 994, 994, 994, 1124, 1124, 1124, 1124]
+        assert result == ELEVATIONS
 
     def test_it_returns_elevations(
         self,
@@ -155,7 +160,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                 gpx_track_points_without_elevations
             )
 
-        assert result == [998, 998, 994, 994, 994, 1124, 1124, 1124, 1124]
+        assert result == ELEVATIONS
 
     def test_it_raises_error_when_open_elevation_api_raises_exception(
         self,
@@ -230,7 +235,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
 
         smooth_elevations_mock.assert_not_called()
 
-    def test_it_returns_smoothed_elevations_when_flag_is_true(
+    def test_it_returns_smoothed_elevations_when_processing_is_not_none(
         self, app_with_open_elevation_url: "Flask"
     ) -> None:
         service = OpenElevationService()
@@ -250,32 +255,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                     )
                     for point in OPEN_ELEVATION_RESPONSE
                 ],
-                smooth=True,
+                elevation_processing=ElevationProcessing.FLAT_WINDOWS,
             )
 
-        assert result == [1009, 1024, 1038, 1052, 1066, 1080, 1095, 1095, 1095]
-
-    def test_it_returns_elevations_unchanged_when_length_below_3(
-        self, app_with_open_elevation_url: "Flask"
-    ) -> None:
-        service = OpenElevationService()
-
-        with patch.object(
-            requests,
-            "post",
-            return_value=self.get_response(
-                {"results": copy.deepcopy(OPEN_ELEVATION_RESPONSE[:2])}
-            ),
-        ):
-            result = service.get_elevations(
-                [
-                    GPXTrackPoint(
-                        latitude=point["latitude"],
-                        longitude=point["longitude"],
-                    )
-                    for point in OPEN_ELEVATION_RESPONSE[:2]
-                ],
-                smooth=True,
-            )
-
-        assert result == [998, 998]
+        assert result == SMOOTHED_ELEVATION_WITH_FLAT_WINDOWS

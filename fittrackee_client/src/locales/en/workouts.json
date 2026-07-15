@@ -49,6 +49,11 @@
   "DURATION": "duration",
   "EDIT_WORKOUT": "Edit the workout",
   "ELEVATION": "elevation",
+  "ELEVATION_DATA_PROCESSING": {
+    "LABEL": "Elevation data processing",
+    "flat_windows": "smoothed data (\"flat\" window)",
+    "none": "none"
+  },
   "ELEVATION_DATA_SOURCE": {
     "CHANGE_SOURCE": "Change elevation data source",
     "LABEL": "Elevations updated from",
@@ -57,11 +62,6 @@
     "none": "None (elevation data from file)",
     "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
-  },
-  "ELEVATION_DATA_PROCESSING": {
-    "LABEL": "Elevation data processing",
-    "none": "none",
-    "flat_windows": "smoothed data (flat windows)"
   },
   "END": "end",
   "EXIT_FULLSCREEN": "Exit Fullscreen",

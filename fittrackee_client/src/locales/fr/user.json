@@ -134,8 +134,8 @@
     "MISSING_ELEVATIONS_DATA_SOURCE_LABEL": "Source pour les altitudes manquantes lors de la création",
     "MISSING_ELEVATIONS_PROCESSING": {
       "LABEL": "Traitement des altitudes manquantes lors de la création, si une source de données est sélectionnée",
-      "none": "Aucun traitement",
-      "flat_windows": "Lisser les données (\"flat windows\")"
+      "flat_windows": "Lisser les données (\"flat\" window)",
+      "none": "Aucun traitement"
     },
     "MONDAY": "Lundi",
     "NOTIFICATIONS": {

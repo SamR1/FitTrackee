@@ -84,7 +84,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is False
         assert service.get_elevation_on_refresh is True
-        assert service.change_elevation_source is None
+        assert service.updated_elevation_data_source is None
         assert service.elevation_processing is None
         assert service.on_file_error is None
         assert service.logger is None
@@ -110,7 +110,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is False
         assert service.get_elevation_on_refresh is True
-        assert service.change_elevation_source is None
+        assert service.updated_elevation_data_source is None
         assert service.elevation_processing is None
         assert service.on_file_error is None
         assert service.logger is None
@@ -137,7 +137,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is True
         assert service.get_elevation_on_refresh is True
-        assert service.change_elevation_source is None
+        assert service.updated_elevation_data_source is None
         assert service.elevation_processing is None
         assert service.on_file_error is None
         assert service.logger is None
@@ -164,7 +164,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is False
         assert service.get_elevation_on_refresh is False
-        assert service.change_elevation_source is None
+        assert service.updated_elevation_data_source is None
         assert service.elevation_processing is None
 
     def test_it_instantiates_service_when_change_elevation_source_is_provided(
@@ -192,7 +192,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         assert service.update_weather is False
         assert service.get_elevation_on_refresh is True
         assert (
-            service.change_elevation_source
+            service.updated_elevation_data_source
             == ElevationDataSource.OPEN_ELEVATION
         )
         assert service.elevation_processing == ElevationProcessing.FLAT_WINDOWS

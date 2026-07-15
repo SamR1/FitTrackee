@@ -58,7 +58,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
         )
         self.update_weather = update_weather
         self.get_elevation_on_refresh = get_elevation_on_refresh
-        self.change_elevation_source = change_elevation_source
+        self.updated_elevation_data_source = change_elevation_source
         self.elevation_processing = elevation_processing
         self.on_file_error = on_file_error
         self.logger = logger
@@ -125,7 +125,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
             stopped_speed_threshold=self.stopped_speed_threshold,
             get_weather=self.update_weather,
             get_elevation_on_refresh=self.get_elevation_on_refresh,
-            change_elevation_source=self.change_elevation_source,
+            change_elevation_source=self.updated_elevation_data_source,
             elevation_processing=self.elevation_processing,
         )
 

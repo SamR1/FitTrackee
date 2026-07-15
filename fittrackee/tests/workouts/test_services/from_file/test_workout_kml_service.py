@@ -225,8 +225,8 @@ class TestWorkoutKmlServiceInstantiation(WorkoutFileMixin):
         assert service.is_creation is True
         assert service.get_weather is True
         assert service.get_elevation_on_refresh is False
-        assert service.change_elevation_source is None
+        assert service.updated_elevation_data_source is None
         assert service.elevation_processing is None
-        assert service.processing_existing_elevation is False
+        assert service.update_existing_elevation is False
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)

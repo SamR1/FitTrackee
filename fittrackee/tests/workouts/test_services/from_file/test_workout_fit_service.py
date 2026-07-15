@@ -160,7 +160,7 @@ class TestWorkoutFitServiceInstantiation(WorkoutFileMixin):
         assert service.is_creation is True
         assert service.get_weather is True
         assert service.get_elevation_on_refresh is False
-        assert service.change_elevation_source is None
+        assert service.updated_elevation_data_source is None
         assert service.elevation_processing is None
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)
@@ -296,6 +296,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
             )
 
         service.process_workout()
+        db.session.commit()
 
         workout = (
             self.assert_workout_with_data_from_file()
@@ -352,22 +353,24 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
             ) as requests_mock,
         ):
             service.process_workout()
+            db.session.commit()
 
         requests_mock.assert_called()
         workout = Workout.query.one()
-        assert float(workout.ascent) == pytest.approx(0.4, 0.0001)
-        assert float(workout.descent) == pytest.approx(23.4, 0.01)
-        assert float(workout.max_alt) == 1998.0  # type: ignore
-        assert float(workout.min_alt) == 1975.0  # type: ignore
+        assert float(workout.ascent) == 0.0
+        assert float(workout.descent) == 20.0
+        assert float(workout.max_alt) == 996.0  # type: ignore
+        assert float(workout.min_alt) == 976.0  # type: ignore
+        assert workout.elevation_data_source == ElevationDataSource.VALHALLA
+        assert workout.elevation_processing == ElevationProcessing.NONE
+        assert workout.workout_stats_from_file is False
         assert workout.segments[0].points[0] == {
             "distance": 0.0,
             "duration": 0,
-            "elevation": 1998.0,
+            "elevation": 996.0,
             "latitude": 44.68094998039305,
             "longitude": 6.073670033365488,
             "pace": None,
             "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
-        assert workout.elevation_data_source == ElevationDataSource.VALHALLA
-        assert workout.workout_stats_from_file is False

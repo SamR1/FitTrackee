@@ -7,10 +7,11 @@ from flask import current_app
 from staticmap3 import Line, StaticMap
 
 from fittrackee import VERSION, appLog, db
-from fittrackee.constants import ElevationProcessing
+from fittrackee.constants import ElevationDataSource, ElevationProcessing
 from fittrackee.files import get_absolute_file_path
 
-from ...exceptions import WorkoutRefreshException
+from ...exceptions import WorkoutException, WorkoutRefreshException
+from ..elevation.elevation_service import ElevationService
 from ..weather import WeatherService
 from .workout_point import WorkoutPoint
 
@@ -19,7 +20,6 @@ if TYPE_CHECKING:
 
     from gpxpy.gpx import GPX
 
-    from fittrackee.constants import ElevationDataSource
     from fittrackee.users.models import User
     from fittrackee.workouts.models import Sport, Workout
 
@@ -36,13 +36,17 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         auth_user: "User",
         workout_file: IO[bytes],
         sport: "Sport",
-        # stopped_speed_threshold based on the user's sports preferences,
-        # if any. Otherwise, based on the sport
+        # stopped_speed_threshold based on the user's sports preferences, if
+        # any. Otherwise, based on the sport
         stopped_speed_threshold: float,
         workout: Optional["Workout"],  # for refresh
         get_weather: bool = True,
-        # only for refresh
-        get_elevation_on_refresh: bool = False,  # for refresh with CLI
+        # for refresh from CLI in order to add missing elevation if a elevation
+        # service is available
+        get_elevation_on_refresh: bool = False,
+        # elevation changes from UI:
+        # - get_elevation_on_refresh is True
+        # - change_elevation_source and elevation_processing are provided
         change_elevation_source: Optional["ElevationDataSource"] = None,
         elevation_processing: Optional["ElevationProcessing"] = None,
     ) -> None:
@@ -57,47 +61,28 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         self.get_weather = get_weather
         self.workout = workout
 
+        if not self.workout:
+            self.is_creation = True
+            self.get_elevation_on_refresh = False
+            self.updated_elevation_data_source: Optional[
+                "ElevationDataSource"
+            ] = None
+            self.elevation_processing: Optional["ElevationProcessing"] = None
+            self.reuse_existing_elevation = False
+            self.update_existing_elevation = False
+            self.workout_has_missing_elevation: Optional[bool] = None
+
         # refresh
-        if self.workout:
+        else:
             self._check_elevation_parameters(
                 change_elevation_source, elevation_processing
             )
             self.is_creation = False
-            self.get_elevation_on_refresh = get_elevation_on_refresh
-            self.change_elevation_source = (
-                None
-                if (
-                    self.workout.elevation_data_source
-                    == change_elevation_source
-                )
-                else change_elevation_source
+            self._calculate_elevation_parameters_for_refresh(
+                get_elevation_on_refresh,
+                change_elevation_source,
+                elevation_processing,
             )
-            self.elevation_processing = elevation_processing
-            self.processing_existing_elevation = (
-                not self.change_elevation_source
-                and (
-                    self.workout.elevation_processing
-                    == ElevationProcessing.NONE
-                )
-                and (
-                    (
-                        elevation_processing
-                        and self.workout.elevation_processing
-                        != elevation_processing
-                    )
-                    or (
-                        self.workout.elevation_processing
-                        != self.auth_user.elevation_processing
-                    )
-                )
-            )
-        # creation
-        else:
-            self.is_creation = True
-            self.get_elevation_on_refresh = False
-            self.change_elevation_source = None
-            self.elevation_processing = None
-            self.processing_existing_elevation = False
 
     @staticmethod
     def _check_elevation_parameters(
@@ -118,6 +103,133 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
                     "must be provided together"
                 ),
             )
+
+    def _calculate_elevation_parameters_for_refresh(
+        self,
+        get_elevation_on_refresh: bool,
+        change_elevation_source: Optional["ElevationDataSource"],
+        elevation_processing: Optional["ElevationProcessing"],
+    ) -> None:
+        if not self.workout:
+            raise WorkoutException(
+                "invalid", "no workout provided for refresh"
+            )
+
+        self.get_elevation_on_refresh = get_elevation_on_refresh
+        self.reuse_existing_elevation = False
+        self.update_existing_elevation = False
+        self.elevation_processing = (
+            elevation_processing
+            if elevation_processing
+            else self.auth_user.elevation_processing
+        )
+        self.workout_has_missing_elevation = (
+            not self.workout.segments
+            or any(not segment.points for segment in self.workout.segments)
+            or any(
+                point.get("elevation") is None
+                for segment in self.workout.segments
+                for point in segment.points
+            )
+        )
+
+        self.updated_elevation_data_source = (
+            None
+            if (self.workout.elevation_data_source == change_elevation_source)
+            else change_elevation_source
+        )
+
+        is_elevation_service_available = (
+            ElevationService(
+                (
+                    self.updated_elevation_data_source
+                    or self.auth_user.missing_elevations_data_source
+                ),
+                ElevationProcessing.NONE,
+            ).elevation_service
+            is not None
+        )
+
+        if (
+            self.updated_elevation_data_source is None
+            and self.workout_has_missing_elevation
+            and is_elevation_service_available
+        ):
+            self.updated_elevation_data_source = (
+                self.auth_user.missing_elevations_data_source
+            )
+
+            self.reuse_existing_elevation = False
+            self.update_existing_elevation = False
+            self.elevation_processing = (
+                elevation_processing or self.auth_user.elevation_processing
+            )
+            return
+
+        # can not use or update existing elevation when elevation data source
+        # is modified and elevation service available if case data source is
+        # not file
+        if self.updated_elevation_data_source:
+            if (
+                self.updated_elevation_data_source != ElevationDataSource.FILE
+                and not is_elevation_service_available
+            ):
+                raise WorkoutRefreshException(
+                    "invalid", "provided data source is not set"
+                )
+
+            if (
+                self.update_existing_elevation != ElevationDataSource.FILE
+                and not is_elevation_service_available
+            ):
+                # to avoid removing existing elevation from elevation API when
+                # Elevation service has been disabled (i.e. elevation API URLs
+                # have been removed, no elevation service available)
+
+                if (
+                    (
+                        self.workout.elevation_processing
+                        == ElevationProcessing.NONE
+                    )
+                    and self.elevation_processing
+                    and self.elevation_processing != ElevationProcessing.NONE
+                ):
+                    self.reuse_existing_elevation = True
+                    self.update_existing_elevation = True
+                return
+
+            self.reuse_existing_elevation = False
+            self.update_existing_elevation = False
+            self.elevation_processing = elevation_processing
+            return
+
+        if elevation_processing is None:
+            if (
+                # elevation data source is not modified and
+                # elevation_processing is not provided
+                self.workout.elevation_processing
+                == self.auth_user.elevation_processing
+                or not self.workout_has_missing_elevation
+            ):
+                self.reuse_existing_elevation = True
+                self.update_existing_elevation = False
+                self.elevation_processing = (
+                    None
+                    if not self.workout_has_missing_elevation
+                    else elevation_processing
+                )
+
+        else:
+            # elevation data source is not modified but the existing elevation
+            # data have been processed
+            self.reuse_existing_elevation = (
+                self.workout.elevation_processing == ElevationProcessing.NONE
+            )
+            self.update_existing_elevation = (
+                self.reuse_existing_elevation
+                and self.workout.elevation_processing != elevation_processing
+            )
+            self.elevation_processing = elevation_processing
 
     @abstractmethod
     def get_workout_date(self) -> "datetime":

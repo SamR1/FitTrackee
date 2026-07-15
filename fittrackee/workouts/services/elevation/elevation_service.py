@@ -25,7 +25,6 @@ class ElevationService:
             self._get_elevation_service(elevation_data_source)
         )
         self.elevation_processing = elevation_processing
-        self.smooth = elevation_processing == ElevationProcessing.FLAT_WINDOWS
 
     @staticmethod
     def _get_elevation_service(
@@ -50,10 +49,12 @@ class ElevationService:
             return service, elevation_data_source
         return None, ElevationDataSource.FILE
 
-    def get_elevations(self, points: List["GPXTrackPoint"]) -> List[int]:
+    def get_elevations(
+        self, points: List["GPXTrackPoint"]
+    ) -> Union[List[int], List[float]]:
         if not self.elevation_service:
             return []
 
         return self.elevation_service.get_elevations(
-            points, smooth=self.smooth
+            points, elevation_processing=self.elevation_processing
         )

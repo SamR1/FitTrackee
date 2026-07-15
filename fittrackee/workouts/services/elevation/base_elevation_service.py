@@ -1,8 +1,9 @@
 import os
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Union
 
 from fittrackee import appLog
+from fittrackee.constants import ElevationProcessing
 
 from .elevation_mixin import ElevationMixin
 from .exceptions import ElevationServiceException
@@ -36,8 +37,10 @@ class BaseElevationService(ABC, ElevationMixin):
         pass
 
     def get_elevations(
-        self, points: List["GPXTrackPoint"], smooth: bool = False
-    ) -> List[int]:
+        self,
+        points: List["GPXTrackPoint"],
+        elevation_processing: "ElevationProcessing" = ElevationProcessing.NONE,
+    ) -> Union[List[int], List[float]]:
         appLog.debug(
             "{log_label}: getting elevations".format(log_label=self.log_label)
         )
@@ -53,6 +56,6 @@ class BaseElevationService(ABC, ElevationMixin):
             appLog.error(error)
             raise ElevationServiceException(error)
 
-        if smooth:
-            return self.smooth_elevations(results)
+        if elevation_processing != ElevationProcessing.NONE:
+            return self.smooth_elevations(results, elevation_processing)
         return results

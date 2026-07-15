@@ -30,8 +30,8 @@ class TestElevationServiceInstantiation:
         )
 
         assert service.elevation_service is None
-        assert service.smooth is False
         assert service.elevation_data_source == ElevationDataSource.FILE
+        assert service.elevation_processing == ElevationProcessing.NONE
 
     def test_it_instantiates_service_when_all_elevation_api_urls_set_and_preference_is_file(  # noqa
         self,
@@ -43,8 +43,8 @@ class TestElevationServiceInstantiation:
         )
 
         assert service.elevation_service is None
-        assert service.smooth is False
         assert service.elevation_data_source == ElevationDataSource.FILE
+        assert service.elevation_processing == ElevationProcessing.NONE
 
     def test_it_instantiates_service_when_no_elevation_api_urls_set_and_preference_is_not_file(  # noqa
         self, app: "Flask", user_1: "User"
@@ -54,30 +54,22 @@ class TestElevationServiceInstantiation:
         )
 
         assert service.elevation_service is None
-        assert service.smooth is False
         assert service.elevation_data_source == ElevationDataSource.FILE
+        assert service.elevation_processing == ElevationProcessing.NONE
 
     @pytest.mark.parametrize(
         "input_elevation_data_source,input_elevation_processing,"
-        "expected_service,expected_smooth",
+        "expected_service",
         [
-            (
-                ElevationDataSource.OPEN_ELEVATION,
-                ElevationProcessing.NONE,
-                OpenElevationService,
-                False,
-            ),
             (
                 ElevationDataSource.OPEN_ELEVATION,
                 ElevationProcessing.FLAT_WINDOWS,
                 OpenElevationService,
-                True,
             ),
             (
                 ElevationDataSource.VALHALLA,
                 ElevationProcessing.NONE,
                 ValhallaElevationService,
-                False,
             ),
         ],
     )
@@ -90,15 +82,14 @@ class TestElevationServiceInstantiation:
         expected_service: Tuple[
             "OpenElevationService", "ValhallaElevationService"
         ],
-        expected_smooth: bool,
     ) -> None:
         service = ElevationService(
             input_elevation_data_source, input_elevation_processing
         )
 
         assert isinstance(service.elevation_service, expected_service)  # type: ignore[arg-type]
-        assert service.smooth is expected_smooth
         assert service.elevation_data_source == input_elevation_data_source
+        assert service.elevation_processing == input_elevation_processing
 
 
 class TestElevationServiceGetElevations:
@@ -157,7 +148,8 @@ class TestElevationServiceGetElevations:
             service.get_elevations(gpx_track_points_without_elevations)
 
         get_open_elevations_mock.assert_called_once_with(
-            gpx_track_points_without_elevations, smooth=False
+            gpx_track_points_without_elevations,
+            elevation_processing=ElevationProcessing.NONE,
         )
         get_valhalla_elevations_mock.assert_not_called()
 
@@ -182,7 +174,8 @@ class TestElevationServiceGetElevations:
             service.get_elevations(gpx_track_points_without_elevations)
 
         get_open_elevations_mock.assert_called_once_with(
-            gpx_track_points_without_elevations, smooth=True
+            gpx_track_points_without_elevations,
+            elevation_processing=ElevationProcessing.FLAT_WINDOWS,
         )
         get_valhalla_elevations_mock.assert_not_called()
 
@@ -207,7 +200,8 @@ class TestElevationServiceGetElevations:
             service.get_elevations(gpx_track_points_without_elevations)
 
         get_valhalla_elevations_mock.assert_called_once_with(
-            gpx_track_points_without_elevations, smooth=False
+            gpx_track_points_without_elevations,
+            elevation_processing=ElevationProcessing.NONE,
         )
         get_open_elevations_mock.assert_not_called()
 
