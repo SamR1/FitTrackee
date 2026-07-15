@@ -91,15 +91,22 @@ export const getQuery = (
   } else {
     delete query.radius
   }
-  ;['ave_pace_from', 'ave_pace_to', 'max_pace_from', 'max_pace_to'].forEach(
-    (key) => {
-      if (typeof locationQuery[key] === 'string') {
-        query[key] = locationQuery[key]
-      } else {
-        delete query[key]
-      }
+  ;[
+    'ave_pace_from',
+    'ave_pace_to',
+    'max_pace_from',
+    'max_pace_to',
+    'ascent_from',
+    'ascent_to',
+    'descent_from',
+    'descent_to',
+  ].forEach((key) => {
+    if (typeof locationQuery[key] === 'string') {
+      query[key] = locationQuery[key]
+    } else {
+      delete query[key]
     }
-  )
+  })
 
   return query
 }

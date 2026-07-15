@@ -731,6 +731,114 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
             "total": 7,
         }
 
+    def test_it_gets_workouts_ordered_by_ascent_and_ascending_order(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?order_by=ascent&order=asc",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [workout["ascent"] for workout in data["data"]["workouts"]] == [
+            None,
+            40.0,
+            80.0,
+            100.0,
+            100.0,
+        ]
+
+    def test_it_gets_workouts_ordered_by_ascent_and_descending_order(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?order_by=ascent&order=desc",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [workout["ascent"] for workout in data["data"]["workouts"]] == [
+            120.0,
+            120.0,
+            100.0,
+            100.0,
+            80.0,
+        ]
+
+    def test_it_gets_workouts_ordered_by_descent_and_ascending_order(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?order_by=descent&order=asc",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [
+            workout["descent"] for workout in data["data"]["workouts"]
+        ] == [
+            None,
+            20.0,
+            80.0,
+            100.0,
+            180.0,
+        ]
+
+    def test_it_gets_workouts_ordered_by_descent_and_descending_order(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?order_by=descent&order=desc",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [
+            workout["descent"] for workout in data["data"]["workouts"]
+        ] == [
+            200.0,
+            200.0,
+            180.0,
+            100.0,
+            80.0,
+        ]
+
 
 class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
     def test_it_gets_workouts_with_date_filter(
@@ -1436,6 +1544,195 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
             "page": 1,
             "pages": 1,
             "total": 1,
+        }
+
+    def test_it_gets_workouts_with_ascent_filter(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?ascent_from=100&ascent_to=120",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [workout["ascent"] for workout in data["data"]["workouts"]] == [
+            120.0,
+            100.0,
+            100.0,
+            120.0,
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 4,
+        }
+
+    def test_it_gets_workouts_with_ascent_to_only(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?ascent_to=50",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [workout["ascent"] for workout in data["data"]["workouts"]] == [
+            None,
+            40.0,
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
+        }
+
+    def test_it_gets_workouts_with_ascent_from_only(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?ascent_from=120",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [workout["ascent"] for workout in data["data"]["workouts"]] == [
+            120.0,
+            120.0,
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
+        }
+
+    def test_it_gets_workouts_with_descent_filter(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?descent_from=70&descent_to=90",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [
+            workout["descent"] for workout in data["data"]["workouts"]
+        ] == [
+            80.0,
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 1,
+        }
+
+    def test_it_gets_workouts_with_descent_to_only(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?descent_to=90",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [
+            workout["descent"] for workout in data["data"]["workouts"]
+        ] == [
+            None,
+            20.0,
+            80.0,
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 3,
+        }
+
+    def test_it_gets_workouts_with_descent_from_only(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?descent_from=150",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [
+            workout["descent"] for workout in data["data"]["workouts"]
+        ] == [
+            180.0,
+            200.0,
+            200.0,
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 3,
         }
 
 

@@ -248,6 +248,10 @@ export type TWorkoutsPayload = TPaginationPayload & {
   duration_from?: string
   duration_to?: string
   sport_id?: string
+  ascent_from?: string
+  ascent_to?: string
+  descent_from?: string
+  descent_to?: string
 }
 
 export type TMapParamsKeys = 'to' | 'from' | 'sport_ids'
