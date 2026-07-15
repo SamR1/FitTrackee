@@ -60,10 +60,16 @@ class WorkoutFileMixin:
         )
 
     @staticmethod
-    def get_file_storage(app: "Flask", file_name: str) -> "FileStorage":
+    def get_file_open_content(app: "Flask", file_name: str) -> "bytes":
         file_path = os.path.join(app.root_path, "tests/files", file_name)
         with open(file_path, "rb") as file:
-            return FileStorage(filename=file_name, stream=BytesIO(file.read()))
+            return file.read()
+
+    def get_file_storage(self, app: "Flask", file_name: str) -> "FileStorage":
+        return FileStorage(
+            filename=file_name,
+            stream=BytesIO(self.get_file_open_content(app, file_name)),
+        )
 
     def get_fit_file_content(
         self, app: "Flask", file_name: str = "example.fit"
@@ -76,6 +82,14 @@ class WorkoutFileMixin:
     ) -> IO[bytes]:
         file = self.get_file_storage(app, file_name)
         return file.stream
+
+    @staticmethod
+    def get_fit_file_open_content(
+        app: "Flask", file_name: str = "example.fit"
+    ) -> "bytes":
+        file_path = os.path.join(app.root_path, "tests/files", file_name)
+        with open(file_path, "rb") as file:
+            return file.read()
 
 
 class WorkoutAssertMixin:
@@ -121,6 +135,7 @@ class WorkoutAssertMixin:
                 2018, 3, 13, 12, 44, 45, tzinfo=timezone.utc
             )
         assert workout.workout_visibility == VisibilityLevel.PRIVATE
+        assert workout.workout_stats_from_file is False
 
     @staticmethod
     def assert_workout_segment(

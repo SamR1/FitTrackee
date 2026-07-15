@@ -17,6 +17,7 @@
   "BACK_TO_WORKOUT": "revenir à la séance",
   "BEST_PACE": "meilleure allure",
   "CADENCE": "cadence",
+  "CALCULATED_DATA": "Données calculées",
   "CALORIES": "calories",
   "COMMENTS": {
     "ADD": "ajouter un commentaire",
@@ -31,6 +32,7 @@
     "SUSPENDED_COMMENT_BY_ADMIN": "Le commentaire a été suspendu par un administrateur."
   },
   "CREATED_WORKOUTS": "Séance créée | Séances créées",
+  "DATA_FROM_FILE": "Données extraites du fichier",
   "DATE": "date",
   "DELETE_WORKOUT": "Supprimer la séance",
   "DESCENT": "dénivelé négatif",

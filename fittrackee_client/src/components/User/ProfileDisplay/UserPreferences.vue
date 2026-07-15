@@ -68,6 +68,18 @@
           )
         }}
       </dd>
+      <dt>
+        {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.LABEL') }}<sup>1</sup>:
+      </dt>
+      <dd>
+        {{ $t(`user.PROFILE.WORKOUT_STATS_FROM_FILE.${workoutStatsFromFile}`) }}
+      </dd>
+      <div class="info-box raw-speed-help">
+        <span>
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.HELP') }}
+        </span>
+      </div>
       <dt>{{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}<sup>1</sup>:</dt>
       <dd>
         {{
@@ -203,6 +215,9 @@
       : user.value.use_dark_mode === false
         ? 'LIGHT'
         : 'DEFAULT'
+  )
+  const workoutStatsFromFile = computed(() =>
+    user.value.workout_stats_from_file ? 'FROM_FILE' : 'CALCULATED'
   )
 </script>
 

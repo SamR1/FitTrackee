@@ -227,6 +227,10 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             serialized_user["calories_visibility"]
             == user_1.calories_visibility
         )
+        assert (
+            serialized_user["workout_stats_from_file"]
+            == user_1.workout_stats_from_file
+        )
 
     def test_it_returns_empty_dict_when_notification_preferences_are_none(
         self, app: Flask, user_1: User
@@ -415,6 +419,8 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "display_ascent" not in serialized_user
         assert "missing_elevations_processing" not in serialized_user
         assert "calories_visibility" not in serialized_user
+        assert "media_visibility" not in serialized_user
+        assert "workout_stats_from_file" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -508,6 +514,8 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "display_ascent" not in serialized_user
         assert "missing_elevations_processing" not in serialized_user
         assert "calories_visibility" not in serialized_user
+        assert "media_visibility" not in serialized_user
+        assert "workout_stats_from_file" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -594,6 +602,8 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "display_ascent" not in serialized_user
         assert "missing_elevations_processing" not in serialized_user
         assert "calories_visibility" not in serialized_user
+        assert "media_visibility" not in serialized_user
+        assert "workout_stats_from_file" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1: User, user_2: User

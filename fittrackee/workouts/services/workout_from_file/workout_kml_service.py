@@ -1,4 +1,4 @@
-from typing import IO
+from typing import IO, Tuple
 
 import gpxpy.gpx
 import xmltodict
@@ -14,7 +14,7 @@ class WorkoutKmlService(WorkoutGpxService):
         cls,
         workout_file: IO[bytes],
         segments_creation_event: str,
-    ) -> "gpxpy.gpx.GPX":
+    ) -> Tuple["gpxpy.gpx.GPX", dict]:
         """
         Only kml files with Placemark/MultiTrack/Tracks are supported.
         Files with folders or multiple Placemark are no supported.
@@ -116,4 +116,4 @@ class WorkoutKmlService(WorkoutGpxService):
             gpx_track.segments.append(gpx_segment)
         gpx = gpxpy.gpx.GPX()
         gpx.tracks.append(gpx_track)
-        return gpx
+        return gpx, {}

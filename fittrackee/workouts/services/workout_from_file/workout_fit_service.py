@@ -1,4 +1,4 @@
-from typing import IO, TYPE_CHECKING, Any, List, Optional
+from typing import IO, TYPE_CHECKING, Any, List, Optional, Tuple
 
 import fitdecode
 import gpxpy.gpx
@@ -10,6 +10,24 @@ from .workout_gpx_service import WorkoutGpxService
 
 if TYPE_CHECKING:
     from fitdecode.records import FitDataMessage
+
+
+FIT_MATCHING_FIELDS = {
+    "avg_cadence": "ave_cadence",
+    "avg_heart_rate": "ave_hr",
+    "avg_power": "ave_power",
+    "enhanced_avg_speed": "ave_speed",
+    "enhanced_max_speed": "max_speed",
+    "max_cadence": "max_cadence",
+    "max_heart_rate": "max_hr",
+    "max_power": "max_power",
+    "total_ascent": "ascent",
+    "total_descent": "descent",
+    "total_distance": "distance",
+    "total_elapsed_time": "duration",
+    "total_timer_time": "moving",
+    "total_calories": "calories",
+}
 
 
 class WorkoutFitService(WorkoutGpxService):
@@ -54,18 +72,21 @@ class WorkoutFitService(WorkoutGpxService):
         return creator
 
     @staticmethod
-    def get_total_calories(
-        data_frames: List["FitDataMessage"],
-    ) -> Optional[str]:
-        # Get total calories from session
-        # - total calories = resting + active calories
-        # - units: kcal
-        calories = None
+    def get_file_stats(data_frames: List["FitDataMessage"]) -> dict:
         session_frames = filter(lambda f: f.name == "session", data_frames)
         frame = next(session_frames, None)
-        if frame and frame.has_field("total_calories"):
-            calories = frame.get_value("total_calories")
-        return calories
+        fit_stats = {}
+        for key, value in FIT_MATCHING_FIELDS.items():
+            fit_stats[value] = (
+                frame.get_value(key)
+                if frame and frame.has_field(key)
+                else None
+            )
+        if fit_stats["moving"] and fit_stats["duration"]:
+            fit_stats["pauses"] = fit_stats["duration"] - fit_stats["moving"]
+        else:
+            fit_stats["pauses"] = None
+        return fit_stats
 
     @staticmethod
     def get_value_from_frame(frame: "FitDataMessage", key: str) -> Any:
@@ -78,7 +99,7 @@ class WorkoutFitService(WorkoutGpxService):
         cls,
         workout_file: IO[bytes],
         segments_creation_event: str,
-    ) -> "gpxpy.gpx.GPX":
+    ) -> Tuple["gpxpy.gpx.GPX", dict]:
         """
         For now only Activity Files are supported.
         see:
@@ -112,7 +133,7 @@ class WorkoutFitService(WorkoutGpxService):
 
             creator = cls.get_creator(data_frames)
 
-            calories = cls.get_total_calories(data_frames)
+            file_stats = cls.get_file_stats(data_frames)
 
             # Handle the actual data frames. We sort them by timestamp
             # to handle devices that list events and records separately.
@@ -196,12 +217,15 @@ class WorkoutFitService(WorkoutGpxService):
                 "error", "no valid segments with GPS found in fit file"
             ) from None
 
-        if calories:
-            extension = cls._get_track_extension(calories)
+        if file_stats["calories"]:
+            # Get total calories from session
+            # - total calories = resting + active calories
+            # - units: kcal
+            extension = cls._get_track_extension(file_stats["calories"])
             gpx_track.extensions.append(extension)
 
         gpx = gpxpy.gpx.GPX()
         gpx.creator = creator
         gpx.nsmap = NSMAP
         gpx.tracks.append(gpx_track)
-        return gpx
+        return gpx, file_stats

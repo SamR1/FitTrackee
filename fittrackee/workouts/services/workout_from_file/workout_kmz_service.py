@@ -1,5 +1,5 @@
 import zipfile
-from typing import IO, TYPE_CHECKING
+from typing import IO, TYPE_CHECKING, Tuple
 
 from ...exceptions import WorkoutFileException
 from .workout_kml_service import WorkoutKmlService
@@ -14,7 +14,7 @@ class WorkoutKmzService(WorkoutKmlService):
         cls,
         workout_file: IO[bytes],
         segments_creation_event: str,
-    ) -> "gpxpy.gpx.GPX":
+    ) -> Tuple["gpxpy.gpx.GPX", dict]:
         """
         Only kmz files with Tracks are supported.
         Notes:

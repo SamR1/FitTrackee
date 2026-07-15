@@ -413,6 +413,9 @@ class Workout(BaseModel):
         server_default="PRIVATE",
         nullable=False,
     )
+    workout_stats_from_file: Mapped[bool] = mapped_column(
+        server_default="False", nullable=False
+    )
 
     user: Mapped["User"] = relationship(
         "User", lazy="select", single_parent=True
@@ -930,6 +933,7 @@ class Workout(BaseModel):
                 if sport_data_visibility.display_elevation
                 else ElevationDataSource.FILE
             )
+            workout["stats_from_file"] = self.workout_stats_from_file
 
         else:
             next_workout = None

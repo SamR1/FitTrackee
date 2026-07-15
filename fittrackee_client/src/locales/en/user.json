@@ -245,6 +245,12 @@
       "LABEL": "Workout analysis chart display",
       "MULTIPLE": "Each data displayed on a different chart",
       "ONE": "All data on a single chart"
+    },
+    "WORKOUT_STATS_FROM_FILE": {
+      "CALCULATED": "Calculated",
+      "FROM_FILE": "From file",
+      "HELP": "If from file, the durations, speeds/paces, elevation and ascents/descents are extracted from the .fit file.",
+      "LABEL": "Workout statistics (.fit files only)"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "I have read and agree to the {0}.",

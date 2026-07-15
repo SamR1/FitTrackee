@@ -92,7 +92,8 @@ def get_pace(
 def get_speed(
     value: Union[float, Decimal, None],
     sport_data_visibility: "SportDisplayedData",
-    pace: Optional[timedelta] = None,
+    pace: Optional[timedelta | str] = None,
+    rounded: bool = False,
 ) -> Optional[float]:
     if value is None:
         return None
@@ -102,7 +103,8 @@ def get_speed(
         # before 1.1.0
         sport_data_visibility.display_pace and pace is None
     ) or sport_data_visibility.display_speed:
-        return float(value)
+        speed = float(value)
+        return round(speed, 2) if rounded else speed
 
     return None
 

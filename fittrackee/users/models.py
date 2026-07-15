@@ -396,6 +396,10 @@ class User(BaseModel):
         server_default="PRIVATE",
         nullable=False,
     )
+    # only for .fit files for now
+    workout_stats_from_file: Mapped[bool] = mapped_column(
+        server_default="False", nullable=False
+    )
 
     workouts: Mapped[List["Workout"]] = relationship(
         "Workout", lazy=True, back_populates="user"
@@ -1009,6 +1013,7 @@ class User(BaseModel):
                 ),
                 "calories_visibility": self.calories_visibility.value,
                 "media_visibility": self.media_visibility.value,
+                "workout_stats_from_file": self.workout_stats_from_file,
             }
 
         return serialized_user

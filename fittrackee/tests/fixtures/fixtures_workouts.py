@@ -5694,3 +5694,39 @@ VALHALLA_VALUES = [
     1975.0,
 ]
 VALHALLA_RESPONSE = {"height": VALHALLA_VALUES}
+
+FILE_STATS_WITH_DATA = {
+    "ascent": 0.1,
+    "ave_cadence": 70,
+    "ave_hr": 85,
+    "ave_power": 248,
+    "ave_speed": 1.0,
+    "calories": 50,
+    "descent": 22.0,
+    "distance": 320,
+    "duration": 260,
+    "max_cadence": 75,
+    "max_hr": 92,
+    "max_power": 326,
+    "max_speed": 3,
+    "moving": 259,
+    "pauses": 1,
+}
+
+FILE_STATS_WITH_NONE = {
+    "ascent": None,
+    "ave_cadence": None,
+    "ave_hr": None,
+    "ave_power": None,
+    "ave_speed": None,
+    "calories": None,
+    "descent": None,
+    "distance": None,
+    "duration": None,
+    "max_cadence": None,
+    "max_hr": None,
+    "max_power": None,
+    "max_speed": None,
+    "moving": None,
+    "pauses": None,
+}

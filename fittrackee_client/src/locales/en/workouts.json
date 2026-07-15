@@ -18,6 +18,7 @@
   "BEST_PACE": "best pace",
   "CADENCE": "cadence",
   "CALORIES": "calories",
+  "CALCULATED_DATA": "calculated data",
   "COMMENTS": {
     "ADD": "add a comment",
     "COMMENT": "comment | comments",
@@ -31,6 +32,7 @@
     "SUSPENDED_COMMENT_BY_ADMIN": "The comment has been suspended by an administrator."
   },
   "CREATED_WORKOUTS": "Created workout | Created workouts",
+  "DATA_FROM_FILE": "data from file",
   "DATE": "date",
   "DELETE_WORKOUT": "Delete the workout",
   "DESCENT": "descent",
