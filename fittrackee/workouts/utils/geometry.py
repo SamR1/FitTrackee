@@ -53,6 +53,7 @@ def get_chart_data_from_segment_points(
     user: Optional["User"],
     workout_ave_cadence: Optional[int],
     can_see_heart_rate: bool,
+    can_see_map_data: bool,
 ) -> List:
     """
     Return data needed to generate chart with:
@@ -62,6 +63,8 @@ def get_chart_data_from_segment_points(
     - heart rate (if available)
     - cadence (if available)
     - power (if available)
+
+    It returns coordinates depending on map data visibility level.
     """
     chart_data = []
     sport_data_visibility = get_sport_displayed_data(sport, user)
@@ -85,10 +88,15 @@ def get_chart_data_from_segment_points(
             data = {
                 "distance": distance,
                 "duration": point["duration"] - first_point_duration,
-                "latitude": point["latitude"],
-                "longitude": point["longitude"],
                 "time": point["time"],
             }
+            if can_see_map_data:
+                data = {
+                    **data,
+                    "latitude": point["latitude"],
+                    "longitude": point["longitude"],
+                }
+
             if sport_data_visibility.display_elevation and point.get(
                 "elevation"
             ):

@@ -66,12 +66,12 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v1.3.2) and overwrite existing files:
+- Download the last release (for now, it is the release v1.3.3) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.3.2.tar.gz
-   $ tar -xzf v1.3.2.tar.gz
+   $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.3.3.tar.gz
+   $ tar -xzf v1.3.3.tar.gz
    $ cd fittrackee
 
 .. warning::
@@ -81,8 +81,8 @@ Prod environment
 
     .. code:: bash
 
-       $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.3.2.tar.gz
-       $ tar -xzf v1.3.2.tar.gz
+       $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.3.3.tar.gz
+       $ tar -xzf v1.3.3.tar.gz
        $ cp -R fittrackee/* FitTrackee/
        $ cd FitTrackee
 

@@ -1,5 +1,55 @@
 # Change log
 
+## Version 1.3.3 (2026/07/14)
+
+This version contains fixes including a security fix ([GHSA-ccv3-xq4j-5gw7](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-ccv3-xq4j-5gw7)).  
+Thanks to [@pythonruban](https://github.com/pythonruban) for the report.
+
+### Security
+
+* [PR#1196](https://codeberg.org/FitTrackee/FitTrackee/pulls/1196) - Return chart data according to map visibility level
+
+### Bugs Fixed
+
+* [PR#1195](https://codeberg.org/FitTrackee/FitTrackee/pulls/1195) - Forward cache headers for map tiles
+
+### Translations
+
+* [PR#1175](https://codeberg.org/FitTrackee/FitTrackee/pulls/1175) - Translations update from Hosted Weblate (German)
+* [PR#1179](https://codeberg.org/FitTrackee/FitTrackee/pulls/1179) - Translations update from Hosted Weblate (Chinese (Simplified Han script))
+* [PR#1181](https://codeberg.org/FitTrackee/FitTrackee/pulls/1181) - Translations update from Hosted Weblate (German)
+* [PR#1186](https://codeberg.org/FitTrackee/FitTrackee/pulls/1186) - Translations update from Hosted Weblate (Polish)
+* [PR#1190](https://codeberg.org/FitTrackee/FitTrackee/pulls/1190) - Init Belarusian translations files
+* [PR#1192](https://codeberg.org/FitTrackee/FitTrackee/pulls/1192) - Translations update from Hosted Weblate (Russian)
+
+Translation status for languages available on the interface:
+- Basque: 97%
+- Bulgarian: 50%
+- Catalan: 58%
+- Chinese (Simplified): 100%
+- Croatian: 100%
+- Czech: 49%
+- Dutch: 100%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 97%
+- Kabyle: 5%
+- Norwegian Bokmål: 42%
+- Polish: 93%
+- Portuguese: 50%
+- Russian: 94%
+- Spanish: 67%
+- Turkish: 1%
+
+Thanks to the contributors:
+- [@PeterPwr](https://codeberg.org/PeterPwr)
+- [@poesty](https://codeberg.org/poesty)
+- [@sikmir](https://codeberg.org/sikmir)
+- Sylwester Wieczorek
+
+
 ## Version 1.3.2 (2026/05/24)
 
 ### Bugs Fixed

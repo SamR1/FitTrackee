@@ -9,6 +9,7 @@
   "CANCEL": "Отмена",
   "CANCEL_FOLLOW_REQUEST": "Отменить запрос на подписку",
   "CLEAR_FILTER": "Очистить фильтры",
+  "CLOSE": "Закрыть",
   "DELETE": "Удалить",
   "DELETE_MY_ACCOUNT": "Удалить аккаунт",
   "DISABLE": "Отключить",
@@ -25,9 +26,11 @@
   "REJECT": "Отклонить",
   "REQUEST_DATA_EXPORT": "Экспорт данных",
   "RESET": "Сбросить",
+  "SAVE": "Сохранить",
   "SEARCH": "Искать",
   "SEE_DETAIL": "Подробности",
   "SUBMIT": "Отправить",
   "UNBLOCK": "Разблокировать",
-  "UNFOLLOW": "Отписаться"
+  "UNFOLLOW": "Отписаться",
+  "WRITE": "Записать"
 }
