@@ -1,5 +1,5 @@
 <template>
-  <div id="modal" role="dialog" @click.self="emit('cancelAction')">
+  <div id="modal" role="dialog" @click.self="closeModalIfNotLoading()">
     <div class="custom-modal">
       <Card>
         <template #title>
@@ -36,6 +36,9 @@
             <div class="elevation-loader">
               <div v-if="loading">
                 <i class="fa fa-refresh fa-spin fa-fw"></i>
+                {{
+                  $t(`workouts.ELEVATION_DATA_PROCESSING.PROCESSING_WORKOUT`)
+                }}
               </div>
             </div>
             <div class="modal-buttons">
@@ -53,7 +56,7 @@
                 type="button"
                 id="cancel-button"
                 :disabled="loading"
-                @click="emit('cancelAction')"
+                @click="closeModalIfNotLoading()"
               >
                 {{ $t('buttons.CANCEL') }}
               </button>
@@ -168,6 +171,11 @@
       elevationDataProcessing: elevationProcessing.value,
     })
   }
+  function closeModalIfNotLoading() {
+    if (!loading.value) {
+      emit('cancelAction')
+    }
+  }
 
   onMounted(() => {
     store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
@@ -244,6 +252,8 @@
 
       .elevation-loader {
         height: 20px;
+        font-size: 0.9em;
+        font-style: italic;
       }
     }
   }

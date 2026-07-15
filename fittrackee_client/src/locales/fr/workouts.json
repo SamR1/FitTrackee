@@ -52,7 +52,7 @@
   "ELEVATION_DATA_PROCESSING": {
     "LABEL": "Traitement des données d'altitude",
     "PROCESSING_WORKOUT": "séances en cours de traitement…",
-    "flat_windows": "données lissées (\"flat\" window)",
+    "flat_windows": "données lissées",
     "none": "aucun"
   },
   "ELEVATION_DATA_SOURCE": {

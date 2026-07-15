@@ -17,8 +17,8 @@
   "BACK_TO_WORKOUT": "back to workout",
   "BEST_PACE": "best pace",
   "CADENCE": "cadence",
-  "CALORIES": "calories",
   "CALCULATED_DATA": "calculated data",
+  "CALORIES": "calories",
   "COMMENTS": {
     "ADD": "add a comment",
     "COMMENT": "comment | comments",
@@ -51,7 +51,8 @@
   "ELEVATION": "elevation",
   "ELEVATION_DATA_PROCESSING": {
     "LABEL": "Elevation data processing",
-    "flat_windows": "smoothed data (\"flat\" window)",
+    "PROCESSING_WORKOUT": "processing workout…",
+    "flat_windows": "smoothed data",
     "none": "none"
   },
   "ELEVATION_DATA_SOURCE": {
