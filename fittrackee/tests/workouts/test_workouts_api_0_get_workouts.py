@@ -1578,6 +1578,66 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
             "total": 4,
         }
 
+    def test_it_gets_workouts_with_ascent_to_only(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?ascent_to=50",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [workout["ascent"] for workout in data["data"]["workouts"]] == [
+            None,
+            40.0,
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
+        }
+
+    def test_it_gets_workouts_with_ascent_from_only(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?ascent_from=120",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [workout["ascent"] for workout in data["data"]["workouts"]] == [
+            120.0,
+            120.0,
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 2,
+        }
+
     def test_it_gets_workouts_with_descent_filter(
         self,
         app: "Flask",
@@ -1607,6 +1667,72 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
             "page": 1,
             "pages": 1,
             "total": 1,
+        }
+
+    def test_it_gets_workouts_with_descent_to_only(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?descent_to=90",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [
+            workout["descent"] for workout in data["data"]["workouts"]
+        ] == [
+            None,
+            20.0,
+            80.0,
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 3,
+        }
+
+    def test_it_gets_workouts_with_descent_from_only(
+        self,
+        app: "Flask",
+        user_1: "User",
+        seven_workouts_user_1: List["Workout"],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/workouts?descent_from=150",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert [
+            workout["descent"] for workout in data["data"]["workouts"]
+        ] == [
+            180.0,
+            200.0,
+            200.0,
+        ]
+        assert data["pagination"] == {
+            "has_next": False,
+            "has_prev": False,
+            "page": 1,
+            "pages": 1,
+            "total": 3,
         }
 
 

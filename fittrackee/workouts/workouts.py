@@ -16,7 +16,7 @@ from flask import (
 )
 from sqlalchemy import asc, case, desc, distinct, exc, func, select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.sql.expression import nulls_first, nulls_last
+from sqlalchemy.sql.expression import nulls_first, nulls_last, or_
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -447,11 +447,29 @@ def get_user_workouts_query(
     if ascent_from:
         filters.append(Workout.ascent >= float(ascent_from))
     if ascent_to:
-        filters.append(Workout.ascent <= float(ascent_to))
+        ascent_filter = Workout.ascent <= float(ascent_to)
+        if not ascent_from:
+            filters.append(
+                or_(
+                    ascent_filter,
+                    Workout.ascent == None,  # noqa
+                )
+            )
+        else:
+            filters.append(ascent_filter)
     if descent_from:
         filters.append(Workout.descent >= float(descent_from))
     if descent_to:
-        filters.append(Workout.descent <= float(descent_to))
+        descent_filter = Workout.descent <= float(descent_to)
+        if not descent_from:
+            filters.append(
+                or_(
+                    descent_filter,
+                    Workout.descent == None,  # noqa
+                )
+            )
+        else:
+            filters.append(descent_filter)
     if equipment_id == "none":
         workouts_query = workouts_query.outerjoin(WorkoutEquipment)
         filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
