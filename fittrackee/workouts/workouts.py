@@ -16,6 +16,7 @@ from flask import (
 )
 from sqlalchemy import asc, case, desc, distinct, exc, func, select
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.sql.expression import nulls_first, nulls_last
 from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
@@ -344,6 +345,10 @@ def get_user_workouts_query(
     max_pace_to = params.get("max_pace_to")
     max_speed_from = params.get("max_speed_from")
     max_speed_to = params.get("max_speed_to")
+    ascent_from = params.get("ascent_from")
+    ascent_to = params.get("ascent_to")
+    descent_from = params.get("descent_from")
+    descent_to = params.get("descent_to")
     order_by = params.get("order_by", "workout_date")
     workout_column = getattr(
         Workout, "moving" if order_by == "duration" else order_by
@@ -439,6 +444,14 @@ def get_user_workouts_query(
         filters.append(Workout.max_speed >= float(max_speed_from))
     if max_speed_to:
         filters.append(Workout.max_speed <= float(max_speed_to))
+    if ascent_from:
+        filters.append(Workout.ascent >= float(ascent_from))
+    if ascent_to:
+        filters.append(Workout.ascent <= float(ascent_to))
+    if descent_from:
+        filters.append(Workout.descent >= float(descent_from))
+    if descent_to:
+        filters.append(Workout.descent <= float(descent_to))
     if equipment_id == "none":
         workouts_query = workouts_query.outerjoin(WorkoutEquipment)
         filters.append(WorkoutEquipment.c.equipment_id == None)  # noqa
@@ -467,9 +480,17 @@ def get_user_workouts_query(
             Workout.workout_date, Workout.id
         )
 
-    workouts_query = workouts_query.order_by(
-        (asc(workout_column) if order == "asc" else desc(workout_column)),
-    )
+    if order_by in ["ascent", "descent"]:
+        order_by_column = (
+            nulls_first(asc(workout_column))
+            if order == "asc"
+            else nulls_last(desc(workout_column))
+        )
+    else:
+        order_by_column = (
+            asc(workout_column) if order == "asc" else desc(workout_column)
+        )
+    workouts_query = workouts_query.order_by(order_by_column)
     return workouts_query, page, per_page
 
 
@@ -656,7 +677,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
     :query float max_speed_from: minimal max. speed
     :query float max_speed_to: maximal max. speed
     :query string order: sorting order: ``asc``, ``desc`` (default: ``desc``)
-    :query string order_by: sorting criteria: ``ave_speed``, ``distance``,
+    :query string order_by: sorting criteria: ``ascent``, ``ave_speed``,
+                            ``descent``, ``distance``,
                             ``duration``, ``workout_date`` (default:
                             ``workout_date``)
     :query string equipment_id: equipment id (if ``none``, only workouts
