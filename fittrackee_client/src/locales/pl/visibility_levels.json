@@ -1,18 +1,18 @@
 {
-  "ANALYSIS_VISIBILITY": "Widoczność analizy",
+  "ANALYSIS_VISIBILITY": "widoczność analizy",
   "COMMENT_LEVELS": {
-    "followers_only": "Tylko śledzący",
-    "private": "Prywatne (tylko oznaczeni użytkownicy)",
-    "public": "Publiczne (każdy)"
+    "followers_only": "tylko śledzący",
+    "private": "prywatne (tylko oznaczeni użytkownicy)",
+    "public": "publiczne (każdy)"
   },
-  "HR_VISIBILITY": "Widoczność tętna",
+  "HR_VISIBILITY": "widoczność tętna",
   "LEVELS": {
-    "followers_only": "Tylko śledzący",
-    "private": "Prywatne (tylko ja)",
-    "public": "Publiczne (każdy)"
+    "followers_only": "tylko śledzący",
+    "private": "prywatne (tylko ja)",
+    "public": "publiczne (każdy)"
   },
-  "MAP_VISIBILITY": "Widoczność mapy",
+  "MAP_VISIBILITY": "widoczność mapy",
   "VISIBILITY": "Widoczność",
   "WORKOUTS_VISIBILITY": "Widoczność danych związanych z treningiem",
-  "WORKOUT_VISIBILITY": "Widoczność treningu"
+  "WORKOUT_VISIBILITY": "widoczność treningu"
 }

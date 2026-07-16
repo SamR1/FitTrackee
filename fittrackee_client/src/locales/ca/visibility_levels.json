@@ -1,20 +1,20 @@
 {
-  "ANALYSIS_VISIBILITY": "Visibilitat d'anàlisi",
-  "CALORIES_VISIBILITY": "Visibilitat de calories",
+  "ANALYSIS_VISIBILITY": "visibilitat d'anàlisi",
+  "CALORIES_VISIBILITY": "visibilitat de calories",
   "COMMENT_LEVELS": {
-    "followers_only": "Només seguidors",
-    "private": "Privat (només els usuaris esmentats)",
-    "public": "Públic (tothom)"
+    "followers_only": "només seguidors",
+    "private": "privat (només els usuaris esmentats)",
+    "public": "públic (tothom)"
   },
-  "HR_VISIBILITY": "Visibilitat de pulsacions",
+  "HR_VISIBILITY": "visibilitat de pulsacions",
   "LEVELS": {
-    "followers_only": "Només seguidors",
-    "private": "Privat (només jo)",
-    "public": "Públic (tothom)"
+    "followers_only": "només seguidors",
+    "private": "privat (només jo)",
+    "public": "públic (tothom)"
   },
-  "MAP_VISIBILITY": "Visibilitat del mapa",
-  "MEDIA_VISIBILITY": "Visibilitat dels mitjans",
+  "MAP_VISIBILITY": "visibilitat del mapa",
+  "MEDIA_VISIBILITY": "visibilitat dels mitjans",
   "VISIBILITY": "visibilitat",
   "WORKOUTS_VISIBILITY": "Entrenaments relacionats amb la visibilitat de les dades",
-  "WORKOUT_VISIBILITY": "Visibilitat dels entrenaments"
+  "WORKOUT_VISIBILITY": "visibilitat dels entrenaments"
 }

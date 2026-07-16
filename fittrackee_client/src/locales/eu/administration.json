@@ -54,9 +54,9 @@
     },
     "REASON": "Arrazoia",
     "REPORT": "salaketa | salaketa",
-    "REPORTED_BY": "Nork salatua",
+    "REPORTED_BY": "nork salatua",
     "REPORTED_CONTENT": "Salatutako edukia",
-    "REPORTED_USER": "Salatutako erabiltzailea",
+    "REPORTED_USER": "salatutako erabiltzailea",
     "REPORTER": "salatzailea",
     "REPORT_ACTIONS": {
       "comment_suspension": "Iruzkin hau bertan behera utzi du {1} {2} erabiltzaileak.",

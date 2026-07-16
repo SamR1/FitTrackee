@@ -979,9 +979,6 @@
             input {
               height: 20px;
             }
-            label {
-              text-transform: lowercase;
-            }
 
             .workout-date-duration {
               display: flex;

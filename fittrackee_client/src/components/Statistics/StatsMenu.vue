@@ -139,7 +139,6 @@
       label {
         font-size: 0.9em;
         font-weight: normal;
-        text-transform: lowercase;
       }
     }
   }

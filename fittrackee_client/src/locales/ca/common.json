@@ -31,7 +31,7 @@
   "NO": "No",
   "NO_DESCRIPTION": "Cap descripció",
   "NO_NOTES": "Cap nota",
-  "PHOTOS": "Fotos",
+  "PHOTOS": "fotos",
   "PREVIOUS": "anterior",
   "REPORT_PLACEHOLDER": "especifica la raó per a reportar",
   "REPORT_SUBMITTED": "Informe enviat.",
@@ -52,7 +52,7 @@
       "LABEL": "per pàgina"
     }
   },
-  "TOTAL": "Total",
+  "TOTAL": "total",
   "TOTAL_DURATION_WITH_PAUSES": "duració total amb pauses",
   "TYPE": "tipus",
   "YES": "Sí"

@@ -54,9 +54,9 @@
     },
     "REASON": "причина",
     "REPORT": "жалоба | жалоб",
-    "REPORTED_BY": "Жалоба от",
+    "REPORTED_BY": "жалоба от",
     "REPORTED_CONTENT": "Жалоба на контент",
-    "REPORTED_USER": "Пожалованный пользователь",
+    "REPORTED_USER": "пожалованный пользователь",
     "REPORTER": "cообщатель",
     "REPORT_ACTIONS": {
       "comment_suspension": "Комментарий был заблокирован {1} {2}.",

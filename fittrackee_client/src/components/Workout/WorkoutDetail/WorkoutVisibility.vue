@@ -95,7 +95,6 @@
       }
       .visibility-label {
         color: var(--text-visibilty);
-        text-transform: lowercase;
       }
       @media screen and (max-width: $x-small-limit) {
         .visibility-label {

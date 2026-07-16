@@ -55,9 +55,9 @@
     },
     "REASON": "Raison",
     "REPORT": "signalement | signalements",
-    "REPORTED_BY": "Signalé par",
+    "REPORTED_BY": "signalé par",
     "REPORTED_CONTENT": "Contenu signalé",
-    "REPORTED_USER": "Utilisateur signalé",
+    "REPORTED_USER": "utilisateur signalé",
     "REPORTER": "rapporteur",
     "REPORT_ACTIONS": {
       "comment_suspension": "Le commentaire a été suspendu par {1} {2}.",

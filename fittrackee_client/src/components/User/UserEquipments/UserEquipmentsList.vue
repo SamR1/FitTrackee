@@ -55,10 +55,10 @@
                     {{ $t('workouts.WORKOUT', 0) }}
                   </th>
                   <th class="text-left" v-if="equipmentType.label === 'Racket'">
-                    {{ capitalize($t('workouts.TOTAL_DURATION')) }}
+                    {{ $t('workouts.TOTAL_DURATION') }}
                   </th>
                   <th class="text-left" v-else>
-                    {{ capitalize($t('workouts.TOTAL_DISTANCE')) }}
+                    {{ $t('workouts.TOTAL_DISTANCE') }}
                   </th>
                   <th class="text-left">
                     {{ $t('common.ACTIVE') }}
@@ -177,7 +177,7 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
   import type { ComputedRef } from 'vue'
 
   import type { IEquipment, ITranslatedEquipmentType } from '@/types/equipments'
@@ -234,9 +234,6 @@
       }
     }
     table {
-      th {
-        text-transform: lowercase;
-      }
       td {
         &.equipment-label {
           width: 280px;

@@ -55,9 +55,9 @@
     },
     "REASON": "Reden",
     "REPORT": "melding | meldingen",
-    "REPORTED_BY": "Gemeld door",
+    "REPORTED_BY": "gemeld door",
     "REPORTED_CONTENT": "Gemelde inhoud",
-    "REPORTED_USER": "Gemelde gebruiker",
+    "REPORTED_USER": "gemelde gebruiker",
     "REPORTER": "melder",
     "REPORT_ACTIONS": {
       "comment_suspension": "De reactie werd geblokeerd door {1} {2}.",
