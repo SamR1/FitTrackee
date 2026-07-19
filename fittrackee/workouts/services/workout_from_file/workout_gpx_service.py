@@ -4,6 +4,7 @@ from statistics import mean
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Tuple, Union
 
 import gpxpy.gpx
+import numpy as np
 import pandas as pd
 import pytz
 from lxml import etree as ET
@@ -503,7 +504,7 @@ class WorkoutGpxService(
                     ]
                     point.elevation = (
                         None
-                        if previous_value is None
+                        if previous_value is None or np.isnan(previous_value)
                         else float(previous_value)  # type: ignore[arg-type]
                     )
                 except KeyError:

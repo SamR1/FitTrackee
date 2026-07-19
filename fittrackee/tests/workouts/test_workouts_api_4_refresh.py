@@ -1,5 +1,6 @@
 import json
 from datetime import datetime, timezone
+from io import BytesIO
 from typing import TYPE_CHECKING
 from unittest.mock import mock_open, patch
 
@@ -7,6 +8,7 @@ import pytest
 
 from fittrackee import db
 from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee.workouts.models import Workout
 from fittrackee.workouts.services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
 )
@@ -18,7 +20,7 @@ if TYPE_CHECKING:
     from flask import Flask
 
     from fittrackee.users.models import FollowRequest, User
-    from fittrackee.workouts.models import Sport, Workout
+    from fittrackee.workouts.models import Sport
 
 
 class TestRefreshWorkout(WorkoutApiTestCaseMixin):
@@ -201,3 +203,46 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
                 workout_cycling_user_1.serialize(user=user_1, light=False)
             )
         ]
+
+    def test_it_refreshes_workout_without_elevation(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        gpx_file_with_missing_elevation: str,
+    ) -> None:
+        """
+        first points have no elevation and no user preferences set
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        response = client.post(
+            "/api/workouts",
+            data=dict(
+                file=(
+                    BytesIO(str.encode(gpx_file_with_missing_elevation)),
+                    "example.gpx",
+                ),
+                data='{"sport_id": 1}',
+            ),
+            headers=dict(
+                content_type="multipart/form-data",
+                Authorization=f"Bearer {auth_token}",
+            ),
+        )
+        data = json.loads(response.data.decode())
+        workout = data["data"]["workouts"][0]
+
+        response = client.post(
+            f"/api/workouts/{workout['id']}/refresh",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        workout = Workout.query.one()
+        assert float(workout.distance) == 0.113
+        assert float(workout.max_alt) == 993.0  # type: ignore
+        assert float(workout.min_alt) == 987.0  # type: ignore
+        assert float(workout.ascent) == 0.0  # type: ignore
+        assert float(workout.descent) == 6.0  # type: ignore
