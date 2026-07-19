@@ -1,7 +1,9 @@
-from typing import IO, TYPE_CHECKING, Any, List, Optional, Tuple
+from typing import IO, TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 
 import fitdecode
 import gpxpy.gpx
+import numpy as np
+import pandas as pd
 
 from ...constants import NSMAP
 from ...exceptions import WorkoutFileException
@@ -28,6 +30,7 @@ FIT_MATCHING_FIELDS = {
     "total_timer_time": "moving",
     "total_calories": "calories",
 }
+ALL_KEYS = [*FIT_MATCHING_FIELDS.values(), "pauses"]
 
 
 class WorkoutFitService(WorkoutGpxService):
@@ -72,21 +75,77 @@ class WorkoutFitService(WorkoutGpxService):
         return creator
 
     @staticmethod
-    def get_file_stats(data_frames: List["FitDataMessage"]) -> dict:
+    def get_workout_value(df: "pd.DataFrame", key: str) -> Any:
+        if key in [
+            "ascent",
+            "descent",
+            "calories",
+            "distance",
+            "duration",
+            "moving",
+            "pauses",
+        ]:
+            return df[key].sum()
+        if key in ["ave_cadence", "ave_hr", "ave_power", "ave_speed"]:
+            return df[key].mean()
+        if key in ["max_cadence", "max_hr", "max_power", "max_speed"]:
+            return df[key].max()
+        return None
+
+    @classmethod
+    def get_file_stats(
+        cls,
+        data_frames: List["FitDataMessage"],
+    ) -> Dict:
+        """
+        Multi-sports activities like Swimrun contain multiple sessions
+        """
         session_frames = filter(lambda f: f.name == "session", data_frames)
-        frame = next(session_frames, None)
-        fit_stats = {}
-        for key, value in FIT_MATCHING_FIELDS.items():
-            fit_stats[value] = (
-                frame.get_value(key)
-                if frame and frame.has_field(key)
-                else None
-            )
-        if fit_stats["moving"] and fit_stats["duration"]:
-            fit_stats["pauses"] = fit_stats["duration"] - fit_stats["moving"]
-        else:
-            fit_stats["pauses"] = None
-        return fit_stats
+        sessions_stats = []
+
+        for frame in session_frames:
+            session_stats = {}
+
+            for key, value in FIT_MATCHING_FIELDS.items():
+                session_stats[value] = (
+                    frame.get_value(key) if frame.has_field(key) else None
+                )
+
+            if session_stats["moving"] and session_stats["duration"]:
+                session_stats["pauses"] = (
+                    session_stats["duration"] - session_stats["moving"]
+                )
+
+            else:
+                session_stats["pauses"] = None
+            sessions_stats.append(session_stats)
+
+        if len(sessions_stats) == 0:
+            return {
+                **{value: None for value in FIT_MATCHING_FIELDS.values()},
+                "pauses": None,
+            }
+
+        if len(sessions_stats) == 1:
+            return sessions_stats[0]
+
+        df = pd.DataFrame(sessions_stats)
+        workout_stats: Dict = {}
+        for key in [*ALL_KEYS, "moving"]:
+            value = cls.get_workout_value(df, key)
+            if key in [
+                "ave_speed",
+                "max_speed",
+                "distance",
+                "duration",
+                "moving",
+                "calories",
+            ]:
+                workout_stats[key] = None if np.isnan(value) else float(value)
+            else:
+                workout_stats[key] = None if np.isnan(value) else int(value)
+
+        return workout_stats
 
     @staticmethod
     def get_value_from_frame(frame: "FitDataMessage", key: str) -> Any:
