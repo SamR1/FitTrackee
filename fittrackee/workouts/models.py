@@ -194,6 +194,23 @@ def update_equipments(workout: "Workout", connection: Connection) -> None:
         )
 
 
+class MultiActivitiesSports(BaseModel):
+    __tablename__ = "multi_activities_sports"
+
+    sport_id: Mapped[int] = mapped_column(
+        db.ForeignKey("sports.id"),
+        primary_key=True,
+    )
+    sub_sport_id: Mapped[int] = mapped_column(
+        db.ForeignKey("sports.id"),
+        primary_key=True,
+    )
+
+    def __init__(self, main_sport_id: int, sub_sport_id: int):
+        self.sport_id = main_sport_id
+        self.sub_sport_id = sub_sport_id
+
+
 class Sport(BaseModel):
     __tablename__ = "sports"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -215,6 +232,14 @@ class Sport(BaseModel):
     )
     records: Mapped[List["Record"]] = relationship(
         "Record", lazy=True, back_populates="sport"
+    )
+    sports = relationship(
+        "Sport",
+        secondary="multi_activities_sports",
+        primaryjoin=id == MultiActivitiesSports.sport_id,  # noqa: A003,
+        secondaryjoin=id == MultiActivitiesSports.sub_sport_id,  # noqa: A003,
+        lazy="dynamic",
+        viewonly=True,
     )
 
     def __repr__(self) -> str:
@@ -1178,6 +1203,9 @@ class WorkoutSegment(BaseModel):
     best_pace: Mapped[Optional[timedelta]] = mapped_column(
         nullable=True
     )  # min/km
+    sport_id: Mapped[int] = mapped_column(
+        db.ForeignKey("sports.id"), index=True, nullable=True
+    )
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
@@ -1217,6 +1245,7 @@ class WorkoutSegment(BaseModel):
         return {
             "workout_id": encode_uuid(self.workout_uuid),
             "segment_id": self.short_id,
+            "sport_id": self.sport_id,
             "duration": None if self.duration is None else str(self.duration),
             "pauses": str(self.pauses) if self.pauses else None,
             "moving": None if self.moving is None else str(self.moving),

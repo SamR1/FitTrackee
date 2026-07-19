@@ -4246,6 +4246,7 @@ class TestWorkoutSegmentModel:
             "moving": str(workout_cycling_user_1_segment.moving),
             "pauses": workout_cycling_user_1_segment.pauses,
             "segment_id": workout_cycling_user_1_segment.short_id,
+            "sport_id": None,
             "workout_id": workout_cycling_user_1_segment.workout.short_id,
         }
 
@@ -4286,6 +4287,7 @@ class TestWorkoutSegmentModel:
             "moving": str(workout_cycling_user_1_segment.moving),
             "pauses": workout_cycling_user_1_segment.pauses,
             "segment_id": workout_cycling_user_1_segment.short_id,
+            "sport_id": None,
             "workout_id": workout_cycling_user_1_segment.workout.short_id,
         }
 
@@ -4355,3 +4357,15 @@ class TestWorkoutSegmentModel:
         assert to_shape(workout_cycling_user_1_segment.geom) == LineString(
             segments_coordinates
         )
+
+    def test_it_returns_sport_id_when_set(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_8_trail: "Sport",
+        workout_swimrun_user_1_segment_0_with_coordinates: "Workout",
+    ) -> None:
+        serialized_segment = (
+            workout_swimrun_user_1_segment_0_with_coordinates.serialize()
+        )
+        assert serialized_segment["sport_id"] == sport_8_trail.id

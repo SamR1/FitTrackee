@@ -15,6 +15,7 @@ from fittrackee import VERSION, db
 from fittrackee.constants import PaceSpeedDisplay
 from fittrackee.workouts.models import (
     TITLE_MAX_CHARACTERS,
+    MultiActivitiesSports,
     Sport,
     Workout,
     WorkoutSegment,
@@ -24,7 +25,7 @@ from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_se
 )
 from fittrackee.workouts.utils.convert import convert_speed_into_pace_duration
 
-from ..utils import random_string
+from ..utils import duplicate_row, random_string
 
 if TYPE_CHECKING:
     from fittrackee.users.models import User
@@ -130,6 +131,40 @@ def sport_7_kayaking() -> Sport:
     sport = Sport(label="Kayaking")
     sport.stopped_speed_threshold = 1
     db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
+@pytest.fixture()
+def sport_8_trail() -> Sport:
+    sport = Sport(label="Trail")
+    sport.stopped_speed_threshold = 0.1
+    sport.pace_speed_display = PaceSpeedDisplay.PACE
+    db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
+@pytest.fixture()
+def sport_9_open_water_swimming() -> Sport:
+    sport = Sport(label="Open Water Swimming")
+    sport.stopped_speed_threshold = 0.1
+    db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
+@pytest.fixture()
+def sport_10_swimrun(
+    sport_8_trail: Sport, sport_9_open_water_swimming: Sport
+) -> Sport:
+    sport = Sport(label="Swimrun")
+    db.session.add(sport)
+    db.session.flush()
+    db.session.add(MultiActivitiesSports(sport.id, sport_8_trail.id))
+    db.session.add(
+        MultiActivitiesSports(sport.id, sport_9_open_water_swimming.id)
+    )
     db.session.commit()
     return sport
 
@@ -1210,6 +1245,51 @@ def workout_hiking_user_1(
     db.session.add(workout)
     db.session.commit()
     return workout
+
+
+@pytest.fixture()
+def workout_swimrun_user_1_with_coordinates(
+    user_1: "User",
+    sport_10_swimrun: "Sport",
+    workout_cycling_user_1_with_coordinates: "Workout",
+) -> Workout:
+    workout = duplicate_row(
+        workout_cycling_user_1_with_coordinates,
+        init_cols={
+            "user_id": user_1.id,
+            "sport_id": sport_10_swimrun.id,
+            "workout_date": (
+                workout_cycling_user_1_with_coordinates.workout_date
+                + timedelta(hours=1)
+            ),
+        },
+    )
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
+def workout_swimrun_user_1_segment_0_with_coordinates(
+    user_1: "User",
+    sport_8_trail: "Sport",
+    workout_swimrun_user_1_with_coordinates: "Workout",
+    workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+) -> WorkoutSegment:
+    segment = duplicate_row(
+        workout_cycling_user_1_segment_0_with_coordinates,
+        init_cols={
+            "workout_id": workout_swimrun_user_1_with_coordinates.id,
+            "workout_uuid": workout_swimrun_user_1_with_coordinates.uuid,
+        },
+        updated_cols={
+            "sport_id": sport_8_trail.id,
+            "start_date": datetime(2018, 3, 13, 1, tzinfo=timezone.utc),
+        },
+    )
+    db.session.add(segment)
+    db.session.commit()
+    return segment
 
 
 @pytest.fixture()

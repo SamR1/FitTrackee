@@ -1,0 +1,50 @@
+"""add multi activities sports
+
+Revision ID: d90ae8ee2222
+Revises: 37e8d3d85f0c
+Create Date: 2026-07-19 13:18:53.429415
+
+"""
+from alembic import op
+import sqlalchemy as sa
+
+
+# revision identifiers, used by Alembic.
+revision = 'd90ae8ee2222'
+down_revision = '37e8d3d85f0c'
+branch_labels = None
+depends_on = None
+
+
+def upgrade():
+    op.create_table('multi_activities_sports',
+    sa.Column('sport_id', sa.Integer(), nullable=False),
+    sa.Column('sub_sport_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['sport_id'], ['sports.id'], ),
+    sa.ForeignKeyConstraint(['sub_sport_id'], ['sports.id'], ),
+    sa.PrimaryKeyConstraint('sport_id', 'sub_sport_id')
+    )
+    with op.batch_alter_table('workout_segments', schema=None) as batch_op:
+        batch_op.add_column(sa.Column('sport_id', sa.Integer(), nullable=True))
+        batch_op.create_index(batch_op.f('ix_workout_segments_sport_id'), ['sport_id'], unique=False)
+        batch_op.create_foreign_key('workout_segments_sport_id_fkey', 'sports', ['sport_id'], ['id'])
+
+    op.execute(
+            f"""
+        WITH multi_sports AS (
+           SELECT id as sub_sport_id,
+                  (SELECT id FROM sports WHERE label = 'Swimrun') as sport_id
+           FROM sports
+           WHERE label IN ('Trail', 'Open Water Swimming')
+        )
+        INSERT INTO multi_activities_sports(sport_id, sub_sport_id)
+        SELECT sport_id, sub_sport_id from multi_sports;
+    """)
+
+def downgrade():
+    with op.batch_alter_table('workout_segments', schema=None) as batch_op:
+        batch_op.drop_constraint('workout_segments_sport_id_fkey', type_='foreignkey')
+        batch_op.drop_index(batch_op.f('ix_workout_segments_sport_id'))
+        batch_op.drop_column('sport_id')
+
+    op.drop_table('multi_activities_sports')
