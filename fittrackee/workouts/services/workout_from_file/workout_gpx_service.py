@@ -82,8 +82,8 @@ class WorkoutGpxService(
             change_elevation_source,
             elevation_processing,
         )
-        self.gpx, self.file_stats = self.parse_file(
-            workout_file, auth_user.segments_creation_event
+        self.gpx, self.file_stats, self.sessions_stats = self.parse_file(
+            workout_file, auth_user.segments_creation_event, sport
         )
         self.cadences: List[int] = []
         self.heart_rates: List[int] = []
@@ -120,11 +120,12 @@ class WorkoutGpxService(
         cls,
         workout_file: IO[bytes],
         segments_creation_event: str,
-    ) -> Tuple["gpxpy.gpx.GPX", dict]:
+        sport: "Sport",
+    ) -> Tuple["gpxpy.gpx.GPX", Dict, List[Dict]]:
         """
         Notes:
         - segments_creation_event is not used (only for .fit files)
-        - file_stats are only available for .fit files
+        - file_stats and sessions_stats are only available for .fit files
         """
         try:
             gpx = gpxpy.parse(workout_file)  # type: ignore
@@ -136,7 +137,7 @@ class WorkoutGpxService(
             raise WorkoutFileException(
                 "error", "no tracks in gpx file"
             ) from None
-        return gpx, {}
+        return gpx, {}, []
 
     @staticmethod
     def get_gpx_info(

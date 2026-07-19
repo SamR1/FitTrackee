@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 
 class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
     def test_it_raises_error_when_kml_file_is_invalid(
-        self, app: "Flask", invalid_kml_file: str
+        self, app: "Flask", invalid_kml_file: str, sport_1_cycling: "Sport"
     ) -> None:
         with (
             pytest.raises(
@@ -28,6 +28,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
             WorkoutKmlService.parse_file(
                 self.get_file_content(invalid_kml_file),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
     def test_it_raises_error_when_kml_file_has_no_tracks(
@@ -43,6 +44,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
             WorkoutKmlService.parse_file(
                 self.get_file_content(kml_file_wo_tracks),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
     def test_it_raises_error_when_kml_file_has_folders(
@@ -58,6 +60,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
             WorkoutKmlService.parse_file(
                 self.get_file_content(kml_file_with_folders),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
     def test_it_returns_gpx_with_kml_2_2_with_one_track(
@@ -67,9 +70,10 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_2_with_one_track: str,
     ) -> None:
-        gpx, file_stats = WorkoutKmlService.parse_file(
+        gpx, file_stats, sessions_stats = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_2_with_one_track),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         assert isinstance(gpx, gpxpy.gpx.GPX)
@@ -81,6 +85,7 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         assert moving_data.moving_time == 250.0
         assert round(moving_data.moving_distance, 1) == 320.0
         assert file_stats == {}
+        assert sessions_stats == []
 
     def test_it_returns_gpx_with_kml_2_2_with_two_tracks(
         self,
@@ -89,9 +94,10 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_2_with_two_tracks: str,
     ) -> None:
-        gpx, _ = WorkoutKmlService.parse_file(
+        gpx, _, _ = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_2_with_two_tracks),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         assert len(gpx.tracks) == 1
@@ -107,9 +113,10 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_3_with_one_track: str,
     ) -> None:
-        gpx, _ = WorkoutKmlService.parse_file(
+        gpx, _, _ = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_3_with_one_track),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         assert len(gpx.tracks) == 1
@@ -125,9 +132,10 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_3_with_two_tracks: str,
     ) -> None:
-        gpx, _ = WorkoutKmlService.parse_file(
+        gpx, _, _ = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_3_with_two_tracks),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         assert len(gpx.tracks) == 1
@@ -143,9 +151,10 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_3_wo_name_and_description: str,
     ) -> None:
-        gpx, _ = WorkoutKmlService.parse_file(
+        gpx, _, _ = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_3_wo_name_and_description),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         assert gpx.name is None
@@ -158,9 +167,10 @@ class TestWorkoutKmlServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         kml_2_2_with_extended_data: str,
     ) -> None:
-        gpx, file_stats = WorkoutKmlService.parse_file(
+        gpx, file_stats, _ = WorkoutKmlService.parse_file(
             self.get_file_content(kml_2_2_with_extended_data),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         assert isinstance(gpx, gpxpy.gpx.GPX)

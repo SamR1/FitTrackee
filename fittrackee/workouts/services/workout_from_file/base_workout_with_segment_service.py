@@ -29,6 +29,7 @@ weather_service = WeatherService()
 class BaseWorkoutWithSegmentsCreationService(ABC):
     # file is converted in gpx format if not in gpx format
     gpx: "GPX"
+    sport: "Sport"
 
     @abstractmethod
     def __init__(

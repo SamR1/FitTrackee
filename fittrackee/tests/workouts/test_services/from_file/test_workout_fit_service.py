@@ -102,7 +102,7 @@ class TestWorkoutFitServiceGetCoordinate(WorkoutFileMixin):
 
 class TestWorkoutFitServiceParseFile(WorkoutFileMixin):
     def test_it_raises_error_when_file_is_not_fit(
-        self, app: "Flask", invalid_kml_file: str
+        self, app: "Flask", invalid_kml_file: str, sport_1_cycling: "Sport"
     ) -> None:
         with (
             pytest.raises(
@@ -112,6 +112,7 @@ class TestWorkoutFitServiceParseFile(WorkoutFileMixin):
             WorkoutFitService.parse_file(
                 self.get_fit_file_content(app, file_name="example.kmz"),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
     def test_it_returns_gpx_with_fit_content(
@@ -120,9 +121,10 @@ class TestWorkoutFitServiceParseFile(WorkoutFileMixin):
         """
         .fit file used for the test does not contain any stats
         """
-        gpx, file_stats = WorkoutFitService.parse_file(
+        gpx, file_stats, sessions_stats = WorkoutFitService.parse_file(
             self.get_fit_file_content(app, file_name="example.fit"),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         assert len(gpx.tracks) == 1
@@ -131,6 +133,7 @@ class TestWorkoutFitServiceParseFile(WorkoutFileMixin):
         assert moving_data.moving_time == 250.0
         assert round(moving_data.moving_distance, 1) == 318.2
         assert file_stats == FILE_STATS_WITH_NONE
+        assert sessions_stats == []
 
 
 class TestWorkoutFitServiceInstantiation(WorkoutFileMixin):
@@ -176,7 +179,7 @@ class TestWorkoutFitServiceProcessWorkout(
         with patch.object(
             WorkoutFitService,
             "get_file_stats",
-            return_value=FILE_STATS_WITH_DATA,
+            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -200,7 +203,7 @@ class TestWorkoutFitServiceProcessWorkout(
         with patch.object(
             WorkoutFitService,
             "get_file_stats",
-            return_value=FILE_STATS_WITH_DATA,
+            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -224,7 +227,7 @@ class TestWorkoutFitServiceProcessWorkout(
         with patch.object(
             WorkoutFitService,
             "get_file_stats",
-            return_value=FILE_STATS_WITH_NONE,
+            return_value=(FILE_STATS_WITH_NONE, []),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -281,7 +284,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
         with patch.object(
             WorkoutFitService,
             "get_file_stats",
-            return_value=FILE_STATS_WITH_DATA,
+            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -329,7 +332,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
         with patch.object(
             WorkoutFitService,
             "get_file_stats",
-            return_value=FILE_STATS_WITH_DATA,
+            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
         ):
             service = WorkoutFitService(
                 user_1,

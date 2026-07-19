@@ -7,6 +7,7 @@ import pandas as pd
 
 from ...constants import NSMAP
 from ...exceptions import WorkoutFileException
+from ...models import Sport
 from .constants import GARMIN_DEVICES
 from .workout_gpx_service import WorkoutGpxService
 
@@ -31,9 +32,16 @@ FIT_MATCHING_FIELDS = {
     "total_calories": "calories",
 }
 ALL_KEYS = [*FIT_MATCHING_FIELDS.values(), "pauses"]
+# Only sports for multiple activities sport for now
+FIT_MATCHING_SPORTS = {
+    "swimming|open_water": "Open Water Swimming",
+    "running|trail": "Trail",
+}
 
 
 class WorkoutFitService(WorkoutGpxService):
+    # sport : "Sport"
+
     @staticmethod
     def get_coordinate(value: int) -> float:
         """
@@ -75,6 +83,32 @@ class WorkoutFitService(WorkoutGpxService):
         return creator
 
     @staticmethod
+    def get_sport_id_or_transition(
+        frame: "FitDataMessage",
+    ) -> Tuple[Optional[int], bool]:
+        sport_key = ""
+        if frame.has_field("sport"):
+            sport_key = frame.get_value("sport")
+            if sport_key == "transition":
+                return None, True
+
+            if frame.has_field("sub_sport"):
+                sport_key = f"{sport_key}|{frame.get_value('sub_sport')}"
+
+        if not sport_key:
+            return None, False
+
+        sport_label = FIT_MATCHING_SPORTS.get(sport_key)
+        if not sport_label:
+            return None, False
+
+        sport = Sport.query.filter_by(label=sport_label).first()
+        if sport is not None:
+            return sport.id, False
+
+        return None, False
+
+    @staticmethod
     def get_workout_value(df: "pd.DataFrame", key: str) -> Any:
         if key in [
             "ascent",
@@ -96,7 +130,7 @@ class WorkoutFitService(WorkoutGpxService):
     def get_file_stats(
         cls,
         data_frames: List["FitDataMessage"],
-    ) -> Dict:
+    ) -> Tuple[Dict, List[Dict]]:
         """
         Multi-sports activities like Swimrun contain multiple sessions
         """
@@ -104,7 +138,11 @@ class WorkoutFitService(WorkoutGpxService):
         sessions_stats = []
 
         for frame in session_frames:
-            session_stats = {}
+            sport_id, is_transition = cls.get_sport_id_or_transition(frame)
+            session_stats: Dict = {
+                "sport_id": sport_id,
+                "is_transition": is_transition,
+            }
 
             for key, value in FIT_MATCHING_FIELDS.items():
                 session_stats[value] = (
@@ -124,10 +162,10 @@ class WorkoutFitService(WorkoutGpxService):
             return {
                 **{value: None for value in FIT_MATCHING_FIELDS.values()},
                 "pauses": None,
-            }
+            }, []
 
         if len(sessions_stats) == 1:
-            return sessions_stats[0]
+            return sessions_stats[0], sessions_stats
 
         df = pd.DataFrame(sessions_stats)
         workout_stats: Dict = {}
@@ -145,7 +183,7 @@ class WorkoutFitService(WorkoutGpxService):
             else:
                 workout_stats[key] = None if np.isnan(value) else int(value)
 
-        return workout_stats
+        return workout_stats, sessions_stats
 
     @staticmethod
     def get_value_from_frame(frame: "FitDataMessage", key: str) -> Any:
@@ -158,7 +196,8 @@ class WorkoutFitService(WorkoutGpxService):
         cls,
         workout_file: IO[bytes],
         segments_creation_event: str,
-    ) -> Tuple["gpxpy.gpx.GPX", dict]:
+        sport: "Sport",
+    ) -> Tuple["gpxpy.gpx.GPX", Dict, List[Dict]]:
         """
         For now only Activity Files are supported.
         see:
@@ -192,26 +231,47 @@ class WorkoutFitService(WorkoutGpxService):
 
             creator = cls.get_creator(data_frames)
 
-            file_stats = cls.get_file_stats(data_frames)
+            file_stats, sessions_stats = cls.get_file_stats(data_frames)
+            multi_activities = {
+                sport.label: sport.id for sport in sport.sports.all()
+            }
+            create_segment_on_events = len(multi_activities.keys()) == 0
+            session_index = -1
 
             # Handle the actual data frames. We sort them by timestamp
             # to handle devices that list events and records separately.
-            event_and_record_frames = sorted(
+            event_record_and_session_frames = sorted(
                 filter(
-                    lambda frame: frame.name in ["event", "record"],
+                    lambda frame: frame.name in ["event", "record", "session"],
                     data_frames,
                 ),
                 key=lambda f: (
                     f.get_value("timestamp")
-                    if f.has_field("timestamp")
+                    if (
+                        f.has_field("timestamp")
+                        and f.name in ["event", "record"]
+                    )
+                    else f.get_value("start_time")
+                    if f.has_field("start_time") and f.name == "session"
                     else -1
                 ),
             )
 
-            for frame in event_and_record_frames:
+            for frame in event_record_and_session_frames:
+                # create a new segment after a new session for multi-activities
+                # sport
+                if not create_segment_on_events and frame.name == "session":
+                    session_index += 1
+                    if session_index > 0:
+                        if gpx_segment.points:
+                            gpx_track.segments.append(gpx_segment)
+                        gpx_segment = gpxpy.gpx.GPXTrackSegment()
+                    continue
+
                 # create a new segment after 'stop_all' event
-                if (
-                    segments_creation_event in ["only_manual", "all"]
+                elif (
+                    create_segment_on_events
+                    and segments_creation_event in ["only_manual", "all"]
                     and frame.name == "event"
                     and frame.get_value("event") == "timer"
                     and frame.get_value("event_type") == "stop_all"
@@ -287,4 +347,4 @@ class WorkoutFitService(WorkoutGpxService):
         gpx.creator = creator
         gpx.nsmap = NSMAP
         gpx.tracks.append(gpx_track)
-        return gpx, file_stats
+        return gpx, file_stats, sessions_stats
