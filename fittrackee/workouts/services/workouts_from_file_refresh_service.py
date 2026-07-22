@@ -139,7 +139,8 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
             WorkoutFileException,
             WorkoutElevationException,
         ) as e:
-            appLog.exception(f"workout exception: {e!s}")
+            if not isinstance(e, WorkoutElevationException):
+                appLog.exception(f"workout exception: {e!s}")
             db.session.rollback()
             raise e
         except Exception as e:
