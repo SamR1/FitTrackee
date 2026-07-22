@@ -31,7 +31,7 @@
   "NO": "Nie",
   "NO_DESCRIPTION": "Brak opisu",
   "NO_NOTES": "Brak notatek",
-  "PHOTOS": "Zdjęcia",
+  "PHOTOS": "zdjęcia",
   "PREVIOUS": "poprzednia",
   "REPORT_PLACEHOLDER": "podaj powód zgłoszenia",
   "REPORT_SUBMITTED": "Zgłoszenie wysłane.",
@@ -52,7 +52,7 @@
       "LABEL": "na stronę"
     }
   },
-  "TOTAL": "Łącznie",
+  "TOTAL": "łącznie",
   "TOTAL_DURATION_WITH_PAUSES": "całkowity czas trwania z przerwami",
   "TYPE": "typ",
   "YES": "Tak"

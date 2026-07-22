@@ -1,15 +1,15 @@
 {
-  "ANALYSIS_VISIBILITY": "Analyse synlighet",
+  "ANALYSIS_VISIBILITY": "analyse synlighet",
   "COMMENT_LEVELS": {
-    "followers_only": "Kun følgere",
-    "private": "Privat (kun nevnte brukere)",
-    "public": "Offentlig (alle)"
+    "followers_only": "kun følgere",
+    "private": "privat (kun nevnte brukere)",
+    "public": "offentlig (alle)"
   },
-  "HR_VISIBILITY": "Synlighet for puls",
+  "HR_VISIBILITY": "synlighet for puls",
   "LEVELS": {
-    "followers_only": "Kun følgere",
-    "private": "Privat (bare meg)",
-    "public": "Offentlig (alle)"
+    "followers_only": "kun følgere",
+    "private": "privat (bare meg)",
+    "public": "offentlig (alle)"
   },
-  "MAP_VISIBILITY": "Kartsynlighet"
+  "MAP_VISIBILITY": "kartsynlighet"
 }

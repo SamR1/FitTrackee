@@ -55,9 +55,9 @@
     },
     "REASON": "Razón",
     "REPORT": "denuncia | denuncias",
-    "REPORTED_BY": "Denuncia por",
+    "REPORTED_BY": "denuncia por",
     "REPORTED_CONTENT": "Contido da denuncia",
-    "REPORTED_USER": "Usuaria denunciada",
+    "REPORTED_USER": "usuaria denunciada",
     "REPORTER": "denunciante",
     "REPORT_ACTIONS": {
       "comment_suspension": "Suspendeuse o comentario por {1} {2}.",

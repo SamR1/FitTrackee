@@ -31,7 +31,7 @@
   "NO": "Ne",
   "NO_DESCRIPTION": "Bez opisa",
   "NO_NOTES": "Bez bilješki",
-  "PHOTOS": "Slike",
+  "PHOTOS": "slike",
   "PREVIOUS": "prethodno",
   "REPORT_PLACEHOLDER": "navedite razlog prijave",
   "REPORT_SUBMITTED": "Izvješće poslano.",
@@ -52,7 +52,7 @@
       "LABEL": "po stranici"
     }
   },
-  "TOTAL": "Ukupno",
+  "TOTAL": "ukupno",
   "TOTAL_DURATION_WITH_PAUSES": "ukupno vrijeme s pauzama",
   "TYPE": "vrsta",
   "YES": "Da"

@@ -923,7 +923,6 @@
             padding-top: $default-padding * 2;
             padding-bottom: 0;
             font-size: 1.1em;
-            text-transform: lowercase;
             border: none;
             text-align: left;
             font-weight: bold;

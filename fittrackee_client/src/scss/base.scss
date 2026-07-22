@@ -623,3 +623,7 @@ button {
 .white-space-pre-wrap {
   white-space: pre-wrap;
 }
+
+.capitalize::first-letter {
+  text-transform: capitalize;
+}

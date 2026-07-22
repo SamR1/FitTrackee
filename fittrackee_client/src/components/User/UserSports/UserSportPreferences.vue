@@ -309,7 +309,6 @@
     table {
       th {
         padding-top: 0;
-        text-transform: lowercase;
       }
     }
     .sport-img {

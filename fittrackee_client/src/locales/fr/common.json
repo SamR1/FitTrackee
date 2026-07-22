@@ -31,7 +31,7 @@
   "NO": "Non",
   "NO_DESCRIPTION": "Pas de description",
   "NO_NOTES": "Pas de notes",
-  "PHOTOS": "Photos",
+  "PHOTOS": "photos",
   "PREVIOUS": "précédent",
   "REPORT_PLACEHOLDER": "préciser la raison du signalement",
   "REPORT_SUBMITTED": "Signalement envoyé.",
@@ -52,7 +52,7 @@
       "LABEL": "par page"
     }
   },
-  "TOTAL": "Total",
+  "TOTAL": "total",
   "TOTAL_DURATION_WITH_PAUSES": "durée totale, pauses comprises",
   "TYPE": "type",
   "YES": "Oui"

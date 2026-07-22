@@ -133,7 +133,6 @@
           gap: $default-padding * 0.5;
           font-style: italic;
           font-size: 0.9em;
-          text-transform: lowercase;
           min-height: 25px;
         }
       }

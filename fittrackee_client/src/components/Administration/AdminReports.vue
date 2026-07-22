@@ -59,27 +59,27 @@
             <thead>
               <tr>
                 <th class="left-text">#</th>
-                <th class="left-text">
+                <th class="left-text capitalize">
                   {{ $t('admin.APP_MODERATION.REPORTED_USER') }}
                 </th>
-                <th class="left-text">
+                <th class="left-text capitalize">
                   {{ $t('admin.APP_MODERATION.REPORTED_CONTENT') }}
                 </th>
-                <th class="left-text">
+                <th class="left-text capitalize">
                   {{ $t('admin.APP_MODERATION.REPORTED_BY') }}
                 </th>
-                <th class="left-text">
+                <th class="left-text capitalize">
                   {{
                     capitalize($t('admin.APP_MODERATION.ORDER_BY.CREATED_AT'))
                   }}
                 </th>
-                <th class="left-text">
+                <th class="left-text capitalize">
                   {{ $t('admin.APP_MODERATION.RESOLVED.TRUE') }}
                 </th>
-                <th class="left-text">
+                <th class="left-text capitalize">
                   {{ capitalize($t('common.LAST_UPDATED_ON')) }}
                 </th>
-                <th class="left-text">
+                <th class="left-text capitalize">
                   {{ $t('admin.ACTION') }}
                 </th>
               </tr>

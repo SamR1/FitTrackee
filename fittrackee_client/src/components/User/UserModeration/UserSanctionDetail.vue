@@ -168,7 +168,6 @@
     }
     .deleted-object {
       font-style: italic;
-      text-transform: lowercase;
     }
   }
 </style>
