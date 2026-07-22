@@ -8,6 +8,7 @@ from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Workout, WorkoutSegment
 
 from ..exceptions import (
+    WorkoutElevationException,
     WorkoutExceedingValueException,
     WorkoutException,
     WorkoutFileException,
@@ -133,7 +134,11 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
         # note: workout date is not updated
         try:
             workout_service.process_workout()
-        except (WorkoutExceedingValueException, WorkoutFileException) as e:
+        except (
+            WorkoutExceedingValueException,
+            WorkoutFileException,
+            WorkoutElevationException,
+        ) as e:
             appLog.exception(f"workout exception: {e!s}")
             db.session.rollback()
             raise e

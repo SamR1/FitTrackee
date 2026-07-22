@@ -28,6 +28,14 @@ class InvalidGPXException(GenericException):
     pass
 
 
+class WorkoutElevationException(GenericException):
+    def __init__(self) -> None:
+        super().__init__(
+            "invalid",
+            "can not smooth elevation, some values are missing",
+        )
+
+
 class WorkoutExceedingValueException(GenericException):
     def __init__(self, detail: str) -> None:
         super().__init__(

@@ -4,6 +4,8 @@ import numpy as np
 
 from fittrackee.constants import ElevationProcessing
 
+from .exceptions import ElevationException
+
 if TYPE_CHECKING:
     import pandas as pd
 
@@ -17,8 +19,8 @@ class ElevationMixin:
 
     @staticmethod
     def smooth_with_flat_window(
-        points: Union[List[int], List[float]],
-    ) -> Union[List[int], List[float]]:
+        points: List,
+    ) -> List:
         """
         smooth elevations using 'flat' window
 
@@ -27,6 +29,9 @@ class ElevationMixin:
         """
         if len(points) < 3:
             return points
+
+        if any(p is None for p in points) or any(np.isnan(p) for p in points):
+            raise ElevationException()
 
         points_array = np.array(points)
         window_len = len(points) if len(points) < WINDOW_LEN else WINDOW_LEN

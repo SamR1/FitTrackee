@@ -7,6 +7,7 @@
     "a maximum of 5 pieces of Misc equipment can be added": "A maximum of 5 pieces of 'Misc' equipment can be added.",
     "a report already exists": "You have already submitted a report.",
     "at least one file in zip archive exceeds size limit, please check the archive": "At least one file in zip archive exceeds size limit, please check the archive.",
+    "can not smooth elevation, some values are missing": "Elevations can not be smoothed, some values are missing.",
     "comment already reactivated": "The comment is already reactivated, please refresh this page.",
     "comment already suspended": "The comment is already suspended, please refresh this page.",
     "comment has been reactivated after appeal": "The comment has been reactivated after appeal.",

@@ -7,6 +7,7 @@
     "a maximum of 5 pieces of Misc equipment can be added": "Un maximum de 5 équipements \"Autres\" peut être ajouté.",
     "a report already exists": "Vous avez déjà soumis un signalement.",
     "at least one file in zip archive exceeds size limit, please check the archive": "Au moins un fichier de l'archive zip dépasse la taille maximale, veuillez vérifier l'archive.",
+    "can not smooth elevation, some values are missing": "Les altitudes ne peuvent pas être lissées, certaines valeurs sont manquantes.",
     "comment already reactivated": "Le commentaire est déjà réactivé, veuillez rafraîchir la page.",
     "comment already suspended": "Le commentaire est déjà suspendu, veuillez rafraîchir la page.",
     "comment has been reactivated after appeal": "Le commentaire a été réactivé après appel.",

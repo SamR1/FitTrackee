@@ -260,7 +260,11 @@
   </div>
   <div
     v-if="
-      errorMessages === 'api.ERROR.Error when updating elevation data source'
+      errorMessages &&
+      [
+        'api.ERROR.Error when updating elevation data source',
+        'api.ERROR.can not smooth elevation, some values are missing',
+      ].includes(errorMessages as string)
     "
     class="refresh-error"
   >

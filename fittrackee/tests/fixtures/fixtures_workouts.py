@@ -3295,6 +3295,59 @@ def gpx_file_with_missing_elevation() -> str:
     <name>just a workout</name>
     <trkseg>
            <trkpt lat="44.68095" lon="6.07367">
+             <ele>998</ele>
+             <time>2018-03-13T12:44:45Z</time>
+           </trkpt>
+           <trkpt lat="44.68091" lon="6.07367">
+             <ele>998</ele>
+             <time>2018-03-13T12:44:50Z</time>
+           </trkpt>
+           <trkpt lat="44.6808" lon="6.07364">
+             <ele>994</ele>
+             <time>2018-03-13T12:45:00Z</time>
+           </trkpt>
+           <trkpt lat="44.68075" lon="6.07364">
+             <time>2018-03-13T12:45:05Z</time>
+           </trkpt>
+           <trkpt lat="44.68071" lon="6.07364">
+             <ele>994</ele>
+             <time>2018-03-13T12:45:10Z</time>
+           </trkpt>
+           <trkpt lat="44.68049" lon="6.07361">
+             <time>2018-03-13T12:45:30Z</time>
+           </trkpt>
+           <trkpt lat="44.68019" lon="6.07356">
+             <ele>992</ele>
+             <time>2018-03-13T12:45:55Z</time>
+           </trkpt>
+           <trkpt lat="44.68014" lon="6.07355">
+             <ele>992</ele>
+             <time>2018-03-13T12:46:00Z</time>
+           </trkpt>
+           <trkpt lat="44.67995" lon="6.07358">
+             <ele>987</ele>
+             <time>2018-03-13T12:46:15Z</time>
+           </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
+"""
+
+
+@pytest.fixture()
+def gpx_file_with_missing_elevation_at_beginnning() -> str:
+    return """<?xml version='1.0' encoding='UTF-8'?>
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
+  <metadata/>
+  <trk>
+    <name>just a workout</name>
+    <trkseg>
+           <trkpt lat="44.68095" lon="6.07367">
              <time>2018-03-13T12:44:45Z</time>
            </trkpt>
            <trkpt lat="44.68091" lon="6.07367">

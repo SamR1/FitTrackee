@@ -71,6 +71,7 @@ from .exceptions import (
     InvalidDurationException,
     InvalidRadiusException,
     InvalidVisibilityException,
+    WorkoutElevationException,
     WorkoutExceedingValueException,
     WorkoutException,
     WorkoutFileException,
@@ -3018,7 +3019,7 @@ def update_workout(
     except WorkoutExceedingValueException as e:
         appLog.error(e.detail)
         return ExceedingValueErrorResponse()
-    except InvalidEquipmentsException as e:
+    except (InvalidEquipmentsException, WorkoutElevationException) as e:
         return InvalidPayloadErrorResponse(str(e))
     except InvalidEquipmentException as e:
         return EquipmentInvalidPayloadErrorResponse(

@@ -209,7 +209,7 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
         app: "Flask",
         user_1: "User",
         sport_1_cycling: "Sport",
-        gpx_file_with_missing_elevation: str,
+        gpx_file_with_missing_elevation_at_beginnning: str,
     ) -> None:
         """
         first points have no elevation and no user preferences set
@@ -221,7 +221,11 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
             "/api/workouts",
             data=dict(
                 file=(
-                    BytesIO(str.encode(gpx_file_with_missing_elevation)),
+                    BytesIO(
+                        str.encode(
+                            gpx_file_with_missing_elevation_at_beginnning
+                        )
+                    ),
                     "example.gpx",
                 ),
                 data='{"sport_id": 1}',

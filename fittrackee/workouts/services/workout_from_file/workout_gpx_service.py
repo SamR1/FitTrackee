@@ -14,6 +14,7 @@ from fittrackee.constants import ElevationDataSource, ElevationProcessing
 
 from ...constants import SPORTS_WITHOUT_ELEVATION_DATA
 from ...exceptions import (
+    WorkoutElevationException,
     WorkoutExceedingValueException,
     WorkoutException,
     WorkoutFileException,
@@ -28,6 +29,7 @@ from ...utils.duration import remove_microseconds
 from ...utils.gpx import get_track_extension
 from ..elevation.elevation_mixin import ElevationMixin
 from ..elevation.elevation_service import ElevationService
+from ..elevation.exceptions import ElevationException
 from .base_workout_with_segment_service import (
     BaseWorkoutWithSegmentsCreationService,
 )
@@ -749,9 +751,12 @@ class WorkoutGpxService(
         # in case elevation processing changed (from 'none' to 'flat_windows'),
         # the exiting elevation can be reused with calling elevation service
         if self.reuse_existing_elevation:
-            existing_elevations = self.get_smoothed_elevations_from_df(
-                existing_elevations, self.elevation_processing
-            )
+            try:
+                existing_elevations = self.get_smoothed_elevations_from_df(
+                    existing_elevations, self.elevation_processing
+                )
+            except ElevationException as e:
+                raise WorkoutElevationException() from e
         # - previous data source is not 'file' and switching to 'file'
         # or
         # - applying processing on a workout with data source from file
@@ -770,10 +775,13 @@ class WorkoutGpxService(
             )
         ):
             if self.elevation_processing != ElevationProcessing.NONE:
-                existing_elevations = self.get_smoothed_elevations_from_df(
-                    self._get_elevation_from_file(track_segments),
-                    self.elevation_processing,
-                )
+                try:
+                    existing_elevations = self.get_smoothed_elevations_from_df(
+                        self._get_elevation_from_file(track_segments),
+                        self.elevation_processing,
+                    )
+                except ElevationException as e:
+                    raise WorkoutElevationException() from e
         else:
             # get elevation service depending on conditions
             elevation_service = self._get_elevation_service(track_segments)

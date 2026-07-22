@@ -1,3 +1,6 @@
+import numpy as np
+import pytest
+
 from fittrackee.constants import ElevationProcessing
 from fittrackee.tests.fixtures.fixtures_workouts import (
     ELEVATIONS,
@@ -5,6 +8,9 @@ from fittrackee.tests.fixtures.fixtures_workouts import (
 )
 from fittrackee.workouts.services.elevation.elevation_mixin import (
     ElevationMixin,
+)
+from fittrackee.workouts.services.elevation.exceptions import (
+    ElevationException,
 )
 
 
@@ -18,6 +24,20 @@ class TestElevationSmoothWithFlatWindows:
         elevations = ElevationMixin.smooth_with_flat_window(ELEVATIONS)
 
         assert elevations == SMOOTHED_ELEVATION_WITH_FLAT_WINDOWS
+
+    def test_it_raises_exception_when_elevations_are_none(self) -> None:
+        with pytest.raises(ElevationException):
+            ElevationMixin.smooth_with_flat_window([None, None, None, None])
+
+    def test_it_raises_exception_when_value_is_nan(self) -> None:
+        with pytest.raises(ElevationException):
+            ElevationMixin.smooth_with_flat_window(
+                [998.0, 996.0, np.nan, 998.0]
+            )
+
+    def test_it_raises_exception_when_value_is_None(self) -> None:
+        with pytest.raises(ElevationException):
+            ElevationMixin.smooth_with_flat_window([998.0, None, 996.0, 998.0])
 
 
 class TestElevationSmoothElevations:

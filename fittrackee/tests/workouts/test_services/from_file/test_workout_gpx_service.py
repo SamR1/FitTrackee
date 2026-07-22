@@ -30,6 +30,7 @@ from fittrackee.tests.workouts.mixins import (
     WorkoutGpxInfoMixin,
 )
 from fittrackee.workouts.exceptions import (
+    WorkoutElevationException,
     WorkoutExceedingValueException,
     WorkoutException,
     WorkoutFileException,
@@ -2604,6 +2605,140 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithElevationParameters(
             "speed": 4.23,
             "time": "2018-03-13 12:48:55+00:00",
         }
+
+    def test_it_raises_error_when_no_elevation_to_smooth(
+        self,
+        app_with_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.FILE
+        )
+        workout_cycling_user_1_with_coordinates.elevation_processing = (
+            ElevationProcessing.NONE
+        )
+        workout_cycling_user_1_segment_0_with_coordinates.points = [
+            {**point, "elevation": None}
+            for point in workout_cycling_user_1_segment_0_with_coordinates.points  # noqa
+        ]
+        db.session.commit()
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_without_elevation,
+            get_elevation_on_refresh=True,
+            workout=workout_cycling_user_1_with_coordinates,
+            change_elevation_source=ElevationDataSource.FILE,
+            elevation_processing=ElevationProcessing.FLAT_WINDOWS,
+        )
+
+        with pytest.raises(
+            WorkoutElevationException,
+            match="can not smooth elevation, some values are missing",
+        ):
+            service.process_workout()
+
+        db.session.refresh(workout_cycling_user_1_with_coordinates)
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.FILE
+        )
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_processing
+            == ElevationProcessing.NONE
+        )
+        new_segment = WorkoutSegment.query.one()
+        assert new_segment.points[0].get("elevation") is None
+
+    def test_it_raises_error_when_some_elevation_are_missing(
+        self,
+        app_with_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_missing_elevation: str,
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.VALHALLA
+        )
+        workout_cycling_user_1_with_coordinates.elevation_processing = (
+            ElevationProcessing.FLAT_WINDOWS
+        )
+        db.session.commit()
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_with_missing_elevation,
+            get_elevation_on_refresh=True,
+            workout=workout_cycling_user_1_with_coordinates,
+            change_elevation_source=ElevationDataSource.FILE,
+            elevation_processing=ElevationProcessing.FLAT_WINDOWS,
+        )
+
+        with pytest.raises(
+            WorkoutElevationException,
+            match="can not smooth elevation, some values are missing",
+        ):
+            service.process_workout()
+
+        db.session.refresh(workout_cycling_user_1_with_coordinates)
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.VALHALLA  # unchanged
+        )
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_processing
+            == ElevationProcessing.FLAT_WINDOWS  # unchanged
+        )
+
+    def test_it_raises_error_when_no_elevation_to_smooth_from_file(
+        self,
+        app_with_valhalla_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_without_elevation: str,
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.VALHALLA
+        )
+        workout_cycling_user_1_with_coordinates.elevation_processing = (
+            ElevationProcessing.FLAT_WINDOWS
+        )
+        db.session.commit()
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_without_elevation,
+            get_elevation_on_refresh=True,
+            workout=workout_cycling_user_1_with_coordinates,
+            change_elevation_source=ElevationDataSource.FILE,
+            elevation_processing=ElevationProcessing.FLAT_WINDOWS,
+        )
+
+        with pytest.raises(
+            WorkoutElevationException,
+            match="can not smooth elevation, some values are missing",
+        ):
+            service.process_workout()
+
+        db.session.refresh(workout_cycling_user_1_with_coordinates)
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.VALHALLA  # unchanged
+        )
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_processing
+            == ElevationProcessing.FLAT_WINDOWS  # unchanged
+        )
+        new_segment = WorkoutSegment.query.one()
+        assert new_segment.points[0].get("elevation") == 998  # unchanged
 
     def test_it_overrides_user_preferences_when_gpx_has_no_elevation(
         self,
