@@ -134,7 +134,7 @@
     "MISSING_ELEVATIONS_DATA_SOURCE_LABEL": "Source for missing elevations on creation",
     "MISSING_ELEVATIONS_PROCESSING": {
       "LABEL": "Missing elevations processing on creation, if elevation data source is selected",
-      "flat_windows": "Smooth data",
+      "flat_window": "Smooth data",
       "none": "No processing"
     },
     "MONDAY": "Monday",

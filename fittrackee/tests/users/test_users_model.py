@@ -377,12 +377,12 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         app_with_open_elevation_and_valhalla_url: Flask,
         user_1: User,
     ) -> None:
-        user_1.elevation_processing = ElevationProcessing.FLAT_WINDOWS
+        user_1.elevation_processing = ElevationProcessing.FLAT_WINDOW
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert (
             serialized_user["elevation_processing"]
-            == ElevationProcessing.FLAT_WINDOWS.value
+            == ElevationProcessing.FLAT_WINDOW.value
         )
 
 

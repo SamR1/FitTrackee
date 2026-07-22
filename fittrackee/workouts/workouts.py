@@ -2882,8 +2882,8 @@ def update_workout(
               ``open_elevation````valhalla``). Must be provided with
               'elevation_processing'
     :<json string elevation_processing: method used when processing elevations
-              (``none``, ``flat_windows``). Must be provided with
-              'elevation_data_source'
+              (``none``, ``flat_window``). Must be provided with
+              'elevation_data_source'.
     :<json array of strings equipment_ids:
         the id of the equipment to associate with this workout (any existing
         equipment for this workout will be replaced).

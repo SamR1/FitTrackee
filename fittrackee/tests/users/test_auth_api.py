@@ -1592,7 +1592,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     calories_visibility="followers_only",
                     media_visibility="followers_only",
                     workout_stats_from_file=True,
-                    elevation_processing="flat_windows",
+                    elevation_processing="flat_window",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1622,7 +1622,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data["data"]["calories_visibility"] == VisibilityLevel.FOLLOWERS
         assert data["data"]["media_visibility"] == VisibilityLevel.FOLLOWERS
         assert data["data"]["workout_stats_from_file"] is True
-        assert data["data"]["elevation_processing"] == "flat_windows"
+        assert data["data"]["elevation_processing"] == "flat_window"
 
     def test_it_updates_user_preferences_with_deprecated_key(
         self, app_with_open_elevation_url: Flask, user_1: User
@@ -1658,7 +1658,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                         calories_visibility="followers_only",
                         media_visibility="followers_only",
                         workout_stats_from_file=True,
-                        elevation_processing="flat_windows",
+                        elevation_processing="flat_window",
                     )
                 ),
                 headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1669,7 +1669,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert (
             data["data"]["missing_elevations_data_source"] == "open_elevation"
         )
-        assert data["data"]["elevation_processing"] == "flat_windows"
+        assert data["data"]["elevation_processing"] == "flat_window"
         logger_mock.warning.assert_called_once_with(
             "'missing_elevations_processing' is deprecated, "
             "please use 'missing_elevations_data_source' instead."
@@ -1709,7 +1709,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     calories_visibility="followers_only",
                     media_visibility="followers_only",
                     workout_stats_from_file=True,
-                    elevation_processing="flat_windows",
+                    elevation_processing="flat_window",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1720,7 +1720,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert (
             data["data"]["missing_elevations_data_source"] == "open_elevation"
         )
-        assert data["data"]["elevation_processing"] == "flat_windows"
+        assert data["data"]["elevation_processing"] == "flat_window"
 
     @pytest.mark.parametrize(
         "input_map_visibility,input_analysis_visibility,"

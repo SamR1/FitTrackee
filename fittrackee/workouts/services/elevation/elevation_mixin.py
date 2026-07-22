@@ -22,7 +22,7 @@ class ElevationMixin:
         points: List,
     ) -> List:
         """
-        smooth elevations using 'flat' window
+        smooth elevations using 'flat' window (= moving average smoothing)
 
         based on SciPy Cookbook:
         https://scipy-cookbook.readthedocs.io/items/SignalSmooth.html
@@ -54,7 +54,7 @@ class ElevationMixin:
         points: Union[List[int], List[float]],
         data_processing: Optional["ElevationProcessing"],
     ) -> Union[List[int], List[float]]:
-        if data_processing == ElevationProcessing.FLAT_WINDOWS:
+        if data_processing == ElevationProcessing.FLAT_WINDOW:
             return self.smooth_with_flat_window(points)
 
         return points

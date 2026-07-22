@@ -16,6 +16,11 @@ class ElevationDataSource(str, Enum):  # to make enum serializable
     VALHALLA = "valhalla"
 
 
+class ElevationProcessing(str, Enum):  # to make enum serializable
+    NONE = "none"  # elevations remain unchanged
+    FLAT_WINDOW = "flat_window"  # moving average smoothing
+
+
 class PaceSpeedDisplay(str, Enum):
     PACE = "pace"  # min/km
     SPEED = "speed"
@@ -29,8 +34,3 @@ IMAGE_MIMETYPES = {
     "png": ["image/png"],
     "webp": ["image/webp"],
 }
-
-
-class ElevationProcessing(str, Enum):  # to make enum serializable
-    NONE = "none"  # elevations remain unchanged
-    FLAT_WINDOWS = "flat_windows"

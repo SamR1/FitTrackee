@@ -52,7 +52,7 @@
   "ELEVATION_DATA_PROCESSING": {
     "LABEL": "Elevation data processing",
     "PROCESSING_WORKOUT": "processing workout…",
-    "flat_windows": "smoothed data",
+    "flat_window": "smoothed data",
     "none": "none"
   },
   "ELEVATION_DATA_SOURCE": {

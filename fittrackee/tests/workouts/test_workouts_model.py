@@ -1514,7 +1514,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         workout_outdoor_tennis_user_1: Workout,
     ) -> None:
         workout_outdoor_tennis_user_1.elevation_processing = (
-            ElevationProcessing.FLAT_WINDOWS
+            ElevationProcessing.FLAT_WINDOW
         )
 
         serialized_workout = workout_outdoor_tennis_user_1.serialize(

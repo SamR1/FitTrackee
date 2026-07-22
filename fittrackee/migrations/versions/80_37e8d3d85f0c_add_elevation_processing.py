@@ -18,7 +18,7 @@ branch_labels = None
 depends_on = None
 
 elevation_processing = postgresql.ENUM(
-    'NONE', 'FLAT_WINDOWS',
+    'NONE', 'FLAT_WINDOW',
     name="elevation_processing"
 )
 try:
@@ -40,7 +40,7 @@ def upgrade():
     op.execute(
         f"""
         UPDATE workouts 
-        SET elevation_data_source = 'OPEN_ELEVATION', elevation_processing = 'FLAT_WINDOWS'
+        SET elevation_data_source = 'OPEN_ELEVATION', elevation_processing = 'FLAT_WINDOW'
         WHERE workouts.elevation_data_source = 'OPEN_ELEVATION_SMOOTH';
 """
     )
@@ -88,7 +88,7 @@ def downgrade():
         f"""
             UPDATE workouts 
             SET elevation_data_source = 'OPEN_ELEVATION_SMOOTH'
-            WHERE workouts.elevation_data_source = 'OPEN_ELEVATION' and elevation_processing = 'FLAT_WINDOWS';
+            WHERE workouts.elevation_data_source = 'OPEN_ELEVATION' and elevation_processing = 'FLAT_WINDOW';
     """
     )
     op.execute("DROP TYPE elevation_data_source_old")

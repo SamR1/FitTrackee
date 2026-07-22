@@ -9,7 +9,7 @@ from gpxpy.gpx import GPXTrackPoint
 from fittrackee.constants import ElevationProcessing
 from fittrackee.tests.fixtures.fixtures_workouts import (
     ELEVATIONS,
-    SMOOTHED_ELEVATION_WITH_FLAT_WINDOWS,
+    SMOOTHED_ELEVATION_WITH_FLAT_WINDOW,
 )
 from fittrackee.tests.mixins import ResponseMockMixin
 from fittrackee.workouts.services.elevation.exceptions import (
@@ -255,7 +255,7 @@ class TestOpenElevationServiceGetElevation(ResponseMockMixin):
                     )
                     for point in OPEN_ELEVATION_RESPONSE
                 ],
-                elevation_processing=ElevationProcessing.FLAT_WINDOWS,
+                elevation_processing=ElevationProcessing.FLAT_WINDOW,
             )
 
-        assert result == SMOOTHED_ELEVATION_WITH_FLAT_WINDOWS
+        assert result == SMOOTHED_ELEVATION_WITH_FLAT_WINDOW

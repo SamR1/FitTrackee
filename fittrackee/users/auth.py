@@ -1065,7 +1065,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string date_format: the format used to display dates in the app
     :<json boolean display_ascent: display highest ascent records and total
     :<json string elevation_processing: method used when processing elevations
-                  (``none`` (elevation are not processed), ``flat_windows``)
+                  (``none`` (elevation are not processed), ``flat_window``
+                  (moving average smoothing))
     :<json boolean hide_profile_in_users_directory: if ``true``, user does not
                   appear in users directory
     :<json boolean hr_visibility: heart rate visibility

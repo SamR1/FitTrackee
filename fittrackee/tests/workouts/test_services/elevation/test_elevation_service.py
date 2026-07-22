@@ -63,7 +63,7 @@ class TestElevationServiceInstantiation:
         [
             (
                 ElevationDataSource.OPEN_ELEVATION,
-                ElevationProcessing.FLAT_WINDOWS,
+                ElevationProcessing.FLAT_WINDOW,
                 OpenElevationService,
             ),
             (
@@ -153,14 +153,14 @@ class TestElevationServiceGetElevations:
         )
         get_valhalla_elevations_mock.assert_not_called()
 
-    def test_it_calls_open_elevation_with_flat_windows_processing(
+    def test_it_calls_open_elevation_with_flat_window_processing(
         self,
         app_with_open_elevation_and_valhalla_url: "Flask",
         gpx_track_points_without_elevations: List["GPXTrackPoint"],
     ) -> None:
         service = ElevationService(
             ElevationDataSource.OPEN_ELEVATION,
-            ElevationProcessing.FLAT_WINDOWS,
+            ElevationProcessing.FLAT_WINDOW,
         )
 
         with (
@@ -175,7 +175,7 @@ class TestElevationServiceGetElevations:
 
         get_open_elevations_mock.assert_called_once_with(
             gpx_track_points_without_elevations,
-            elevation_processing=ElevationProcessing.FLAT_WINDOWS,
+            elevation_processing=ElevationProcessing.FLAT_WINDOW,
         )
         get_valhalla_elevations_mock.assert_not_called()
 

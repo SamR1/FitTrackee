@@ -178,7 +178,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         service = WorkoutFromFileRefreshService(
             workout=workout_cycling_user_1,
             change_elevation_source=ElevationDataSource.OPEN_ELEVATION,
-            elevation_processing=ElevationProcessing.FLAT_WINDOWS,
+            elevation_processing=ElevationProcessing.FLAT_WINDOW,
         )
 
         assert service.workout == workout_cycling_user_1
@@ -195,7 +195,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
             service.updated_elevation_data_source
             == ElevationDataSource.OPEN_ELEVATION
         )
-        assert service.elevation_processing == ElevationProcessing.FLAT_WINDOWS
+        assert service.elevation_processing == ElevationProcessing.FLAT_WINDOW
 
     def test_it_instantiates_service_when_on_file_error_is_provided(
         self,
