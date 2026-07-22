@@ -2077,10 +2077,10 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParameters(
 
         requests_mock.assert_not_called()
         db.session.refresh(workout_cycling_user_1)
-        workout_cycling_user_1.elevation_data_source = (
-            ElevationDataSource.OPEN_ELEVATION  # unchanged
+        assert workout_cycling_user_1.elevation_data_source == (
+            ElevationDataSource.FILE  # unchanged
         )
-        workout_cycling_user_1.elevation_processing = (
+        assert workout_cycling_user_1.elevation_processing == (
             ElevationProcessing.NONE  # unchanged
         )
         assert (

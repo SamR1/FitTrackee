@@ -122,6 +122,8 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
             elevation_processing
             if elevation_processing
             else self.auth_user.elevation_processing
+            if self.get_elevation_on_refresh
+            else self.workout.elevation_processing
         )
         self.workout_has_missing_elevation = (
             not self.workout.segments
@@ -135,9 +137,21 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
 
         self.updated_elevation_data_source = (
             None
-            if (self.workout.elevation_data_source == change_elevation_source)
+            if (
+                not self.get_elevation_on_refresh
+                or self.workout.elevation_data_source
+                == change_elevation_source
+            )
             else change_elevation_source
         )
+
+        if not self.get_elevation_on_refresh:
+            self.reuse_existing_elevation = (
+                self.workout.elevation_data_source != ElevationDataSource.FILE
+                or self.workout.elevation_processing
+                != ElevationProcessing.NONE
+            )
+            return
 
         is_elevation_service_available = (
             ElevationService(
