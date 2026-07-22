@@ -124,7 +124,7 @@
 
   const { authUser } = useAuthUser()
   const { displayOptions } = useApp()
-  const { getWorkoutSport, sports } = useSports()
+  const { getObjectSport, sports } = useSports()
   const { resetTimeout, scrollTo } = useScroll()
 
   const markerCoordinates: Ref<TCoordinates> = ref({
@@ -142,7 +142,7 @@
     () => authUser.value.username === workoutData.value.workout.user.username
   )
   const sport: ComputedRef<ISport | null> = computed(() =>
-    getWorkoutSport(workoutData.value.workout)
+    getObjectSport(workoutData.value.workout)
   )
   const cadenceUnit: ComputedRef<string> = computed(() =>
     getCadenceUnit(sport.value?.label)

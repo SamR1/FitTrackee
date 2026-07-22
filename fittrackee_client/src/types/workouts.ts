@@ -4,6 +4,7 @@ import type { TPaginationPayload } from '@/types/api'
 import type { IChartDataset } from '@/types/chart'
 import type { IEquipment, ILightEquipment } from '@/types/equipments'
 import type { TCoordinates } from '@/types/map'
+import type { ISport } from '@/types/sports.ts'
 import type {
   IUserReportAction,
   IUserLightProfile,
@@ -23,13 +24,14 @@ export interface IWorkoutSegment {
   ave_pace: string | null
   ave_power: number | null
   ave_speed: number
+  best_pace: string | null
   descent: number
   distance: number
   duration: string
+  is_transition: boolean
   max_alt: number
   max_cadence: number | null
   max_hr: number | null
-  best_pace: string | null
   max_power: number | null
   max_speed: number
   min_alt: number
@@ -37,6 +39,7 @@ export interface IWorkoutSegment {
   pauses: string
   segment_id: string
   segment_number: number
+  sport_id: number | null
   workout_id: string
 }
 
@@ -162,6 +165,7 @@ export interface IWorkoutObject {
   elevationDataSource: TElevationDataSource | null | undefined
   elevationProcessing: TElevationProcessing | null | undefined
   equipments: IEquipment[] | ILightEquipment[] | null
+  isTransition: boolean
   liked: boolean
   likes_count: number
   maxAlt: number | null
@@ -177,6 +181,7 @@ export interface IWorkoutObject {
   originalFile: TFileExtension | null
   pauses: string | null
   previousUrl: string | null
+  sport: ISport | null
   records: IRecord[]
   segmentId: string | null
   segmentNumber: number | null

@@ -134,7 +134,12 @@ class WorkoutFitService(WorkoutGpxService):
         """
         Multi-sports activities like Swimrun contain multiple sessions
         """
-        session_frames = filter(lambda f: f.name == "session", data_frames)
+        session_frames = sorted(
+            filter(lambda f: f.name == "session", data_frames),
+            key=lambda f: (
+                f.get_value("start_time") if f.has_field("start_time") else -1
+            ),
+        )
         sessions_stats = []
 
         for frame in session_frames:

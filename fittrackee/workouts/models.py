@@ -1206,9 +1206,15 @@ class WorkoutSegment(BaseModel):
     sport_id: Mapped[int] = mapped_column(
         db.ForeignKey("sports.id"), index=True, nullable=True
     )
+    is_transition: Mapped[bool] = mapped_column(
+        server_default="False", nullable=False
+    )
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
+    )
+    sport: Mapped["Sport"] = relationship(
+        "Sport", lazy="joined", single_parent=True
     )
 
     def __str__(self) -> str:
@@ -1240,7 +1246,7 @@ class WorkoutSegment(BaseModel):
         """
         if sport_data_visibility is None:
             sport_data_visibility = get_sport_displayed_data(
-                self.workout.sport, user
+                self.sport or self.workout.sport, user
             )
         return {
             "workout_id": encode_uuid(self.workout_uuid),
@@ -1282,6 +1288,7 @@ class WorkoutSegment(BaseModel):
             "max_power": get_power(self.max_power, sport_data_visibility),
             "ave_pace": get_pace(self.ave_pace, sport_data_visibility),
             "best_pace": get_pace(self.best_pace, sport_data_visibility),
+            "is_transition": self.is_transition,
         }
 
 

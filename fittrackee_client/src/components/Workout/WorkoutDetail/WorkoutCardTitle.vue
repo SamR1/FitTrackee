@@ -216,12 +216,22 @@
         </div>
         <div class="workout-title" v-else-if="workoutObject.segmentId !== null">
           {{ workoutObject.title }}
-          <span class="workout-segment">
+          <div class="workout-segment">
             —
             <i class="fa fa-map-marker" aria-hidden="true" />
             {{ $t('workouts.SEGMENT') }}
             {{ workoutObject.segmentNumber }}
-          </span>
+            <span v-if="workoutObject.isTransition" class="transition">
+              ({{ $t('workouts.TRANSITION') }})
+            </span>
+            <SportImage
+              v-else-if="
+                workoutObject.type === 'SEGMENT' && workoutObject.sport
+              "
+              :sport-label="workoutObject.sport.label"
+              :color="workoutObject.sport.color"
+            />
+          </div>
         </div>
         <div class="workout-date">
           <time :datetime="workoutObject.workoutFullDate">
@@ -447,9 +457,21 @@
         gap: $default-padding * 0.5;
       }
       .workout-segment {
+        display: flex;
+        gap: $default-padding * 0.3;
         font-weight: normal;
-      }
 
+        .sport-img {
+          ::v-deep(svg) {
+            margin-top: -7px;
+            height: 25px;
+            width: 25px;
+          }
+        }
+      }
+      .transition {
+        font-style: italic;
+      }
       .workout-buttons {
         display: flex;
         .elevation-edition {

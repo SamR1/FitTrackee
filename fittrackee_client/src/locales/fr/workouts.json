@@ -186,6 +186,8 @@
   "TOTAL_DURATION": "durée totale",
   "TOTAL_WORKOUTS_LIMIT_EXCEEDED": "limite sur le nombre de séances dépassée, les entraînements les plus récents sont affichés",
   "TOTAL_WORKOUTS_WITH_LOCATION": "nombre total d'entraînements avec une localisation",
+  "TRANSITION": "transition",
+  "TRANSITION_CAPITALIZED": "Transition",
   "UNITS": {
     "bpm": {
       "LABEL": "battements par minute",

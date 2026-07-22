@@ -327,6 +327,7 @@ class WorkoutGpxServiceProcessFileTestCase(
             "descent": 1.0,
             "distance": 0.025,
             "duration": "0:00:10",
+            "is_transition": False,
             "max_alt": 980.0,
             "max_cadence": None,
             "max_hr": None,

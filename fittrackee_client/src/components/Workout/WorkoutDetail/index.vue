@@ -96,6 +96,7 @@
   import WorkoutElevationModal from '@/components/Workout/WorkoutDetail/WorkoutElevationModal.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import WorkoutVisibilityEquipment from '@/components/Workout/WorkoutDetail/WorkoutVisibilityEquipment.vue'
+  import useSports from '@/composables/useSports.ts'
   import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IDisplayOptions } from '@/types/application'
   import type { IGeoJsonOptions, TCoordinates } from '@/types/map'
@@ -129,6 +130,8 @@
 
   const route = useRoute()
   const store = useStore()
+
+  const { getObjectSport } = useSports()
 
   const { isWorkoutOwner, markerCoordinates, sport, workoutData } =
     toRefs(props)
@@ -233,6 +236,7 @@
       elevationDataSource: segment ? null : workout.elevation_data_source,
       elevationProcessing: segment ? null : workout.elevation_processing,
       equipments: segment ? null : workout.equipments.sort(sortEquipments),
+      isTransition: segment ? segment.is_transition : false,
       liked: workout.liked,
       likes_count: workout.likes_count,
       mapVisibility: workout.map_visibility,
@@ -251,6 +255,7 @@
       records: segment ? [] : workout.records,
       segmentId: segment ? segment.segment_id : null,
       segmentNumber: segment ? segment.segment_number : null,
+      sport: getObjectSport(segment || workout),
       source: segment ? null : workout.source || null,
       statsFromFile: segment ? undefined : workout.stats_from_file || false,
       suspended: workout.suspended === undefined ? false : workout.suspended,

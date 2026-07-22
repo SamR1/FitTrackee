@@ -179,7 +179,16 @@ class TestWorkoutFitServiceProcessWorkout(
         with patch.object(
             WorkoutFitService,
             "get_file_stats",
-            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+            return_value=(
+                FILE_STATS_WITH_DATA,
+                [
+                    {
+                        **FILE_STATS_WITH_DATA,
+                        "sport_id": None,
+                        "is_transition": False,
+                    }
+                ],
+            ),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -203,7 +212,16 @@ class TestWorkoutFitServiceProcessWorkout(
         with patch.object(
             WorkoutFitService,
             "get_file_stats",
-            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+            return_value=(
+                FILE_STATS_WITH_DATA,
+                [
+                    {
+                        **FILE_STATS_WITH_DATA,
+                        "sport_id": sport_1_cycling.id,
+                        "is_transition": False,
+                    }
+                ],
+            ),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -219,6 +237,10 @@ class TestWorkoutFitServiceProcessWorkout(
         assert service.workout_name is None
         workout = self.assert_workout_with_data_from_file()
         assert workout.elevation_data_source == ElevationDataSource.FILE
+        segments = workout.segments
+        assert len(segments) == 1
+        assert segments[0].sport_id == sport_1_cycling.id
+        assert segments[0].is_transition is False
 
     def test_it_creates_workout_when_stats_are_none(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
@@ -260,6 +282,10 @@ class TestWorkoutFitServiceProcessWorkout(
         assert workout.max_power is None
         assert workout.workout_stats_from_file is True
         assert workout.elevation_data_source == ElevationDataSource.FILE
+        segments = workout.segments
+        assert len(segments) == 1
+        assert segments[0].sport_id is None
+        assert segments[0].is_transition is False
 
 
 @pytest.mark.disable_autouse_update_records_patch

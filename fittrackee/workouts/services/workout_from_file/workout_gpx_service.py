@@ -451,6 +451,7 @@ class WorkoutGpxService(
         first_point: "gpxpy.gpx.GPXTrackPoint",
         existing_elevations: "pd.DataFrame",
         elevation_service: Optional["ElevationService"],
+        segment_stats: Dict,
     ) -> Tuple[
         timedelta,  # stopped_time_between_segments
         Optional[datetime],  # previous_segment_last_point_time
@@ -616,6 +617,10 @@ class WorkoutGpxService(
         self.coordinates.extend(coordinates)
         new_workout_segment.points = segment_points
         new_workout_segment.store_geometry(coordinates)
+        new_workout_segment.sport_id = segment_stats.get("sport_id")  # type: ignore
+        new_workout_segment.is_transition = segment_stats.get(
+            "is_transition", False
+        )
 
         return (
             stopped_time_between_segments,
@@ -793,9 +798,32 @@ class WorkoutGpxService(
                 else None
             )
 
-        for segment in track_segments:
+        for index, segment in enumerate(track_segments):
+            segment_stats = {}
+            if len(self.sessions_stats) >= index + 1:
+                segment_stats = self.sessions_stats[index]
+
             # ignore segments with no distance
-            if len(segment.points) < 2:
+            if len(segment.points) == 0:
+                continue
+
+            if len(segment.points) == 1:
+                # a transition segment can have 1 point
+                if segment_stats.get("is_transition"):
+                    new_workout_segment = WorkoutSegment(
+                        workout_id=new_workout_id,
+                        workout_uuid=new_workout_uuid,
+                    )
+                    new_workout_segment.sport_id = segment_stats.get(  # type: ignore
+                        "sport_id"
+                    )
+                    new_workout_segment.distance = 0
+                    new_workout_segment.duration = timedelta(seconds=0)
+                    new_workout_segment.moving = timedelta(seconds=0)
+                    new_workout_segment.pauses = timedelta(seconds=0)
+                    new_workout_segment.start_date = segment.points[0].time  # type: ignore
+                    new_workout_segment.is_transition = True
+                    db.session.add(new_workout_segment)
                 continue
 
             new_workout_segment = WorkoutSegment(
@@ -817,6 +845,7 @@ class WorkoutGpxService(
                 first_point,
                 existing_elevations,
                 elevation_service,
+                segment_stats,
             )
 
             self.set_statistics(
