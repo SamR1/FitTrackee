@@ -1946,6 +1946,55 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             data["data"]["workouts_visibility"] == VisibilityLevel.PUBLIC.value
         )
 
+    def test_it_returns_error_when_elevation_processing_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/auth/profile/edit/preferences",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    analysis_visibility=VisibilityLevel.PUBLIC.value,
+                    timezone="America/New_York",
+                    weekm=True,
+                    language="fr",
+                    imperial_units=True,
+                    display_ascent=True,
+                    date_format="MM/dd/yyyy",
+                    map_visibility=VisibilityLevel.PUBLIC.value,
+                    start_elevation_at_zero=False,
+                    use_raw_gpx_speed=False,
+                    workouts_visibility=VisibilityLevel.PUBLIC.value,
+                    manually_approves_followers=True,
+                    hide_profile_in_users_directory=True,
+                    use_dark_mode=None,
+                    hr_visibility=VisibilityLevel.PUBLIC.value,
+                    segments_creation_event="none",
+                    split_workout_charts=False,
+                    calories_visibility=VisibilityLevel.PRIVATE.value,
+                    media_visibility=VisibilityLevel.PRIVATE.value,
+                    workout_stats_from_file=False,
+                    missing_elevations_data_source="file",
+                    elevation_processing="flat_window",
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            (
+                "'flat_window' can not be selected  as 'elevation_processing' "
+                "when 'missing_elevations_data_source' is 'file'"
+            ),
+        )
+
     def test_expected_scope_is_profile_write(
         self, app: Flask, user_1: User
     ) -> None:

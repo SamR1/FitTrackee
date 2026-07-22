@@ -286,6 +286,7 @@
             id="missing_elevations_data_source"
             v-model="userForm.missing_elevations_data_source"
             :disabled="elevationServices.length === 0 || authUserLoading"
+            @change="updateElevationProcessing"
           >
             <option
               v-for="item in elevationDataSourcesItems"
@@ -322,7 +323,7 @@
             :disabled="authUserLoading"
           >
             <option
-              v-for="item in elevationProcessingItems"
+              v-for="item in calculatedElevationProcessing"
               :value="item"
               :key="item"
             >
@@ -496,6 +497,7 @@
     IUserPreferencesPayload,
     IAuthUserProfile,
     TVisibilityLevels,
+    TElevationProcessing,
   } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
@@ -674,6 +676,12 @@
   const mediaVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
     getVisibilityLevels(userForm.workouts_visibility)
   )
+  const calculatedElevationProcessing: ComputedRef<TElevationProcessing[]> =
+    computed(() =>
+      userForm.missing_elevations_data_source === 'file'
+        ? [elevationProcessingItems[0]]
+        : elevationProcessingItems
+    )
   function updateUserForm(user: IAuthUserProfile) {
     userForm.analysis_visibility = user.analysis_visibility ?? 'private'
     userForm.display_ascent = user.display_ascent
@@ -731,6 +739,12 @@
       userForm.media_visibility,
       userForm.workouts_visibility
     )
+  }
+  function updateElevationProcessing() {
+    userForm.elevation_processing =
+      userForm.missing_elevations_data_source === 'file'
+        ? 'none'
+        : userForm.elevation_processing
   }
 
   onMounted(() => {

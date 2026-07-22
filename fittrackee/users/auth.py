@@ -54,7 +54,12 @@ from fittrackee.visibility_levels import (
 )
 from fittrackee.workouts.models import Sport
 
-from ..constants import IMAGE_MIMETYPES, PaceSpeedDisplay
+from ..constants import (
+    IMAGE_MIMETYPES,
+    ElevationDataSource,
+    ElevationProcessing,
+    PaceSpeedDisplay,
+)
 from ..workouts.constants import PACE_SPORTS
 from .exceptions import UserControlsException, UserCreationException
 from .models import (
@@ -1066,7 +1071,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json boolean display_ascent: display highest ascent records and total
     :<json string elevation_processing: method used when processing elevations
                   (``none`` (elevation are not processed), ``flat_window``
-                  (moving average smoothing))
+                  (moving average smoothing)).
     :<json boolean hide_profile_in_users_directory: if ``true``, user does not
                   appear in users directory
     :<json boolean hr_visibility: heart rate visibility
@@ -1105,6 +1110,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :statuscode 400:
         - ``invalid payload``
         - ``password: password and password confirmation don't match``
+        - ``'flat_window' can not be selected as 'elevation_processing' when 'missing_elevations_data_source' is 'file'``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -1179,6 +1185,15 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     media_visibility = post_data.get("media_visibility")
     workout_stats_from_file = post_data.get("workout_stats_from_file")
     elevation_processing = post_data.get("elevation_processing")
+
+    if (
+        missing_elevations_data_source == ElevationDataSource.FILE
+        and elevation_processing == ElevationProcessing.FLAT_WINDOW
+    ):
+        return InvalidPayloadErrorResponse(
+            "'flat_window' can not be selected  as 'elevation_processing' "
+            "when 'missing_elevations_data_source' is 'file'"
+        )
 
     try:
         auth_user.date_format = date_format
