@@ -46,7 +46,7 @@
                 class="confirm"
                 type="button"
                 id="confirm-button"
-                :disabled="loading"
+                :disabled="loading || disableButton"
                 @click="confirmAction()"
               >
                 {{ $t('buttons.SUBMIT') }}
@@ -110,6 +110,11 @@
   let cancelButton: HTMLElement | null = null
   let previousFocusedElement: HTMLInputElement | null = null
 
+  const disableButton: ComputedRef<boolean> = computed(
+    () =>
+      workoutObject.value.elevationDataSource === elevationDataSource.value &&
+      workoutObject.value.elevationProcessing === elevationProcessing.value
+  )
   const focusableElements: ComputedRef<string[]> = computed(() =>
     getFocusableElements()
   )
