@@ -131,7 +131,9 @@
     },
     "MESSAGES_EDITION": "Edición das preferencias das mensaxes",
     "MESSAGES_PREFERENCES": "Preferencias das mensaxes",
-    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Proceso da elevación ausente ao crear",
+    "MISSING_ELEVATIONS_PROCESSING": {
+      "LABEL": "Proceso da elevación ausente ao crear"
+    },
     "MONDAY": "Luns",
     "NOTIFICATIONS": {
       "account_creation": "Alguén creou unha conta",

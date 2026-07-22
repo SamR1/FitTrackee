@@ -51,8 +51,7 @@
     "LABEL": "Dislivello aggiornato da",
     "file": "Da file",
     "none": "Nessuno (dati del dislivello da file)",
-    "open_elevation": "OpenElevation (dati grezzi)",
-    "open_elevation_smooth": "OpenElevation (dati migliorati)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "fine",

@@ -51,8 +51,7 @@
     "LABEL": "Altueren eguneraketen iturburua",
     "file": "Fitxategitik",
     "none": "Bat ere ez (altueren datuak fitxategitik)",
-    "open_elevation": "OpenElevation (jatorrizko datuak)",
-    "open_elevation_smooth": "OpenElevation (tratatutako datuak)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "bukaera",

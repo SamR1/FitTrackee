@@ -7,7 +7,7 @@ import pytest
 import requests
 
 from fittrackee import db
-from fittrackee.constants import ElevationDataSource
+from fittrackee.constants import ElevationDataSource, ElevationProcessing
 from fittrackee.tests.fixtures.fixtures_workouts import (
     FILE_STATS_WITH_DATA,
     FILE_STATS_WITH_NONE,
@@ -159,8 +159,9 @@ class TestWorkoutFitServiceInstantiation(WorkoutFileMixin):
         assert service.workout is None
         assert service.is_creation is True
         assert service.get_weather is True
-        assert service.get_elevation_on_refresh is True
-        assert service.change_elevation_source is None
+        assert service.get_elevation_on_refresh is False
+        assert service.updated_elevation_data_source is None
+        assert service.elevation_processing is None
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)
 
@@ -272,7 +273,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
         workout_cycling_user_1_segment_0_coordinates: "WorkoutSegment",
         input_workout_stats_from_file: bool,
     ) -> None:
-        user_1.missing_elevations_processing = ElevationDataSource.VALHALLA
+        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
         user_1.workout_stats_from_file = input_workout_stats_from_file
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.FILE
@@ -295,6 +296,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
             )
 
         service.process_workout()
+        db.session.commit()
 
         workout = (
             self.assert_workout_with_data_from_file()
@@ -317,7 +319,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
         """
         It ignores 'workout_stats_from_file' when True
         """
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         user_1.workout_stats_from_file = input_workout_stats_from_file
@@ -340,6 +342,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
                 get_elevation_on_refresh=True,
                 workout=workout_cycling_user_1_with_coordinates,
                 change_elevation_source=ElevationDataSource.VALHALLA,
+                elevation_processing=ElevationProcessing.NONE,
             )
 
         with (
@@ -350,22 +353,24 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
             ) as requests_mock,
         ):
             service.process_workout()
+            db.session.commit()
 
         requests_mock.assert_called()
         workout = Workout.query.one()
-        assert float(workout.ascent) == pytest.approx(0.4, 0.0001)
-        assert float(workout.descent) == pytest.approx(23.4, 0.01)
-        assert float(workout.max_alt) == 1998.0  # type: ignore
-        assert float(workout.min_alt) == 1975.0  # type: ignore
+        assert float(workout.ascent) == 0.0
+        assert float(workout.descent) == 20.0
+        assert float(workout.max_alt) == 996.0  # type: ignore
+        assert float(workout.min_alt) == 976.0  # type: ignore
+        assert workout.elevation_data_source == ElevationDataSource.VALHALLA
+        assert workout.elevation_processing == ElevationProcessing.NONE
+        assert workout.workout_stats_from_file is False
         assert workout.segments[0].points[0] == {
             "distance": 0.0,
             "duration": 0,
-            "elevation": 1998.0,
+            "elevation": 996.0,
             "latitude": 44.68094998039305,
             "longitude": 6.073670033365488,
             "pace": None,
             "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
         }
-        assert workout.elevation_data_source == ElevationDataSource.VALHALLA
-        assert workout.workout_stats_from_file is False

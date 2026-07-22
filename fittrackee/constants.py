@@ -13,8 +13,12 @@ class TaskPriority(IntEnum):
 class ElevationDataSource(str, Enum):  # to make enum serializable
     FILE = "file"
     OPEN_ELEVATION = "open_elevation"
-    OPEN_ELEVATION_SMOOTH = "open_elevation_smooth"
     VALHALLA = "valhalla"
+
+
+class ElevationProcessing(str, Enum):  # to make enum serializable
+    NONE = "none"  # elevations remain unchanged
+    FLAT_WINDOW = "flat_window"  # moving average smoothing
 
 
 class PaceSpeedDisplay(str, Enum):

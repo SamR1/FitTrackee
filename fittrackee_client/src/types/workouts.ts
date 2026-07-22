@@ -10,9 +10,11 @@ import type {
   IUserProfile,
   TVisibilityLevels,
   TElevationDataSource,
+  TElevationProcessing,
 } from '@/types/user'
 
 export type TFileExtension = 'fit' | 'gpx' | 'kml' | 'tcx'
+export type TWorkoutModal = 'none' | 'deleteWorkout' | 'updateElevation'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -104,6 +106,7 @@ export interface IWorkout {
   distance: number | null
   duration: string | null
   elevation_data_source?: TElevationDataSource
+  elevation_processing?: TElevationProcessing
   equipments: IEquipment[] | ILightEquipment[]
   id: string
   liked: boolean
@@ -157,6 +160,7 @@ export interface IWorkoutObject {
   distance: number | null
   duration: string | null
   elevationDataSource: TElevationDataSource | null | undefined
+  elevationProcessing: TElevationProcessing | null | undefined
   equipments: IEquipment[] | ILightEquipment[] | null
   liked: boolean
   likes_count: number
@@ -215,6 +219,7 @@ export interface IWorkoutForm {
 export interface IWorkoutElevationSourceDataPayload {
   workoutId: string
   elevationDataSource: TElevationDataSource
+  elevationDataProcessing: TElevationProcessing
 }
 
 export interface IWorkoutPayload {

@@ -349,7 +349,7 @@ class TestUserRegistration(ApiTestCaseMixin):
         assert new_user.split_workout_charts is True
         assert new_user.messages_preferences is None
         assert (
-            new_user.missing_elevations_processing == ElevationDataSource.FILE
+            new_user.missing_elevations_data_source == ElevationDataSource.FILE
         )
         assert new_user.calories_visibility == VisibilityLevel.PRIVATE
         assert new_user.media_visibility == VisibilityLevel.PRIVATE
@@ -1588,10 +1588,11 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     hr_visibility="followers_only",
                     segments_creation_event="none",
                     split_workout_charts=True,
-                    missing_elevations_processing="open_elevation",
+                    missing_elevations_data_source="open_elevation",
                     calories_visibility="followers_only",
                     media_visibility="followers_only",
                     workout_stats_from_file=True,
+                    elevation_processing="flat_window",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1616,11 +1617,110 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         assert data["data"]["segments_creation_event"] == "none"
         assert data["data"]["split_workout_charts"] is True
         assert (
-            data["data"]["missing_elevations_processing"] == "open_elevation"
+            data["data"]["missing_elevations_data_source"] == "open_elevation"
         )
         assert data["data"]["calories_visibility"] == VisibilityLevel.FOLLOWERS
         assert data["data"]["media_visibility"] == VisibilityLevel.FOLLOWERS
         assert data["data"]["workout_stats_from_file"] is True
+        assert data["data"]["elevation_processing"] == "flat_window"
+
+    def test_it_updates_user_preferences_with_deprecated_key(
+        self, app_with_open_elevation_url: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_open_elevation_url, user_1.email
+        )
+
+        with patch("fittrackee.users.auth.appLog") as logger_mock:
+            response = client.post(
+                "/api/auth/profile/edit/preferences",
+                content_type="application/json",
+                data=json.dumps(
+                    dict(
+                        timezone="America/New_York",
+                        weekm=True,
+                        language="en",
+                        imperial_units=True,
+                        display_ascent=False,
+                        start_elevation_at_zero=False,
+                        use_dark_mode=True,
+                        use_raw_gpx_speed=True,
+                        date_format="yyyy-MM-dd",
+                        map_visibility="private",
+                        analysis_visibility="followers_only",
+                        workouts_visibility="public",
+                        manually_approves_followers=False,
+                        hide_profile_in_users_directory=False,
+                        hr_visibility="followers_only",
+                        segments_creation_event="none",
+                        split_workout_charts=True,
+                        missing_elevations_processing="open_elevation",
+                        calories_visibility="followers_only",
+                        media_visibility="followers_only",
+                        workout_stats_from_file=True,
+                        elevation_processing="flat_window",
+                    )
+                ),
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert (
+            data["data"]["missing_elevations_data_source"] == "open_elevation"
+        )
+        assert data["data"]["elevation_processing"] == "flat_window"
+        logger_mock.warning.assert_called_once_with(
+            "'missing_elevations_processing' is deprecated, "
+            "please use 'missing_elevations_data_source' instead."
+        )
+
+    def test_it_updates_user_preferences_with_missing_elevations_processing_when_both_keys_are_provided(  # noqa
+        self, app_with_open_elevation_and_valhalla_url: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_open_elevation_and_valhalla_url, user_1.email
+        )
+
+        response = client.post(
+            "/api/auth/profile/edit/preferences",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    timezone="America/New_York",
+                    weekm=True,
+                    language="en",
+                    imperial_units=True,
+                    display_ascent=False,
+                    start_elevation_at_zero=False,
+                    use_dark_mode=True,
+                    use_raw_gpx_speed=True,
+                    date_format="yyyy-MM-dd",
+                    map_visibility="private",
+                    analysis_visibility="followers_only",
+                    workouts_visibility="public",
+                    manually_approves_followers=False,
+                    hide_profile_in_users_directory=False,
+                    hr_visibility="followers_only",
+                    segments_creation_event="none",
+                    split_workout_charts=True,
+                    missing_elevations_data_source="open_elevation",
+                    missing_elevations_processing="valhalla",
+                    calories_visibility="followers_only",
+                    media_visibility="followers_only",
+                    workout_stats_from_file=True,
+                    elevation_processing="flat_window",
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert (
+            data["data"]["missing_elevations_data_source"] == "open_elevation"
+        )
+        assert data["data"]["elevation_processing"] == "flat_window"
 
     @pytest.mark.parametrize(
         "input_map_visibility,input_analysis_visibility,"
@@ -1693,10 +1793,11 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     hr_visibility=input_workout_visibility.value,
                     segments_creation_event="none",
                     split_workout_charts=False,
-                    missing_elevations_processing="file",
+                    missing_elevations_data_source="file",
                     calories_visibility=VisibilityLevel.PRIVATE,
                     media_visibility=VisibilityLevel.PRIVATE,
                     workout_stats_from_file=False,
+                    elevation_processing="none",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1774,10 +1875,11 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     hr_visibility=VisibilityLevel.PRIVATE,
                     segments_creation_event="none",
                     split_workout_charts=False,
-                    missing_elevations_processing="file",
+                    missing_elevations_data_source="file",
                     calories_visibility=VisibilityLevel.PRIVATE,
                     media_visibility=input_media_visibility.value,
                     workout_stats_from_file=False,
+                    elevation_processing="none",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1824,10 +1926,11 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     hr_visibility=VisibilityLevel.PUBLIC.value,
                     segments_creation_event="none",
                     split_workout_charts=False,
-                    missing_elevations_processing="file",
+                    missing_elevations_data_source="file",
                     calories_visibility=VisibilityLevel.PRIVATE.value,
                     media_visibility=VisibilityLevel.PRIVATE.value,
                     workout_stats_from_file=False,
+                    elevation_processing="none",
                 )
             ),
             headers=dict(Authorization=f"Bearer {auth_token}"),
@@ -1841,6 +1944,55 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         )
         assert (
             data["data"]["workouts_visibility"] == VisibilityLevel.PUBLIC.value
+        )
+
+    def test_it_returns_error_when_elevation_processing_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/auth/profile/edit/preferences",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    analysis_visibility=VisibilityLevel.PUBLIC.value,
+                    timezone="America/New_York",
+                    weekm=True,
+                    language="fr",
+                    imperial_units=True,
+                    display_ascent=True,
+                    date_format="MM/dd/yyyy",
+                    map_visibility=VisibilityLevel.PUBLIC.value,
+                    start_elevation_at_zero=False,
+                    use_raw_gpx_speed=False,
+                    workouts_visibility=VisibilityLevel.PUBLIC.value,
+                    manually_approves_followers=True,
+                    hide_profile_in_users_directory=True,
+                    use_dark_mode=None,
+                    hr_visibility=VisibilityLevel.PUBLIC.value,
+                    segments_creation_event="none",
+                    split_workout_charts=False,
+                    calories_visibility=VisibilityLevel.PRIVATE.value,
+                    media_visibility=VisibilityLevel.PRIVATE.value,
+                    workout_stats_from_file=False,
+                    missing_elevations_data_source="file",
+                    elevation_processing="flat_window",
+                )
+            ),
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            (
+                "'flat_window' can not be selected  as 'elevation_processing' "
+                "when 'missing_elevations_data_source' is 'file'"
+            ),
         )
 
     def test_expected_scope_is_profile_write(

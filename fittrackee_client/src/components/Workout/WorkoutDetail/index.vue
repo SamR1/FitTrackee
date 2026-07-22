@@ -1,12 +1,20 @@
 <template>
   <div class="workout-detail">
     <Modal
-      v-if="displayModal"
+      v-if="displayModal === 'deleteWorkout'"
       :title="$t('common.CONFIRMATION')"
       :message="$t('workouts.WORKOUT_DELETION_CONFIRMATION')"
       @confirmAction="deleteWorkout(workoutObject.workoutId)"
-      @cancelAction="cancelDelete"
-      @keydown.esc="cancelDelete"
+      @cancelAction="hideModal()"
+      @keydown.esc="hideModal()"
+    />
+    <WorkoutElevationModal
+      v-if="workoutObject && displayModal === 'updateElevation'"
+      :workout-object="workoutObject"
+      :loading="workoutData.elevationLoading"
+      @confirmAction="updateWorkoutElevationData"
+      @cancelAction="hideModal()"
+      @keydown.esc="hideModal()"
     />
     <Card>
       <template #title>
@@ -16,8 +24,7 @@
           :workoutObject="workoutObject"
           :isWorkoutOwner="isWorkoutOwner"
           :refreshLoading="workoutData.refreshLoading"
-          :elevationLoading="workoutData.elevationLoading"
-          @displayModal="updateDisplayModal(true)"
+          @displayModal="updateDisplayModal"
         />
         <ReportForm
           v-if="workoutData.currentReporting"
@@ -86,6 +93,7 @@
   import WorkoutActionAppeal from '@/components/Workout/WorkoutActionAppeal.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
+  import WorkoutElevationModal from '@/components/Workout/WorkoutDetail/WorkoutElevationModal.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import WorkoutVisibilityEquipment from '@/components/Workout/WorkoutDetail/WorkoutVisibilityEquipment.vue'
   import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
@@ -96,8 +104,10 @@
   import type {
     IWorkout,
     IWorkoutData,
+    IWorkoutElevationSourceDataPayload,
     IWorkoutObject,
     IWorkoutSegment,
+    TWorkoutModal,
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate, formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
@@ -138,7 +148,7 @@
   const segmentNumber: ComputedRef<number | null> = computed(() =>
     segment.value ? segment.value.segment_number : null
   )
-  const displayModal: Ref<boolean> = ref(false)
+  const displayModal: Ref<TWorkoutModal> = ref('none')
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
@@ -221,6 +231,7 @@
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
       elevationDataSource: segment ? null : workout.elevation_data_source,
+      elevationProcessing: segment ? null : workout.elevation_processing,
       equipments: segment ? null : workout.equipments.sort(sortEquipments),
       liked: workout.liked,
       likes_count: workout.likes_count,
@@ -260,16 +271,24 @@
       workoutVisibility: workout.workout_visibility,
     }
   }
-  function updateDisplayModal(value: boolean) {
+  function updateDisplayModal(value: TWorkoutModal) {
     displayModal.value = value
   }
-  function cancelDelete() {
-    updateDisplayModal(false)
+  function hideModal() {
+    updateDisplayModal('none')
   }
   function deleteWorkout(workoutId: string) {
     store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT, {
       workoutId: workoutId,
     })
+  }
+  function updateWorkoutElevationData(
+    payload: IWorkoutElevationSourceDataPayload
+  ) {
+    store.dispatch(
+      WORKOUTS_STORE.ACTIONS.UPDATE_ELEVATION_DATA_SOURCES,
+      payload
+    )
   }
   function scrollToTop() {
     window.scrollTo({
@@ -299,10 +318,18 @@
     () => route.params.workoutId,
     async (workoutId) => {
       if (workoutId) {
-        displayModal.value = false
+        hideModal()
         scrollToTop()
       }
       resetStatuses()
+    }
+  )
+  watch(
+    () => workoutData.value.elevationLoading,
+    (newElevationLoading) => {
+      if (!newElevationLoading) {
+        hideModal()
+      }
     }
   )
 </script>

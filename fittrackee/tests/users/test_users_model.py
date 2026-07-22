@@ -11,7 +11,11 @@ from sqlalchemy.exc import IntegrityError
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
+from fittrackee.constants import (
+    ElevationDataSource,
+    ElevationProcessing,
+    PaceSpeedDisplay,
+)
 from fittrackee.equipments.models import Equipment
 from fittrackee.files import get_absolute_file_path
 from fittrackee.reports.models import ReportAction
@@ -222,7 +226,8 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             == user_1.split_workout_charts
         )
         assert serialized_user["messages_preferences"] == {}
-        assert serialized_user["missing_elevations_processing"] == "file"
+        assert serialized_user["missing_elevations_data_source"] == "file"
+        assert serialized_user["elevation_processing"] == "none"
         assert (
             serialized_user["calories_visibility"]
             == user_1.calories_visibility
@@ -329,7 +334,6 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         "input_preference",
         [
             ElevationDataSource.OPEN_ELEVATION,
-            ElevationDataSource.OPEN_ELEVATION_SMOOTH,
             ElevationDataSource.VALHALLA,
         ],
     )
@@ -339,11 +343,11 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         user_1: User,
         input_preference: "ElevationDataSource",
     ) -> None:
-        user_1.missing_elevations_processing = input_preference
+        user_1.missing_elevations_data_source = input_preference
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert (
-            serialized_user["missing_elevations_processing"]
+            serialized_user["missing_elevations_data_source"]
             == ElevationDataSource.FILE
         )
 
@@ -351,7 +355,6 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         "input_preference",
         [
             ElevationDataSource.OPEN_ELEVATION,
-            ElevationDataSource.OPEN_ELEVATION_SMOOTH,
             ElevationDataSource.VALHALLA,
         ],
     )
@@ -361,12 +364,25 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         user_1: User,
         input_preference: "ElevationDataSource",
     ) -> None:
-        user_1.missing_elevations_processing = input_preference
+        user_1.missing_elevations_data_source = input_preference
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert (
-            serialized_user["missing_elevations_processing"]
+            serialized_user["missing_elevations_data_source"]
             == input_preference
+        )
+
+    def test_it_returns_elevation_gain_calculation(
+        self,
+        app_with_open_elevation_and_valhalla_url: Flask,
+        user_1: User,
+    ) -> None:
+        user_1.elevation_processing = ElevationProcessing.FLAT_WINDOW
+        serialized_user = user_1.serialize(current_user=user_1, light=False)
+
+        assert (
+            serialized_user["elevation_processing"]
+            == ElevationProcessing.FLAT_WINDOW.value
         )
 
 
@@ -417,10 +433,11 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
         assert "display_ascent" not in serialized_user
-        assert "missing_elevations_processing" not in serialized_user
+        assert "missing_elevations_data_source" not in serialized_user
         assert "calories_visibility" not in serialized_user
         assert "media_visibility" not in serialized_user
         assert "workout_stats_from_file" not in serialized_user
+        assert "elevation_processing" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -512,10 +529,11 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
         assert "display_ascent" not in serialized_user
-        assert "missing_elevations_processing" not in serialized_user
+        assert "missing_elevations_data_source" not in serialized_user
         assert "calories_visibility" not in serialized_user
         assert "media_visibility" not in serialized_user
         assert "workout_stats_from_file" not in serialized_user
+        assert "elevation_processing" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -600,10 +618,11 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "split_workout_charts" not in serialized_user
         assert "messages_preferences" not in serialized_user
         assert "display_ascent" not in serialized_user
-        assert "missing_elevations_processing" not in serialized_user
+        assert "missing_elevations_data_source" not in serialized_user
         assert "calories_visibility" not in serialized_user
         assert "media_visibility" not in serialized_user
         assert "workout_stats_from_file" not in serialized_user
+        assert "elevation_processing" not in serialized_user
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1: User, user_2: User

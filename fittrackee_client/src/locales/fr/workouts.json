@@ -49,13 +49,19 @@
   "DURATION": "durée",
   "EDIT_WORKOUT": "Modifier la séance",
   "ELEVATION": "altitude",
+  "ELEVATION_DATA_PROCESSING": {
+    "LABEL": "Traitement des données d'altitude",
+    "PROCESSING_WORKOUT": "séances en cours de traitement…",
+    "flat_window": "données lissées",
+    "none": "aucun"
+  },
   "ELEVATION_DATA_SOURCE": {
     "CHANGE_SOURCE": "Changer la source des données d'altitude",
     "LABEL": "Altitudes mises à jour à partir de",
-    "file": "A partir du fichier",
+    "MODAL_LABEL": "Mettre à jour les données d'altitude",
+    "file": "à partir du fichier",
     "none": "Aucun (données d'altitude à partir du fichier)",
-    "open_elevation": "OpenElevation (données brutes)",
-    "open_elevation_smooth": "OpenElevation (données lissées)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "fin",

@@ -21,7 +21,11 @@ from sqlalchemy.types import Enum
 
 from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
-from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
+from fittrackee.constants import (
+    ElevationDataSource,
+    ElevationProcessing,
+    PaceSpeedDisplay,
+)
 from fittrackee.database import TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.files import get_absolute_file_path
@@ -381,10 +385,12 @@ class User(BaseModel):
     messages_preferences: Mapped[Optional[Dict]] = mapped_column(
         postgresql.JSONB, nullable=True
     )
-    missing_elevations_processing: Mapped[ElevationDataSource] = mapped_column(
-        Enum(ElevationDataSource, name="elevation_data_source"),
-        server_default="FILE",
-        nullable=False,
+    missing_elevations_data_source: Mapped[ElevationDataSource] = (
+        mapped_column(
+            Enum(ElevationDataSource, name="elevation_data_source"),
+            server_default="FILE",
+            nullable=False,
+        )
     )
     calories_visibility: Mapped[VisibilityLevel] = mapped_column(
         Enum(VisibilityLevel, name="visibility_levels"),
@@ -399,6 +405,11 @@ class User(BaseModel):
     # only for .fit files for now
     workout_stats_from_file: Mapped[bool] = mapped_column(
         server_default="False", nullable=False
+    )
+    elevation_processing: Mapped[ElevationProcessing] = mapped_column(
+        Enum(ElevationProcessing, name="elevation_processing"),
+        server_default="NONE",
+        nullable=False,
     )
 
     workouts: Mapped[List["Workout"]] = relationship(
@@ -846,22 +857,19 @@ class User(BaseModel):
         self,
     ) -> "ElevationDataSource":
         if (
-            self.missing_elevations_processing
-            in [
-                ElevationDataSource.OPEN_ELEVATION,
-                ElevationDataSource.OPEN_ELEVATION_SMOOTH,
-            ]
+            self.missing_elevations_data_source
+            == ElevationDataSource.OPEN_ELEVATION
             and not current_app.config["OPEN_ELEVATION_API_URL"]
         ):
             return ElevationDataSource.FILE
 
         if (
-            self.missing_elevations_processing == ElevationDataSource.VALHALLA
+            self.missing_elevations_data_source == ElevationDataSource.VALHALLA
             and not current_app.config["VALHALLA_API_URL"]
         ):
             return ElevationDataSource.FILE
 
-        return self.missing_elevations_processing
+        return self.missing_elevations_data_source
 
     def serialize(
         self,
@@ -1008,12 +1016,13 @@ class User(BaseModel):
                     if self.messages_preferences
                     else {}
                 ),
-                "missing_elevations_processing": (
+                "missing_elevations_data_source": (
                     self.calculated_missing_elevations_processing
                 ),
                 "calories_visibility": self.calories_visibility.value,
                 "media_visibility": self.media_visibility.value,
                 "workout_stats_from_file": self.workout_stats_from_file,
+                "elevation_processing": self.elevation_processing,
             }
 
         return serialized_user

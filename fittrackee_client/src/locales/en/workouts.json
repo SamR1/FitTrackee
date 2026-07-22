@@ -17,8 +17,8 @@
   "BACK_TO_WORKOUT": "back to workout",
   "BEST_PACE": "best pace",
   "CADENCE": "cadence",
-  "CALORIES": "calories",
   "CALCULATED_DATA": "calculated data",
+  "CALORIES": "calories",
   "COMMENTS": {
     "ADD": "add a comment",
     "COMMENT": "comment | comments",
@@ -49,13 +49,19 @@
   "DURATION": "duration",
   "EDIT_WORKOUT": "Edit the workout",
   "ELEVATION": "elevation",
+  "ELEVATION_DATA_PROCESSING": {
+    "LABEL": "Elevation data processing",
+    "PROCESSING_WORKOUT": "processing workout…",
+    "flat_window": "smoothed data",
+    "none": "none"
+  },
   "ELEVATION_DATA_SOURCE": {
     "CHANGE_SOURCE": "Change elevation data source",
     "LABEL": "Elevations updated from",
-    "file": "From file",
+    "MODAL_LABEL": "Update elevation data",
+    "file": "from file",
     "none": "None (elevation data from file)",
-    "open_elevation": "OpenElevation (raw data)",
-    "open_elevation_smooth": "OpenElevation (smoothed data)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "end",

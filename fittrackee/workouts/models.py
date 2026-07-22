@@ -17,7 +17,11 @@ from sqlalchemy.sql.expression import nulls_last, text
 from sqlalchemy.types import JSON, Enum
 
 from fittrackee import BaseModel, appLog, db
-from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
+from fittrackee.constants import (
+    ElevationDataSource,
+    ElevationProcessing,
+    PaceSpeedDisplay,
+)
 from fittrackee.database import PSQL_INTEGER_LIMIT, TZDateTime
 from fittrackee.dates import aware_utc_now
 from fittrackee.equipments.models import WorkoutEquipment
@@ -415,6 +419,11 @@ class Workout(BaseModel):
     )
     workout_stats_from_file: Mapped[bool] = mapped_column(
         server_default="False", nullable=False
+    )
+    elevation_processing: Mapped[ElevationProcessing] = mapped_column(
+        Enum(ElevationProcessing, name="elevation_processing"),
+        server_default="NONE",
+        nullable=False,
     )
 
     user: Mapped["User"] = relationship(
@@ -932,6 +941,11 @@ class Workout(BaseModel):
                 self.elevation_data_source
                 if sport_data_visibility.display_elevation
                 else ElevationDataSource.FILE
+            )
+            workout["elevation_processing"] = (
+                self.elevation_processing
+                if sport_data_visibility.display_elevation
+                else ElevationProcessing.NONE
             )
             workout["stats_from_file"] = self.workout_stats_from_file
 

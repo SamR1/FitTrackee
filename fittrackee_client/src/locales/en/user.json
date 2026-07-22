@@ -131,7 +131,12 @@
     },
     "MESSAGES_EDITION": "Message preferences edition",
     "MESSAGES_PREFERENCES": "Messages preferences",
-    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Missing elevations processing on creation",
+    "MISSING_ELEVATIONS_DATA_SOURCE_LABEL": "Source for missing elevations on creation",
+    "MISSING_ELEVATIONS_PROCESSING": {
+      "LABEL": "Missing elevations processing on creation, if elevation data source is selected",
+      "flat_window": "Smooth data",
+      "none": "No processing"
+    },
     "MONDAY": "Monday",
     "NOTIFICATIONS": {
       "account_creation": "Someone registers",
