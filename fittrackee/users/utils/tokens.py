@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta, timezone
 from typing import Optional
+from uuid import uuid4
 
 import jwt
 from flask import current_app
@@ -25,9 +26,11 @@ def get_user_token(
     )
     now = datetime.now(timezone.utc)
     payload = {
-        "exp": now
-        + timedelta(days=expiration_days, seconds=expiration_seconds),
+        "exp": (
+            now + timedelta(days=expiration_days, seconds=expiration_seconds)
+        ),
         "iat": now,
+        "jti": str(uuid4()),
         "sub": str(user_id),
     }
     return jwt.encode(
