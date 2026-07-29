@@ -11,6 +11,7 @@ from unittest.mock import Mock, patch
 from urllib.parse import parse_qs
 from uuid import uuid4
 
+import jwt
 from flask import Flask, current_app
 from flask.testing import FlaskClient
 from geoalchemy2.shape import to_shape
@@ -781,6 +782,26 @@ class MediaMixin:
                 f.write("image_content")
             expected_paths.append(expected_path)
         return media, expected_paths[0], expected_paths[1]
+
+
+class TokenMixin:
+    @staticmethod
+    def generate_token_without_jti(app: "Flask", user_id: int) -> str:
+        now = datetime.now(timezone.utc)
+        payload = {
+            "exp": now + timedelta(hours=1),
+            "iat": now,
+            "sub": str(user_id),
+        }
+        return jwt.encode(payload, app.config["SECRET_KEY"], algorithm="HS256")
+
+    @staticmethod
+    def decode_token(app: "Flask", auth_token: str) -> Dict:
+        return jwt.decode(
+            auth_token,
+            app.config["SECRET_KEY"],
+            algorithms=["HS256"],
+        )
 
 
 class UserInboxTestMixin(BaseTestMixin):

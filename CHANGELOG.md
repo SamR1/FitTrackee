@@ -1,8 +1,21 @@
 # Change log
 
+## Version 1.3.4 (2026/07/29)
+
+This version contains a security fix ([GHSA-rc38-72q6-pc7w](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-rc38-72q6-pc7w)).  
+Thanks to [@soh3e](https://github.com/soh3e) for the report.
+
+**Warning**:
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html)). 
+
+### Security
+
+* [PR#1203](https://codeberg.org/FitTrackee/FitTrackee/pulls/1203) - Fix blacklisting token on logout
+
+
 ## Version 1.3.3 (2026/07/14)
 
-This version contains fixes including a security fix.  
+This version contains fixes including a security fix ([GHSA-ccv3-xq4j-5gw7](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-ccv3-xq4j-5gw7)).  
 Thanks to [@pythonruban](https://github.com/pythonruban) for the report.
 
 ### Security
@@ -20,7 +33,7 @@ Thanks to [@pythonruban](https://github.com/pythonruban) for the report.
 * [PR#1181](https://codeberg.org/FitTrackee/FitTrackee/pulls/1181) - Translations update from Hosted Weblate (German)
 * [PR#1186](https://codeberg.org/FitTrackee/FitTrackee/pulls/1186) - Translations update from Hosted Weblate (Polish)
 * [PR#1190](https://codeberg.org/FitTrackee/FitTrackee/pulls/1190) - Init Belarusian translations files
-* [PR#1192](https://codeberg.org/FitTrackee/FitTrackee/pulls/1192) - Translations update from Hosted Weblate (Polish)
+* [PR#1192](https://codeberg.org/FitTrackee/FitTrackee/pulls/1192) - Translations update from Hosted Weblate (Russian)
 
 Translation status for languages available on the interface:
 - Basque: 97%

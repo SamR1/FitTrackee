@@ -4,6 +4,7 @@ from io import BytesIO
 from typing import Dict, Optional, Union
 from unittest.mock import ANY, MagicMock, Mock, call, patch
 
+import jwt
 import pytest
 from flask import Flask
 from time_machine import travel
@@ -34,6 +35,7 @@ from ..mixins import (
     EquipmentMixin,
     ImageMixin,
     ReportMixin,
+    TokenMixin,
     UserTaskMixin,
 )
 from ..utils import jsonify_dict
@@ -722,7 +724,7 @@ class TestUserLogin(ApiTestCaseMixin):
         assert data["auth_token"]
 
 
-class TestUserProfile(ApiTestCaseMixin):
+class TestUserProfile(ApiTestCaseMixin, TokenMixin):
     def test_it_returns_error_if_auth_token_is_missing(
         self, app: Flask
     ) -> None:
@@ -749,6 +751,21 @@ class TestUserProfile(ApiTestCaseMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
+        db.session.add(BlacklistedToken(token=auth_token))
+        db.session.commit()
+
+        response = client.get(
+            "/api/auth/profile",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_invalid_token(response)
+
+    def test_it_returns_error_if_token_without_jti_is_blacklisted(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client = app.test_client()
+        auth_token = self.generate_token_without_jti(app, user_1.id)
         db.session.add(BlacklistedToken(token=auth_token))
         db.session.commit()
 
@@ -3544,7 +3561,7 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
         )
 
 
-class TestUserLogout(ApiTestCaseMixin):
+class TestUserLogout(ApiTestCaseMixin, TokenMixin):
     def test_it_returns_error_when_headers_are_missing(
         self, app: Flask
     ) -> None:
@@ -3622,7 +3639,31 @@ class TestUserLogout(ApiTestCaseMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
+        payload = jwt.decode(
+            auth_token,
+            app.config["SECRET_KEY"],
+            algorithms=["HS256"],
+        )
         token = BlacklistedToken.query.filter_by(token=auth_token).one()
+        assert token.jti == payload["jti"]
+        assert token.blacklisted_on is not None
+
+    def test_token_without_jti_is_blacklisted_on_logout(
+        self, app: Flask, user_1: User
+    ) -> None:
+        """
+        temporary before all tokens without jti claim are expired
+        """
+        client = app.test_client()
+        auth_token = self.generate_token_without_jti(app, user_1.id)
+
+        client.post(
+            "/api/auth/logout",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        token = BlacklistedToken.query.filter_by(token=auth_token).one()
+        assert token.jti is None
         assert token.blacklisted_on is not None
 
     def test_it_returns_error_if_token_is_already_blacklisted(
