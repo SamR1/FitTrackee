@@ -1,5 +1,18 @@
 # Change log
 
+## Version 1.3.4 (2026/07/29)
+
+This version contains a security fix ([GHSA-rc38-72q6-pc7w](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-rc38-72q6-pc7w)).  
+Thanks to [@soh3e](https://github.com/soh3e) for the report.
+
+**Warning**:
+- This release contains database migrations (see upgrade instructions in [documentation](https://docs.fittrackee.org/en/installation/upgrade.html)). 
+
+### Security
+
+* [PR#1203](https://codeberg.org/FitTrackee/FitTrackee/pulls/1203) - Fix blacklisting token on logout
+
+
 ## Version 1.3.3 (2026/07/14)
 
 This version contains fixes including a security fix ([GHSA-ccv3-xq4j-5gw7](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-ccv3-xq4j-5gw7)).  
