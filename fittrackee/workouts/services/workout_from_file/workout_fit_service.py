@@ -158,6 +158,9 @@ class WorkoutFitService(WorkoutGpxService):
                 session_stats["pauses"] = (
                     session_stats["duration"] - session_stats["moving"]
                 )
+                if session_stats["pauses"] < 0:
+                    session_stats["pauses"] = 0
+                    session_stats["duration"] = session_stats["moving"]
 
             else:
                 session_stats["pauses"] = None
