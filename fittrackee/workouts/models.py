@@ -1179,9 +1179,7 @@ class WorkoutSegment(BaseModel):
     max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
     ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
     geom: Mapped["WKBElement"] = mapped_column(
-        Geometry(
-            geometry_type="LINESTRING", srid=WGS84_CRS, spatial_index=True
-        ),
+        Geometry(srid=WGS84_CRS, spatial_index=True),
         nullable=True,  # to handle pre-existing segments for now
     )
     points: Mapped[List[Dict]] = mapped_column(
@@ -1234,6 +1232,10 @@ class WorkoutSegment(BaseModel):
 
     def store_geometry(self, coordinates: List[List[float]]) -> None:
         self.geom = str(LineString(coordinates))  # type: ignore
+
+    def store_geometry_as_point(self, coordinates: List[float]) -> None:
+        # only for transition with one point to prevent error on UI
+        self.geom = str(Point(coordinates))  # type: ignore
 
     def serialize(
         self,

@@ -4382,6 +4382,25 @@ class TestWorkoutSegmentModel:
             segments_coordinates
         )
 
+    def test_it_stores_geometry_as_point(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        segments_coordinates = [6.07367, 44.68095]
+
+        workout_cycling_user_1_segment.store_geometry_as_point(
+            segments_coordinates
+        )
+        db.session.commit()
+
+        assert to_shape(workout_cycling_user_1_segment.geom) == Point(
+            segments_coordinates
+        )
+
     def test_it_returns_sport_id_when_set(
         self,
         app: "Flask",

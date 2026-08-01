@@ -727,6 +727,51 @@ class WorkoutGpxService(
                 break
         return has_missing_elevation
 
+    def _get_transition_segment_with_one_point(
+        self,
+        new_workout_id: int,
+        new_workout_uuid: "UUID",
+        points: List["gpxpy.gpx.GPXTrackPoint"],
+    ) -> "WorkoutSegment":
+        if len(points) != 1:
+            raise WorkoutException(
+                "error",
+                "Error when creating transition segment",
+            ) from None
+
+        point = points[0]
+        new_workout_segment = WorkoutSegment(
+            workout_id=new_workout_id,
+            workout_uuid=new_workout_uuid,
+        )
+        new_workout_segment.distance = 0
+        new_workout_segment.duration = timedelta(seconds=0)
+        new_workout_segment.moving = timedelta(seconds=0)
+        new_workout_segment.pauses = timedelta(seconds=0)
+        new_workout_segment.start_date = point.time  # type: ignore
+        new_workout_segment.is_transition = True
+        new_workout_segment.points = [
+            {
+                "distance": 0,
+                "duration": 0,
+                "elevation": point.elevation,
+                "latitude": point.latitude,
+                "longitude": point.longitude,
+                "pace": 0,
+                "speed": 0,
+                "time": (
+                    str(point.time.astimezone(pytz.utc))
+                    if point.time
+                    else None
+                ),
+            }
+        ]
+        self.coordinates.append([point.longitude, point.latitude])
+        new_workout_segment.store_geometry_as_point(
+            [point.longitude, point.latitude]
+        )
+        return new_workout_segment
+
     def _process_segments(
         self,
         track_segments: List["gpxpy.gpx.GPXTrackSegment"],
@@ -810,19 +855,11 @@ class WorkoutGpxService(
             if len(segment.points) == 1:
                 # a transition segment can have 1 point
                 if segment_stats.get("is_transition"):
-                    new_workout_segment = WorkoutSegment(
-                        workout_id=new_workout_id,
-                        workout_uuid=new_workout_uuid,
+                    new_workout_segment = (
+                        self._get_transition_segment_with_one_point(
+                            new_workout_id, new_workout_uuid, segment.points
+                        )
                     )
-                    new_workout_segment.sport_id = segment_stats.get(  # type: ignore
-                        "sport_id"
-                    )
-                    new_workout_segment.distance = 0
-                    new_workout_segment.duration = timedelta(seconds=0)
-                    new_workout_segment.moving = timedelta(seconds=0)
-                    new_workout_segment.pauses = timedelta(seconds=0)
-                    new_workout_segment.start_date = segment.points[0].time  # type: ignore
-                    new_workout_segment.is_transition = True
                     db.session.add(new_workout_segment)
                 continue
 
