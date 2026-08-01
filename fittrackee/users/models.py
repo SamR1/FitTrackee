@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
 import jwt
@@ -1148,30 +1148,43 @@ class BlacklistedToken(BaseModel):
     __tablename__ = "blacklisted_tokens"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    token: Mapped[str] = mapped_column(
+    token: Mapped[str] = mapped_column(  # will be removed in a next version
         db.String(500), unique=True, nullable=False
+    )
+    jti: Mapped[Optional[str]] = mapped_column(
+        db.String(36),
+        unique=True,
+        nullable=True,  # to handle existing blacklisted tokens
     )
     expired_at: Mapped[int] = mapped_column(nullable=False)
     blacklisted_on: Mapped[datetime] = mapped_column(
         TZDateTime, nullable=False
     )
 
-    def __init__(
-        self, token: str, blacklisted_on: Optional[datetime] = None
-    ) -> None:
+    @staticmethod
+    def _get_exp_and_jti(token: str) -> Tuple[int, Optional[str]]:
         payload = jwt.decode(
             token,
             current_app.config["SECRET_KEY"],
             algorithms=["HS256"],
         )
+        return payload["exp"], payload.get("jti")
+
+    def __init__(
+        self, token: str, blacklisted_on: Optional[datetime] = None
+    ) -> None:
         self.token = token
-        self.expired_at = payload["exp"]
+        self.expired_at, self.jti = self._get_exp_and_jti(token)
         self.blacklisted_on = (
             blacklisted_on if blacklisted_on else datetime.now(timezone.utc)
         )
 
     @classmethod
     def check(cls, auth_token: str) -> bool:
+        _, jti = cls._get_exp_and_jti(auth_token)
+        if jti:
+            return cls.query.filter_by(jti=str(jti)).first() is not None
+        # token generated without JTI claim
         return cls.query.filter_by(token=str(auth_token)).first() is not None
 
 

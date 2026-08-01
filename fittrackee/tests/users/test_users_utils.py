@@ -3,6 +3,7 @@ from calendar import timegm
 from datetime import datetime, timedelta, timezone
 from typing import Dict, Optional
 from unittest.mock import patch
+from uuid import uuid4
 
 import jwt
 import pytest
@@ -195,7 +196,7 @@ class TestGetUserToken:
         token = get_user_token(user_id=1)
 
         decoded_token = self.decode_token(app, token)
-        assert list(decoded_token.keys()) == ["exp", "iat", "sub"]
+        assert list(decoded_token.keys()) == ["exp", "iat", "jti", "sub"]
 
     @pytest.mark.parametrize("input_password_reset", [True, False])
     def test_token_contains_user_id(
@@ -289,6 +290,7 @@ class TestDecodeUserToken:
             {
                 "exp": now + timedelta(minutes=1),
                 "iat": now,
+                "jti": str(uuid4()),
                 "sub": 1,
             },
             random_string(length=32),
@@ -314,6 +316,7 @@ class TestDecodeUserToken:
             {
                 "exp": now + timedelta(minutes=1),
                 "iat": now,
+                "jti": str(uuid4()),
                 "sub": 1,
             },
             private_key.decode(),
