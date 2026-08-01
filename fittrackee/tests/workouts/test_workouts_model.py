@@ -4168,6 +4168,28 @@ class TestWorkoutModel(WorkoutModelTestCase):
         assert mp_record.workout_id == workout_running_user_1.id
         assert mp_record.workout_uuid == workout_running_user_1.uuid
 
+    def test_it_returns_segments_ordered_by_stat_date(
+        self,
+        app: Flask,
+        user_1: User,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_1_with_coordinates: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_segment_0_with_coordinates.start_date = (
+            workout_cycling_user_1_segment_1_with_coordinates.start_date
+            + timedelta(hours=1)
+        )
+
+        segments = workout_cycling_user_1_with_coordinates.segments
+
+        assert segments[0].uuid == (
+            workout_cycling_user_1_segment_1_with_coordinates.uuid
+        )
+        assert segments[1].uuid == (
+            workout_cycling_user_1_segment_0_with_coordinates.uuid
+        )
+
 
 class TestWorkoutSegmentModel:
     def test_workout_segment_model(

@@ -462,6 +462,7 @@ class Workout(BaseModel):
         lazy=True,
         cascade="all, delete",
         back_populates="workout",
+        order_by="WorkoutSegment.start_date.asc()",
     )
     records: Mapped[List["Record"]] = relationship(
         "Record",
