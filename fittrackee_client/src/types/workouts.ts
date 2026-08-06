@@ -252,6 +252,10 @@ export type TMapParamsKeys = 'to' | 'from' | 'sport_ids'
 export type TWorkoutsMapPayload = {
   [key in TMapParamsKeys]?: string
 }
+export type TWorkoutsHeatmapPayload = TWorkoutsMapPayload & {
+  bbox?: string
+  zoom?: number
+}
 
 export interface IWorkoutApiChartData {
   cadence?: number

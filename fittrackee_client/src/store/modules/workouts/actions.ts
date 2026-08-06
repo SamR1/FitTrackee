@@ -25,6 +25,7 @@ import type {
   IComment,
   IAppealPayload,
   ILikesPayload,
+  TWorkoutsHeatmapPayload,
   TWorkoutsMapPayload,
   IWorkoutElevationSourceDataPayload,
   IMediaCreatePayload,
@@ -181,6 +182,31 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
         if (res.data.status === 'success') {
           context.commit(
             WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION,
+            res.data.data
+          )
+        } else {
+          handleError(context, null)
+        }
+      })
+      .catch((error) => handleError(context, error))
+      .finally(() =>
+        context.commit(WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING, false)
+      )
+  },
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_HEATMAP](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsHeatmapPayload
+  ): void {
+    context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
+    context.commit(WORKOUTS_STORE.MUTATIONS.SET_MAP_LOADING, true)
+    authApi
+      .get(`workouts/heatmap`, {
+        params: payload,
+      })
+      .then((res) => {
+        if (res.data.status === 'success') {
+          context.commit(
+            WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_HEATMAP,
             res.data.data
           )
         } else {

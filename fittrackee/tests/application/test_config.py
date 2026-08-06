@@ -1,5 +1,7 @@
 import os
+from unittest.mock import patch
 
+import pytest
 from flask import Flask
 
 from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
@@ -109,3 +111,44 @@ class TestProductionConfig:
             app.config["DEFAULT_PRIVACY_POLICY_DATA"]
             == DEFAULT_PRIVACY_POLICY_DATA
         )
+
+
+class TestHeatmapBaseZoomConfig:
+    """
+    the helper is imported in the tests: importing the config module needs an
+    application context
+    """
+
+    def test_it_returns_default_when_not_set(self, app: Flask) -> None:
+        from fittrackee.config import get_heatmap_base_zoom
+        from fittrackee.workouts.constants import HEATMAP_DEFAULT_BASE_ZOOM
+
+        with patch.dict("os.environ", {}, clear=True):
+            assert get_heatmap_base_zoom() == HEATMAP_DEFAULT_BASE_ZOOM
+
+    @pytest.mark.parametrize("input_zoom", [20, 22, 24])
+    def test_it_returns_given_zoom(self, app: Flask, input_zoom: int) -> None:
+        from fittrackee.config import get_heatmap_base_zoom
+
+        with patch.dict("os.environ", {"HEATMAP_BASE_ZOOM": str(input_zoom)}):
+            assert get_heatmap_base_zoom() == input_zoom
+
+    @pytest.mark.parametrize("input_zoom", ["abc", "24.5", "-"])
+    def test_it_raises_error_when_zoom_is_not_an_integer(
+        self, app: Flask, input_zoom: str
+    ) -> None:
+        from fittrackee.config import get_heatmap_base_zoom
+
+        with patch.dict("os.environ", {"HEATMAP_BASE_ZOOM": input_zoom}):
+            with pytest.raises(ValueError, match="not an integer"):
+                get_heatmap_base_zoom()
+
+    @pytest.mark.parametrize("input_zoom", [19, 25, 0, -1])
+    def test_it_raises_error_when_zoom_is_out_of_range(
+        self, app: Flask, input_zoom: int
+    ) -> None:
+        from fittrackee.config import get_heatmap_base_zoom
+
+        with patch.dict("os.environ", {"HEATMAP_BASE_ZOOM": str(input_zoom)}):
+            with pytest.raises(ValueError, match="is not between"):
+                get_heatmap_base_zoom()

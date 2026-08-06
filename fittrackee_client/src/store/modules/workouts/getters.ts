@@ -32,6 +32,11 @@ export const getters: GetterTree<IWorkoutsState, IRootState> &
   ) => {
     return state.user_workouts_collection
   },
+  [WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_HEATMAP]: (
+    state: IWorkoutsState
+  ) => {
+    return state.user_workouts_heatmap
+  },
   [WORKOUTS_STORE.GETTERS.WORKOUT_CONTENT_EDITION]: (state: IWorkoutsState) => {
     return state.workoutContent
   },

@@ -6,10 +6,14 @@ from typing import Optional
 
 import click
 
+from fittrackee import db
 from fittrackee.cli.app import app
 from fittrackee.users.models import User
 from fittrackee.workouts.constants import WORKOUT_ALLOWED_EXTENSIONS
-from fittrackee.workouts.models import Sport
+from fittrackee.workouts.models import Sport, Workout, WorkoutHeatmapCell
+from fittrackee.workouts.services.heatmap_cells_service import (
+    HeatmapCellsService,
+)
 from fittrackee.workouts.services.workouts_from_file_refresh_service import (
     WorkoutsFromFileRefreshService,
 )
@@ -468,3 +472,34 @@ def refresh_workouts(
             )
 
         logger.info("\nDone.")
+
+
+@workouts_cli.command("rebuild_heatmap")
+@click.option(
+    "--verbose",
+    "-v",
+    "verbose",
+    is_flag=True,
+    default=False,
+    help="Enable verbose output log (default: disabled).",
+)
+def workouts_rebuild_heatmap(verbose: bool) -> None:
+    """
+    Recompute the heatmap cells of all workouts.
+    To use after changing HEATMAP_BASE_ZOOM, or to fill the cells of an
+    instance with too many workouts to do it on startup.
+    """
+    with app.app_context():
+        logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+        workout_ids = [
+            workout_id
+            for (workout_id,) in db.session.query(Workout.id).order_by(
+                Workout.id
+            )
+        ]
+        db.session.query(WorkoutHeatmapCell).delete()
+        for count, workout_id in enumerate(workout_ids, start=1):
+            HeatmapCellsService.refresh_cells(workout_id)
+            db.session.commit()
+            logger.debug(f"[{count}/{len(workout_ids)}] workout {workout_id}")
+        logger.info(f"\nWorkouts processed: {len(workout_ids)}.")

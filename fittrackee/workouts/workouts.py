@@ -57,6 +57,10 @@ from fittrackee.workouts.services.elevation.elevation_service import (
 from ..constants import ElevationDataSource, PaceSpeedDisplay
 from ..files import get_file_extension
 from .constants import (
+    DEFAULT_HEATMAP_ZOOM,
+    MAX_HEATMAP_CELLS,
+    MAX_HEATMAP_MERGES,
+    MAX_HEATMAP_ZOOM,
     SPORTS_WITHOUT_ELEVATION_DATA,
     WORKOUT_FILE_DETECTED_MIMETYPES,
     WORKOUT_FILE_MIMETYPES,
@@ -72,7 +76,13 @@ from .exceptions import (
     WorkoutGPXException,
     WorkoutRefreshException,
 )
-from .models import Sport, Workout, WorkoutLike, WorkoutSegment
+from .models import (
+    Sport,
+    Workout,
+    WorkoutHeatmapCell,
+    WorkoutLike,
+    WorkoutSegment,
+)
 from .services import (
     WorkoutCreationService,
     WorkoutsFromFileCreationService,
@@ -89,6 +99,11 @@ from .utils.geometry import (
     get_geojson_from_segments,
 )
 from .utils.gpx import generate_gpx
+from .utils.heatmap import (
+    get_cell_size,
+    get_cells_range,
+    get_cells_shift,
+)
 from .utils.sports import (
     get_elevation_data,
     get_pace,
@@ -1366,6 +1381,222 @@ def get_workouts_for_global_map(auth_user: User) -> Union[Dict, HttpResponse]:
                 "features": features,
                 "limit_exceeded": total_workouts_count > len(features),
                 "type": "FeatureCollection",
+            },
+        }
+    except Exception as e:
+        return handle_error_and_return_response(e)
+
+
+def get_bounding_box(bbox_param: str) -> List[float]:
+    bbox = [float(coordinate) for coordinate in bbox_param.split(",")]
+    if len(bbox) != 4:
+        raise ValueError()
+    min_lng, min_lat, max_lng, max_lat = bbox
+    if (
+        not -180 <= min_lng <= 180
+        or not -180 <= max_lng <= 180
+        or not -90 <= min_lat <= 90
+        or not -90 <= max_lat <= 90
+        or min_lng > max_lng
+        or min_lat > max_lat
+    ):
+        raise ValueError()
+    return bbox
+
+
+@workouts_blueprint.route("/workouts/heatmap", methods=["GET"])
+@require_auth(scopes=["workouts:read"])
+def get_workouts_heatmap(auth_user: User) -> Union[Dict, HttpResponse]:
+    """
+    Get the heatmap cells for the authenticated user.
+
+    A cell is a square of the grid the tracks are stored on, given by its
+    indices and the number of distinct workouts crossing it, so that the
+    client can shade it depending on how much it is travelled.
+
+    Cells are merged to match the given zoom level, and merged further when a
+    dense view would return too many of them, so ``cell_size`` (in meters in
+    Web Mercator) may be coarser than the zoom level alone would give: it is
+    the size of the returned cells and the client displays them accordingly.
+
+    **Scope**: ``workouts:read``
+
+    **Example requests**:
+
+    - without parameters:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/heatmap HTTP/1.1
+
+    - with some query parameters:
+
+    .. sourcecode:: http
+
+      GET /api/workouts/heatmap?zoom=12&sport_ids=1,2  HTTP/1.1
+
+    **Example responses**:
+
+    - returning at least one cell:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "cell_size": 9.554628535647035,
+            "cells": [
+              [8842190, 156543, 3]
+            ]
+          },
+          "status": "success"
+        }
+
+    - returning no cells
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+        {
+          "data": {
+            "cell_size": 1222.9924525628205,
+            "cells": []
+          },
+          "status": "success"
+        }
+
+    :query string from: start date (format: ``%Y-%m-%d``)
+    :query string to: end date (format: ``%Y-%m-%d``)
+    :query string sport_ids: ids of sports, separated by a comma
+    :query integer zoom: zoom level, used to merge cells (default: 10)
+    :query string bbox: only return cells intersecting this bounding box
+        (format: ``min_lng,min_lat,max_lng,max_lat``)
+
+    :reqheader Authorization: OAuth 2.0 Bearer Token
+
+    :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid date format, expecting '%Y-%m-%d'``
+        - ``invalid sport_ids``
+        - ``invalid zoom``
+        - ``invalid bbox``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions, your account is suspended``
+    :statuscode 500: ``error, please try again or contact the administrator``
+
+    """
+    params = request.args.copy()
+
+    try:
+        date_from, date_to = get_datetime_from_request_args(params, auth_user)
+    except ValueError:
+        return InvalidPayloadErrorResponse(
+            "invalid date format, expecting '%Y-%m-%d'"
+        )
+
+    try:
+        sport_ids_str = params.get("sport_ids", "")
+        sport_ids = (
+            [int(sport_id) for sport_id in sport_ids_str.split(",")]
+            if sport_ids_str
+            else []
+        )
+    except ValueError:
+        return InvalidPayloadErrorResponse("invalid sport_ids")
+
+    try:
+        zoom = int(params.get("zoom", DEFAULT_HEATMAP_ZOOM))
+        if not 0 <= zoom <= MAX_HEATMAP_ZOOM:
+            raise ValueError()
+    except ValueError:
+        return InvalidPayloadErrorResponse("invalid zoom")
+
+    bbox_param = params.get("bbox")
+    try:
+        bbox = get_bounding_box(bbox_param) if bbox_param else None
+    except ValueError:
+        return InvalidPayloadErrorResponse("invalid bbox")
+
+    try:
+        filters = [
+            # on the cells, so that only this user's rows are scanned
+            WorkoutHeatmapCell.user_id == auth_user.id,
+            Workout.suspended_at == None,  # noqa
+        ]
+        if date_from:
+            filters.append(Workout.workout_date >= date_from)
+        if date_to:
+            filters.append(
+                Workout.workout_date < date_to + timedelta(seconds=1)
+            )
+        if sport_ids:
+            filters.append(Workout.sport_id.in_(sport_ids))
+
+        def get_cells_query(shift: int) -> "Query":
+            cell_filters = list(filters)
+            if bbox:
+                min_i, min_j, max_i, max_j = get_cells_range(bbox, shift)
+                # filtering on the stored indices keeps their index usable
+                cell_filters.extend(
+                    [
+                        WorkoutHeatmapCell.i.between(min_i, max_i),
+                        WorkoutHeatmapCell.j.between(min_j, max_j),
+                    ]
+                )
+            # counting the distinct workouts in a subquery, instead of with
+            # count(DISTINCT ...), lets postgres hash the groups: a wide view
+            # covers most of the table and sorting it spills to disk
+            workouts_cells = (
+                db.session.query(
+                    WorkoutHeatmapCell.workout_id,
+                    WorkoutHeatmapCell.i.op(">>")(shift).label("cell_i"),
+                    WorkoutHeatmapCell.j.op(">>")(shift).label("cell_j"),
+                )
+                .join(Workout, Workout.id == WorkoutHeatmapCell.workout_id)
+                .filter(*cell_filters)
+                .distinct()
+                .subquery()
+            )
+            return db.session.query(
+                workouts_cells.c.cell_i,
+                workouts_cells.c.cell_j,
+                func.count().label("workouts_count"),
+            ).group_by(workouts_cells.c.cell_i, workouts_cells.c.cell_j)
+
+        # returning every cell of a dense view would send megabytes, so the
+        # cells are merged further until they fit: a coarser heatmap is more
+        # useful than one missing its quieter paths
+        shift = get_cells_shift(zoom)
+        for _ in range(MAX_HEATMAP_MERGES):
+            cells = (
+                get_cells_query(shift)
+                .order_by(desc("workouts_count"))
+                # an extra row tells us whether the limit has been reached
+                .limit(MAX_HEATMAP_CELLS + 1)
+                .all()
+            )
+            if len(cells) <= MAX_HEATMAP_CELLS:
+                break
+            shift += 1
+
+        return {
+            "status": "success",
+            "data": {
+                "cells": [
+                    [cell.cell_i, cell.cell_j, cell.workouts_count]
+                    for cell in cells[:MAX_HEATMAP_CELLS]
+                ],
+                # cells are sent as indices rather than polygons: at this
+                # resolution a viewport holds thousands of them
+                "cell_size": get_cell_size(shift),
             },
         }
     except Exception as e:

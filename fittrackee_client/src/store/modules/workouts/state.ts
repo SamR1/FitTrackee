@@ -17,6 +17,10 @@ export const workoutsState: IWorkoutsState = {
     limit_exceeded: false,
     type: 'FeatureCollection',
   },
+  user_workouts_heatmap: {
+    cells: [],
+    cell_size: 0,
+  },
   user_workouts_statistics: <TWorkoutsStatistics>{},
   workoutData: {
     geojson: null,

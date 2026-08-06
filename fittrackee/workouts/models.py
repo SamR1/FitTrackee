@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Set, Union
 from uuid import UUID, uuid4
 
 from geoalchemy2 import Geometry, WKBElement
@@ -1217,6 +1217,45 @@ class WorkoutSegment(BaseModel):
         }
 
 
+class WorkoutHeatmapCell(BaseModel):
+    """
+    Grid cells crossed by a workout, one row per cell. Intensity is not
+    stored: it is the number of distinct workouts sharing a cell, aggregated
+    when the heatmap is queried.
+    """
+
+    __tablename__ = "workout_heatmap_cells"
+    __table_args__ = (
+        # the heatmap of a user is read without touching the cells of the
+        # others, which a shared instance would otherwise have to scan
+        db.Index("workout_heatmap_cells_user_cell", "user_id", "i", "j"),
+    )
+
+    workout_id: Mapped[int] = mapped_column(
+        db.ForeignKey("workouts.id", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    i: Mapped[int] = mapped_column(primary_key=True)
+    j: Mapped[int] = mapped_column(primary_key=True)
+    # denormalized from the workout, which never changes owner
+    user_id: Mapped[int] = mapped_column(
+        db.ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+
+    def __init__(self, workout_id: int, user_id: int, i: int, j: int) -> None:
+        self.workout_id = workout_id
+        self.user_id = user_id
+        self.i = i
+        self.j = j
+
+    def __str__(self) -> str:
+        return (
+            f"<WorkoutHeatmapCell ({self.i}, {self.j}) "
+            f"for workout '{self.workout_id}'>"
+        )
+
+
 class Record(BaseModel):
     __tablename__ = "records"
     __table_args__ = (
@@ -1301,6 +1340,33 @@ class Record(BaseModel):
             "workout_date": self.workout_date,
             "value": value,
         }
+
+
+@listens_for(WorkoutSegment, "after_insert")
+@listens_for(WorkoutSegment, "after_update")
+@listens_for(WorkoutSegment, "after_delete")
+def on_workout_segment_change(
+    mapper: Mapper, connection: Connection, segment: WorkoutSegment
+) -> None:
+    """
+    Keep the heatmap cells in sync with the segments geometry: segments are
+    replaced when a workout file is refreshed. Cells of deleted workouts are
+    removed by the foreign key constraint.
+    """
+    # several segments, from several workouts, may be flushed at once
+    session = object_session(segment)
+    if session is None:
+        return
+    pending: Set[int] = session.info.setdefault("heatmap_workout_ids", set())
+    pending.add(segment.workout_id)
+
+    @listens_for(db.Session, "after_flush_postexec", once=True)
+    def receive_after_flush_postexec(session: Session, context: Any) -> None:
+        from .services.heatmap_cells_service import HeatmapCellsService
+
+        workout_ids = session.info.pop("heatmap_workout_ids", set())
+        for workout_id in workout_ids:
+            HeatmapCellsService.refresh_cells(workout_id)
 
 
 @listens_for(Record, "after_delete")

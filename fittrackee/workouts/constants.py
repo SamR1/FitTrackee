@@ -86,3 +86,31 @@ TRACK_EXTENSION_NSMAP = {
 }
 
 WGS84_CRS = 4326  # World Geodetic System 1984, in degrees
+WEB_MERCATOR_CRS = 3857  # Web Mercator, in meters
+
+DEFAULT_HEATMAP_ZOOM = 10
+MAX_HEATMAP_ZOOM = 20
+MAX_HEATMAP_CELLS = 20000
+# how many times a view can be merged further to fit MAX_HEATMAP_CELLS
+MAX_HEATMAP_MERGES = 4
+
+TILE_SIZE = 256  # in pixels
+
+WEB_MERCATOR_WORLD_SIZE = 40075016.6855785  # in meters
+
+# cells are stored at the resolution given by HEATMAP_BASE_ZOOM (see config):
+# around 2.4 m by default, and they can only be merged, so it is the finest
+# detail the heatmap can display
+HEATMAP_DEFAULT_BASE_ZOOM = 24
+HEATMAP_MIN_BASE_ZOOM = 20
+# finer cells mostly resolve the GPS noise, for twice the rows at each level
+HEATMAP_MAX_BASE_ZOOM = 24
+
+# cells are merged to keep them around this size on screen, so that the
+# heatmap stays similarly grained when zooming out. Below a pixel the tracks
+# read as thin lines; denser views are merged back by MAX_HEATMAP_CELLS.
+HEATMAP_CELL_PIXELS = 1  # in pixels
+
+# tracks are subdivided into pieces of at most this many vertices before being
+# gridded, to keep their bounding boxes small
+SUBDIVIDE_MAX_VERTICES = 8

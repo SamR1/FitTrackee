@@ -12,3 +12,18 @@ export interface ILeafletObject {
 export interface IGeoJsonOptions {
   weight?: number
 }
+
+// what the API returns: [i, j, workouts count] per cell, and the size the
+// cells were merged to, in meters in Web Mercator
+export interface IHeatmapCells {
+  cells: number[][]
+  cell_size: number
+}
+
+export interface IHeatmapCell {
+  color: string
+  west: number
+  south: number
+  east: number
+  north: number
+}

@@ -153,6 +153,40 @@ deployment method.
     | To disable logging to file, set ``GUNICORN_LOG`` to ``-``, see `Gunicorn documentation <https://gunicorn.org/reference/settings/#errorlog>`__.
 
 
+.. envvar:: HEATMAP_BASE_ZOOM
+
+    .. versionadded:: 1.4.0
+
+    Zoom level the workouts heatmap cells are stored at, between 20 and 24.
+    Each level doubles the detail and roughly doubles the number of stored
+    cells, so lowering it trades precision for space on a constrained
+    instance. Finer cells than the default mostly resolve the GPS noise.
+
+    Approximate database size (table and indexes) per 1,000 km of tracks:
+
+    .. cssclass:: table-bordered
+    .. list-table::
+       :widths: 20 20 30
+       :header-rows: 1
+
+       * - Zoom
+         - Cell size
+         - Size per 1,000 km
+       * - ``20``
+         - 38 m
+         - 2 MB
+       * - ``22``
+         - 9.6 m
+         - 9 MB
+       * - ``24``
+         - 2.4 m
+         - 41 MB
+
+    After changing it, the cells must be recomputed with
+    ``ftcli workouts rebuild_heatmap``.
+
+    :default: ``24`` (cells of about 2.4 m)
+
 .. envvar:: HOST
 
     **FitTrackee** host.
