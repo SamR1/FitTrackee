@@ -99,9 +99,9 @@ TILE_SIZE = 256  # in pixels
 WEB_MERCATOR_WORLD_SIZE = 40075016.6855785  # in meters
 
 # cells are stored at the resolution given by HEATMAP_BASE_ZOOM (see config):
-# around 2.4 m by default, and they can only be merged, so it is the finest
+# around 38 m by default, and they can only be merged, so it is the finest
 # detail the heatmap can display
-HEATMAP_DEFAULT_BASE_ZOOM = 24
+HEATMAP_DEFAULT_BASE_ZOOM = 20
 HEATMAP_MIN_BASE_ZOOM = 20
 # finer cells mostly resolve the GPS noise, for twice the rows at each level
 HEATMAP_MAX_BASE_ZOOM = 24

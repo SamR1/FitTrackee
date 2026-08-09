@@ -23,7 +23,7 @@ filters.
 
 The tracks are stored as the cells of a grid, whose resolution is set with
 `HEATMAP_BASE_ZOOM <../installation/environments_variables.html#envvar-HEATMAP_BASE_ZOOM>`__
-(cells of about 2.4 m by default). Cells are merged to match the zoom level,
+(cells of about 38 m by default). Cells are merged to match the zoom level,
 and merged further on a dense view, so the map stays readable and the response
 bounded whatever the number of workouts.
 

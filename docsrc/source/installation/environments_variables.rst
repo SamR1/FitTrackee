@@ -159,8 +159,8 @@ deployment method.
 
     Zoom level the workouts heatmap cells are stored at, between 20 and 24.
     Each level doubles the detail and roughly doubles the number of stored
-    cells, so lowering it trades precision for space on a constrained
-    instance. Finer cells than the default mostly resolve the GPS noise.
+    cells, so raising it trades space for precision. The finest cells mostly
+    resolve the GPS noise.
 
     Approximate database size (table and indexes) per 1,000 km of tracks:
 
@@ -185,7 +185,7 @@ deployment method.
     After changing it, the cells must be recomputed with
     ``ftcli workouts rebuild_heatmap``.
 
-    :default: ``24`` (cells of about 2.4 m)
+    :default: ``20`` (cells of about 38 m)
 
 .. envvar:: HOST
 
