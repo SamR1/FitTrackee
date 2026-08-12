@@ -68,7 +68,7 @@ export default function useSports() {
     })
   }
   function getObjectSport(
-    object: IWorkout | IWorkoutSegment | null
+    object: IWorkout | IWorkoutSegment | { sport_id: number } | null
   ): ISport | null {
     return object?.sport_id
       ? sports.value.find((s) => s.id === object.sport_id) || null

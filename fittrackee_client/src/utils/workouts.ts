@@ -3,6 +3,7 @@ import type {
   IWorkout,
   IWorkoutApiChartData,
   IWorkoutChartData,
+  TCadenceUnit,
   TWorkoutDatasetKeys,
   TWorkoutDatasets,
 } from '@/types/workouts'
@@ -159,7 +160,7 @@ export const defaultOrder = {
   order_by: 'workout_date',
 }
 
-export function getCadenceUnit(sportLabel: string | undefined) {
+export function getCadenceUnit(sportLabel: string | undefined): TCadenceUnit {
   switch (sportLabel) {
     case 'Cycling (Sport)':
     case 'Cycling (Trekking)':

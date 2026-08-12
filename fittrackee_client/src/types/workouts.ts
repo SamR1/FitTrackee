@@ -16,6 +16,7 @@ import type {
 
 export type TFileExtension = 'fit' | 'gpx' | 'kml' | 'tcx'
 export type TWorkoutModal = 'none' | 'deleteWorkout' | 'updateElevation'
+export type TCadenceUnit = '' | 'rpm' | 'spm'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -92,6 +93,29 @@ export interface IMapWorkout {
   workout_visibility: TVisibilityLevels
 }
 
+export interface IMultiSportsStats {
+  ascent: number | null
+  ave_cadence: number | null
+  ave_hr: number | null
+  ave_pace: string | null
+  ave_power: number | null
+  ave_speed: number | null
+  best_pace: string | null
+  calories: number | null
+  descent: number | null
+  distance: number | null
+  duration: string | null
+  max_alt: number | null
+  max_cadence: number | null
+  max_hr: number | null
+  max_power: number | null
+  max_speed: number | null
+  min_alt: number | null
+  moving: string | null
+  pauses: string | null
+  sport_id: number
+}
+
 export interface IWorkout {
   analysis_visibility?: TVisibilityLevels
   ascent: number | null
@@ -126,6 +150,7 @@ export interface IWorkout {
   min_alt: number | null
   modification_date: string | null
   moving: string | null
+  multi_sports_stats: Record<number, IMultiSportsStats>
   next_workout: string | null
   notes: string
   original_file: TFileExtension | null

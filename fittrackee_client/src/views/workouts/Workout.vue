@@ -50,6 +50,9 @@
           />
           <WorkoutSegments
             v-if="!displaySegment && workoutData.workout.segments.length > 1"
+            :authUser="authUser"
+            :cadenceUnit="cadenceUnit"
+            :multi-sports-stats="workoutData.workout.multi_sports_stats"
             :segments="workoutData.workout.segments"
             :useImperialUnits="displayOptions.useImperialUnits"
           />
@@ -100,7 +103,7 @@
   import WorkoutChart from '@/components/Workout/WorkoutDetail/WorkoutChart/index.vue'
   import WorkoutContent from '@/components/Workout/WorkoutDetail/WorkoutContent.vue'
   import WorkoutMediaGallery from '@/components/Workout/WorkoutDetail/WorkoutMediaGallery.vue'
-  import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments.vue'
+  import WorkoutSegments from '@/components/Workout/WorkoutDetail/WorkoutSegments/index.vue'
   import WorkoutUser from '@/components/Workout/WorkoutDetail/WorkoutUser.vue'
   import useApp from '@/composables/useApp.ts'
   import useAuthUser from '@/composables/useAuthUser'
@@ -109,7 +112,11 @@
   import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { TCoordinates } from '@/types/map'
   import type { ISport } from '@/types/sports.ts'
-  import type { IWorkoutData, IWorkoutPayload } from '@/types/workouts'
+  import type {
+    IWorkoutData,
+    IWorkoutPayload,
+    TCadenceUnit,
+  } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { getCadenceUnit } from '@/utils/workouts.ts'
 
@@ -144,7 +151,7 @@
   const sport: ComputedRef<ISport | null> = computed(() =>
     getObjectSport(workoutData.value.workout)
   )
-  const cadenceUnit: ComputedRef<string> = computed(() =>
+  const cadenceUnit: ComputedRef<TCadenceUnit> = computed(() =>
     getCadenceUnit(sport.value?.label)
   )
 
