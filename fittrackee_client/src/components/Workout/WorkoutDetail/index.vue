@@ -229,7 +229,7 @@
       avePace: segment ? segment.ave_pace : workout.ave_pace,
       avePower: segment ? segment.ave_power : workout.ave_power,
       aveSpeed: segment ? segment.ave_speed : workout.ave_speed,
-      calories: segment ? null : workout.calories,
+      calories: workout.calories,
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
