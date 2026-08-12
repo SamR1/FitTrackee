@@ -324,6 +324,7 @@ class WorkoutGpxServiceProcessFileTestCase(
             "ave_power": None,
             "ave_speed": 8.94,
             "best_pace": None,
+            "calories": None,
             "descent": 1.0,
             "distance": 0.025,
             "duration": "0:00:10",

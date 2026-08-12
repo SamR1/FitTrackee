@@ -174,8 +174,9 @@ def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
     target.ave_speed = float(distance) / (target.duration.seconds / 3600)
     target.max_speed = target.ave_speed
     target.moving = target.duration
+    target.pauses = timedelta(seconds=0)
     target.ave_pace = convert_speed_into_pace_duration(target.ave_speed)
-    target.best_pace = convert_speed_into_pace_duration(target.max_speed)
+    target.best_pace = target.ave_pace
 
 
 @pytest.fixture()
@@ -264,7 +265,16 @@ def workout_cycling_user_1_segment_0_with_coordinates(
     )
     workout_segment.duration = timedelta(minutes=1, seconds=30)
     workout_segment.moving = workout_segment.duration
+    workout_segment.pauses = timedelta(seconds=0)
     workout_segment.distance = 0.113
+    workout_segment.ave_speed = 4.34
+    workout_segment.max_speed = 5.25
+    workout_segment.ave_pace = convert_speed_into_pace_duration(
+        workout_segment.ave_speed
+    )
+    workout_segment.best_pace = convert_speed_into_pace_duration(
+        workout_segment.max_speed
+    )
     db.session.add(workout_segment)
     workout_segment.store_geometry(
         workout_cycling_user_1_segment_0_coordinates
@@ -1249,19 +1259,21 @@ def workout_hiking_user_1(
 
 @pytest.fixture()
 def workout_swimrun_user_1_with_coordinates(
-    user_1: "User",
     sport_10_swimrun: "Sport",
     workout_cycling_user_1_with_coordinates: "Workout",
 ) -> Workout:
     workout = duplicate_row(
         workout_cycling_user_1_with_coordinates,
         init_cols={
-            "user_id": user_1.id,
+            "user_id": workout_cycling_user_1_with_coordinates.user_id,
             "sport_id": sport_10_swimrun.id,
             "workout_date": (
                 workout_cycling_user_1_with_coordinates.workout_date
                 + timedelta(hours=1)
             ),
+        },
+        updated_cols={
+            "sport_id": sport_10_swimrun.id,
         },
     )
     db.session.add(workout)
@@ -1276,13 +1288,15 @@ def workout_swimrun_user_1_segment_0_with_coordinates(
     workout_swimrun_user_1_with_coordinates: "Workout",
     workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
 ) -> WorkoutSegment:
+    init_cols = {
+        "workout_id": workout_swimrun_user_1_with_coordinates.id,
+        "workout_uuid": workout_swimrun_user_1_with_coordinates.uuid,
+    }
     segment = duplicate_row(
         workout_cycling_user_1_segment_0_with_coordinates,
-        init_cols={
-            "workout_id": workout_swimrun_user_1_with_coordinates.id,
-            "workout_uuid": workout_swimrun_user_1_with_coordinates.uuid,
-        },
+        init_cols=init_cols,
         updated_cols={
+            **init_cols,
             "sport_id": sport_8_trail.id,
             "start_date": datetime(2018, 3, 13, 1, tzinfo=timezone.utc),
         },
@@ -1476,6 +1490,92 @@ def workout_cycling_user_2_segment(
     workout_cycling_user_2.original_file = "workouts/1/example.tcx"
     db.session.commit()
     return workout_segment
+
+
+@pytest.fixture()
+def multi_sports_totals(
+    sport_8_trail: "Sport", sport_9_open_water_swimming: "Sport"
+) -> List[Dict]:
+    return [
+        {
+            "workout_id": "QpNLkvkf6uemJuv5Uf9pp5",
+            "segment_id": "Kb6PPUCyCPpZKwGrUeBLy3",
+            "sport_id": sport_8_trail.id,
+            "duration": timedelta(seconds=906),
+            "pauses": timedelta(seconds=43),
+            "moving": timedelta(seconds=863),
+            "distance": 2.338,
+            "min_alt": 6.8,
+            "max_alt": 13.0,
+            "descent": 12.0,
+            "ascent": 13.0,
+            "max_speed": 11.59,
+            "ave_speed": 9.75,
+            "ave_cadence": None,
+            "max_cadence": None,
+            "ave_hr": 166,
+            "max_hr": 173,
+            "ave_power": None,
+            "max_power": None,
+            "ave_pace": timedelta(seconds=369),
+            "best_pace": timedelta(seconds=311),
+            "calories": 145,
+            "is_transition": False,
+            "segment_number": 1,
+        },
+        {
+            "workout_id": "QpNLkvkf6uemJuv5Uf9pp5",
+            "segment_id": "42UktHmiNuFA3QgE6H82m5",
+            "sport_id": sport_9_open_water_swimming.id,
+            "duration": timedelta(seconds=549),
+            "pauses": timedelta(0),
+            "moving": timedelta(seconds=549),
+            "distance": 0.451,
+            "min_alt": None,
+            "max_alt": None,
+            "descent": None,
+            "ascent": None,
+            "max_speed": 4.86,
+            "ave_speed": 2.96,
+            "ave_cadence": None,
+            "max_cadence": None,
+            "ave_hr": 136,
+            "max_hr": 160,
+            "ave_power": None,
+            "max_power": None,
+            "ave_pace": timedelta(seconds=1218),
+            "best_pace": timedelta(seconds=741),
+            "calories": 125,
+            "is_transition": False,
+            "segment_number": 3,
+        },
+        {
+            "workout_id": "QpNLkvkf6uemJuv5Uf9pp5",
+            "segment_id": "KEr4rYeisyKgeEV5Yss2Dr",
+            "sport_id": sport_8_trail.id,
+            "duration": timedelta(seconds=1093),
+            "pauses": timedelta(seconds=5),
+            "moving": timedelta(seconds=1087),
+            "distance": 2.796,
+            "min_alt": 15.8,
+            "max_alt": 19.0,
+            "descent": 13.0,
+            "ascent": 17.0,
+            "max_speed": 10.62,
+            "ave_speed": 9.26,
+            "ave_cadence": None,
+            "max_cadence": None,
+            "ave_hr": 157,
+            "max_hr": 165,
+            "ave_power": None,
+            "max_power": None,
+            "ave_pace": timedelta(seconds=389),
+            "best_pace": timedelta(seconds=339),
+            "calories": 154,
+            "is_transition": False,
+            "segment_number": 5,
+        },
+    ]
 
 
 @pytest.fixture()

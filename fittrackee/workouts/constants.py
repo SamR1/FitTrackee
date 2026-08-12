@@ -60,6 +60,15 @@ WORKOUT_FILE_MIMETYPES = {
     "tcx": "application/vnd.garmin.tcx+xml",
 }
 WORKOUT_ALLOWED_EXTENSIONS = set(WORKOUT_FILE_MIMETYPES.keys())
+
+TIMEDELTA_COLUMNS = [
+    "duration",
+    "pauses",
+    "moving",
+    "ave_pace",
+    "best_pace",
+]
+
 # detected mime types on file upload
 XML_MIMETYPE = "text/xml"
 OCTET_STREAM_MIMETYPE = "application/octet-stream"

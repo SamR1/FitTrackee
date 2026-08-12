@@ -626,6 +626,7 @@ class WorkoutGpxService(
         self.coordinates.extend(coordinates)
         new_workout_segment.points = segment_points
         new_workout_segment.store_geometry(coordinates)
+        new_workout_segment.calories = segment_stats.get("calories")
         new_workout_segment.sport_id = segment_stats.get("sport_id")  # type: ignore
         new_workout_segment.is_transition = segment_stats.get(
             "is_transition", False

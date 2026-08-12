@@ -177,6 +177,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -252,6 +253,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -343,6 +345,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 }
                 for number, segment in enumerate(workout.segments, start=1)
             ],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -430,6 +433,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 }
                 for number, segment in enumerate(workout.segments, start=1)
             ],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -518,6 +522,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 }
                 for number, segment in enumerate(workout.segments, start=1)
             ],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -692,6 +697,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 }
                 for number, segment in enumerate(workout.segments, start=1)
             ],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -781,6 +787,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 }
                 for number, segment in enumerate(workout.segments, start=1)
             ],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -953,6 +960,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "stats_from_file": False,
@@ -1026,6 +1034,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
@@ -1101,6 +1110,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
@@ -1177,6 +1187,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": True,
@@ -1613,6 +1624,48 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         )
 
         assert serialized_workout["stats_from_file"] is True
+
+    def test_it_returns_segments_stats_for_multi_activities_sport(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        sport_8_trail: "Sport",
+        sport_9_open_water_swimming: "Sport",
+        sport_10_swimrun: "Sport",
+        user_1: "User",
+        user_2_admin: "User",
+        workout_swimrun_user_1_with_coordinates: "Workout",
+        workout_swimrun_user_1_segment_0_with_coordinates: "Workout",
+    ) -> None:
+
+        serialized_workout = workout_swimrun_user_1_with_coordinates.serialize(
+            user=user_1, light=False
+        )
+
+        assert serialized_workout["multi_sports_stats"] == {
+            sport_8_trail.id: {
+                "duration": "0:01:30",
+                "pauses": "0:00:00",
+                "moving": "0:01:30",
+                "distance": 0.113,
+                "min_alt": None,
+                "max_alt": None,
+                "descent": 0,
+                "ascent": 0,
+                "max_speed": None,
+                "ave_speed": None,
+                "ave_cadence": None,
+                "max_cadence": None,
+                "ave_hr": None,
+                "max_hr": None,
+                "ave_power": None,
+                "max_power": None,
+                "ave_pace": "0:13:49",
+                "best_pace": "0:11:26",
+                "calories": 0,
+                "sport_id": sport_8_trail.id,
+            }
+        }
 
 
 class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
@@ -2119,6 +2172,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": True,
             "title": "",
@@ -2320,6 +2374,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
@@ -2775,6 +2830,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": True,
             "title": "",
@@ -2951,6 +3007,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
@@ -3521,6 +3578,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
@@ -3628,6 +3686,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
@@ -3718,6 +3777,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
@@ -3889,6 +3949,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
@@ -3977,6 +4038,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
@@ -4058,6 +4120,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
@@ -4256,6 +4319,7 @@ class TestWorkoutSegmentModel:
             "ave_power": workout_cycling_user_1_segment.ave_power,
             "ave_speed": workout_cycling_user_1_segment.ave_speed,
             "best_pace": None,
+            "calories": None,
             "descent": workout_cycling_user_1_segment.descent,
             "distance": workout_cycling_user_1_segment.distance,
             "duration": str(workout_cycling_user_1_segment.duration),
@@ -4267,7 +4331,7 @@ class TestWorkoutSegmentModel:
             "max_speed": workout_cycling_user_1_segment.max_speed,
             "min_alt": workout_cycling_user_1_segment.min_alt,
             "moving": str(workout_cycling_user_1_segment.moving),
-            "pauses": workout_cycling_user_1_segment.pauses,
+            "pauses": None,
             "segment_id": workout_cycling_user_1_segment.short_id,
             "sport_id": None,
             "workout_id": workout_cycling_user_1_segment.workout.short_id,
@@ -4298,6 +4362,7 @@ class TestWorkoutSegmentModel:
             "ave_power": workout_cycling_user_1_segment.ave_power,
             "ave_speed": workout_cycling_user_1_segment.ave_speed,
             "best_pace": None,
+            "calories": None,
             "descent": workout_cycling_user_1_segment.descent,
             "distance": workout_cycling_user_1_segment.distance,
             "duration": str(workout_cycling_user_1_segment.duration),
@@ -4309,7 +4374,7 @@ class TestWorkoutSegmentModel:
             "max_speed": workout_cycling_user_1_segment.max_speed,
             "min_alt": workout_cycling_user_1_segment.min_alt,
             "moving": str(workout_cycling_user_1_segment.moving),
-            "pauses": workout_cycling_user_1_segment.pauses,
+            "pauses": None,
             "segment_id": workout_cycling_user_1_segment.short_id,
             "sport_id": None,
             "workout_id": workout_cycling_user_1_segment.workout.short_id,
@@ -4359,6 +4424,37 @@ class TestWorkoutSegmentModel:
         serialized_segment = workout_running_user_1_segment.serialize()
         assert serialized_segment["ave_pace"] == "0:08:20"
         assert serialized_segment["best_pace"] == "0:06:35"
+
+    def test_it_does_not_return_calories(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_segment.calories = 124
+
+        serialized_segment = workout_cycling_user_1_segment.serialize()
+
+        assert serialized_segment["calories"] is None
+
+    def test_it_returns_serialized_segment_with_calories(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_segment.calories = 124
+
+        serialized_segment = workout_cycling_user_1_segment.serialize(
+            user=user_2, can_see_calories=True
+        )
+
+        assert serialized_segment["calories"] == 124
 
     def test_it_stores_geometry_as_linestring(
         self,

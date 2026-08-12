@@ -28,6 +28,7 @@ def upgrade():
     with op.batch_alter_table('workout_segments', schema=None) as batch_op:
         batch_op.add_column(sa.Column('sport_id', sa.Integer(), nullable=True))
         batch_op.add_column(sa.Column('is_transition', sa.Boolean(), server_default='False', nullable=False))
+        batch_op.add_column(sa.Column('calories', sa.Integer(), nullable=True))
         batch_op.create_index(batch_op.f('ix_workout_segments_sport_id'), ['sport_id'], unique=False)
         batch_op.create_foreign_key('workout_segments_sport_id_fkey', 'sports', ['sport_id'], ['id'])
         batch_op.alter_column('geom',
@@ -61,6 +62,7 @@ def downgrade():
                existing_nullable=True)
         batch_op.drop_constraint('workout_segments_sport_id_fkey', type_='foreignkey')
         batch_op.drop_index(batch_op.f('ix_workout_segments_sport_id'))
+        batch_op.drop_column('calories')
         batch_op.drop_column('is_transition')
         batch_op.drop_column('sport_id')
 
