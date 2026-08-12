@@ -1199,7 +1199,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         )
 
     @pytest.mark.parametrize(
-        "input_args,",
+        "input_args",
         [
             {"light": False},
             {"light": False, "with_equipments": True},
@@ -1226,7 +1226,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             equipment_bike_user_1.serialize(current_user=user_1)
         ]
 
-    @pytest.mark.parametrize("input_args,", [{}, {"light": True}])
+    @pytest.mark.parametrize("input_args", [{}, {"light": True}])
     def test_serializer_does_not_return_equipments(
         self,
         app: Flask,
