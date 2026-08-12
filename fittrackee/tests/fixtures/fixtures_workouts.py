@@ -169,6 +169,24 @@ def sport_10_swimrun(
     return sport
 
 
+@pytest.fixture()
+def sport_11_triathlon(
+    sport_1_cycling: Sport,
+    sport_2_running: Sport,
+    sport_9_open_water_swimming: Sport,
+) -> Sport:
+    sport = Sport(label="Triathlon")
+    db.session.add(sport)
+    db.session.flush()
+    db.session.add(MultiActivitiesSports(sport.id, sport_1_cycling.id))
+    db.session.add(MultiActivitiesSports(sport.id, sport_2_running.id))
+    db.session.add(
+        MultiActivitiesSports(sport.id, sport_9_open_water_swimming.id)
+    )
+    db.session.commit()
+    return sport
+
+
 def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
     distance = target.distance if target.distance else 0
     target.ave_speed = float(distance) / (target.duration.seconds / 3600)
@@ -177,6 +195,20 @@ def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
     target.pauses = timedelta(seconds=0)
     target.ave_pace = convert_speed_into_pace_duration(target.ave_speed)
     target.best_pace = target.ave_pace
+
+
+def update_workout_totals(workout: "Workout") -> None:
+    total_distance = 0
+    total_duration = timedelta(seconds=0)
+    total_moving = timedelta(seconds=0)
+    for segment in workout.segments:
+        total_distance += segment.distance  # type: ignore
+        total_duration += segment.duration  # type: ignore
+        total_moving += segment.moving  # type: ignore
+
+    workout.distance = total_distance
+    workout.duration = total_duration
+    workout.moving = total_moving
 
 
 @pytest.fixture()
@@ -1302,6 +1334,84 @@ def workout_swimrun_user_1_segment_0_with_coordinates(
         },
     )
     db.session.add(segment)
+    db.session.commit()
+    return segment
+
+
+@pytest.fixture()
+def workout_triathlon_user_1_with_coordinates(
+    sport_11_triathlon: "Sport",
+    workout_cycling_user_1_with_coordinates: "Workout",
+) -> Workout:
+    workout = duplicate_row(
+        workout_cycling_user_1_with_coordinates,
+        init_cols={
+            "user_id": workout_cycling_user_1_with_coordinates.user_id,
+            "sport_id": sport_11_triathlon.id,
+            "workout_date": (
+                workout_cycling_user_1_with_coordinates.workout_date
+                + timedelta(hours=1)
+            ),
+        },
+        updated_cols={
+            "sport_id": sport_11_triathlon.id,
+        },
+    )
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
+def workout_triathlon_user_1_segment_0_with_coordinates(
+    user_1: "User",
+    sport_9_open_water_swimming: "Sport",
+    workout_triathlon_user_1_with_coordinates: "Workout",
+    workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+) -> WorkoutSegment:
+    init_cols = {
+        "workout_id": workout_triathlon_user_1_with_coordinates.id,
+        "workout_uuid": workout_triathlon_user_1_with_coordinates.uuid,
+    }
+    segment = duplicate_row(
+        workout_cycling_user_1_segment_0_with_coordinates,
+        init_cols=init_cols,
+        updated_cols={
+            **init_cols,
+            "sport_id": sport_9_open_water_swimming.id,
+            "start_date": datetime(2018, 3, 13, 1, tzinfo=timezone.utc),
+        },
+    )
+    db.session.add(segment)
+    db.session.flush()
+    update_workout_totals(workout_triathlon_user_1_with_coordinates)
+    db.session.commit()
+    return segment
+
+
+@pytest.fixture()
+def workout_triathlon_user_1_segment_1_with_coordinates(
+    user_1: "User",
+    sport_1_cycling: "Sport",
+    workout_triathlon_user_1_with_coordinates: "Workout",
+    workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+) -> WorkoutSegment:
+    init_cols = {
+        "workout_id": workout_triathlon_user_1_with_coordinates.id,
+        "workout_uuid": workout_triathlon_user_1_with_coordinates.uuid,
+    }
+    segment = duplicate_row(
+        workout_cycling_user_1_segment_1_with_coordinates,
+        init_cols=init_cols,
+        updated_cols={
+            **init_cols,
+            "sport_id": sport_1_cycling.id,
+            "start_date": datetime(2018, 3, 13, 2, tzinfo=timezone.utc),
+        },
+    )
+    db.session.add(segment)
+    db.session.flush()
+    update_workout_totals(workout_triathlon_user_1_with_coordinates)
     db.session.commit()
     return segment
 

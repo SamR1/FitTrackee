@@ -26,6 +26,7 @@ SPORT_EQUIPMENT_TYPES = {
         "Halfbike",
         "Mountain Biking",
         "Mountain Biking (Electric)",
+        "Triathlon",
     ],
     "Bike Trainer": ["Cycling (Virtual)"],
     "Board": ["Standup Paddleboarding", "Windsurfing"],

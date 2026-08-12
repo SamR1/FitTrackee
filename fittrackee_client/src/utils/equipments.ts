@@ -49,6 +49,7 @@ export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
     'Halfbike',
     'Mountain Biking',
     'Mountain Biking (Electric)',
+    'Triathlon',
   ],
   'Bike Trainer': ['Cycling (Virtual)'],
   Board: ['Standup Paddleboarding', 'Windsurfing'],

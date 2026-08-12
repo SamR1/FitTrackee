@@ -57,6 +57,7 @@ from .utils.sports import (
 )
 
 if TYPE_CHECKING:
+    from sqlalchemy import Row
     from sqlalchemy.orm.attributes import AttributeEvent
 
     from fittrackee.comments.models import Comment
@@ -1153,16 +1154,46 @@ def on_workout_delete(
         ).delete()
 
 
+def get_equipment_totals(
+    target: Workout, value: "Equipment"
+) -> Union[Tuple, "Row"]:
+    if (
+        target.sport.label == "Triathlon"
+        and value.equipment_type.label == "Bike"
+    ):
+        params = {"workout_id": target.id, "label": "Cycling (Sport)"}
+        sql = """
+               SELECT sum(workout_segments.distance),
+                      sum(workout_segments.duration),
+                      sum(workout_segments.moving)
+               FROM workout_segments
+               JOIN sports ON sports.id = workout_segments.sport_id
+               WHERE workout_segments.workout_id = :workout_id
+                 AND sports.label = :label
+               GROUP BY workout_segments.workout_id, 
+                        workout_segments.sport_id, 
+                        sports.id
+               """
+        return db.session.execute(text(sql), params).first() or (
+            0.0,
+            timedelta(),
+            timedelta(),
+        )
+    else:
+        return target.distance, target.duration, target.moving
+
+
 @listens_for(Workout.equipments, "append")
 def on_workout_equipments_append(
     target: Workout, value: "Equipment", initiator: "AttributeEvent"
 ) -> None:
-    value.total_distance = float(value.total_distance) + (
-        0.0 if target.distance is None else float(target.distance)
-    )
-    value.total_duration += target.duration
-    if target.moving:
-        value.total_moving += target.moving
+    totals = get_equipment_totals(target, value)
+    if totals[0]:
+        value.total_distance = float(value.total_distance) + float(totals[0])
+    if totals[1]:
+        value.total_duration += totals[1]
+    if totals[2]:
+        value.total_moving += totals[2]
     value.total_workouts += 1
 
 
@@ -1170,12 +1201,13 @@ def on_workout_equipments_append(
 def on_workout_equipments_remove(
     target: Workout, value: "Equipment", initiator: "AttributeEvent"
 ) -> None:
-    value.total_distance = float(value.total_distance) - (
-        0.0 if target.distance is None else float(target.distance)
-    )
-    value.total_duration -= target.duration
-    if target.moving:
-        value.total_moving -= target.moving
+    totals = get_equipment_totals(target, value)
+    if totals[0]:
+        value.total_distance = float(value.total_distance) - float(totals[0])
+    if totals[1]:
+        value.total_duration -= totals[1]
+    if totals[2]:
+        value.total_moving -= totals[2]
     value.total_workouts -= 1
 
 

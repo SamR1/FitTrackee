@@ -1436,6 +1436,98 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             assert equipment.total_moving == timedelta()
             assert equipment.total_workouts == 0
 
+    def test_it_updates_equipments_totals_for_triathlon(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+        workout_cycling_user_1: Workout,
+        workout_triathlon_user_1_with_coordinates: Workout,
+        workout_triathlon_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_triathlon_user_1_segment_1_with_coordinates: WorkoutSegment,
+    ) -> None:
+        workout_triathlon_user_1_with_coordinates.equipments = [
+            equipment_shoes_user_1,
+            equipment_bike_user_1,
+        ]
+        db.session.commit()
+
+        assert (
+            equipment_bike_user_1.total_distance
+            == workout_triathlon_user_1_segment_1_with_coordinates.distance
+        )
+        assert (
+            equipment_bike_user_1.total_duration
+            == workout_triathlon_user_1_segment_1_with_coordinates.duration
+        )
+        assert (
+            equipment_bike_user_1.total_moving
+            == workout_triathlon_user_1_segment_1_with_coordinates.moving
+        )
+        assert equipment_bike_user_1.total_workouts == 1
+
+        assert equipment_shoes_user_1.total_distance == (
+            workout_triathlon_user_1_segment_0_with_coordinates.distance  # type: ignore
+            + workout_triathlon_user_1_segment_1_with_coordinates.distance
+        )
+        assert equipment_shoes_user_1.total_duration == (
+            workout_triathlon_user_1_segment_0_with_coordinates.duration
+            + workout_triathlon_user_1_segment_1_with_coordinates.duration
+        )
+        assert equipment_shoes_user_1.total_moving == (
+            workout_triathlon_user_1_segment_0_with_coordinates.moving  # type: ignore
+            + workout_triathlon_user_1_segment_1_with_coordinates.moving
+        )
+        assert equipment_shoes_user_1.total_workouts == 1
+
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        db.session.commit()
+
+        assert equipment_bike_user_1.total_distance == (
+            workout_triathlon_user_1_segment_1_with_coordinates.distance  # type: ignore
+            + workout_cycling_user_1.distance
+        )
+        assert equipment_bike_user_1.total_duration == (
+            workout_triathlon_user_1_segment_1_with_coordinates.duration
+            + workout_cycling_user_1.duration
+        )
+        assert equipment_bike_user_1.total_moving == (
+            workout_triathlon_user_1_segment_1_with_coordinates.moving  # type: ignore
+            + workout_cycling_user_1.moving
+        )
+        assert equipment_bike_user_1.total_workouts == 2
+        assert equipment_shoes_user_1.total_workouts == 1  # unchanged
+
+        workout_triathlon_user_1_with_coordinates.equipments = []
+        db.session.commit()
+
+        assert (
+            equipment_bike_user_1.total_distance
+            == workout_cycling_user_1.distance
+        )
+        assert (
+            equipment_bike_user_1.total_duration
+            == workout_cycling_user_1.duration
+        )
+        assert (
+            equipment_bike_user_1.total_moving == workout_cycling_user_1.moving
+        )
+        assert equipment_bike_user_1.total_workouts == 1
+
+        assert equipment_shoes_user_1.total_distance == 0.0
+        assert equipment_shoes_user_1.total_duration == timedelta()
+        assert equipment_shoes_user_1.total_moving == timedelta()
+        assert equipment_shoes_user_1.total_workouts == 0
+
+        workout_cycling_user_1.equipments = []
+        db.session.commit()
+
+        assert equipment_bike_user_1.total_distance == 0.0
+        assert equipment_bike_user_1.total_duration == timedelta()
+        assert equipment_bike_user_1.total_moving == timedelta()
+        assert equipment_bike_user_1.total_workouts == 0
+
     def test_it_returns_likes_count(
         self,
         app: Flask,
