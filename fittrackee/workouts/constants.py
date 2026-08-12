@@ -50,6 +50,11 @@ SPORTS_WITHOUT_ELEVATION_DATA = [
     "Rowing",
     "Standup Paddleboarding",
 ]
+# sports for which the segments are associated with sports
+MULTI_ACTIVITIES_SPORTS = [
+    "Swimrun",
+    "Triathlon",
+]
 
 # for file download
 WORKOUT_FILE_MIMETYPES = {

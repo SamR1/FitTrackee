@@ -78,6 +78,7 @@ export const SPORT_EQUIPMENT_TYPES: Record<string, string[]> = {
     'Swimrun',
     'Tennis (Outdoor)',
     'Trail',
+    'Triathlon',
     'Walking',
     'Cycling (Sport)',
     'Cycling (Transport)',

@@ -29,6 +29,7 @@ export const sportColors: Record<string, string> = {
   Swimrun: '#3d9fc9',
   'Tennis (Outdoor)': '#f5665f',
   Trail: '#09a98a',
+  Triathlon: '#3d65c9',
   Walking: '#838383',
   Windsurfing: '#856ece',
 }

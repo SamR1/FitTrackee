@@ -12,7 +12,7 @@ from lxml import etree as ET
 from fittrackee import appLog, db
 from fittrackee.constants import ElevationDataSource, ElevationProcessing
 
-from ...constants import SPORTS_WITHOUT_ELEVATION_DATA
+from ...constants import MULTI_ACTIVITIES_SPORTS, SPORTS_WITHOUT_ELEVATION_DATA
 from ...exceptions import (
     WorkoutElevationException,
     WorkoutExceedingValueException,
@@ -627,10 +627,12 @@ class WorkoutGpxService(
         new_workout_segment.points = segment_points
         new_workout_segment.store_geometry(coordinates)
         new_workout_segment.calories = segment_stats.get("calories")
-        new_workout_segment.sport_id = segment_stats.get("sport_id")  # type: ignore
-        new_workout_segment.is_transition = segment_stats.get(
-            "is_transition", False
-        )
+
+        if self.sport.label in MULTI_ACTIVITIES_SPORTS:
+            new_workout_segment.sport_id = segment_stats.get("sport_id")  # type: ignore
+            new_workout_segment.is_transition = segment_stats.get(
+                "is_transition", False
+            )
 
         return (
             stopped_time_between_segments,

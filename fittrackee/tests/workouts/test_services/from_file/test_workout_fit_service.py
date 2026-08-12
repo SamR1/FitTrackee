@@ -79,9 +79,6 @@ class WorkoutFitServiceProcessFileTestCase(WorkoutFileMixin):
         assert object_to_check.max_power == file_data["max_power"]
         if isinstance(object_to_check, Workout):
             assert object_to_check.workout_stats_from_file is True
-        else:
-            assert object_to_check.sport_id == file_data["sport_id"]
-            assert object_to_check.is_transition == file_data["is_transition"]
 
 
 class TestWorkoutFitServiceGetCoordinate(WorkoutFileMixin):

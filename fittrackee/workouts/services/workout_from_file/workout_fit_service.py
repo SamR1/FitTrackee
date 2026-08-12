@@ -34,8 +34,10 @@ FIT_MATCHING_FIELDS = {
 ALL_KEYS = [*FIT_MATCHING_FIELDS.values(), "pauses"]
 # Only sports for multiple activities sport for now
 FIT_MATCHING_SPORTS = {
+    "cycling|generic": "Cycling (Sport)",
     "swimming|open_water": "Open Water Swimming",
     "running|trail": "Trail",
+    "running|generic": "Running",
 }
 
 

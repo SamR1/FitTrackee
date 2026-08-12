@@ -141,8 +141,10 @@ def get_segments_stats(
             lambda x: x if can_see_calories else None,
         )
 
-    df = df.replace({np.nan: None})
     for key in ["ave_hr", "ave_power", "ave_cadence"]:
-        df[key] = df[key].apply(lambda x: None if x is None else round(x))
+        df[key] = df[key].apply(
+            lambda x: None if x is None or np.isnan(x) else round(x)
+        )
 
+    df = df.replace({np.nan: None})
     return df.to_dict(orient="index")

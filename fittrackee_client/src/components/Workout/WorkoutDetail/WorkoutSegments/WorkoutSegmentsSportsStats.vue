@@ -1,6 +1,6 @@
 <template>
   <div id="workout-sports-stats">
-    <table>
+    <table :class="[tableClass]">
       <thead>
         <tr>
           <th></th>
@@ -441,6 +441,9 @@
       }
     })
   )
+  const tableClass = computed(
+    () => `cols-${Object.keys(sportsStats.value).length}`
+  )
 </script>
 
 <style scoped lang="scss">
@@ -452,6 +455,17 @@
       min-width: 400px;
       border-collapse: collapse;
       margin: $default-margin 0;
+
+      &.cols-2 {
+        .value {
+          width: 33%;
+        }
+      }
+      &.cols-3 {
+        .value {
+          width: 25%;
+        }
+      }
 
       th,
       td {
@@ -482,6 +496,7 @@
         min-width: 50px;
         align-items: center;
         justify-content: center;
+        text-wrap: nowrap;
 
         .sport-img {
           height: 20px;

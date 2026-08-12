@@ -42,13 +42,37 @@ def upgrade():
            SELECT id as sub_sport_id,
                   (SELECT id FROM sports WHERE label = 'Swimrun') as sport_id
            FROM sports
-           WHERE label IN ('Trail', 'Open Water Swimming')
+           WHERE label IN ('Running', 'Trail', 'Open Water Swimming')
         )
         INSERT INTO multi_activities_sports(sport_id, sub_sport_id)
         SELECT sport_id, sub_sport_id from multi_sports;
     """)
 
+    op.execute(
+        """
+        INSERT INTO sports (label, is_active, stopped_speed_threshold)
+        VALUES ('Triathlon', True, 1.0)
+        """
+    )
+
+    op.execute(
+            f"""
+        WITH multi_sports AS (
+           SELECT id as sub_sport_id,
+                  (SELECT id FROM sports WHERE label = 'Triathlon') as sport_id
+           FROM sports
+           WHERE label IN ('Cycling (Sport)', 'Running', 'Trail', 'Open Water Swimming')
+        )
+        INSERT INTO multi_activities_sports(sport_id, sub_sport_id)
+        SELECT sport_id, sub_sport_id from multi_sports;
+    """)
+
+
+
 def downgrade():
+
+
+
     op.execute(
         f"""
         UPDATE workout_segments SET geom = NULL 
@@ -67,3 +91,9 @@ def downgrade():
         batch_op.drop_column('sport_id')
 
     op.drop_table('multi_activities_sports')
+    op.execute(
+        """
+        DELETE FROM sports
+        WHERE label = 'Triathlon';
+        """
+    )

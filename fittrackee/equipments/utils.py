@@ -53,6 +53,7 @@ SPORT_EQUIPMENT_TYPES = {
         "Padel (Outdoor)",
         "Running",
         "Swimrun",
+        "Triathlon",
         "Tennis (Outdoor)",
         "Trail",
         "Walking",

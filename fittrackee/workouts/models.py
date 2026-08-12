@@ -36,6 +36,7 @@ from fittrackee.visibility_levels import (
 )
 
 from .constants import (
+    MULTI_ACTIVITIES_SPORTS,
     PACE_SPORTS,
     TIMEDELTA_COLUMNS,
     WGS84_CRS,
@@ -628,7 +629,7 @@ class Workout(BaseModel):
             }
             segments.append({**segment_data})
 
-            if self.sport.label == "Swimrun":
+            if self.sport.label in MULTI_ACTIVITIES_SPORTS:
                 if segment.is_transition:
                     continue
                 for key in TIMEDELTA_COLUMNS:
@@ -636,7 +637,7 @@ class Workout(BaseModel):
                 multi_sports_totals.append(segment_data)
 
         multi_sports_stats: Dict = {}
-        if self.sport.label == "Swimrun":
+        if self.sport.label in MULTI_ACTIVITIES_SPORTS:
             multi_sports_stats = get_segments_stats(
                 multi_sports_totals,
                 user=user,
