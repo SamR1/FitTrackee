@@ -68,11 +68,7 @@ def upgrade():
     """)
 
 
-
 def downgrade():
-
-
-
     op.execute(
         f"""
         UPDATE workout_segments SET geom = NULL 
