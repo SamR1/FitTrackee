@@ -29,16 +29,20 @@
               {{ $t('workouts.SEGMENT', 1) }} {{ index + 1 }}
             </span>
           </router-link>
+          {{ ' ' }}
           <span v-if="segment.is_transition" class="segment-transition">
             ({{ $t('workouts.DURATION') }}: {{ segment.duration }})
           </span>
           <template v-else>
             ({{ $t('workouts.DISTANCE') }}:
-            <Distance
-              :distance="segment.distance"
-              unitFrom="km"
-              :useImperialUnits="useImperialUnits"
-            />, {{ $t('workouts.DURATION') }}: {{ segment.duration }})
+            <div class="no-wrap">
+              <Distance
+                :distance="segment.distance"
+                unitFrom="km"
+                :useImperialUnits="useImperialUnits"
+              />,
+            </div>
+            {{ $t('workouts.DURATION') }}: {{ segment.duration }})
           </template>
         </div>
       </li>
@@ -80,25 +84,29 @@
     ul {
       padding: 0 $default-padding;
       list-style: square;
+      li {
+        .segment-detail {
+          display: flex;
+          gap: $default-padding * 0.25;
+          flex-wrap: wrap;
+        }
+        .sport-label-img {
+          display: flex;
+          gap: $default-padding * 0.5;
 
-      .segment-detail {
-        display: flex;
-        gap: $default-padding * 0.5;
-        flex-wrap: wrap;
-      }
-      .sport-label-img {
-        display: flex;
-        gap: $default-padding * 0.5;
-
-        .sport-img {
-          height: 20px;
-          width: 20px;
-          margin: 0;
+          .sport-img {
+            height: 20px;
+            width: 20px;
+            margin: 0;
+          }
         }
       }
-    }
-    .segment-transition {
-      font-style: italic;
+      .segment-transition {
+        font-style: italic;
+      }
+      .no-wrap {
+        text-wrap: nowrap;
+      }
     }
   }
 </style>

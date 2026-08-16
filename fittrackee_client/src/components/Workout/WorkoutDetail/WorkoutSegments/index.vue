@@ -29,12 +29,14 @@
           :segments="segments"
           :useImperialUnits="useImperialUnits"
         />
-        <WorkoutSegmentsSportsStats
-          v-show="tab === 'sportsStats'"
-          :authUser="authUser"
-          :sports-stats="multiSportsStats"
-          :cadenceUnit="cadenceUnit"
-        />
+        <template v-if="displayTabs">
+          <WorkoutSegmentsSportsStats
+            v-show="tab === 'sportsStats'"
+            :authUser="authUser"
+            :sports-stats="multiSportsStats"
+            :cadenceUnit="cadenceUnit"
+          />
+        </template>
       </template>
     </Card>
   </div>
@@ -71,7 +73,7 @@
 
   const tab: Ref<'chart' | 'sportsStats'> = ref('chart')
   const displayTabs: ComputedRef<boolean> = computed(
-    () => Object.keys(multiSportsStats).length > 0
+    () => Object.keys(multiSportsStats.value).length > 0
   )
 </script>
 
@@ -94,6 +96,10 @@
         .title-tab {
           height: 100%;
           padding: $default-padding * 0.25 0;
+
+          button {
+            padding: $default-padding * 0.65 $default-padding * 2;
+          }
 
           &.as-tab {
             border-right: 1px solid var(--input-border-color);

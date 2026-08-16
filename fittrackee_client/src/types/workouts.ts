@@ -114,6 +114,7 @@ export interface IMultiSportsStats {
   moving: string | null
   pauses: string | null
   sport_id: number
+  sport?: ISport | null
 }
 
 export interface IWorkout {
