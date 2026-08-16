@@ -283,10 +283,18 @@
           <span
             v-if="sportStats.ave_cadence"
             class="value"
-            :title="$t(`workouts.UNITS.${cadenceUnit}.LABEL`)"
+            :title="
+              $t(
+                `workouts.UNITS.${getCadenceUnit(sportStats.sport?.label)}.LABEL`
+              )
+            "
           >
             {{ sportStats.ave_cadence }}
-            {{ $t(`workouts.UNITS.${cadenceUnit}.UNIT`) }}
+            {{
+              $t(
+                `workouts.UNITS.${getCadenceUnit(sportStats.sport?.label)}.UNIT`
+              )
+            }}
           </span>
         </td>
       </tr>
@@ -309,10 +317,18 @@
           <span
             v-if="sportStats.max_cadence"
             class="value"
-            :title="$t(`workouts.UNITS.${cadenceUnit}.LABEL`)"
+            :title="
+              $t(
+                `workouts.UNITS.${getCadenceUnit(sportStats.sport?.label)}.LABEL`
+              )
+            "
           >
             {{ sportStats.max_cadence }}
-            {{ $t(`workouts.UNITS.${cadenceUnit}.UNIT`) }}
+            {{
+              $t(
+                `workouts.UNITS.${getCadenceUnit(sportStats.sport?.label)}.UNIT`
+              )
+            }}
           </span>
         </td>
       </tr>
@@ -440,11 +456,11 @@
   import { computed, toRefs } from 'vue'
 
   import type { IDisplayOptions } from '@/types/application.ts'
-  import type { IMultiSportsStats, TCadenceUnit } from '@/types/workouts.ts'
+  import type { IMultiSportsStats } from '@/types/workouts.ts'
+  import { getCadenceUnit } from '@/utils/workouts.ts'
 
   interface Props {
     statsWithSport: IMultiSportsStats[]
-    cadenceUnit: TCadenceUnit
     displayOptions: IDisplayOptions
   }
   const props = defineProps<Props>()

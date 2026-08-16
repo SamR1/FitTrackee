@@ -601,19 +601,31 @@ class Workout(BaseModel):
 
         segments = []
         multi_sports_totals = []
+        is_multi_activities_sport = (
+            self.sport.label in MULTI_ACTIVITIES_SPORTS.keys()
+        )
+
         for number, segment in enumerate(self.segments, start=1):
+            segment_sport_data_visibility = None
+            if is_multi_activities_sport and not segment.is_transition:
+                segment_sport_data_visibility = get_sport_displayed_data(
+                    segment.sport, user
+                )
+
             segment_data: Dict = {
                 **segment.serialize(
                     user=user,
                     can_see_heart_rate=can_see_heart_rate,
                     can_see_calories=can_see_calories,
-                    sport_data_visibility=sport_data_visibility,
+                    sport_data_visibility=(
+                        segment_sport_data_visibility or sport_data_visibility
+                    ),
                 ),
                 "segment_number": number,
             }
             segments.append({**segment_data})
 
-            if self.sport.label in MULTI_ACTIVITIES_SPORTS.keys():
+            if is_multi_activities_sport:
                 if segment.is_transition:
                     continue
                 for key in TIMEDELTA_COLUMNS:
@@ -621,7 +633,7 @@ class Workout(BaseModel):
                 multi_sports_totals.append(segment_data)
 
         multi_sports_stats: Dict = {}
-        if self.sport.label in MULTI_ACTIVITIES_SPORTS.keys():
+        if is_multi_activities_sport:
             multi_sports_stats = get_segments_stats(
                 multi_sports_totals,
                 user=user,

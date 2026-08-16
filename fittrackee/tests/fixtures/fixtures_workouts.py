@@ -1401,6 +1401,7 @@ def workout_triathlon_user_1_segment_1_with_coordinates(
     )
     db.session.add(segment)
     db.session.flush()
+    update_workout(segment)
     update_workout_totals(workout_triathlon_user_1_with_coordinates)
     db.session.commit()
     return segment

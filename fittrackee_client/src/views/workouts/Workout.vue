@@ -51,7 +51,6 @@
           <WorkoutSegments
             v-if="!displaySegment && workoutData.workout.segments.length > 1"
             :authUser="authUser"
-            :cadenceUnit="cadenceUnit"
             :multi-sports-stats="workoutData.workout.multi_sports_stats"
             :segments="workoutData.workout.segments"
             :useImperialUnits="displayOptions.useImperialUnits"

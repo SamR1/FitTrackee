@@ -1721,21 +1721,42 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         self,
         app: "Flask",
         sport_1_cycling: "Sport",
-        sport_8_trail: "Sport",
         sport_9_open_water_swimming: "Sport",
-        sport_10_swimrun: "Sport",
         user_1: "User",
-        user_2_admin: "User",
-        workout_swimrun_user_1_with_coordinates: "Workout",
-        workout_swimrun_user_1_segment_0_with_coordinates: "Workout",
+        workout_triathlon_user_1_with_coordinates: "Workout",
+        workout_triathlon_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_triathlon_user_1_segment_1_with_coordinates: "WorkoutSegment",
     ) -> None:
-
-        serialized_workout = workout_swimrun_user_1_with_coordinates.serialize(
-            user=user_1, light=False
+        serialized_workout = (
+            workout_triathlon_user_1_with_coordinates.serialize(
+                user=user_1, light=False
+            )
         )
 
         assert serialized_workout["multi_sports_stats"] == {
-            sport_8_trail.id: {
+            sport_1_cycling.id: {
+                "duration": "0:02:25",
+                "pauses": "0:00:00",
+                "moving": "0:02:25",
+                "distance": 0.186,
+                "min_alt": None,
+                "max_alt": None,
+                "descent": 0,
+                "ascent": 0,
+                "max_speed": 4.62,
+                "ave_speed": 4.62,
+                "ave_cadence": None,
+                "max_cadence": None,
+                "ave_hr": None,
+                "max_hr": None,
+                "ave_power": None,
+                "max_power": None,
+                "ave_pace": None,
+                "best_pace": None,
+                "calories": 0,
+                "sport_id": sport_1_cycling.id,
+            },
+            sport_9_open_water_swimming.id: {
                 "duration": "0:01:30",
                 "pauses": "0:00:00",
                 "moving": "0:01:30",
@@ -1744,19 +1765,19 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 "max_alt": None,
                 "descent": 0,
                 "ascent": 0,
-                "max_speed": None,
-                "ave_speed": None,
+                "max_speed": 5.25,
+                "ave_speed": 4.34,
                 "ave_cadence": None,
                 "max_cadence": None,
                 "ave_hr": None,
                 "max_hr": None,
                 "ave_power": None,
                 "max_power": None,
-                "ave_pace": "0:13:49",
-                "best_pace": "0:11:26",
+                "ave_pace": None,
+                "best_pace": None,
                 "calories": 0,
-                "sport_id": sport_8_trail.id,
-            }
+                "sport_id": sport_9_open_water_swimming.id,
+            },
         }
 
 

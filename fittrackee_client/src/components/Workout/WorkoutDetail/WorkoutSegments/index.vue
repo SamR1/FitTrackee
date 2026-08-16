@@ -34,7 +34,6 @@
             v-show="tab === 'sportsStats'"
             :authUser="authUser"
             :sports-stats="multiSportsStats"
-            :cadenceUnit="cadenceUnit"
           />
         </template>
       </template>
@@ -49,27 +48,17 @@
   import WorkoutSegmentsList from '@/components/Workout/WorkoutDetail/WorkoutSegments/WorkoutSegmentsList.vue'
   import WorkoutSegmentsSportsStats from '@/components/Workout/WorkoutDetail/WorkoutSegments/WorkoutSegmentsSportsStats.vue'
   import type { IAuthUserProfile } from '@/types/user.ts'
-  import type {
-    IMultiSportsStats,
-    IWorkoutSegment,
-    TCadenceUnit,
-  } from '@/types/workouts'
+  import type { IMultiSportsStats, IWorkoutSegment } from '@/types/workouts'
 
   interface Props {
     authUser: IAuthUserProfile
-    cadenceUnit: TCadenceUnit
     segments: IWorkoutSegment[]
     useImperialUnits: boolean
     multiSportsStats: Record<number, IMultiSportsStats>
   }
   const props = defineProps<Props>()
-  const {
-    authUser,
-    cadenceUnit,
-    multiSportsStats,
-    segments,
-    useImperialUnits,
-  } = toRefs(props)
+  const { authUser, multiSportsStats, segments, useImperialUnits } =
+    toRefs(props)
 
   const tab: Ref<'chart' | 'sportsStats'> = ref('chart')
   const displayTabs: ComputedRef<boolean> = computed(

@@ -3,7 +3,6 @@
     <div class="all-sports">
       <WorkoutSegmentsSportsStatsTable
         :stats-with-sport="statsWithSport"
-        :cadence-unit="cadenceUnit"
         :display-options="displayOptions"
       />
     </div>
@@ -14,7 +13,6 @@
     >
       <WorkoutSegmentsSportsStatsTable
         :stats-with-sport="[stats]"
-        :cadence-unit="cadenceUnit"
         :display-options="displayOptions"
       />
     </div>
@@ -28,11 +26,10 @@
   import useSports from '@/composables/useSports.ts'
   import { ROOT_STORE } from '@/store/constants.ts'
   import type { IDisplayOptions } from '@/types/application.ts'
-  import type { IMultiSportsStats, TCadenceUnit } from '@/types/workouts.ts'
+  import type { IMultiSportsStats } from '@/types/workouts.ts'
   import { useStore } from '@/use/useStore.ts'
   interface Props {
     sportsStats: Record<number, IMultiSportsStats>
-    cadenceUnit: TCadenceUnit
   }
   const props = defineProps<Props>()
   const { sportsStats } = toRefs(props)

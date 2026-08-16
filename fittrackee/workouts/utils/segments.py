@@ -57,8 +57,7 @@ def convert_duration_to_string(value: Optional["timedelta"]) -> Optional[str]:
 def convert_pace_duration_to_string(
     value: Optional["timedelta"], sport_data_visibility: "SportDisplayedData"
 ) -> Optional[str]:
-
-    if value is None:
+    if value is None or pd.isna(value):
         return None
 
     return get_pace(
