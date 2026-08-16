@@ -13,6 +13,7 @@
           <WorkoutDetail
             v-else
             :workoutData="workoutData"
+            :segment="segment"
             :sport="sport"
             :authUser="authUser"
             :markerCoordinates="markerCoordinates"
@@ -26,7 +27,6 @@
             :workoutData="workoutData"
             :isRefreshing="isRefreshing"
             :authUser="authUser"
-            :displaySegment="displaySegment"
             :sport="sport"
             :cadenceUnit="cadenceUnit"
             :isWorkoutOwner="isWorkoutOwner"
@@ -115,6 +115,7 @@
   import type {
     IWorkoutData,
     IWorkoutPayload,
+    IWorkoutSegment,
     TCadenceUnit,
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
@@ -148,8 +149,20 @@
   const isWorkoutOwner: ComputedRef<boolean> = computed(
     () => authUser.value.username === workoutData.value.workout.user.username
   )
+  const segmentId: Ref<string | null> = ref(
+    route.params.workoutId ? (route.params.segmentId as string) : null
+  )
+  const segment: ComputedRef<IWorkoutSegment | undefined> = computed(() =>
+    workoutData.value.workout.segments.length > 0 && segmentId.value
+      ? workoutData.value.workout.segments.find(
+          (segment) => segment.segment_id === segmentId.value
+        )
+      : undefined
+  )
   const sport: ComputedRef<ISport | null> = computed(() =>
-    getObjectSport(workoutData.value.workout)
+    displaySegment.value && segment.value?.sport_id
+      ? getObjectSport(segment.value)
+      : getObjectSport(workoutData.value.workout)
   )
   const cadenceUnit: ComputedRef<TCadenceUnit> = computed(() =>
     getCadenceUnit(sport.value?.label)
@@ -180,7 +193,10 @@
           workoutId: route.params.workoutId,
         }
         if (newSegmentId) {
+          segmentId.value = newSegmentId as string
           payload.segmentId = newSegmentId
+        } else {
+          segmentId.value = null
         }
         store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
       }

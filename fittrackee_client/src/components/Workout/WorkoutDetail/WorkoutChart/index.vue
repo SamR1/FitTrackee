@@ -181,7 +181,7 @@
   import type { IWorkoutChartData, IWorkoutData } from '@/types/workouts'
   import { formatDuration } from '@/utils/duration.ts'
   import { units } from '@/utils/units'
-  import { chartsColors, getCadenceUnit, getDatasets } from '@/utils/workouts'
+  import { chartsColors, getDatasets } from '@/utils/workouts'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -189,9 +189,11 @@
     sport: ISport | null
     isWorkoutOwner: boolean
     isRefreshing: boolean
+    cadenceUnit: string
   }
   const props = defineProps<Props>()
-  const { authUser, isRefreshing, sport, workoutData } = toRefs(props)
+  const { authUser, cadenceUnit, isRefreshing, sport, workoutData } =
+    toRefs(props)
 
   const emit = defineEmits(['getCoordinates'])
 
@@ -576,7 +578,7 @@
   function getUnitLabelForYAxis(datasetId: string | undefined): string {
     switch (datasetId) {
       case 'cadence':
-        return ` (${t(`workouts.UNITS.${getCadenceUnit(sport.value?.label)}.UNIT`)})`
+        return ` (${t(`workouts.UNITS.${cadenceUnit.value}.UNIT`)})`
       case 'elevation':
         return ` (${fromMUnit})`
       case 'hr':
@@ -642,8 +644,7 @@
       return label + ` ${fromMUnit}`
     }
     if (context.dataset.id === 'cadence') {
-      const unit = getCadenceUnit(sport.value?.label)
-      return label + ' ' + t(`workouts.UNITS.${unit}.UNIT`)
+      return label + ' ' + t(`workouts.UNITS.${cadenceUnit.value}.UNIT`)
     }
     if (context.dataset.id === 'power') {
       return `${label} W`

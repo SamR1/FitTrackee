@@ -85,6 +85,7 @@ class TestGetChartData:
                 can_see_map_data=True,
                 can_see_heart_rate=True,
             )
+
         get_chart_data_from_segment_points_mock.assert_called_once_with(
             [
                 workout_cycling_user_1_segment_0_with_coordinates.points,
@@ -115,9 +116,37 @@ class TestGetChartData:
                 can_see_heart_rate=True,
                 segment_short_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             )
+
         get_chart_data_from_segment_points_mock.assert_called_once_with(
             [workout_cycling_user_1_segment_0_with_coordinates.points],
             workout_cycling_user_1_with_coordinates.sport,
+            user=user_1,
+            workout_ave_cadence=None,
+            can_see_heart_rate=True,
+            can_see_map_data=True,
+        )
+
+    def test_it_calls_get_chart_data_from_segment_points_for_multiactivities_sport(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        workout_triathlon_user_1_with_coordinates: "Workout",
+        workout_triathlon_user_1_segment_0_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        with patch(
+            "fittrackee.workouts.utils.chart.get_chart_data_from_segment_points"
+        ) as get_chart_data_from_segment_points_mock:
+            get_chart_data(
+                workout_triathlon_user_1_with_coordinates,
+                user=user_1,
+                can_see_map_data=True,
+                can_see_heart_rate=True,
+                segment_short_id=workout_triathlon_user_1_segment_0_with_coordinates.short_id,
+            )
+
+        get_chart_data_from_segment_points_mock.assert_called_once_with(
+            [workout_triathlon_user_1_segment_0_with_coordinates.points],
+            workout_triathlon_user_1_segment_0_with_coordinates.sport,
             user=user_1,
             workout_ave_cadence=None,
             can_see_heart_rate=True,

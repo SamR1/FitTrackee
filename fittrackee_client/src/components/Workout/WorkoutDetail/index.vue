@@ -123,6 +123,7 @@
     markerCoordinates?: TCoordinates
     isWorkoutOwner: boolean
     cadenceUnit: string
+    segment: IWorkoutSegment | undefined
   }
   const props = withDefaults(defineProps<Props>(), {
     markerCoordinates: () => ({}) as TCoordinates,
@@ -133,20 +134,16 @@
 
   const { getObjectSport } = useSports()
 
-  const { isWorkoutOwner, markerCoordinates, sport, workoutData } =
-    toRefs(props)
+  const {
+    displaySegment,
+    isWorkoutOwner,
+    markerCoordinates,
+    segment,
+    sport,
+    workoutData,
+  } = toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
-  )
-  const segmentId: Ref<string | null> = ref(
-    route.params.workoutId ? (route.params.segmentId as string) : null
-  )
-  const segment: ComputedRef<IWorkoutSegment | undefined> = computed(() =>
-    workout.value.segments.length > 0 && segmentId.value
-      ? workout.value.segments.find(
-          (segment) => segment.segment_id === segmentId.value
-        )
-      : undefined
   )
   const segmentNumber: ComputedRef<number | null> = computed(() =>
     segment.value ? segment.value.segment_number : null
@@ -211,7 +208,7 @@
   ): IWorkoutObject {
     const urls = getWorkoutObjectUrl(
       workout,
-      props.displaySegment,
+      displaySegment.value,
       segmentNumber.value
     )
     const workoutDate = formatWorkoutDate(
@@ -260,7 +257,7 @@
       statsFromFile: segment ? undefined : workout.stats_from_file || false,
       suspended: workout.suspended === undefined ? false : workout.suspended,
       title: workout.title,
-      type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
+      type: displaySegment.value ? 'SEGMENT' : 'WORKOUT',
       workoutDate: workoutDate.workout_date,
       weatherEnd: segment ? null : workout.weather_end,
       workoutFullDate: formatDate(
@@ -314,8 +311,7 @@
 
   watch(
     () => route.params.segmentId,
-    async (newSegmentId) => {
-      segmentId.value = newSegmentId as string
+    async () => {
       scrollToTop()
     }
   )
