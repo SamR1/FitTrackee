@@ -218,6 +218,7 @@
       ),
       displayOptions.value.dateFormat
     )
+    const isMultiActivities = Object.keys(workout.multi_sports_stats).length > 0
     return {
       analysisVisibility: workout.analysis_visibility,
       ascent: segment ? segment.ascent : workout.ascent,
@@ -246,7 +247,7 @@
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,
       nextUrl: urls.nextUrl,
-      originalFile: segment ? null : workout.original_file,
+      originalFile: workout.original_file,
       pauses: segment ? segment.pauses : workout.pauses,
       previousUrl: urls.previousUrl,
       records: segment ? [] : workout.records,
@@ -254,7 +255,8 @@
       segmentNumber: segment ? segment.segment_number : null,
       sport: getObjectSport(segment || workout),
       source: segment ? null : workout.source || null,
-      statsFromFile: segment ? undefined : workout.stats_from_file || false,
+      statsFromFile:
+        !segment || isMultiActivities ? workout.stats_from_file : false,
       suspended: workout.suspended === undefined ? false : workout.suspended,
       title: workout.title,
       type: displaySegment.value ? 'SEGMENT' : 'WORKOUT',
