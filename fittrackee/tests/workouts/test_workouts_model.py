@@ -4344,7 +4344,7 @@ class TestWorkoutModel(WorkoutModelTestCase):
         assert mp_record.workout_id == workout_running_user_1.id
         assert mp_record.workout_uuid == workout_running_user_1.uuid
 
-    def test_it_returns_segments_ordered_by_stat_date(
+    def test_it_returns_segments_ordered_by_start_date(
         self,
         app: Flask,
         user_1: User,

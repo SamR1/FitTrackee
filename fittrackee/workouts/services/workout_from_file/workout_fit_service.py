@@ -125,7 +125,8 @@ class WorkoutFitService(WorkoutGpxService):
         data_frames: List["FitDataMessage"],
     ) -> Tuple[Dict, List[Dict]]:
         """
-        Multi-sports activities like Swimrun contain multiple sessions
+        Multi-sports activities like Swimrun or Triathlon contain multiple
+        sessions
         """
         session_frames = sorted(
             filter(lambda f: f.name == "session", data_frames),

@@ -182,15 +182,15 @@ def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
     target.ave_speed = float(distance) / (target.duration.seconds / 3600)
     target.max_speed = target.ave_speed
     target.moving = target.duration
-    target.pauses = timedelta(seconds=0)
+    target.pauses = timedelta()
     target.ave_pace = convert_speed_into_pace_duration(target.ave_speed)
     target.best_pace = target.ave_pace
 
 
 def update_workout_totals(workout: "Workout") -> None:
     total_distance = 0
-    total_duration = timedelta(seconds=0)
-    total_moving = timedelta(seconds=0)
+    total_duration = timedelta()
+    total_moving = timedelta()
     for segment in workout.segments:
         total_distance += segment.distance  # type: ignore
         total_duration += segment.duration  # type: ignore
@@ -287,7 +287,7 @@ def workout_cycling_user_1_segment_0_with_coordinates(
     )
     workout_segment.duration = timedelta(minutes=1, seconds=30)
     workout_segment.moving = workout_segment.duration
-    workout_segment.pauses = timedelta(seconds=0)
+    workout_segment.pauses = timedelta()
     workout_segment.distance = 0.113
     workout_segment.ave_speed = 4.34
     workout_segment.max_speed = 5.25

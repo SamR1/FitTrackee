@@ -240,7 +240,7 @@ class Sport(BaseModel):
 
     @property
     def sports(self) -> List["Sport"]:
-        if self.label not in MULTI_ACTIVITIES_SPORTS.keys():
+        if self.label not in MULTI_ACTIVITIES_SPORTS:
             return []
         return Sport.query.filter(
             Sport.label.in_(MULTI_ACTIVITIES_SPORTS[self.label])
@@ -601,9 +601,7 @@ class Workout(BaseModel):
 
         segments = []
         multi_sports_totals = []
-        is_multi_activities_sport = (
-            self.sport.label in MULTI_ACTIVITIES_SPORTS.keys()
-        )
+        is_multi_activities_sport = self.sport.label in MULTI_ACTIVITIES_SPORTS
 
         for number, segment in enumerate(self.segments, start=1):
             segment_sport_data_visibility = None
@@ -1248,6 +1246,7 @@ class WorkoutSegment(BaseModel):
     ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # rpm
     max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
     ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
+    # geometry can be a LineString or a Point
     geom: Mapped["WKBElement"] = mapped_column(
         Geometry(srid=WGS84_CRS, spatial_index=True),
         nullable=True,  # to handle pre-existing segments for now
@@ -1276,7 +1275,7 @@ class WorkoutSegment(BaseModel):
         db.ForeignKey("sports.id"), index=True, nullable=True
     )
     is_transition: Mapped[bool] = mapped_column(
-        server_default="False", nullable=False
+        server_default="false", nullable=False
     )
     calories: Mapped[Optional[int]] = mapped_column(nullable=True)  # kcal
 

@@ -10,8 +10,8 @@
     xmlns:svg="http://www.w3.org/2000/svg"
   >
     <desc id="triathlonDescription">
-      silhouette of a person swimming in open water and another silhouette of a
-      person running
+      silhouette of a person swimming in open water, another silhouette of a
+      person running and another silhouette of a person riding a bike
     </desc>
     <g
       transform="matrix(0.56577485,0,0,0.55590806,89.243087,-29.373899)"

@@ -757,9 +757,9 @@ class WorkoutGpxService(
             workout_uuid=new_workout_uuid,
         )
         new_workout_segment.distance = 0
-        new_workout_segment.duration = timedelta(seconds=0)
-        new_workout_segment.moving = timedelta(seconds=0)
-        new_workout_segment.pauses = timedelta(seconds=0)
+        new_workout_segment.duration = timedelta()
+        new_workout_segment.moving = timedelta()
+        new_workout_segment.pauses = timedelta()
         new_workout_segment.start_date = point.time  # type: ignore
         new_workout_segment.is_transition = True
         new_workout_segment.points = [

@@ -57,7 +57,7 @@ def get_chart_data(
         )
 
     segment_sport = None
-    if segment_uuid and workout.sport.label in MULTI_ACTIVITIES_SPORTS.keys():
+    if segment_uuid and workout.sport.label in MULTI_ACTIVITIES_SPORTS:
         segment_sport = (
             Sport.query.join(
                 WorkoutSegment, WorkoutSegment.sport_id == Sport.id
