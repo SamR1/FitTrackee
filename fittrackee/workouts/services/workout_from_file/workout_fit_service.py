@@ -35,8 +35,6 @@ ALL_KEYS = [*FIT_MATCHING_FIELDS.values(), "pauses"]
 
 
 class WorkoutFitService(WorkoutGpxService):
-    # sport : "Sport"
-
     @staticmethod
     def get_coordinate(value: int) -> float:
         """
@@ -206,14 +204,14 @@ class WorkoutFitService(WorkoutGpxService):
         see:
         https://developer.garmin.com/fit/file-types/activity/
 
-        Activity File contains Laps (intervals in session) and Records.
+        Activity File contains Laps (intervals), Sessions and Records.
 
-        For now, only records are parsed and gpx file generated from fit file
+        For multi-activities sports like Swimrun and Triathlon, sessions
+        are used to identify each activity, created as segment.
+
+        Otherwise, only records are parsed and gpx file generated from fit file
         contains only one track. A new segment is created on after 'stop_all'
         event.
-
-        TODO:
-        - handle multiple sports activities (see Session)
         """
         try:
             fit_file = fitdecode.FitReader(workout_file)
