@@ -322,7 +322,7 @@ class WorkoutGpxService(
             if isinstance(object_to_update, WorkoutSegment):
                 object_to_update.max_speed = (
                     convert_speed_in_km_h(file_stats["max_speed"])
-                    if self.file_stats.get("max_speed")
+                    if file_stats.get("max_speed")
                     else 0
                 )
                 object_to_update.best_pace = convert_speed_into_pace_duration(
