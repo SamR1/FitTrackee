@@ -51,10 +51,27 @@ SPORTS_WITHOUT_ELEVATION_DATA = [
     "Standup Paddleboarding",
 ]
 # sports for which the segments are associated with sports
-MULTI_ACTIVITIES_SPORTS = [
-    "Swimrun",
-    "Triathlon",
-]
+MULTI_ACTIVITIES_SPORTS = {
+    "Swimrun": [
+        "Open Water Swimming",
+        "Running",
+        "Trail",
+    ],
+    "Triathlon": [
+        "Cycling (Sport)",
+        "Open Water Swimming",
+        "Running",
+        "Trail",
+    ],
+}
+# Only sports for multiple activities sport for now
+FIT_MATCHING_SPORTS = {
+    "cycling|generic": "Cycling (Sport)",
+    "swimming|open_water": "Open Water Swimming",
+    "running|trail": "Trail",
+    "running|generic": "Running",
+}
+
 
 # for file download
 WORKOUT_FILE_MIMETYPES = {

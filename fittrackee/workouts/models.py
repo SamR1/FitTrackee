@@ -199,23 +199,6 @@ def update_equipments(workout: "Workout", connection: Connection) -> None:
         )
 
 
-class MultiActivitiesSports(BaseModel):
-    __tablename__ = "multi_activities_sports"
-
-    sport_id: Mapped[int] = mapped_column(
-        db.ForeignKey("sports.id"),
-        primary_key=True,
-    )
-    sub_sport_id: Mapped[int] = mapped_column(
-        db.ForeignKey("sports.id"),
-        primary_key=True,
-    )
-
-    def __init__(self, main_sport_id: int, sub_sport_id: int):
-        self.sport_id = main_sport_id
-        self.sub_sport_id = sub_sport_id
-
-
 class Sport(BaseModel):
     __tablename__ = "sports"
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
@@ -238,14 +221,6 @@ class Sport(BaseModel):
     records: Mapped[List["Record"]] = relationship(
         "Record", lazy=True, back_populates="sport"
     )
-    sports = relationship(
-        "Sport",
-        secondary="multi_activities_sports",
-        primaryjoin=id == MultiActivitiesSports.sport_id,  # noqa: A003,
-        secondaryjoin=id == MultiActivitiesSports.sub_sport_id,  # noqa: A003,
-        lazy="dynamic",
-        viewonly=True,
-    )
 
     def __repr__(self) -> str:
         return f"<Sport {self.label!r}>"
@@ -262,6 +237,14 @@ class Sport(BaseModel):
             .count()
             > 0
         )
+
+    @property
+    def sports(self) -> List["Sport"]:
+        if self.label not in MULTI_ACTIVITIES_SPORTS.keys():
+            return []
+        return Sport.query.filter(
+            Sport.label.in_(MULTI_ACTIVITIES_SPORTS[self.label])
+        ).all()
 
     def serialize(
         self,
@@ -630,7 +613,7 @@ class Workout(BaseModel):
             }
             segments.append({**segment_data})
 
-            if self.sport.label in MULTI_ACTIVITIES_SPORTS:
+            if self.sport.label in MULTI_ACTIVITIES_SPORTS.keys():
                 if segment.is_transition:
                     continue
                 for key in TIMEDELTA_COLUMNS:
@@ -638,7 +621,7 @@ class Workout(BaseModel):
                 multi_sports_totals.append(segment_data)
 
         multi_sports_stats: Dict = {}
-        if self.sport.label in MULTI_ACTIVITIES_SPORTS:
+        if self.sport.label in MULTI_ACTIVITIES_SPORTS.keys():
             multi_sports_stats = get_segments_stats(
                 multi_sports_totals,
                 user=user,

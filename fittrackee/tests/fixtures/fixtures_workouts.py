@@ -15,7 +15,6 @@ from fittrackee import VERSION, db
 from fittrackee.constants import PaceSpeedDisplay
 from fittrackee.workouts.models import (
     TITLE_MAX_CHARACTERS,
-    MultiActivitiesSports,
     Sport,
     Workout,
     WorkoutSegment,
@@ -161,10 +160,6 @@ def sport_10_swimrun(
     sport = Sport(label="Swimrun")
     db.session.add(sport)
     db.session.flush()
-    db.session.add(MultiActivitiesSports(sport.id, sport_8_trail.id))
-    db.session.add(
-        MultiActivitiesSports(sport.id, sport_9_open_water_swimming.id)
-    )
     db.session.commit()
     return sport
 
@@ -178,11 +173,6 @@ def sport_11_triathlon(
     sport = Sport(label="Triathlon")
     db.session.add(sport)
     db.session.flush()
-    db.session.add(MultiActivitiesSports(sport.id, sport_1_cycling.id))
-    db.session.add(MultiActivitiesSports(sport.id, sport_2_running.id))
-    db.session.add(
-        MultiActivitiesSports(sport.id, sport_9_open_water_swimming.id)
-    )
     db.session.commit()
     return sport
 

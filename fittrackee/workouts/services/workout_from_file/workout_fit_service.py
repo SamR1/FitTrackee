@@ -5,7 +5,7 @@ import gpxpy.gpx
 import numpy as np
 import pandas as pd
 
-from ...constants import NSMAP
+from ...constants import FIT_MATCHING_SPORTS, NSMAP
 from ...exceptions import WorkoutFileException
 from ...models import Sport
 from .constants import GARMIN_DEVICES
@@ -32,13 +32,6 @@ FIT_MATCHING_FIELDS = {
     "total_calories": "calories",
 }
 ALL_KEYS = [*FIT_MATCHING_FIELDS.values(), "pauses"]
-# Only sports for multiple activities sport for now
-FIT_MATCHING_SPORTS = {
-    "cycling|generic": "Cycling (Sport)",
-    "swimming|open_water": "Open Water Swimming",
-    "running|trail": "Trail",
-    "running|generic": "Running",
-}
 
 
 class WorkoutFitService(WorkoutGpxService):
@@ -243,7 +236,7 @@ class WorkoutFitService(WorkoutGpxService):
 
             file_stats, sessions_stats = cls.get_file_stats(data_frames)
             multi_activities = {
-                sport.label: sport.id for sport in sport.sports.all()
+                sport.label: sport.id for sport in sport.sports
             }
             create_segment_on_events = len(multi_activities.keys()) == 0
             session_index = -1

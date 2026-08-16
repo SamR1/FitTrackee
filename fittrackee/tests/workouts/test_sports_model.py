@@ -122,7 +122,7 @@ class TestSportModel:
     def test_trail_is_not_multi_activities_sport(
         self, app: "Flask", sport_8_trail: "Sport"
     ) -> None:
-        assert sport_8_trail.sports.all() == []
+        assert sport_8_trail.sports == []
 
     def test_swimrun_is_multi_activities_sport(
         self,
