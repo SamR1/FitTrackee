@@ -26,6 +26,7 @@ export interface IWorkoutSegment {
   ave_power: number | null
   ave_speed: number
   best_pace: string | null
+  calories: number | null
   descent: number
   distance: number
   duration: string

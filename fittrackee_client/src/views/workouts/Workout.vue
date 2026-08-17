@@ -14,7 +14,7 @@
             v-else
             :workoutData="workoutData"
             :segment="segment"
-            :sport="sport"
+            :sport="workoutSport"
             :authUser="authUser"
             :markerCoordinates="markerCoordinates"
             :displaySegment="displaySegment"
@@ -158,10 +158,13 @@
         )
       : undefined
   )
+  const workoutSport: ComputedRef<ISport | null> = computed(() =>
+    getObjectSport(workoutData.value.workout)
+  )
   const sport: ComputedRef<ISport | null> = computed(() =>
     displaySegment.value && segment.value?.sport_id
       ? getObjectSport(segment.value)
-      : getObjectSport(workoutData.value.workout)
+      : workoutSport.value
   )
   const cadenceUnit: ComputedRef<TCadenceUnit> = computed(() =>
     getCadenceUnit(sport.value?.label)
