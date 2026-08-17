@@ -605,7 +605,11 @@ class Workout(BaseModel):
 
         for number, segment in enumerate(self.segments, start=1):
             segment_sport_data_visibility = None
-            if is_multi_activities_sport and not segment.is_transition:
+            if (
+                is_multi_activities_sport
+                and not segment.is_transition
+                and segment.sport
+            ):
                 segment_sport_data_visibility = get_sport_displayed_data(
                     segment.sport, user
                 )
@@ -624,7 +628,10 @@ class Workout(BaseModel):
             segments.append({**segment_data})
 
             if is_multi_activities_sport:
-                if segment.is_transition:
+                # if workout is created from a file different then .fit,
+                # segments are not created in association with a sport or as
+                # transition => multi_sports_totals is an empty dict
+                if segment.is_transition or not segment.sport:
                     continue
                 for key in TIMEDELTA_COLUMNS:
                     segment_data[key] = getattr(segment, key)
@@ -1271,7 +1278,7 @@ class WorkoutSegment(BaseModel):
     best_pace: Mapped[Optional[timedelta]] = mapped_column(
         nullable=True
     )  # min/km
-    sport_id: Mapped[int] = mapped_column(
+    sport_id: Mapped[Optional[int]] = mapped_column(
         db.ForeignKey("sports.id"), index=True, nullable=True
     )
     is_transition: Mapped[bool] = mapped_column(

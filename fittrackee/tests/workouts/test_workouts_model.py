@@ -1780,6 +1780,32 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             },
         }
 
+    def test_it_returns_multi_sports_stats_as_empty_dict_when_no_sport_data(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        sport_9_open_water_swimming: "Sport",
+        user_1: "User",
+        workout_triathlon_user_1_with_coordinates: "Workout",
+        workout_triathlon_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_triathlon_user_1_segment_1_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        """
+        In case, the workout is not created from a .fit file (no sport
+        associated with segments)
+        """
+        workout_triathlon_user_1_segment_0_with_coordinates.sport_id = None
+        workout_triathlon_user_1_segment_1_with_coordinates.sport_id = None
+        db.session.commit()
+
+        serialized_workout = (
+            workout_triathlon_user_1_with_coordinates.serialize(
+                user=user_1, light=False
+            )
+        )
+
+        assert serialized_workout["multi_sports_stats"] == {}
+
 
 class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
     def test_it_raises_exception_when_workout_visibility_is_private(
