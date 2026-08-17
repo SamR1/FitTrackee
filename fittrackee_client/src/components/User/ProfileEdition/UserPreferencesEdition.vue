@@ -370,7 +370,7 @@
           </select>
         </label>
         <label class="form-items">
-          <span>
+          <span class="capitalize">
             {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>
           </span>
           <select
@@ -389,7 +389,7 @@
           </select>
         </label>
         <label class="form-items">
-          <span>
+          <span class="capitalize">
             {{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>
           </span>
           <select
@@ -407,7 +407,9 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('visibility_levels.HR_VISIBILITY') }}
+          <span class="capitalize">
+            {{ $t('visibility_levels.HR_VISIBILITY') }}
+          </span>
           <select
             id="hr_visibility"
             v-model="userForm.hr_visibility"
@@ -423,7 +425,9 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('visibility_levels.CALORIES_VISIBILITY') }}
+          <span class="capitalize">
+            {{ $t('visibility_levels.CALORIES_VISIBILITY') }}
+          </span>
           <select
             id="calories_visibility"
             v-model="userForm.calories_visibility"
@@ -456,6 +460,12 @@
             </option>
           </select>
         </label>
+        <div class="info-box events-help">
+          <span>
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.HELP') }}
+          </span>
+        </div>
         <div class="info-box changes-help">
           <div>
             1.
@@ -804,7 +814,8 @@
       padding: $default-padding * 0.5;
     }
 
-    .missing-elevations-help {
+    .missing-elevations-help,
+    .events-help {
       margin-top: $default-margin * 0.5;
     }
     .changes-help {
