@@ -59,6 +59,25 @@
           {{ sportStats.pauses }}
         </td>
       </tr>
+      <tr
+        v-if="
+          Object.values(statsWithSport).some(
+            (stats) => stats.pauses !== '0:00:00'
+          )
+        "
+      >
+        <td class="value-label capitalize capitalize">
+          {{ $t('workouts.TOTAL_DURATION') }}
+        </td>
+        <td
+          class="value"
+          v-for="sportStats in statsWithSport"
+          :key="sportStats.sport_id"
+        >
+          <span class="cell-heading">{{ $t('workouts.TOTAL_DURATION') }}</span>
+          {{ sportStats.duration }}
+        </td>
+      </tr>
       <tr>
         <td class="value-label capitalize">
           {{ $t('workouts.DISTANCE') }}
