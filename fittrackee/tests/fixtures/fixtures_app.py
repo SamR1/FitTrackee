@@ -130,6 +130,14 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
         monkeypatch.delenv("OPEN_ELEVATION_API_URL")
     if os.getenv("VALHALLA_API_URL"):
         monkeypatch.delenv("VALHALLA_API_URL")
+    if os.getenv("ENABLE_HEATMAP"):
+        monkeypatch.delenv("ENABLE_HEATMAP")
+    yield from get_app(with_config=True)
+
+
+@pytest.fixture
+def app_with_enabled_heatmap(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    monkeypatch.setenv("ENABLE_HEATMAP", "true")
     yield from get_app(with_config=True)
 
 

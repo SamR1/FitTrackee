@@ -28,5 +28,6 @@ and merged further on a dense view, so the map stays readable and the response
 bounded whatever the number of workouts.
 
 .. note::
+  | The heatmap is displayed only if `ENABLE_HEATMAP <../installation/environments_variables.html#envvar-ENABLE_HEATMAP>`__ is set to ``True``.
   | The cells are computed when a workout is created or its file refreshed, and for existing workouts when upgrading.
   | On an instance with a large number of workouts, they can be computed separately with ``ftcli workouts rebuild_heatmap`` (see `CLI <../cli.html#ftcli-workouts-rebuild-heatmap>`__).

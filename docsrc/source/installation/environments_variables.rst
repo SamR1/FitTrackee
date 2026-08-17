@@ -139,6 +139,20 @@ deployment method.
         This is a temporary flag. It will be removed in the next version, which will require all workouts to be updated.
 
 
+.. envvar:: ENABLE_HEATMAP
+
+    .. versionadded:: 1.4.0
+
+    | Enables the workouts heatmap on the global map.
+    | **Keep the value set to** ``False`` **until the heatmap cells have been calculated** (see `Workouts CLI command <../cli.html#ftcli-workouts-rebuild-heatmap>`__).
+    | This variable is case-insensitive.
+
+    :default: ``False``
+
+    .. warning::
+        This is a temporary flag. It will be removed in a future version, which will require the heatmap cells to be calculated.
+
+
 .. envvar:: FLASK_APP
 
     | Name of the module to import at flask run.

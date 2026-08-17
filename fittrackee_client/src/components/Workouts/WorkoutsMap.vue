@@ -89,7 +89,7 @@
             />
           </LControl>
           <LControl
-            v-if="globalMap"
+            v-if="globalMap && appConfig.enable_heatmap"
             position="topleft"
             class="map-control"
             tabindex="0"

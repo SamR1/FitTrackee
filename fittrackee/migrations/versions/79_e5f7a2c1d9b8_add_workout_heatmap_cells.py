@@ -40,6 +40,15 @@ def upgrade():
         ["user_id", "i", "j"],
     )
 
+    if not current_app.config["ENABLE_HEATMAP"]:
+        print(
+            "\nHeatmap cells calculation skipped (ENABLE_HEATMAP is not set "
+            "to 'true').\n"
+            "Please run 'ftcli workouts rebuild_heatmap', then set "
+            "ENABLE_HEATMAP to 'true' to display the heatmap.\n"
+        )
+        return
+
     # the cells are stored at the configured resolution, so that a instance
     # short on space can trade detail for rows
     cell_size = WEB_MERCATOR_WORLD_SIZE / 2 ** current_app.config[

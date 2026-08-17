@@ -88,6 +88,12 @@ class BaseConfig:
     # rebuild ('ftcli workouts rebuild_heatmap').
     HEATMAP_BASE_ZOOM = get_heatmap_base_zoom()
 
+    # Enable heatmap on User Interface
+    # (temporary setting)
+    ENABLE_HEATMAP = (
+        os.environ.get("ENABLE_HEATMAP", "false").lower() == "true"
+    )
+
     OPEN_ELEVATION_API_URL = os.environ.get("OPEN_ELEVATION_API_URL", "")
     VALHALLA_API_URL = os.environ.get("VALHALLA_API_URL", "")
 
