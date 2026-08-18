@@ -131,7 +131,9 @@
     },
     "MESSAGES_EDITION": "Einstellungen für Nachrichten",
     "MESSAGES_PREFERENCES": "Nachrichteneinstellungen",
-    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Bei der Erstellung fehlt die Verarbeitung der Höhenangaben",
+    "MISSING_ELEVATIONS_PROCESSING": {
+      "LABEL": "Bei der Erstellung fehlt die Verarbeitung der Höhenangaben"
+    },
     "MONDAY": "Montag",
     "NOTIFICATIONS": {
       "account_creation": "Jemand registriert",

@@ -26,7 +26,7 @@ class TestWorkoutKmzServiceParseFile(WorkoutFileMixin):
         assert round(moving_data.moving_distance, 1) == 299.5
 
     def test_it_raises_error_when_file_is_not_kmz(
-        self, app: "Flask", invalid_kml_file: str
+        self, app: "Flask", invalid_kml_file: str, sport_1_cycling: "Sport"
     ) -> None:
         with (
             pytest.raises(
@@ -36,17 +36,21 @@ class TestWorkoutKmzServiceParseFile(WorkoutFileMixin):
             WorkoutKmzService.parse_file(
                 self.get_kmz_file_content(app, file_name="gpx_test.zip"),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
     def test_it_returns_gpx_with_kml_content_from_file_path(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
-        gpx = WorkoutKmzService.parse_file(
+        gpx, file_stats, sessions_stats = WorkoutKmzService.parse_file(
             self.get_kmz_file_content(app, file_name="example.kmz"),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         self.assert_gpx(gpx)
+        assert file_stats == {}
+        assert sessions_stats == []
 
     def test_it_returns_gpx_when_content_is_already_unzipped(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
@@ -54,8 +58,10 @@ class TestWorkoutKmzServiceParseFile(WorkoutFileMixin):
         file_path = os.path.join(app.root_path, "tests/files", "example.kmz")
         with zipfile.ZipFile(file_path, "r") as kmz_ref:
             kml_content = kmz_ref.open("doc.kml")
-            gpx = WorkoutKmzService.parse_file(
-                kml_content, segments_creation_event="none"
+            gpx, _, _ = WorkoutKmzService.parse_file(
+                kml_content,
+                segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
         self.assert_gpx(gpx)
@@ -87,7 +93,9 @@ class TestWorkoutKmzServiceInstantiation(WorkoutFileMixin):
         assert service.workout is None
         assert service.is_creation is True
         assert service.get_weather is True
-        assert service.get_elevation_on_refresh is True
-        assert service.change_elevation_source is None
+        assert service.get_elevation_on_refresh is False
+        assert service.updated_elevation_data_source is None
+        assert service.elevation_processing is None
+        assert service.update_existing_elevation is False
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)

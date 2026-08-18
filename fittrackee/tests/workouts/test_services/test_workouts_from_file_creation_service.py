@@ -509,6 +509,41 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         assert new_workout.media_visibility == expected_media_visibility
         assert new_workout.workout_visibility == input_workout_visibility
 
+    def test_it_creates_workout_with_sport_preferences_visibility_levels(
+        self,
+        app: "Flask",
+        user_1: "User",
+        gpx_file_storage: "FileStorage",  # gpx file with name
+        sport_1_cycling: "Sport",
+        user_1_sport_1_preference: "UserSportPreference",
+    ) -> None:
+        user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        user_1.map_visibility = VisibilityLevel.PUBLIC
+        user_1.media_visibility = VisibilityLevel.PUBLIC
+        user_1.workouts_visibility = VisibilityLevel.PUBLIC
+        user_1_sport_1_preference.analysis_visibility = (
+            VisibilityLevel.FOLLOWERS
+        )
+        user_1_sport_1_preference.map_visibility = VisibilityLevel.FOLLOWERS
+        user_1_sport_1_preference.media_visibility = VisibilityLevel.FOLLOWERS
+        user_1_sport_1_preference.workouts_visibility = (
+            VisibilityLevel.FOLLOWERS
+        )
+        service = WorkoutsFromFileCreationService(
+            auth_user=user_1,
+            file=gpx_file_storage,
+            workouts_data={"sport_id": sport_1_cycling.id},
+        )
+
+        service.create_workout_from_file(extension="gpx", equipments=None)
+        db.session.commit()
+
+        new_workout = Workout.query.one()
+        assert new_workout.analysis_visibility == VisibilityLevel.FOLLOWERS
+        assert new_workout.map_visibility == VisibilityLevel.FOLLOWERS
+        assert new_workout.media_visibility == VisibilityLevel.FOLLOWERS
+        assert new_workout.workout_visibility == VisibilityLevel.FOLLOWERS
+
     def test_it_creates_workout_with_user_visibility(
         self,
         app: "Flask",
@@ -1144,7 +1179,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         tcx_with_one_lap_and_one_track: str,
         sport_1_cycling: "Sport",
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         regex = re.compile("<AltitudeMeters>(.*)</AltitudeMeters>")

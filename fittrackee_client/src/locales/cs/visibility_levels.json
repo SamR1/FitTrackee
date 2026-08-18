@@ -1,19 +1,19 @@
 {
-  "ANALYSIS_VISIBILITY": "Viditelnost analýzy",
-  "CALORIES_VISIBILITY": "Viditelnost kalorií",
+  "ANALYSIS_VISIBILITY": "viditelnost analýzy",
+  "CALORIES_VISIBILITY": "viditelnost kalorií",
   "COMMENT_LEVELS": {
-    "followers_only": "Pouze sledující",
-    "private": "Soukromé (pouze vyjmenovaní uživatelé)",
-    "public": "Veřejné (všichni)"
+    "followers_only": "pouze sledující",
+    "private": "soukromé (pouze vyjmenovaní uživatelé)",
+    "public": "veřejné (všichni)"
   },
-  "HR_VISIBILITY": "Viditelnost tepové frekvence",
+  "HR_VISIBILITY": "viditelnost tepové frekvence",
   "LEVELS": {
-    "followers_only": "Pouze sledující",
-    "private": "Soukromé (pouze já)",
-    "public": "Veřejné (všichni)"
+    "followers_only": "pouze sledující",
+    "private": "soukromé (pouze já)",
+    "public": "veřejné (všichni)"
   },
-  "MAP_VISIBILITY": "Viditelnost mapy",
+  "MAP_VISIBILITY": "viditelnost mapy",
   "VISIBILITY": "Viditelnost",
   "WORKOUTS_VISIBILITY": "Viditelnost dat souvisejících s cvičením",
-  "WORKOUT_VISIBILITY": "Viditelnost cvičení"
+  "WORKOUT_VISIBILITY": "viditelnost cvičení"
 }

@@ -9,7 +9,7 @@ import type {
   IAuthUserProfile,
   IUserSportPreferencesPayload,
 } from '@/types/user'
-import type { IWorkout } from '@/types/workouts'
+import type { IWorkout, IWorkoutSegment } from '@/types/workouts'
 import { useStore } from '@/use/useStore'
 import { translateSports } from '@/utils/sports'
 import { convertDistance } from '@/utils/units'
@@ -39,6 +39,10 @@ export default function useSports() {
     stopped_speed_threshold: 1,
     pace_speed_display: 'speed',
     fromSport: false,
+    analysis_visibility: 'private',
+    map_visibility: 'private',
+    media_visibility: 'private',
+    workouts_visibility: 'private',
   })
 
   function updateIsActive(event: Event) {
@@ -63,9 +67,11 @@ export default function useSports() {
       fromSport,
     })
   }
-  function getWorkoutSport(workout: IWorkout | null): ISport | null {
-    return workout
-      ? sports.value.find((s) => s.id === workout.sport_id) || null
+  function getObjectSport(
+    object: IWorkout | IWorkoutSegment | { sport_id: number } | null
+  ): ISport | null {
+    return object?.sport_id
+      ? sports.value.find((s) => s.id === object.sport_id) || null
       : null
   }
 
@@ -77,7 +83,7 @@ export default function useSports() {
     sportPayload,
     sports,
     translatedSports,
-    getWorkoutSport,
+    getObjectSport,
     resetSport,
     updateDisplayModal,
     updateIsActive,

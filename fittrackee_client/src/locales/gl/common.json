@@ -31,7 +31,7 @@
   "NO": "Non",
   "NO_DESCRIPTION": "Sen descrición",
   "NO_NOTES": "Sen notas",
-  "PHOTOS": "Fotos",
+  "PHOTOS": "fotos",
   "PREVIOUS": "anterior",
   "REPORT_PLACEHOLDER": "indica a razón para denunciar",
   "REPORT_SUBMITTED": "Denuncia enviada.",
@@ -52,7 +52,7 @@
       "LABEL": "por páxina"
     }
   },
-  "TOTAL": "Total",
+  "TOTAL": "total",
   "TOTAL_DURATION_WITH_PAUSES": "duración total con pausas",
   "TYPE": "tipo",
   "YES": "Si"

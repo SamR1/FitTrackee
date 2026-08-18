@@ -50,6 +50,28 @@ SPORTS_WITHOUT_ELEVATION_DATA = [
     "Rowing",
     "Standup Paddleboarding",
 ]
+# sports for which the segments are associated with sports
+MULTI_ACTIVITIES_SPORTS = {
+    "Swimrun": [
+        "Open Water Swimming",
+        "Running",
+        "Trail",
+    ],
+    "Triathlon": [
+        "Cycling (Sport)",
+        "Open Water Swimming",
+        "Running",
+        "Trail",
+    ],
+}
+# Only sports for multiple activities sport for now
+FIT_MATCHING_SPORTS = {
+    "cycling|generic": "Cycling (Sport)",
+    "swimming|open_water": "Open Water Swimming",
+    "running|trail": "Trail",
+    "running|generic": "Running",
+}
+
 
 # for file download
 WORKOUT_FILE_MIMETYPES = {
@@ -60,6 +82,15 @@ WORKOUT_FILE_MIMETYPES = {
     "tcx": "application/vnd.garmin.tcx+xml",
 }
 WORKOUT_ALLOWED_EXTENSIONS = set(WORKOUT_FILE_MIMETYPES.keys())
+
+TIMEDELTA_COLUMNS = [
+    "duration",
+    "pauses",
+    "moving",
+    "ave_pace",
+    "best_pace",
+]
+
 # detected mime types on file upload
 XML_MIMETYPE = "text/xml"
 OCTET_STREAM_MIMETYPE = "application/octet-stream"

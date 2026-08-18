@@ -17,6 +17,7 @@
   "BACK_TO_WORKOUT": "back to workout",
   "BEST_PACE": "best pace",
   "CADENCE": "cadence",
+  "CALCULATED_DATA": "calculated data",
   "CALORIES": "calories",
   "COMMENTS": {
     "ADD": "add a comment",
@@ -31,6 +32,7 @@
     "SUSPENDED_COMMENT_BY_ADMIN": "The comment has been suspended by an administrator."
   },
   "CREATED_WORKOUTS": "Created workout | Created workouts",
+  "DATA_FROM_FILE": "data from file",
   "DATE": "date",
   "DELETE_WORKOUT": "Delete the workout",
   "DESCENT": "descent",
@@ -47,13 +49,19 @@
   "DURATION": "duration",
   "EDIT_WORKOUT": "Edit the workout",
   "ELEVATION": "elevation",
+  "ELEVATION_DATA_PROCESSING": {
+    "LABEL": "Elevation data processing",
+    "PROCESSING_WORKOUT": "processing workout…",
+    "flat_window": "smoothed data",
+    "none": "none"
+  },
   "ELEVATION_DATA_SOURCE": {
     "CHANGE_SOURCE": "Change elevation data source",
     "LABEL": "Elevations updated from",
-    "file": "From file",
+    "MODAL_LABEL": "Update elevation data",
+    "file": "from file",
     "none": "None (elevation data from file)",
-    "open_elevation": "OpenElevation (raw data)",
-    "open_elevation_smooth": "OpenElevation (smoothed data)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "end",
@@ -138,7 +146,7 @@
   "PREVIOUS_PHOTO": "Previous photo",
   "PREVIOUS_SEGMENT": "Previous segment",
   "PREVIOUS_WORKOUT": "Previous workout",
-  "PRIVATE_NOTES": "Private notes",
+  "PRIVATE_NOTES": "private notes",
   "PRIVATE_NOTES_FIELD_HELP": "these notes are visible only to you.",
   "PUBLIC_WORKOUTS_ATOM_FEED": "Public workouts Atom Feed",
   "RADIUS": "radius",
@@ -163,6 +171,7 @@
   "SPEED": "speed",
   "SPEED_INSTEAD_OF_PACE": "speed instead of pace",
   "SPORT": "sport | sports",
+  "SPORTS_STATS": "Sports statistics",
   "START": "start",
   "START_AND_FINISH": "Start and finish",
   "START_ELEVATION_AT_ZERO": "start elevation axis at zero",
@@ -178,6 +187,8 @@
   "TOTAL_DURATION": "total duration",
   "TOTAL_WORKOUTS_LIMIT_EXCEEDED": "workouts limit exceeded, the most recent workouts are displayed",
   "TOTAL_WORKOUTS_WITH_LOCATION": "total number of workouts with location",
+  "TRANSITION": "transition",
+  "TRANSITION_CAPITALIZED": "Transition",
   "UNITS": {
     "bpm": {
       "LABEL": "beats per minute",

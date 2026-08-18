@@ -55,9 +55,9 @@
     },
     "REASON": "Reason",
     "REPORT": "report | reports",
-    "REPORTED_BY": "Reported by",
+    "REPORTED_BY": "reported by",
     "REPORTED_CONTENT": "Reported content",
-    "REPORTED_USER": "Reported user",
+    "REPORTED_USER": "reported user",
     "REPORTER": "reporter",
     "REPORT_ACTIONS": {
       "comment_suspension": "The comment has been suspended by {1} {2}.",

@@ -898,6 +898,18 @@
         workoutForm.equipment_ids = newSport
           ? newSport.default_equipments.map((e) => e.id)
           : []
+        workoutForm.workoutVisibility = newSport?.workouts_visibility
+          ? newSport.workouts_visibility
+          : authUser.value.workouts_visibility
+        workoutForm.analysisVisibility = newSport?.analysis_visibility
+          ? newSport.analysis_visibility
+          : authUser.value.analysis_visibility
+        workoutForm.mapVisibility = newSport?.map_visibility
+          ? newSport.map_visibility
+          : authUser.value.map_visibility
+        workoutForm.mediaVisibility = newSport?.media_visibility
+          ? newSport.media_visibility
+          : authUser.value.media_visibility
       }
     }
   )
@@ -917,6 +929,7 @@
         workoutForm.workoutVisibility = newAuthUser.workouts_visibility
         workoutForm.analysisVisibility = newAuthUser.analysis_visibility
         workoutForm.mapVisibility = newAuthUser.map_visibility
+        workoutForm.mediaVisibility = newAuthUser.media_visibility
       }
     }
   )
@@ -965,9 +978,6 @@
 
             input {
               height: 20px;
-            }
-            label {
-              text-transform: lowercase;
             }
 
             .workout-date-duration {

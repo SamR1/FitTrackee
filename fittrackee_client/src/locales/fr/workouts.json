@@ -17,6 +17,7 @@
   "BACK_TO_WORKOUT": "revenir à la séance",
   "BEST_PACE": "meilleure allure",
   "CADENCE": "cadence",
+  "CALCULATED_DATA": "Données calculées",
   "CALORIES": "calories",
   "COMMENTS": {
     "ADD": "ajouter un commentaire",
@@ -31,6 +32,7 @@
     "SUSPENDED_COMMENT_BY_ADMIN": "Le commentaire a été suspendu par un administrateur."
   },
   "CREATED_WORKOUTS": "Séance créée | Séances créées",
+  "DATA_FROM_FILE": "Données extraites du fichier",
   "DATE": "date",
   "DELETE_WORKOUT": "Supprimer la séance",
   "DESCENT": "dénivelé négatif",
@@ -47,13 +49,19 @@
   "DURATION": "durée",
   "EDIT_WORKOUT": "Modifier la séance",
   "ELEVATION": "altitude",
+  "ELEVATION_DATA_PROCESSING": {
+    "LABEL": "Traitement des données d'altitude",
+    "PROCESSING_WORKOUT": "séances en cours de traitement…",
+    "flat_window": "données lissées",
+    "none": "aucun"
+  },
   "ELEVATION_DATA_SOURCE": {
     "CHANGE_SOURCE": "Changer la source des données d'altitude",
     "LABEL": "Altitudes mises à jour à partir de",
-    "file": "A partir du fichier",
+    "MODAL_LABEL": "Mettre à jour les données d'altitude",
+    "file": "à partir du fichier",
     "none": "Aucun (données d'altitude à partir du fichier)",
-    "open_elevation": "OpenElevation (données brutes)",
-    "open_elevation_smooth": "OpenElevation (données lissées)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "fin",
@@ -138,7 +146,7 @@
   "PREVIOUS_PHOTO": "Photo précédente",
   "PREVIOUS_SEGMENT": "Segment précédent",
   "PREVIOUS_WORKOUT": "Séance précédente",
-  "PRIVATE_NOTES": "Notes personnelles",
+  "PRIVATE_NOTES": "notes personnelles",
   "PRIVATE_NOTES_FIELD_HELP": "ces notes ne sont visibles que par vous.",
   "PUBLIC_WORKOUTS_ATOM_FEED": "Flux Atom des séances publiques",
   "RADIUS": "rayon",
@@ -163,6 +171,7 @@
   "SPEED": "vitesse",
   "SPEED_INSTEAD_OF_PACE": "vitesse au lieu de l'allure",
   "SPORT": "sport | sports",
+  "SPORTS_STATS": "Statistiques par sport",
   "START": "début",
   "START_AND_FINISH": "Départ et arrivée",
   "START_ELEVATION_AT_ZERO": "démarrer l'axe de l'altitude à 0",
@@ -178,6 +187,8 @@
   "TOTAL_DURATION": "durée totale",
   "TOTAL_WORKOUTS_LIMIT_EXCEEDED": "limite sur le nombre de séances dépassée, les entraînements les plus récents sont affichés",
   "TOTAL_WORKOUTS_WITH_LOCATION": "nombre total d'entraînements avec une localisation",
+  "TRANSITION": "transition",
+  "TRANSITION_CAPITALIZED": "Transition",
   "UNITS": {
     "bpm": {
       "LABEL": "battements par minute",

@@ -15,11 +15,8 @@ export type TFollowRequestAction = 'accept' | 'reject'
 export type TUserRole = 'user' | 'moderator' | 'admin' | 'owner'
 export type TVisibilityLevels = 'private' | 'followers_only' | 'public'
 export type TSegmentsCreationEvent = 'all' | 'none' | 'only_manual'
-export type TElevationDataSource =
-  | 'file'
-  | 'open_elevation'
-  | 'open_elevation_smooth'
-  | 'valhalla'
+export type TElevationDataSource = 'file' | 'open_elevation' | 'valhalla'
+export type TElevationProcessing = 'none' | 'flat_window'
 
 export interface IUserLightProfile {
   blocked: boolean
@@ -63,6 +60,7 @@ export interface IAuthUserProfile extends IUserProfile {
   calories_visibility: TVisibilityLevels
   date_format: string
   display_ascent: boolean
+  elevation_processing: TElevationProcessing
   email: string
   hide_profile_in_users_directory: boolean
   hr_visibility: TVisibilityLevels
@@ -72,7 +70,7 @@ export interface IAuthUserProfile extends IUserProfile {
   map_visibility: TVisibilityLevels
   media_visibility: TVisibilityLevels
   messages_preferences: TMessagePreferences
-  missing_elevations_processing: TElevationDataSource
+  missing_elevations_data_source: TElevationDataSource
   nb_sports: number
   notification_preferences: TNotificationPreferences
   records: IRecord[]
@@ -86,6 +84,7 @@ export interface IAuthUserProfile extends IUserProfile {
   use_dark_mode: boolean | null
   use_raw_gpx_speed: boolean
   weekm: boolean
+  workout_stats_from_file: boolean
   workouts_visibility: TVisibilityLevels
 }
 
@@ -131,6 +130,7 @@ export interface IUserPreferencesPayload {
   calories_visibility: TVisibilityLevels
   date_format: string
   display_ascent: boolean
+  elevation_processing: TElevationProcessing
   hide_profile_in_users_directory: boolean
   hr_visibility: TVisibilityLevels
   imperial_units: boolean
@@ -138,7 +138,7 @@ export interface IUserPreferencesPayload {
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
   media_visibility: TVisibilityLevels
-  missing_elevations_processing: TElevationDataSource
+  missing_elevations_data_source: TElevationDataSource
   segments_creation_event: TSegmentsCreationEvent
   split_workout_charts: boolean
   start_elevation_at_zero: boolean
@@ -146,6 +146,7 @@ export interface IUserPreferencesPayload {
   use_raw_gpx_speed: boolean
   weekm: boolean
   use_dark_mode: boolean | null
+  workout_stats_from_file: boolean
   workouts_visibility: TVisibilityLevels
 }
 
@@ -162,6 +163,10 @@ export interface IUserSportPreferencesPayload {
   stopped_speed_threshold: number
   fromSport: boolean
   default_equipment_ids?: string[]
+  analysis_visibility: TVisibilityLevels
+  map_visibility: TVisibilityLevels
+  media_visibility: TVisibilityLevels
+  workouts_visibility: TVisibilityLevels
 }
 
 export interface IUserPicturePayload {

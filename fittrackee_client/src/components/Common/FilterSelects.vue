@@ -8,8 +8,12 @@
         :value="query.order_by"
         @change="onSelectUpdate"
       >
-        <option v-for="order in order_by" :value="order" :key="order">
-          {{ $t(`${message}.${order.toUpperCase()}`) }}
+        <option
+          v-for="option in orderByOptions"
+          :value="option.value"
+          :key="option.value"
+        >
+          {{ option.label }}
         </option>
       </select>
     </label>
@@ -44,7 +48,8 @@
 </template>
 
 <script setup lang="ts">
-  import { toRefs } from 'vue'
+  import { computed, toRefs } from 'vue'
+  import { useI18n } from 'vue-i18n'
 
   import type { TPaginationPayload } from '@/types/api'
 
@@ -57,9 +62,20 @@
   const props = defineProps<Props>()
   const { order_by, query, sort, message } = toRefs(props)
 
+  const { t } = useI18n()
+
   const emit = defineEmits(['updateSelect'])
 
   const perPage = [10, 25, 50, 100]
+
+  const orderByOptions = computed(() =>
+    order_by.value
+      .map((value) => ({
+        value,
+        label: t(`${message.value}.${value.toUpperCase()}`),
+      }))
+      .sort(sortOptions)
+  )
 
   function onSelectUpdate(event: Event) {
     emit(
@@ -67,5 +83,11 @@
       (event.target as HTMLInputElement).id,
       (event.target as HTMLInputElement).value
     )
+  }
+  function sortOptions(
+    a: { label: string; value: string },
+    b: { label: string; value: string }
+  ) {
+    return a.label.localeCompare(b.label)
   }
 </script>

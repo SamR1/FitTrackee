@@ -54,9 +54,9 @@
     },
     "REASON": "Powód",
     "REPORT": "raport | raporty",
-    "REPORTED_BY": "Zgłoszone przez",
+    "REPORTED_BY": "zgłoszone przez",
     "REPORTED_CONTENT": "Zgłoszona treść",
-    "REPORTED_USER": "Zgłoszony użytkownik",
+    "REPORTED_USER": "zgłoszony użytkownik",
     "REPORTER": "zgłaszający",
     "REPORT_ACTIONS": {
       "comment_suspension": "Komentarz został ukryty przez {1} {2}.",

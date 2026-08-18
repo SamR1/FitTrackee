@@ -64,6 +64,38 @@
           aria-hidden="true"
         />
       </dd>
+      <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `visibility_levels.LEVELS.${sport.workouts_visibility || authUser.workouts_visibility}`
+          )
+        }}
+      </dd>
+      <dt>{{ $t('visibility_levels.MEDIA_VISIBILITY') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `visibility_levels.LEVELS.${sport.media_visibility || authUser.media_visibility}`
+          )
+        }}
+      </dd>
+      <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `visibility_levels.LEVELS.${sport.analysis_visibility || authUser.analysis_visibility}`
+          )
+        }}
+      </dd>
+      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}:</dt>
+      <dd>
+        {{
+          $t(
+            `visibility_levels.LEVELS.${sport.map_visibility || authUser.map_visibility}`
+          )
+        }}
+      </dd>
       <dt>{{ $t('user.PROFILE.SPORT.DEFAULT_EQUIPMENTS', 1) }}</dt>
       <dd class="sport-equipments">
         <EquipmentBadge

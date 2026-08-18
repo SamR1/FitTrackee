@@ -109,6 +109,19 @@
             <span v-if="elevationsSource !== 'file'">
               {{ $t('workouts.ELEVATION_DATA_SOURCE.LABEL') }}
               {{ $t(`workouts.ELEVATION_DATA_SOURCE.${elevationsSource}`) }}
+              <span v-if="elevationsProcessing !== 'none'">
+                ({{
+                  $t(
+                    `workouts.ELEVATION_DATA_PROCESSING.${elevationsProcessing}`
+                  )
+                }})
+              </span>
+            </span>
+            <span v-else-if="elevationsProcessing !== 'none'">
+              {{ $t('workouts.ELEVATION_DATA_PROCESSING.LABEL') }}:
+              {{
+                $t(`workouts.ELEVATION_DATA_PROCESSING.${elevationsProcessing}`)
+              }}
             </span>
           </div>
           <div class="elevation-start" v-if="hasElevation">
@@ -160,11 +173,15 @@
   import type { TCoordinates } from '@/types/map'
   import type { ISport } from '@/types/sports.ts'
   import type { TUnit } from '@/types/units'
-  import type { IAuthUserProfile, TElevationDataSource } from '@/types/user'
+  import type {
+    IAuthUserProfile,
+    TElevationDataSource,
+    TElevationProcessing,
+  } from '@/types/user'
   import type { IWorkoutChartData, IWorkoutData } from '@/types/workouts'
   import { formatDuration } from '@/utils/duration.ts'
   import { units } from '@/utils/units'
-  import { chartsColors, getCadenceUnit, getDatasets } from '@/utils/workouts'
+  import { chartsColors, getDatasets } from '@/utils/workouts'
 
   interface Props {
     authUser: IAuthUserProfile
@@ -172,9 +189,11 @@
     sport: ISport | null
     isWorkoutOwner: boolean
     isRefreshing: boolean
+    cadenceUnit: string
   }
   const props = defineProps<Props>()
-  const { authUser, isRefreshing, sport, workoutData } = toRefs(props)
+  const { authUser, cadenceUnit, isRefreshing, sport, workoutData } =
+    toRefs(props)
 
   const emit = defineEmits(['getCoordinates'])
 
@@ -220,6 +239,12 @@
     workoutData.value.workout.elevation_data_source
       ? workoutData.value.workout.elevation_data_source
       : 'file'
+  )
+  const elevationsProcessing: ComputedRef<TElevationProcessing> = computed(
+    () =>
+      workoutData.value.workout.elevation_processing
+        ? workoutData.value.workout.elevation_processing
+        : 'none'
   )
   const chartLoading: ComputedRef<boolean> = computed(
     () => workoutData.value.chartDataLoading
@@ -553,7 +578,7 @@
   function getUnitLabelForYAxis(datasetId: string | undefined): string {
     switch (datasetId) {
       case 'cadence':
-        return ` (${t(`workouts.UNITS.${getCadenceUnit(sport.value?.label)}.UNIT`)})`
+        return ` (${t(`workouts.UNITS.${cadenceUnit.value}.UNIT`)})`
       case 'elevation':
         return ` (${fromMUnit})`
       case 'hr':
@@ -619,8 +644,7 @@
       return label + ` ${fromMUnit}`
     }
     if (context.dataset.id === 'cadence') {
-      const unit = getCadenceUnit(sport.value?.label)
-      return label + ' ' + t(`workouts.UNITS.${unit}.UNIT`)
+      return label + ' ' + t(`workouts.UNITS.${cadenceUnit.value}.UNIT`)
     }
     if (context.dataset.id === 'power') {
       return `${label} W`

@@ -8,6 +8,7 @@ from fittrackee.users.models import User, UserSportPreference
 from fittrackee.workouts.models import Workout, WorkoutSegment
 
 from ..exceptions import (
+    WorkoutElevationException,
     WorkoutExceedingValueException,
     WorkoutException,
     WorkoutFileException,
@@ -20,7 +21,7 @@ from .workout_from_file.services import WORKOUT_FROM_FILE_SERVICES
 if TYPE_CHECKING:
     from logging import Logger
 
-    from fittrackee.constants import ElevationDataSource
+    from fittrackee.constants import ElevationDataSource, ElevationProcessing
     from fittrackee.workouts.models import Sport
 
 
@@ -35,6 +36,7 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
         update_weather: bool = False,
         get_elevation_on_refresh: bool = True,
         change_elevation_source: Optional["ElevationDataSource"] = None,
+        elevation_processing: Optional["ElevationProcessing"] = None,
         on_file_error: Optional[str] = None,
         logger: Optional["Logger"] = None,
     ):
@@ -57,7 +59,8 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
         )
         self.update_weather = update_weather
         self.get_elevation_on_refresh = get_elevation_on_refresh
-        self.change_elevation_source = change_elevation_source
+        self.updated_elevation_data_source = change_elevation_source
+        self.elevation_processing = elevation_processing
         self.on_file_error = on_file_error
         self.logger = logger
 
@@ -123,15 +126,21 @@ class WorkoutFromFileRefreshService(WorkoutFileMixin):
             stopped_speed_threshold=self.stopped_speed_threshold,
             get_weather=self.update_weather,
             get_elevation_on_refresh=self.get_elevation_on_refresh,
-            change_elevation_source=self.change_elevation_source,
+            change_elevation_source=self.updated_elevation_data_source,
+            elevation_processing=self.elevation_processing,
         )
 
         # extract and calculate data from provided file
         # note: workout date is not updated
         try:
             workout_service.process_workout()
-        except (WorkoutExceedingValueException, WorkoutFileException) as e:
-            appLog.exception(f"workout exception: {e!s}")
+        except (
+            WorkoutExceedingValueException,
+            WorkoutFileException,
+            WorkoutElevationException,
+        ) as e:
+            if not isinstance(e, WorkoutElevationException):
+                appLog.exception(f"workout exception: {e!s}")
             db.session.rollback()
             raise e
         except Exception as e:

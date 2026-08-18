@@ -54,9 +54,9 @@
     },
     "REASON": "Motivo",
     "REPORT": "report",
-    "REPORTED_BY": "Segnalato da",
+    "REPORTED_BY": "segnalato da",
     "REPORTED_CONTENT": "Conenuto segnalato",
-    "REPORTED_USER": "Utente segnalato",
+    "REPORTED_USER": "utente segnalato",
     "REPORTER": "segnalato",
     "REPORT_ACTIONS": {
       "comment_suspension": "Il commento è stato sospeso da {1} {2}.",

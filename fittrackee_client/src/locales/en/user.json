@@ -131,7 +131,12 @@
     },
     "MESSAGES_EDITION": "Message preferences edition",
     "MESSAGES_PREFERENCES": "Messages preferences",
-    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Missing elevations processing on creation",
+    "MISSING_ELEVATIONS_DATA_SOURCE_LABEL": "Source for missing elevations on creation",
+    "MISSING_ELEVATIONS_PROCESSING": {
+      "LABEL": "Missing elevations processing on creation, if elevation data source is selected",
+      "flat_window": "Smooth data",
+      "none": "No processing"
+    },
     "MONDAY": "Monday",
     "NOTIFICATIONS": {
       "account_creation": "Someone registers",
@@ -175,6 +180,7 @@
       "REJECTED": "your appeal has been rejected"
     },
     "SEGMENTS_CREATION_EVENT": {
+      "HELP": "This preference is ignored for workouts associated with multi-activities sports.",
       "LABEL": "Pause events triggering segment creation (.fit files only)",
       "all": "All pause events",
       "none": "None",
@@ -240,10 +246,17 @@
       "LABEL": "Max. speed calculation strategy",
       "RAW_SPEED": "Raw"
     },
+    "VISIBILITY_LEVELS_CAN_BE_OVERRIDEN_BY_SPORT_PREFERENCES": "Visibility levels may be overridden by those defined in the sports preferences.",
     "WORKOUT_CHARTS_DISPLAY": {
       "LABEL": "Workout analysis chart display",
       "MULTIPLE": "Each data displayed on a different chart",
       "ONE": "All data on a single chart"
+    },
+    "WORKOUT_STATS_FROM_FILE": {
+      "CALCULATED": "Calculated",
+      "FROM_FILE": "From file",
+      "HELP": "If from file, the durations, speeds/paces, elevation and ascents/descents are extracted from the .fit file.",
+      "LABEL": "Workout statistics (.fit files only)"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "I have read and agree to the {0}.",

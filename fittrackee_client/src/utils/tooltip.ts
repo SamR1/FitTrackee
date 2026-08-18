@@ -9,7 +9,10 @@ export const formatTooltipValue = (
   formatWithUnits = true,
   unitFrom = 'km'
 ): string => {
-  const unitTo = useImperialUnits ? units[unitFrom].defaultTarget : unitFrom
+  const unitTo =
+    useImperialUnits && unitFrom in units
+      ? units[unitFrom].defaultTarget
+      : unitFrom
   switch (displayedData) {
     case 'average_speed':
       return `${value.toFixed(2)} ${unitTo}/h`
@@ -27,6 +30,11 @@ export const formatTooltipValue = (
       return `${value.toFixed(2)} ${unitTo}`
     case 'total_calories':
       return `${value} ${unitFrom}`
+    case 'average_cadence':
+      if (unitFrom) {
+        return `${value} ${unitFrom}`
+      }
+      return value.toString()
     default:
       return value.toString()
   }

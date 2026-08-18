@@ -9,19 +9,22 @@ import pytest
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.constants import ElevationDataSource
+from fittrackee.constants import ElevationDataSource, ElevationProcessing
 from fittrackee.files import get_absolute_file_path
 from fittrackee.tests.fixtures.fixtures_workouts import (
+    FILE_STATS_WITH_DATA,
     VALHALLA_VALUES,
 )
 from fittrackee.tests.workouts.mixins import (
     WorkoutAssertMixin,
+    WorkoutFileMixin,
 )
 from fittrackee.workouts.exceptions import (
     WorkoutFileException,
     WorkoutRefreshException,
 )
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
+from fittrackee.workouts.services import WorkoutFitService
 from fittrackee.workouts.services.elevation.open_elevation_service import (
     OpenElevationService,
 )
@@ -81,6 +84,8 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is False
         assert service.get_elevation_on_refresh is True
+        assert service.updated_elevation_data_source is None
+        assert service.elevation_processing is None
         assert service.on_file_error is None
         assert service.logger is None
 
@@ -105,6 +110,8 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is False
         assert service.get_elevation_on_refresh is True
+        assert service.updated_elevation_data_source is None
+        assert service.elevation_processing is None
         assert service.on_file_error is None
         assert service.logger is None
 
@@ -130,6 +137,8 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is True
         assert service.get_elevation_on_refresh is True
+        assert service.updated_elevation_data_source is None
+        assert service.elevation_processing is None
         assert service.on_file_error is None
         assert service.logger is None
 
@@ -155,6 +164,8 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         )
         assert service.update_weather is False
         assert service.get_elevation_on_refresh is False
+        assert service.updated_elevation_data_source is None
+        assert service.elevation_processing is None
 
     def test_it_instantiates_service_when_change_elevation_source_is_provided(
         self,
@@ -167,6 +178,7 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         service = WorkoutFromFileRefreshService(
             workout=workout_cycling_user_1,
             change_elevation_source=ElevationDataSource.OPEN_ELEVATION,
+            elevation_processing=ElevationProcessing.FLAT_WINDOW,
         )
 
         assert service.workout == workout_cycling_user_1
@@ -180,9 +192,10 @@ class TestWorkoutFromFileRefreshServiceInstantiation:
         assert service.update_weather is False
         assert service.get_elevation_on_refresh is True
         assert (
-            service.change_elevation_source
+            service.updated_elevation_data_source
             == ElevationDataSource.OPEN_ELEVATION
         )
+        assert service.elevation_processing == ElevationProcessing.FLAT_WINDOW
 
     def test_it_instantiates_service_when_on_file_error_is_provided(
         self,
@@ -314,7 +327,9 @@ class TestWorkoutFromFileRefreshServiceGetFileContent:
 
 
 @pytest.mark.disable_autouse_update_records_patch
-class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
+class TestWorkoutFromFileRefreshServiceRefresh(
+    WorkoutAssertMixin, WorkoutFileMixin
+):
     def test_it_raises_exception_when_original_file_extension_is_invalid(
         self,
         app: "Flask",
@@ -541,7 +556,7 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         gpx_file_without_elevation: str,
         default_weather_service: MagicMock,
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         workout_cycling_user_1.original_file = "workouts/1/example.gpx"
@@ -573,7 +588,7 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         gpx_file_without_elevation: str,
         default_weather_service: MagicMock,
     ) -> None:
-        user_1.missing_elevations_processing = (
+        user_1.missing_elevations_data_source = (
             ElevationDataSource.OPEN_ELEVATION
         )
         workout_cycling_user_1.original_file = "workouts/1/example.gpx"
@@ -609,6 +624,7 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
         service = WorkoutFromFileRefreshService(
             workout=workout_cycling_user_1,
             change_elevation_source=ElevationDataSource.VALHALLA,
+            elevation_processing=ElevationProcessing.NONE,
         )
 
         with (
@@ -740,6 +756,70 @@ class TestWorkoutFromFileRefreshServiceRefresh(WorkoutAssertMixin):
             "with_analysis": False,
             "with_file": False,
         }
+
+    def test_it_refreshes_workout_with_user_preference_stats_from_file_is_true(
+        self,
+        app: "Flask",
+        user_1: "User",
+        workout_cycling_user_1: "Workout",
+        gpx_file: str,
+    ) -> None:
+        user_1.workout_stats_from_file = True
+        workout_cycling_user_1.original_file = "example.fit"
+        workout_cycling_user_1.workout_stats_from_file = False
+        service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
+
+        with (
+            patch.object(
+                WorkoutFromFileRefreshService,
+                "get_file_content",
+                return_value=self.get_file_open_content(app, "example.fit"),
+            ),
+            patch.object(
+                WorkoutFitService,
+                "get_file_stats",
+                return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+            ),
+        ):
+            service.refresh()
+
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.workout_stats_from_file is True
+        assert (
+            float(workout_cycling_user_1.ascent)  # type: ignore[arg-type]
+            == FILE_STATS_WITH_DATA["ascent"]
+        )
+
+    def test_it_refreshes_workout_with_user_preference_stats_from_file_is_false(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        workout_cycling_user_1: "Workout",
+        gpx_file: str,
+    ) -> None:
+        user_1.workout_stats_from_file = False
+        workout_cycling_user_1.original_file = "example.fit"
+        workout_cycling_user_1.workout_stats_from_file = True
+        workout_cycling_user_1.ascent = 0.1
+        service = WorkoutFromFileRefreshService(workout=workout_cycling_user_1)
+
+        with (
+            patch.object(
+                WorkoutFromFileRefreshService,
+                "get_file_content",
+                return_value=self.get_file_open_content(app, "example.fit"),
+            ),
+            patch.object(
+                WorkoutFitService,
+                "get_file_stats",
+                return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+            ),
+        ):
+            service.refresh()
+
+        db.session.refresh(workout_cycling_user_1)
+        assert workout_cycling_user_1.workout_stats_from_file is False
+        assert float(workout_cycling_user_1.ascent) == 0.0
 
 
 class TestWorkoutsFromFileRefreshServiceInstantiation:

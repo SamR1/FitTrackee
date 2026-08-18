@@ -51,7 +51,7 @@ jobs:
       with-coverage: false
 
   end2end_with_sources:
-    name: e2e tests with sources (Node 20)
+    name: e2e tests with sources
     needs: ["python"]
     uses: ./.github/workflows/.workflow-e2e-with-sources.yml
 

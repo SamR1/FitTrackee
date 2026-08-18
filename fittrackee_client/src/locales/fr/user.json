@@ -131,7 +131,12 @@
     },
     "MESSAGES_EDITION": "Edition des préférences des messages",
     "MESSAGES_PREFERENCES": "Preferences des messages",
-    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Traitement des altitudes manquantes lors de la création",
+    "MISSING_ELEVATIONS_DATA_SOURCE_LABEL": "Source pour les altitudes manquantes lors de la création",
+    "MISSING_ELEVATIONS_PROCESSING": {
+      "LABEL": "Traitement des altitudes manquantes lors de la création, si une source de données est sélectionnée",
+      "flat_window": "Lisser les données",
+      "none": "Aucun traitement"
+    },
     "MONDAY": "Lundi",
     "NOTIFICATIONS": {
       "account_creation": "Quelqu'un s'est enregistré",
@@ -175,6 +180,7 @@
       "REJECTED": "votre appel a été rejeté"
     },
     "SEGMENTS_CREATION_EVENT": {
+      "HELP": "Cette préférence est ignorée pour les séances associées à des sports comprenant plusieurs activités.",
       "LABEL": "Types de pause déclenchant la création d'un segment (fichiers .fit uniquement)",
       "all": "Tous les évènements de pause",
       "none": "Aucun",
@@ -240,10 +246,17 @@
       "LABEL": "Stratégie de calcul de la vitesse maximale",
       "RAW_SPEED": "Brut"
     },
+    "VISIBILITY_LEVELS_CAN_BE_OVERRIDEN_BY_SPORT_PREFERENCES": "Les niveaux de visibilité peuvent être surchargés par ceux définis dans les préférences sportives.",
     "WORKOUT_CHARTS_DISPLAY": {
       "LABEL": "Affichage des graphiques d'analyse de la séance",
       "MULTIPLE": "Chaque donnée est affichée sur un graphique différent",
       "ONE": "Toutes les données sur un seul graphique"
+    },
+    "WORKOUT_STATS_FROM_FILE": {
+      "CALCULATED": "Calculées",
+      "FROM_FILE": "Extraites du fichier",
+      "HELP": "Si extraites du fichier, les durées, les vitesses/allures, l'altitude et les dénivelés sont extraits du fichier .fit. De plus, le paramètre de traitement des altitudes manquantes est ignoré.",
+      "LABEL": "Statistiques de la séance (fichiers .fit uniquement)"
     }
   },
   "READ_AND_ACCEPT_PRIVACY_POLICY": "J'ai lu et accepte la {0}.",

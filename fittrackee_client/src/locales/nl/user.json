@@ -131,7 +131,9 @@
     },
     "MESSAGES_EDITION": "Berichtvoorkeuren editie",
     "MESSAGES_PREFERENCES": "Berichtvoorkeuren",
-    "MISSING_ELEVATIONS_PROCESSING_LABEL": "Missende hoogtebwerking bij aanmaken",
+    "MISSING_ELEVATIONS_PROCESSING": {
+      "LABEL": "Missende hoogtebwerking bij aanmaken"
+    },
     "MONDAY": "Maandag",
     "NOTIFICATIONS": {
       "account_creation": "Iemand is geregistreerd",

@@ -186,7 +186,6 @@
       margin-top: $default-margin * 0.5;
       .visibility-label {
         color: var(--text-visibilty);
-        text-transform: lowercase;
       }
     }
   }

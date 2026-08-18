@@ -52,8 +52,7 @@
     "LABEL": "Elevación actualizada desde",
     "file": "Desde ficheiro",
     "none": "Ningunha (datos desde o ficheiro)",
-    "open_elevation": "OpenElevation (datos en cru)",
-    "open_elevation_smooth": "OpenElevation (datos suavizados)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "fin",
@@ -138,7 +137,7 @@
   "PREVIOUS_PHOTO": "Foto anterior",
   "PREVIOUS_SEGMENT": "Tramo anterior",
   "PREVIOUS_WORKOUT": "Actividade anterior",
-  "PRIVATE_NOTES": "Notas privadas",
+  "PRIVATE_NOTES": "notas privadas",
   "PRIVATE_NOTES_FIELD_HELP": "estas notas só as podes ver ti.",
   "PUBLIC_WORKOUTS_ATOM_FEED": "Canle Atom das actividades públicas",
   "RADIUS": "radio",

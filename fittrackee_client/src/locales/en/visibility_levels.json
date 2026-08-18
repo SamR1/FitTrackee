@@ -1,20 +1,20 @@
 {
-  "ANALYSIS_VISIBILITY": "Analysis visibility",
-  "CALORIES_VISIBILITY": "Calories visibility",
+  "ANALYSIS_VISIBILITY": "analysis visibility",
+  "CALORIES_VISIBILITY": "calories visibility",
   "COMMENT_LEVELS": {
-    "followers_only": "Followers only",
-    "private": "Private (only mentioned users)",
-    "public": "Public (everyone)"
+    "followers_only": "followers only",
+    "private": "private (only mentioned users)",
+    "public": "public (everyone)"
   },
-  "HR_VISIBILITY": "Heart rate visibility",
+  "HR_VISIBILITY": "heart rate visibility",
   "LEVELS": {
-    "followers_only": "Followers only",
-    "private": "Private (only me)",
-    "public": "Public (everyone)"
+    "followers_only": "followers only",
+    "private": "private (only me)",
+    "public": "public (everyone)"
   },
-  "MAP_VISIBILITY": "Map visibility",
-  "MEDIA_VISIBILITY": "Media visibility",
+  "MAP_VISIBILITY": "map visibility",
+  "MEDIA_VISIBILITY": "media visibility",
   "VISIBILITY": "visibility",
   "WORKOUTS_VISIBILITY": "Workouts related data visibility",
-  "WORKOUT_VISIBILITY": "Workout visibility"
+  "WORKOUT_VISIBILITY": "workout visibility"
 }

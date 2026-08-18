@@ -30,6 +30,7 @@ export interface IStatisticsDateParams {
 
 export type TStatisticsDatasetKeys =
   | 'average_ascent'
+  | 'average_cadence'
   | 'average_descent'
   | 'average_distance'
   | 'average_duration'
@@ -59,6 +60,7 @@ export type TStatisticsFromApi = {
 
 export type TStatisticsForSport = {
   average_ascent: number | null
+  average_cadence: number | null
   average_descent: number | null
   average_distance: number
   average_duration: string

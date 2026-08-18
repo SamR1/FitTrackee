@@ -77,7 +77,7 @@ Prerequisites
   - API key from a `weather data provider <weather.html>`__
   - `elevation data provider <elevation.html>`__
   - `Poetry <https://python-poetry.org>`__ 1.2+ (for installation from sources and development)
-  - `Node <https://nodejs.org>`__ 20+ (for installation from sources and development)
+  - `Node <https://nodejs.org>`__ 22+ (for installation from sources and development)
 
 .. note::
     | If registration is enabled, it is recommended to set Redis and a SMTP provider for email sending and data export requests.

@@ -7,17 +7,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-03-04 23:57+0100\n"
+"POT-Creation-Date: 2026-08-12 15:41+0200\n"
 "PO-Revision-Date: 2026-03-11 09:09+0000\n"
 "Last-Translator: Davide Gualano <ildave@gmail.com>\n"
-"Language-Team: Italian <https://hosted.weblate.org/projects/fittrackee/"
-"fittrackee-api-emails/it/>\n"
 "Language: it\n"
+"Language-Team: Italian <https://hosted.weblate.org/projects/fittrackee"
+"/fittrackee-api-emails/it/>\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.17-dev\n"
 "Generated-By: Babel 2.18.0\n"
 
 #: fittrackee/emails/templates/layout.html:232
@@ -575,19 +574,23 @@ msgid "Trail"
 msgstr "Sentieri"
 
 #: fittrackee/feeds/feeds/constants.py:32
+msgid "Triathlon"
+msgstr ""
+
+#: fittrackee/feeds/feeds/constants.py:33
 msgid "Walking"
 msgstr "Camminata"
 
-#: fittrackee/feeds/feeds/constants.py:33
+#: fittrackee/feeds/feeds/constants.py:34
 msgid "Windsurfing"
 msgstr "Windsurf"
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:61
+#: fittrackee/feeds/feeds/workouts_feed_service.py:71
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
 msgstr "I più recenti workout pubblici su FitTrackee di %(username)s"
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:70
+#: fittrackee/feeds/feeds/workouts_feed_service.py:80
 #, python-format
 msgid "%(username)s's workouts feed"
 msgstr "il feed dei workout di %(username)s"
@@ -623,3 +626,4 @@ msgstr "Discesa"
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
 msgstr "Descrizione"
+

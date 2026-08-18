@@ -52,8 +52,7 @@
     "LABEL": "Hoogtedata geüpdatet uit",
     "file": "Uit bestand",
     "none": "Geen (hoogtedata uit bestand)",
-    "open_elevation": "OpenElevation (ruwe data)",
-    "open_elevation_smooth": "OpenElevation (vervlakte data)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "einde",
@@ -138,7 +137,7 @@
   "PREVIOUS_PHOTO": "Vorige foto",
   "PREVIOUS_SEGMENT": "Vorig segment",
   "PREVIOUS_WORKOUT": "Vorige training",
-  "PRIVATE_NOTES": "Privé notities",
+  "PRIVATE_NOTES": "privé notities",
   "PRIVATE_NOTES_FIELD_HELP": "deze notities zijn enkel zichbaar voor jou.",
   "PUBLIC_WORKOUTS_ATOM_FEED": "Openbare trainingen Atom Feed",
   "RADIUS": "straal",

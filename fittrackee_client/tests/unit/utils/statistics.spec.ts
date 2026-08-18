@@ -253,6 +253,32 @@ describe('getDatasets', () => {
           type: 'line',
         },
       ],
+      average_cadence: [
+        {
+          backgroundColor: ['#4c9792'],
+          borderColor: ['#4c9792'],
+          data: [],
+          label: 'Cycling (Sport)',
+          spanGaps: true,
+          type: 'line',
+        },
+        {
+          backgroundColor: ['#000000'],
+          borderColor: ['#000000'],
+          data: [],
+          label: 'Cycling (Transport)',
+          spanGaps: true,
+          type: 'line',
+        },
+        {
+          backgroundColor: ['#bb757c'],
+          borderColor: ['#bb757c'],
+          data: [],
+          label: 'Hiking',
+          spanGaps: true,
+          type: 'line',
+        },
+      ],
       average_descent: [
         {
           label: 'Cycling (Sport)',
@@ -488,6 +514,16 @@ describe('getDatasets', () => {
           type: 'line',
         },
       ],
+      average_cadence: [
+        {
+          backgroundColor: ['#000000'],
+          borderColor: ['#000000'],
+          data: [],
+          label: 'Cycling (Transport)',
+          spanGaps: true,
+          type: 'line',
+        },
+      ],
       average_descent: [
         {
           label: 'Cycling (Transport)',
@@ -584,6 +620,7 @@ describe('formatStats', () => {
       labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
         average_ascent: [],
+        average_cadence: [],
         average_descent: [],
         average_distance: [],
         average_duration: [],
@@ -649,6 +686,16 @@ describe('formatStats', () => {
             data: [null, null, null],
             type: 'line',
             spanGaps: true,
+          },
+        ],
+        average_cadence: [
+          {
+            backgroundColor: ['#000000'],
+            borderColor: ['#000000'],
+            data: [null, null, null],
+            label: 'Cycling (Transport)',
+            spanGaps: true,
+            type: 'line',
           },
         ],
         average_descent: [
@@ -750,6 +797,7 @@ describe('formatStats', () => {
       '2021-05': {
         1: {
           average_ascent: 150,
+          average_cadence: null,
           average_descent: 100,
           average_distance: 10,
           average_duration: 3000,
@@ -766,6 +814,7 @@ describe('formatStats', () => {
       '2021-06': {
         1: {
           average_ascent: 250,
+          average_cadence: null,
           average_descent: 150,
           average_distance: 15,
           average_duration: 3500,
@@ -780,6 +829,7 @@ describe('formatStats', () => {
         },
         2: {
           average_ascent: 75,
+          average_cadence: 160,
           average_descent: 100,
           average_distance: 10,
           average_duration: 1500,
@@ -796,6 +846,7 @@ describe('formatStats', () => {
       '2021-07': {
         3: {
           average_distance: 6,
+          average_cadence: null,
           average_duration: 2500,
           average_ascent: 50,
           average_descent: 50,
@@ -819,6 +870,7 @@ describe('formatStats', () => {
       labels: ['05/2021', '06/2021', '07/2021'],
       datasets: {
         average_ascent: [],
+        average_cadence: [],
         average_descent: [],
         average_distance: [],
         average_duration: [],
@@ -851,6 +903,7 @@ describe('formatStats', () => {
       '2021-05': {
         1: {
           average_ascent: 150,
+          average_cadence: null,
           average_descent: 100,
           average_distance: 10,
           average_duration: 3000,
@@ -867,6 +920,7 @@ describe('formatStats', () => {
       '2021-06': {
         1: {
           average_ascent: 250,
+          average_cadence: null,
           average_descent: 150,
           average_distance: 15,
           average_duration: 3500,
@@ -881,6 +935,7 @@ describe('formatStats', () => {
         },
         2: {
           average_ascent: 75,
+          average_cadence: 165,
           average_descent: 100,
           average_distance: 10,
           average_duration: 1500,
@@ -897,6 +952,7 @@ describe('formatStats', () => {
       '2021-07': {
         3: {
           average_distance: 6,
+          average_cadence: null,
           average_duration: 2500,
           average_ascent: 50,
           average_descent: 50,
@@ -932,6 +988,24 @@ describe('formatStats', () => {
             backgroundColor: ['#bb757c'],
             borderColor: ['#bb757c'],
             data: [null, null, 50],
+            label: 'Hiking',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_cadence: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [null, null, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+          {
+            backgroundColor: ['#bb757c'],
+            borderColor: ['#bb757c'],
+            data: [null, null, null],
             label: 'Hiking',
             spanGaps: true,
             type: 'line',
@@ -1134,6 +1208,7 @@ describe('formatStats (duration)', () => {
       '2020': {
         1: {
           average_ascent: 150,
+          average_cadence: null,
           average_descent: 100,
           average_distance: 10,
           average_duration: 3000,
@@ -1150,6 +1225,7 @@ describe('formatStats (duration)', () => {
       '2021': {
         1: {
           average_ascent: 250,
+          average_cadence: null,
           average_descent: 150,
           average_distance: 15,
           average_duration: 3500,
@@ -1164,6 +1240,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_ascent: 75,
+          average_cadence: 166,
           average_descent: 100,
           average_distance: 10,
           average_duration: 1500,
@@ -1180,6 +1257,7 @@ describe('formatStats (duration)', () => {
       '2022': {
         3: {
           average_distance: 10,
+          average_cadence: null,
           average_duration: 1500,
           average_ascent: 50,
           average_descent: 50,
@@ -1207,6 +1285,16 @@ describe('formatStats (duration)', () => {
             backgroundColor: ['#4c9792'],
             borderColor: ['#4c9792'],
             data: [150, 250],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_cadence: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [null, null],
             label: 'Cycling (Sport)',
             spanGaps: true,
             type: 'line',
@@ -1330,6 +1418,7 @@ describe('formatStats (duration)', () => {
       '2021-10': {
         1: {
           average_ascent: 150,
+          average_cadence: null,
           average_descent: 100,
           average_distance: 10,
           average_duration: 3000,
@@ -1346,6 +1435,7 @@ describe('formatStats (duration)', () => {
       '2021-11': {
         1: {
           average_ascent: 250,
+          average_cadence: null,
           average_descent: 150,
           average_distance: 15,
           average_duration: 3500,
@@ -1360,6 +1450,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_ascent: 75,
+          average_cadence: 168,
           average_descent: 100,
           average_distance: 10,
           average_duration: 1500,
@@ -1376,6 +1467,7 @@ describe('formatStats (duration)', () => {
       '2021-12': {
         3: {
           average_distance: 10,
+          average_cadence: null,
           average_duration: 1500,
           average_ascent: 50,
           average_descent: 50,
@@ -1403,6 +1495,16 @@ describe('formatStats (duration)', () => {
             backgroundColor: ['#4c9792'],
             borderColor: ['#4c9792'],
             data: [150, 250, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_cadence: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [null, null, null],
             label: 'Cycling (Sport)',
             spanGaps: true,
             type: 'line',
@@ -1527,6 +1629,7 @@ describe('formatStats (duration)', () => {
       '2021-10-03': {
         1: {
           average_ascent: 150,
+          average_cadence: null,
           average_descent: 100,
           average_distance: 10,
           average_duration: 3000,
@@ -1543,6 +1646,7 @@ describe('formatStats (duration)', () => {
       '2021-10-10': {
         1: {
           average_ascent: 250,
+          average_cadence: null,
           average_descent: 150,
           average_distance: 15,
           average_duration: 3500,
@@ -1557,6 +1661,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_ascent: 75,
+          average_cadence: 160,
           average_descent: 100,
           average_distance: 10,
           average_duration: 1500,
@@ -1573,6 +1678,7 @@ describe('formatStats (duration)', () => {
       '2021-10-17': {
         3: {
           average_distance: 10,
+          average_cadence: null,
           average_duration: 1500,
           average_ascent: 50,
           average_descent: 50,
@@ -1600,6 +1706,16 @@ describe('formatStats (duration)', () => {
             backgroundColor: ['#4c9792'],
             borderColor: ['#4c9792'],
             data: [150, 250, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_cadence: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [null, null, null],
             label: 'Cycling (Sport)',
             spanGaps: true,
             type: 'line',
@@ -1724,6 +1840,7 @@ describe('formatStats (duration)', () => {
       '2021-10-04': {
         1: {
           average_ascent: 150,
+          average_cadence: null,
           average_descent: 100,
           average_distance: 10,
           average_duration: 3000,
@@ -1740,6 +1857,7 @@ describe('formatStats (duration)', () => {
       '2021-10-11': {
         1: {
           average_ascent: 250,
+          average_cadence: null,
           average_descent: 150,
           average_distance: 15,
           average_duration: 3500,
@@ -1754,6 +1872,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_ascent: 75,
+          average_cadence: 163,
           average_descent: 100,
           average_distance: 10,
           average_duration: 1500,
@@ -1770,6 +1889,7 @@ describe('formatStats (duration)', () => {
       '2021-10-18': {
         3: {
           average_distance: 10,
+          average_cadence: null,
           average_duration: 1500,
           average_ascent: 50,
           average_descent: 50,
@@ -1797,6 +1917,16 @@ describe('formatStats (duration)', () => {
             backgroundColor: ['#4c9792'],
             borderColor: ['#4c9792'],
             data: [150, 250, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_cadence: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [null, null, null],
             label: 'Cycling (Sport)',
             spanGaps: true,
             type: 'line',
@@ -1921,6 +2051,7 @@ describe('formatStats (duration)', () => {
       '2021-09-26': {
         1: {
           average_ascent: 120,
+          average_cadence: null,
           average_descent: 110,
           average_distance: 12,
           average_duration: 3600,
@@ -1937,6 +2068,7 @@ describe('formatStats (duration)', () => {
       '2021-10-03': {
         1: {
           average_ascent: 150,
+          average_cadence: null,
           average_descent: 100,
           average_distance: 10,
           average_duration: 3000,
@@ -1953,6 +2085,7 @@ describe('formatStats (duration)', () => {
       '2021-10-10': {
         1: {
           average_ascent: 250,
+          average_cadence: null,
           average_descent: 150,
           average_distance: 15,
           average_duration: 3500,
@@ -1967,6 +2100,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_ascent: 75,
+          average_cadence: 164,
           average_descent: 100,
           average_distance: 10,
           average_duration: 1500,
@@ -1982,10 +2116,11 @@ describe('formatStats (duration)', () => {
       },
       '2021-10-17': {
         3: {
+          average_ascent: 50,
+          average_cadence: null,
+          average_descent: 50,
           average_distance: 10,
           average_duration: 1500,
-          average_ascent: 50,
-          average_descent: 50,
           average_pace: 850,
           average_speed: 8.64,
           total_workouts: 2,
@@ -2010,6 +2145,16 @@ describe('formatStats (duration)', () => {
             backgroundColor: ['#4c9792'],
             borderColor: ['#4c9792'],
             data: [120, 150, 250, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_cadence: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [null, null, null, null],
             label: 'Cycling (Sport)',
             spanGaps: true,
             type: 'line',
@@ -2135,6 +2280,7 @@ describe('formatStats (duration)', () => {
       '2021-10-03': {
         1: {
           average_ascent: 150,
+          average_cadence: null,
           average_descent: 100,
           average_distance: 10,
           average_duration: 3000,
@@ -2151,6 +2297,7 @@ describe('formatStats (duration)', () => {
       '2021-10-10': {
         1: {
           average_ascent: 250,
+          average_cadence: null,
           average_descent: 150,
           average_distance: 15,
           average_duration: 3500,
@@ -2165,6 +2312,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_ascent: 75,
+          average_cadence: 160,
           average_descent: 100,
           average_distance: 10,
           average_duration: 1500,
@@ -2180,10 +2328,11 @@ describe('formatStats (duration)', () => {
       },
       '2021-10-17': {
         3: {
+          average_ascent: 50,
+          average_cadence: null,
+          average_descent: 50,
           average_distance: 10,
           average_duration: 1500,
-          average_ascent: 50,
-          average_descent: 50,
           average_pace: 850,
           average_speed: 8.64,
           total_workouts: 2,
@@ -2208,6 +2357,16 @@ describe('formatStats (duration)', () => {
             backgroundColor: ['#4c9792'],
             borderColor: ['#4c9792'],
             data: [150, 250, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_cadence: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [null, null, null],
             label: 'Cycling (Sport)',
             spanGaps: true,
             type: 'line',
@@ -2333,6 +2492,7 @@ describe('formatStats (duration)', () => {
       '2021-10-03': {
         1: {
           average_ascent: 150,
+          average_cadence: null,
           average_descent: 100,
           average_distance: 10,
           average_duration: 3000,
@@ -2349,6 +2509,7 @@ describe('formatStats (duration)', () => {
       '2021-10-10': {
         1: {
           average_ascent: 250,
+          average_cadence: null,
           average_descent: 150,
           average_distance: 15,
           average_duration: 3500,
@@ -2363,6 +2524,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_ascent: 75,
+          average_cadence: 160,
           average_descent: 100,
           average_distance: 10,
           average_duration: 1500,
@@ -2378,10 +2540,11 @@ describe('formatStats (duration)', () => {
       },
       '2021-10-17': {
         3: {
+          average_ascent: 50,
+          average_cadence: null,
+          average_descent: 50,
           average_distance: 10,
           average_duration: 1500,
-          average_ascent: 50,
-          average_descent: 50,
           average_pace: 850,
           average_speed: 8.64,
           total_workouts: 2,
@@ -2406,6 +2569,16 @@ describe('formatStats (duration)', () => {
             backgroundColor: ['#4c9792'],
             borderColor: ['#4c9792'],
             data: [150, 250, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_cadence: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [null, null, null],
             label: 'Cycling (Sport)',
             spanGaps: true,
             type: 'line',
@@ -2530,6 +2703,7 @@ describe('formatStats (duration)', () => {
       '2021-10-03': {
         1: {
           average_ascent: 150,
+          average_cadence: null,
           average_descent: 100,
           average_distance: 10,
           average_duration: 3000,
@@ -2546,6 +2720,7 @@ describe('formatStats (duration)', () => {
       '2021-10-10': {
         1: {
           average_ascent: 250,
+          average_cadence: null,
           average_descent: 150,
           average_distance: 15,
           average_duration: 3500,
@@ -2560,6 +2735,7 @@ describe('formatStats (duration)', () => {
         },
         2: {
           average_ascent: 75,
+          average_cadence: 160,
           average_descent: 100,
           average_distance: 10,
           average_duration: 1500,
@@ -2576,6 +2752,7 @@ describe('formatStats (duration)', () => {
       '2021-10-17': {
         3: {
           average_distance: 10,
+          average_cadence: null,
           average_duration: 1500,
           average_ascent: 50,
           average_descent: 50,
@@ -2611,6 +2788,24 @@ describe('formatStats (duration)', () => {
             backgroundColor: ['#bb757c'],
             borderColor: ['#bb757c'],
             data: [null, null, 164.04],
+            label: 'Hiking',
+            spanGaps: true,
+            type: 'line',
+          },
+        ],
+        average_cadence: [
+          {
+            backgroundColor: ['#4c9792'],
+            borderColor: ['#4c9792'],
+            data: [null, null, null],
+            label: 'Cycling (Sport)',
+            spanGaps: true,
+            type: 'line',
+          },
+          {
+            backgroundColor: ['#bb757c'],
+            borderColor: ['#bb757c'],
+            data: [null, null, null],
             label: 'Hiking',
             spanGaps: true,
             type: 'line',

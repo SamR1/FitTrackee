@@ -4,7 +4,9 @@ from sqlalchemy.sql import text
 
 from fittrackee import db
 from fittrackee.utils import decode_short_id
+from fittrackee.workouts.constants import MULTI_ACTIVITIES_SPORTS
 from fittrackee.workouts.exceptions import WorkoutGPXException
+from fittrackee.workouts.models import Sport, WorkoutSegment
 from fittrackee.workouts.utils.geometry import (
     get_chart_data_from_segment_points,
 )
@@ -31,11 +33,14 @@ def get_chart_data(
         FROM workout_segments
         WHERE workout_segments.workout_id  = :workout_id"""
     values: Dict = {"workout_id": workout.id}
+
+    segment_uuid = None
     if segment_short_id is not None:
         segment_uuid = decode_short_id(segment_short_id)
         sql += """
           AND workout_segments.uuid  = :segment_uuid"""
         values["segment_uuid"] = segment_uuid
+
     sql += """
         ORDER BY workout_id, start_date"""
     segments_points = db.session.execute(text(sql), values).mappings().all()
@@ -51,10 +56,20 @@ def get_chart_data(
             None,
         )
 
+    segment_sport = None
+    if segment_uuid and workout.sport.label in MULTI_ACTIVITIES_SPORTS:
+        segment_sport = (
+            Sport.query.join(
+                WorkoutSegment, WorkoutSegment.sport_id == Sport.id
+            )
+            .where(WorkoutSegment.uuid == segment_uuid)
+            .first()
+        )
+
     if segments_points[0].points:
         return get_chart_data_from_segment_points(
             [segment["points"] for segment in segments_points],
-            workout.sport,
+            segment_sport or workout.sport,
             user=user,
             workout_ave_cadence=workout.ave_cadence,
             can_see_heart_rate=can_see_heart_rate,

@@ -55,9 +55,9 @@
     },
     "REASON": "Razlog",
     "REPORT": "izvješće | izvješća",
-    "REPORTED_BY": "Izvješće od",
+    "REPORTED_BY": "izvješće od",
     "REPORTED_CONTENT": "Prijavljeni sadržaj",
-    "REPORTED_USER": "Prijavljeni korisnik",
+    "REPORTED_USER": "prijavljeni korisnik",
     "REPORTER": "izvjestitelj",
     "REPORT_ACTIONS": {
       "comment_suspension": "Komentar je suspendiran od strane {1} {2}.",

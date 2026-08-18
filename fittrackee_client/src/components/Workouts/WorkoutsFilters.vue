@@ -399,6 +399,66 @@
                   </div>
                 </div>
               </div>
+
+              <div class="form-items-group">
+                <div class="form-item">
+                  <label>
+                    {{ $t('workouts.ASCENT') }} ({{ elevationToUnit }}):
+                  </label>
+                  <div class="form-inputs-group">
+                    <input
+                      name="ascent_from"
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      :disabled="geocodeLoading || disableElevationGain"
+                      :value="$route.query.ascent_from"
+                      @change="handleFilterChange"
+                      @keyup.enter="onFilter"
+                    />
+                    <span>{{ $t('workouts.TO') }}</span>
+                    <input
+                      name="ascent_to"
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      :disabled="geocodeLoading || disableElevationGain"
+                      :value="$route.query.ascent_to"
+                      @change="handleFilterChange"
+                      @keyup.enter="onFilter"
+                    />
+                  </div>
+                </div>
+
+                <div class="form-item">
+                  <label>
+                    {{ $t('workouts.DESCENT') }} ({{ elevationToUnit }}):
+                  </label>
+                  <div class="form-inputs-group">
+                    <input
+                      name="descent_from"
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      :disabled="geocodeLoading || disableElevationGain"
+                      :value="$route.query.descent_from"
+                      @change="handleFilterChange"
+                      @keyup.enter="onFilter"
+                    />
+                    <span>{{ $t('workouts.TO') }}</span>
+                    <input
+                      name="descent_to"
+                      type="number"
+                      min="0"
+                      step="0.1"
+                      :disabled="geocodeLoading || disableElevationGain"
+                      :value="$route.query.descent_to"
+                      @change="handleFilterChange"
+                      @keyup.enter="onFilter"
+                    />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -441,6 +501,7 @@
   import type { IAuthUserProfile, TVisibilityLevels } from '@/types/user'
   import { sortEquipments } from '@/utils/equipments'
   import { getLocationFromOsmId } from '@/utils/geocode.ts'
+  import { sportsWithoutElevation } from '@/utils/sports.ts'
   import { units } from '@/utils/units'
   import { getAllVisibilityLevels } from '@/utils/visibility_levels.ts'
 
@@ -466,6 +527,9 @@
   const toUnit: ComputedRef<string> = computed(() =>
     authUser.value.imperial_units ? units['km'].defaultTarget : 'km'
   )
+  const elevationToUnit: ComputedRef<string> = computed(() =>
+    authUser.value.imperial_units ? units['m'].defaultTarget : 'm'
+  )
   const equipmentsWithWorkouts: ComputedRef<Record<string, IEquipment[]>> =
     computed(() =>
       getEquipmentsFilters(store.getters[EQUIPMENTS_STORE.GETTERS.EQUIPMENTS])
@@ -480,6 +544,7 @@
   )
   const sportId: Ref<string> = ref('')
   const disablePaceInputs: Ref<boolean> = ref(true)
+  const disableElevationGain: Ref<boolean> = ref(false)
   const displayMoreFilters: Ref<boolean> = ref(false)
 
   function handleFilterChange(event: Event) {
@@ -528,25 +593,30 @@
       delete params.sport_id
       updateOrderBy(false)
       disablePaceInputs.value = !displayPace.value
+      disableElevationGain.value = false
       return
     }
     params.sport_id = sportId.value
     const selectedSport = translatedSports.value.find(
       (sport) => sport.id === +sportId.value
     )
-    if (
-      selectedSport &&
-      ['pace', 'pace_and_speed'].includes(selectedSport.pace_speed_display)
-    ) {
-      disablePaceInputs.value = false
-      updateOrderBy(true)
-    } else {
-      delete params.ave_pace_from
-      delete params.ave_pace_to
-      delete params.max_pace_from
-      delete params.max_pace_to
-      disablePaceInputs.value = true
-      updateOrderBy(false)
+    if (selectedSport) {
+      if (
+        ['pace', 'pace_and_speed'].includes(selectedSport.pace_speed_display)
+      ) {
+        disablePaceInputs.value = false
+        updateOrderBy(true)
+      } else {
+        delete params.ave_pace_from
+        delete params.ave_pace_to
+        delete params.max_pace_from
+        delete params.max_pace_to
+        disablePaceInputs.value = true
+        updateOrderBy(false)
+      }
+      disableElevationGain.value = sportsWithoutElevation.includes(
+        selectedSport?.label
+      )
     }
   }
   function updateDisablePaceInputs() {

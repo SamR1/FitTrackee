@@ -68,6 +68,18 @@
           )
         }}
       </dd>
+      <dt>
+        {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.LABEL') }}<sup>1</sup>:
+      </dt>
+      <dd>
+        {{ $t(`user.PROFILE.WORKOUT_STATS_FROM_FILE.${workoutStatsFromFile}`) }}
+      </dd>
+      <div class="info-box raw-speed-help">
+        <span>
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.HELP') }}
+        </span>
+      </div>
       <dt>{{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}<sup>1</sup>:</dt>
       <dd>
         {{
@@ -87,16 +99,29 @@
     </dl>
     <dl>
       <dt>
-        {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL')
+        {{ $t('user.PROFILE.MISSING_ELEVATIONS_DATA_SOURCE_LABEL')
         }}<sup>2</sup>:
       </dt>
       <dd>
         {{
           $t(
             `workouts.ELEVATION_DATA_SOURCE.${
-              user.missing_elevations_processing === 'file'
+              user.missing_elevations_data_source === 'file'
                 ? 'none'
-                : user.missing_elevations_processing
+                : user.missing_elevations_data_source
+            }`
+          )
+        }}
+      </dd>
+      <dt>
+        {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING.LABEL')
+        }}<sup>2</sup>:
+      </dt>
+      <dd>
+        {{
+          $t(
+            `user.PROFILE.MISSING_ELEVATIONS_PROCESSING.${
+              user.elevation_processing
             }`
           )
         }}
@@ -114,23 +139,31 @@
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.MEDIA_VISIBILITY') }}<sup>3</sup>:</dt>
+      <dt class="capitalize">
+        {{ $t('visibility_levels.MEDIA_VISIBILITY') }}<sup>3</sup>:
+      </dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.media_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>:</dt>
+      <dt class="capitalize">
+        {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>:
+      </dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.analysis_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>:</dt>
+      <dt class="capitalize">
+        {{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>:
+      </dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.map_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.HR_VISIBILITY') }}:</dt>
+      <dt class="capitalize">{{ $t('visibility_levels.HR_VISIBILITY') }}:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.hr_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.CALORIES_VISIBILITY') }}:</dt>
+      <dt class="capitalize">
+        {{ $t('visibility_levels.CALORIES_VISIBILITY') }}:
+      </dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.calories_visibility}`) }}
       </dd>
@@ -144,6 +177,12 @@
           )
         }}
       </dd>
+      <div class="info-box events-help">
+        <span>
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.HELP') }}
+        </span>
+      </div>
     </dl>
     <div class="info-box changes-help">
       <div>
@@ -152,7 +191,14 @@
       <div>
         2. {{ $t('user.PROFILE.CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI') }}
       </div>
-      <div>3. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
+      <div>
+        3. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}{{ ' ' }}
+        {{
+          $t(
+            'user.PROFILE.VISIBILITY_LEVELS_CAN_BE_OVERRIDEN_BY_SPORT_PREFERENCES'
+          )
+        }}
+      </div>
     </div>
     <div class="profile-buttons">
       <button @click="$router.push('/profile/edit/preferences')">
@@ -196,6 +242,9 @@
       : user.value.use_dark_mode === false
         ? 'LIGHT'
         : 'DEFAULT'
+  )
+  const workoutStatsFromFile = computed(() =>
+    user.value.workout_stats_from_file ? 'FROM_FILE' : 'CALCULATED'
   )
 </script>
 

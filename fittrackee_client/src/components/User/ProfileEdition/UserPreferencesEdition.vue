@@ -227,6 +227,32 @@
         </div>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
+            {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.LABEL') }}<sup>1</sup>
+          </span>
+          <div class="checkboxes">
+            <label v-for="status in workoutStatsFromFile" :key="status.label">
+              <input
+                type="radio"
+                :id="status.label"
+                :name="status.label"
+                :checked="status.value === userForm.workout_stats_from_file"
+                :disabled="authUserLoading"
+                @input="updateValue('workout_stats_from_file', status.value)"
+              />
+              <span class="checkbox-label">
+                {{ $t(`user.PROFILE.WORKOUT_STATS_FROM_FILE.${status.label}`) }}
+              </span>
+            </label>
+          </div>
+          <div class="info-box raw-speed-help">
+            <span>
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.HELP') }}
+            </span>
+          </div>
+        </div>
+        <div class="form-items form-checkboxes">
+          <span class="checkboxes-label">
             {{ $t('user.PROFILE.USE_RAW_GPX_SPEED.LABEL') }}<sup>1</sup>
           </span>
           <div class="checkboxes">
@@ -253,16 +279,17 @@
         </div>
         <label class="form-items">
           <span>
-            {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING_LABEL')
+            {{ $t('user.PROFILE.MISSING_ELEVATIONS_DATA_SOURCE_LABEL')
             }}<sup>2</sup>
           </span>
           <select
-            id="missing_elevations_processing"
-            v-model="userForm.missing_elevations_processing"
+            id="missing_elevations_data_source"
+            v-model="userForm.missing_elevations_data_source"
             :disabled="elevationServices.length === 0 || authUserLoading"
+            @change="updateElevationProcessing"
           >
             <option
-              v-for="item in elevationsProcessingItems"
+              v-for="item in elevationDataSourcesItems"
               :value="item"
               :key="item"
             >
@@ -285,6 +312,25 @@
             {{ $t('user.PROFILE.NO_ELEVATION_SERVICE_AVAILABLE') }}
           </span>
         </div>
+        <label class="form-items">
+          <span>
+            {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING.LABEL')
+            }}<sup>2</sup>
+          </span>
+          <select
+            id="elevation_processing"
+            v-model="userForm.elevation_processing"
+            :disabled="authUserLoading"
+          >
+            <option
+              v-for="item in calculatedElevationProcessing"
+              :value="item"
+              :key="item"
+            >
+              {{ $t(`user.PROFILE.MISSING_ELEVATIONS_PROCESSING.${item}`) }}
+            </option>
+          </select>
+        </label>
         <label class="form-items">
           <span>
             {{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>3</sup>
@@ -324,7 +370,7 @@
           </select>
         </label>
         <label class="form-items">
-          <span>
+          <span class="capitalize">
             {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>
           </span>
           <select
@@ -343,7 +389,7 @@
           </select>
         </label>
         <label class="form-items">
-          <span>
+          <span class="capitalize">
             {{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>
           </span>
           <select
@@ -361,7 +407,9 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('visibility_levels.HR_VISIBILITY') }}
+          <span class="capitalize">
+            {{ $t('visibility_levels.HR_VISIBILITY') }}
+          </span>
           <select
             id="hr_visibility"
             v-model="userForm.hr_visibility"
@@ -377,7 +425,9 @@
           </select>
         </label>
         <label class="form-items">
-          {{ $t('visibility_levels.CALORIES_VISIBILITY') }}
+          <span class="capitalize">
+            {{ $t('visibility_levels.CALORIES_VISIBILITY') }}
+          </span>
           <select
             id="calories_visibility"
             v-model="userForm.calories_visibility"
@@ -410,6 +460,12 @@
             </option>
           </select>
         </label>
+        <div class="info-box events-help">
+          <span>
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.HELP') }}
+          </span>
+        </div>
         <div class="info-box changes-help">
           <div>
             1.
@@ -451,6 +507,7 @@
     IUserPreferencesPayload,
     IAuthUserProfile,
     TVisibilityLevels,
+    TElevationProcessing,
   } from '@/types/user'
   import { useStore } from '@/use/useStore'
   import { availableDateFormatOptions } from '@/utils/dates'
@@ -469,8 +526,12 @@
 
   const store = useStore()
 
-  const { elevationServices, elevationsProcessingItems, errorMessages } =
-    useApp()
+  const {
+    elevationServices,
+    elevationDataSourcesItems,
+    elevationProcessingItems,
+    errorMessages,
+  } = useApp()
   const { authUserLoading } = useAuthUser()
 
   const weekStart = [
@@ -569,11 +630,23 @@
   ]
   const segmentsCreationEvents = ['all', 'only_manual', 'none']
 
+  const workoutStatsFromFile = [
+    {
+      label: 'CALCULATED',
+      value: false,
+    },
+    {
+      label: 'FROM_FILE',
+      value: true,
+    },
+  ]
+
   const userForm: Reactive<IUserPreferencesPayload> = reactive({
     analysis_visibility: 'private',
     calories_visibility: 'private',
     date_format: 'dd/MM/yyyy',
     display_ascent: true,
+    elevation_processing: 'none',
     hide_profile_in_users_directory: true,
     hr_visibility: 'private',
     imperial_units: false,
@@ -581,7 +654,7 @@
     manually_approves_followers: true,
     map_visibility: 'private',
     media_visibility: 'private',
-    missing_elevations_processing: 'file',
+    missing_elevations_data_source: 'file',
     split_workout_charts: false,
     segments_creation_event: 'only_manual',
     start_elevation_at_zero: false,
@@ -589,6 +662,7 @@
     use_dark_mode: false,
     use_raw_gpx_speed: false,
     weekm: false,
+    workout_stats_from_file: false,
     workouts_visibility: 'private',
   })
 
@@ -612,6 +686,12 @@
   const mediaVisibilityLevels: ComputedRef<TVisibilityLevels[]> = computed(() =>
     getVisibilityLevels(userForm.workouts_visibility)
   )
+  const calculatedElevationProcessing: ComputedRef<TElevationProcessing[]> =
+    computed(() =>
+      userForm.missing_elevations_data_source === 'file'
+        ? [elevationProcessingItems[0]]
+        : elevationProcessingItems
+    )
   function updateUserForm(user: IAuthUserProfile) {
     userForm.analysis_visibility = user.analysis_visibility ?? 'private'
     userForm.display_ascent = user.display_ascent
@@ -636,7 +716,11 @@
     userForm.segments_creation_event =
       user.segments_creation_event ?? 'only_manual'
     userForm.split_workout_charts = user.split_workout_charts
-    userForm.missing_elevations_processing = user.missing_elevations_processing
+    userForm.missing_elevations_data_source =
+      user.missing_elevations_data_source
+    userForm.elevation_processing = user.elevation_processing
+    userForm.media_visibility = user.media_visibility ?? 'private'
+    userForm.workout_stats_from_file = user.workout_stats_from_file
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
@@ -665,6 +749,12 @@
       userForm.media_visibility,
       userForm.workouts_visibility
     )
+  }
+  function updateElevationProcessing() {
+    userForm.elevation_processing =
+      userForm.missing_elevations_data_source === 'file'
+        ? 'none'
+        : userForm.elevation_processing
   }
 
   onMounted(() => {
@@ -719,11 +809,13 @@
     #calories_visibility,
     #media_visibility,
     #segments_creation_event,
-    #missing_elevations_processing {
+    #missing_elevations_data_source,
+    #elevation_processing {
       padding: $default-padding * 0.5;
     }
 
-    .missing-elevations-help {
+    .missing-elevations-help,
+    .events-help {
       margin-top: $default-margin * 0.5;
     }
     .changes-help {

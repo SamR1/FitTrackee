@@ -786,7 +786,6 @@
 
         dt {
           font-weight: bold;
-          text-transform: lowercase;
         }
       }
 
@@ -797,10 +796,6 @@
           padding: 0 !important;
         }
       }
-    }
-
-    .report-status {
-      text-transform: lowercase;
     }
 
     .report-action-and-comments {

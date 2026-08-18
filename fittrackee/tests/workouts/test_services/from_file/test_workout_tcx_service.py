@@ -51,7 +51,7 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         assert last_point_cad.text == "53"
 
     def test_it_raises_error_when_cx_file_is_invalid(
-        self, app: "Flask", invalid_tcx_file: str
+        self, app: "Flask", invalid_tcx_file: str, sport_1_cycling: "Sport"
     ) -> None:
         with (
             pytest.raises(
@@ -61,6 +61,7 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
             WorkoutTcxService.parse_file(
                 self.get_file_content(invalid_tcx_file),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
     def test_it_raises_error_when_tcx_file_has_no_activities(
@@ -77,6 +78,7 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
             WorkoutTcxService.parse_file(
                 self.get_file_content(tcx_file_wo_activities),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
     def test_it_raises_error_when_tcx_file_has_no_laps(
@@ -90,6 +92,7 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
             WorkoutTcxService.parse_file(
                 self.get_file_content(tcx_file_wo_laps),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
     def test_it_raises_error_when_tcx_file_has_no_tracks(
@@ -103,6 +106,7 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
             WorkoutTcxService.parse_file(
                 self.get_file_content(tcx_file_wo_tracks),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
     def test_it_raises_error_when_tcx_file_has_no_coordinates(
@@ -119,6 +123,7 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
             WorkoutTcxService.parse_file(
                 self.get_file_content(tcx_without_coordinates),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
     def test_it_returns_gpx_with_tcx_with_one_lap_and_one_track(
@@ -127,12 +132,15 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_one_lap_and_one_track: str,
     ) -> None:
-        gpx = WorkoutTcxService.parse_file(
+        gpx, file_stats, sessions_stats = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_one_lap_and_one_track),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         self.assert_gpx(gpx)
+        assert file_stats == {}
+        assert sessions_stats == []
 
     def test_it_returns_gpx_with_tcx_with_one_lap_and_two_tracks(
         self,
@@ -141,9 +149,10 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         user_1: "User",
         tcx_with_one_lap_and_two_tracks: str,
     ) -> None:
-        gpx = WorkoutTcxService.parse_file(
+        gpx, _, _ = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_one_lap_and_two_tracks),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         self.assert_gpx(gpx)
@@ -154,9 +163,10 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_two_laps: str,
     ) -> None:
-        gpx = WorkoutTcxService.parse_file(
+        gpx, _, _ = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_two_laps),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         self.assert_gpx(gpx)
@@ -167,9 +177,10 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_two_activities: str,
     ) -> None:
-        gpx = WorkoutTcxService.parse_file(
+        gpx, _, _ = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_two_activities),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         assert len(gpx.tracks) == 1
@@ -184,9 +195,14 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_invalid_elevation: str,
     ) -> None:
-        gpx = WorkoutTcxService.parse_file(
+        (
+            gpx,
+            _,
+            _,
+        ) = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_invalid_elevation),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         assert len(gpx.tracks) == 1
@@ -201,9 +217,10 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_heart_rate_cadence_and_power: str,
     ) -> None:
-        gpx = WorkoutTcxService.parse_file(
+        gpx, file_stats, sessions_stats = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_heart_rate_cadence_and_power),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         self.assert_gpx_with_extensions(gpx)
@@ -215,6 +232,8 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         last_point_cad = last_point.extensions[0][2]
         assert last_point_cad.tag == "{gpxtpx}power"
         assert last_point_cad.text == "100"
+        assert file_stats == {}
+        assert sessions_stats == []
 
     def test_it_returns_gpx_with_tcx_with_heart_rate_cadence_and_ns3_power(
         self,
@@ -222,9 +241,10 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_heart_rate_cadence_and_ns3_power: str,
     ) -> None:
-        gpx = WorkoutTcxService.parse_file(
+        gpx, file_stats, sessions_stats = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_heart_rate_cadence_and_ns3_power),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         self.assert_gpx_with_extensions(gpx)
@@ -236,6 +256,8 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         last_point_cad = last_point.extensions[0][2]
         assert last_point_cad.tag == "{gpxtpx}power"
         assert last_point_cad.text == "100"
+        assert file_stats == {}
+        assert sessions_stats == []
 
     def test_it_returns_gpx_with_tcx_with_heart_rate_and_run_cadence(
         self,
@@ -243,12 +265,15 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_heart_rate_and_run_cadence: str,
     ) -> None:
-        gpx = WorkoutTcxService.parse_file(
+        gpx, file_stats, sessions_stats = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_heart_rate_and_run_cadence),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         self.assert_gpx_with_extensions(gpx)
+        assert file_stats == {}
+        assert sessions_stats == []
 
     def test_it_returns_gpx_with_tcx_with_heart_rate_and_ns3_run_cadence(
         self,
@@ -256,12 +281,15 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_heart_rate_and_ns3_run_cadence: str,
     ) -> None:
-        gpx = WorkoutTcxService.parse_file(
+        gpx, file_stats, sessions_stats = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_heart_rate_and_ns3_run_cadence),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         self.assert_gpx_with_extensions(gpx)
+        assert file_stats == {}
+        assert sessions_stats == []
 
     def test_it_returns_gpx_with_calories(
         self,
@@ -269,15 +297,18 @@ class TestWorkoutTcxServiceParseFile(WorkoutFileMixin):
         sport_1_cycling: "Sport",
         tcx_with_calories: str,
     ) -> None:
-        gpx = WorkoutTcxService.parse_file(
+        gpx, file_stats, sessions_stats = WorkoutTcxService.parse_file(
             self.get_file_content(tcx_with_calories),
             segments_creation_event="none",
+            sport=sport_1_cycling,
         )
 
         self.assert_gpx(gpx)
         track_extension = gpx.tracks[0].extensions[0][0]
         assert track_extension.tag == "{gpxtrkx}Calories"
         assert track_extension.text == "86"
+        assert file_stats == {}
+        assert sessions_stats == []
 
 
 class TestWorkoutTcxServiceInstantiation(WorkoutFileMixin):
@@ -310,7 +341,9 @@ class TestWorkoutTcxServiceInstantiation(WorkoutFileMixin):
         assert service.workout is None
         assert service.is_creation is True
         assert service.get_weather is True
-        assert service.get_elevation_on_refresh is True
-        assert service.change_elevation_source is None
+        assert service.get_elevation_on_refresh is False
+        assert service.updated_elevation_data_source is None
+        assert service.elevation_processing is None
+        assert service.update_existing_elevation is False
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)

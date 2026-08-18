@@ -24,7 +24,7 @@ from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_se
 )
 from fittrackee.workouts.utils.convert import convert_speed_into_pace_duration
 
-from ..utils import random_string
+from ..utils import duplicate_row, random_string
 
 if TYPE_CHECKING:
     from fittrackee.users.models import User
@@ -134,13 +134,71 @@ def sport_7_kayaking() -> Sport:
     return sport
 
 
+@pytest.fixture()
+def sport_8_trail() -> Sport:
+    sport = Sport(label="Trail")
+    sport.stopped_speed_threshold = 0.1
+    sport.pace_speed_display = PaceSpeedDisplay.PACE
+    db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
+@pytest.fixture()
+def sport_9_open_water_swimming() -> Sport:
+    sport = Sport(label="Open Water Swimming")
+    sport.stopped_speed_threshold = 0.1
+    db.session.add(sport)
+    db.session.commit()
+    return sport
+
+
+@pytest.fixture()
+def sport_10_swimrun(
+    sport_8_trail: Sport, sport_9_open_water_swimming: Sport
+) -> Sport:
+    sport = Sport(label="Swimrun")
+    db.session.add(sport)
+    db.session.flush()
+    db.session.commit()
+    return sport
+
+
+@pytest.fixture()
+def sport_11_triathlon(
+    sport_1_cycling: Sport,
+    sport_2_running: Sport,
+    sport_9_open_water_swimming: Sport,
+) -> Sport:
+    sport = Sport(label="Triathlon")
+    db.session.add(sport)
+    db.session.flush()
+    db.session.commit()
+    return sport
+
+
 def update_workout(target: Union[Workout, WorkoutSegment]) -> None:
     distance = target.distance if target.distance else 0
     target.ave_speed = float(distance) / (target.duration.seconds / 3600)
     target.max_speed = target.ave_speed
     target.moving = target.duration
+    target.pauses = timedelta()
     target.ave_pace = convert_speed_into_pace_duration(target.ave_speed)
-    target.best_pace = convert_speed_into_pace_duration(target.max_speed)
+    target.best_pace = target.ave_pace
+
+
+def update_workout_totals(workout: "Workout") -> None:
+    total_distance = 0
+    total_duration = timedelta()
+    total_moving = timedelta()
+    for segment in workout.segments:
+        total_distance += segment.distance  # type: ignore
+        total_duration += segment.duration  # type: ignore
+        total_moving += segment.moving  # type: ignore
+
+    workout.distance = total_distance
+    workout.duration = total_duration
+    workout.moving = total_moving
 
 
 @pytest.fixture()
@@ -229,7 +287,16 @@ def workout_cycling_user_1_segment_0_with_coordinates(
     )
     workout_segment.duration = timedelta(minutes=1, seconds=30)
     workout_segment.moving = workout_segment.duration
+    workout_segment.pauses = timedelta()
     workout_segment.distance = 0.113
+    workout_segment.ave_speed = 4.34
+    workout_segment.max_speed = 5.25
+    workout_segment.ave_pace = convert_speed_into_pace_duration(
+        workout_segment.ave_speed
+    )
+    workout_segment.best_pace = convert_speed_into_pace_duration(
+        workout_segment.max_speed
+    )
     db.session.add(workout_segment)
     workout_segment.store_geometry(
         workout_cycling_user_1_segment_0_coordinates
@@ -1213,6 +1280,134 @@ def workout_hiking_user_1(
 
 
 @pytest.fixture()
+def workout_swimrun_user_1_with_coordinates(
+    sport_10_swimrun: "Sport",
+    workout_cycling_user_1_with_coordinates: "Workout",
+) -> Workout:
+    workout = duplicate_row(
+        workout_cycling_user_1_with_coordinates,
+        init_cols={
+            "user_id": workout_cycling_user_1_with_coordinates.user_id,
+            "sport_id": sport_10_swimrun.id,
+            "workout_date": (
+                workout_cycling_user_1_with_coordinates.workout_date
+                + timedelta(hours=1)
+            ),
+        },
+        updated_cols={
+            "sport_id": sport_10_swimrun.id,
+        },
+    )
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
+def workout_swimrun_user_1_segment_0_with_coordinates(
+    user_1: "User",
+    sport_8_trail: "Sport",
+    workout_swimrun_user_1_with_coordinates: "Workout",
+    workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+) -> WorkoutSegment:
+    init_cols = {
+        "workout_id": workout_swimrun_user_1_with_coordinates.id,
+        "workout_uuid": workout_swimrun_user_1_with_coordinates.uuid,
+    }
+    segment = duplicate_row(
+        workout_cycling_user_1_segment_0_with_coordinates,
+        init_cols=init_cols,
+        updated_cols={
+            **init_cols,
+            "sport_id": sport_8_trail.id,
+            "start_date": datetime(2018, 3, 13, 1, tzinfo=timezone.utc),
+        },
+    )
+    db.session.add(segment)
+    db.session.commit()
+    return segment
+
+
+@pytest.fixture()
+def workout_triathlon_user_1_with_coordinates(
+    sport_11_triathlon: "Sport",
+    workout_cycling_user_1_with_coordinates: "Workout",
+) -> Workout:
+    workout = duplicate_row(
+        workout_cycling_user_1_with_coordinates,
+        init_cols={
+            "user_id": workout_cycling_user_1_with_coordinates.user_id,
+            "sport_id": sport_11_triathlon.id,
+            "workout_date": (
+                workout_cycling_user_1_with_coordinates.workout_date
+                + timedelta(hours=1)
+            ),
+        },
+        updated_cols={
+            "sport_id": sport_11_triathlon.id,
+        },
+    )
+    db.session.add(workout)
+    db.session.commit()
+    return workout
+
+
+@pytest.fixture()
+def workout_triathlon_user_1_segment_0_with_coordinates(
+    user_1: "User",
+    sport_9_open_water_swimming: "Sport",
+    workout_triathlon_user_1_with_coordinates: "Workout",
+    workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+) -> WorkoutSegment:
+    init_cols = {
+        "workout_id": workout_triathlon_user_1_with_coordinates.id,
+        "workout_uuid": workout_triathlon_user_1_with_coordinates.uuid,
+    }
+    segment = duplicate_row(
+        workout_cycling_user_1_segment_0_with_coordinates,
+        init_cols=init_cols,
+        updated_cols={
+            **init_cols,
+            "sport_id": sport_9_open_water_swimming.id,
+            "start_date": datetime(2018, 3, 13, 1, tzinfo=timezone.utc),
+        },
+    )
+    db.session.add(segment)
+    db.session.flush()
+    update_workout_totals(workout_triathlon_user_1_with_coordinates)
+    db.session.commit()
+    return segment
+
+
+@pytest.fixture()
+def workout_triathlon_user_1_segment_1_with_coordinates(
+    user_1: "User",
+    sport_1_cycling: "Sport",
+    workout_triathlon_user_1_with_coordinates: "Workout",
+    workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+) -> WorkoutSegment:
+    init_cols = {
+        "workout_id": workout_triathlon_user_1_with_coordinates.id,
+        "workout_uuid": workout_triathlon_user_1_with_coordinates.uuid,
+    }
+    segment = duplicate_row(
+        workout_cycling_user_1_segment_1_with_coordinates,
+        init_cols=init_cols,
+        updated_cols={
+            **init_cols,
+            "sport_id": sport_1_cycling.id,
+            "start_date": datetime(2018, 3, 13, 2, tzinfo=timezone.utc),
+        },
+    )
+    db.session.add(segment)
+    db.session.flush()
+    update_workout(segment)
+    update_workout_totals(workout_triathlon_user_1_with_coordinates)
+    db.session.commit()
+    return segment
+
+
+@pytest.fixture()
 def seven_workouts_user_1(
     user_1: "User", sport_1_cycling: "Sport"
 ) -> List[Workout]:
@@ -1399,6 +1594,92 @@ def workout_cycling_user_2_segment(
 
 
 @pytest.fixture()
+def multi_sports_totals(
+    sport_8_trail: "Sport", sport_9_open_water_swimming: "Sport"
+) -> List[Dict]:
+    return [
+        {
+            "workout_id": "QpNLkvkf6uemJuv5Uf9pp5",
+            "segment_id": "Kb6PPUCyCPpZKwGrUeBLy3",
+            "sport_id": sport_8_trail.id,
+            "duration": timedelta(seconds=906),
+            "pauses": timedelta(seconds=43),
+            "moving": timedelta(seconds=863),
+            "distance": 2.338,
+            "min_alt": 6.8,
+            "max_alt": 13.0,
+            "descent": 12.0,
+            "ascent": 13.0,
+            "max_speed": 11.59,
+            "ave_speed": 9.75,
+            "ave_cadence": None,
+            "max_cadence": None,
+            "ave_hr": 166,
+            "max_hr": 173,
+            "ave_power": None,
+            "max_power": None,
+            "ave_pace": timedelta(seconds=369),
+            "best_pace": timedelta(seconds=311),
+            "calories": 145,
+            "is_transition": False,
+            "segment_number": 1,
+        },
+        {
+            "workout_id": "QpNLkvkf6uemJuv5Uf9pp5",
+            "segment_id": "42UktHmiNuFA3QgE6H82m5",
+            "sport_id": sport_9_open_water_swimming.id,
+            "duration": timedelta(seconds=549),
+            "pauses": timedelta(0),
+            "moving": timedelta(seconds=549),
+            "distance": 0.451,
+            "min_alt": None,
+            "max_alt": None,
+            "descent": None,
+            "ascent": None,
+            "max_speed": 4.86,
+            "ave_speed": 2.96,
+            "ave_cadence": None,
+            "max_cadence": None,
+            "ave_hr": 136,
+            "max_hr": 160,
+            "ave_power": None,
+            "max_power": None,
+            "ave_pace": timedelta(seconds=1218),
+            "best_pace": timedelta(seconds=741),
+            "calories": 125,
+            "is_transition": False,
+            "segment_number": 3,
+        },
+        {
+            "workout_id": "QpNLkvkf6uemJuv5Uf9pp5",
+            "segment_id": "KEr4rYeisyKgeEV5Yss2Dr",
+            "sport_id": sport_8_trail.id,
+            "duration": timedelta(seconds=1093),
+            "pauses": timedelta(seconds=5),
+            "moving": timedelta(seconds=1087),
+            "distance": 2.796,
+            "min_alt": 15.8,
+            "max_alt": 19.0,
+            "descent": 13.0,
+            "ascent": 17.0,
+            "max_speed": 10.62,
+            "ave_speed": 9.26,
+            "ave_cadence": None,
+            "max_cadence": None,
+            "ave_hr": 157,
+            "max_hr": 165,
+            "ave_power": None,
+            "max_power": None,
+            "ave_pace": timedelta(seconds=389),
+            "best_pace": timedelta(seconds=339),
+            "calories": 154,
+            "is_transition": False,
+            "segment_number": 5,
+        },
+    ]
+
+
+@pytest.fixture()
 def gpx_track_points_without_elevations() -> List["GPXTrackPoint"]:
     return [
         GPXTrackPoint(latitude=44.68095, longitude=6.07367),
@@ -1567,6 +1848,30 @@ def gpx_file() -> str:
 """
         + track_points_part_1
         + track_points_part_2
+        + """
+    </trkseg>
+  </trk>
+</gpx>
+"""
+    )
+
+
+@pytest.fixture()
+def short_gpx_file() -> str:
+    return (
+        """<?xml version='1.0' encoding='UTF-8'?>
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
+  <metadata/>
+  <trk>
+    <name>just a workout</name>
+    <trkseg>
+"""
+        + track_points_part_1
         + """
     </trkseg>
   </trk>
@@ -3251,6 +3556,109 @@ def gpx_file_without_elevation() -> str:
       <trkpt lat="44.67822" lon="6.07442">
         <time>2018-03-13T12:48:55Z</time>
       </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
+"""
+
+
+@pytest.fixture()
+def gpx_file_with_missing_elevation() -> str:
+    return """<?xml version='1.0' encoding='UTF-8'?>
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
+  <metadata/>
+  <trk>
+    <name>just a workout</name>
+    <trkseg>
+           <trkpt lat="44.68095" lon="6.07367">
+             <ele>998</ele>
+             <time>2018-03-13T12:44:45Z</time>
+           </trkpt>
+           <trkpt lat="44.68091" lon="6.07367">
+             <ele>998</ele>
+             <time>2018-03-13T12:44:50Z</time>
+           </trkpt>
+           <trkpt lat="44.6808" lon="6.07364">
+             <ele>994</ele>
+             <time>2018-03-13T12:45:00Z</time>
+           </trkpt>
+           <trkpt lat="44.68075" lon="6.07364">
+             <time>2018-03-13T12:45:05Z</time>
+           </trkpt>
+           <trkpt lat="44.68071" lon="6.07364">
+             <ele>994</ele>
+             <time>2018-03-13T12:45:10Z</time>
+           </trkpt>
+           <trkpt lat="44.68049" lon="6.07361">
+             <time>2018-03-13T12:45:30Z</time>
+           </trkpt>
+           <trkpt lat="44.68019" lon="6.07356">
+             <ele>992</ele>
+             <time>2018-03-13T12:45:55Z</time>
+           </trkpt>
+           <trkpt lat="44.68014" lon="6.07355">
+             <ele>992</ele>
+             <time>2018-03-13T12:46:00Z</time>
+           </trkpt>
+           <trkpt lat="44.67995" lon="6.07358">
+             <ele>987</ele>
+             <time>2018-03-13T12:46:15Z</time>
+           </trkpt>
+    </trkseg>
+  </trk>
+</gpx>
+"""
+
+
+@pytest.fixture()
+def gpx_file_with_missing_elevation_at_beginnning() -> str:
+    return """<?xml version='1.0' encoding='UTF-8'?>
+<gpx
+  xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
+  xmlns:gpxtpx="http://www.garmin.com/xmlschemas/TrackPointExtension/v1"
+  xmlns:gpxext="http://www.garmin.com/xmlschemas/GpxExtensions/v3"
+  xmlns="http://www.topografix.com/GPX/1/1"
+>
+  <metadata/>
+  <trk>
+    <name>just a workout</name>
+    <trkseg>
+           <trkpt lat="44.68095" lon="6.07367">
+             <time>2018-03-13T12:44:45Z</time>
+           </trkpt>
+           <trkpt lat="44.68091" lon="6.07367">
+             <time>2018-03-13T12:44:50Z</time>
+           </trkpt>
+           <trkpt lat="44.6808" lon="6.07364">
+             <time>2018-03-13T12:45:00Z</time>
+           </trkpt>
+           <trkpt lat="44.68075" lon="6.07364">
+             <time>2018-03-13T12:45:05Z</time>
+           </trkpt>
+           <trkpt lat="44.68071" lon="6.07364">
+             <time>2018-03-13T12:45:10Z</time>
+           </trkpt>
+           <trkpt lat="44.68049" lon="6.07361">
+             <ele>993</ele>
+             <time>2018-03-13T12:45:30Z</time>
+           </trkpt>
+           <trkpt lat="44.68019" lon="6.07356">
+             <ele>992</ele>
+             <time>2018-03-13T12:45:55Z</time>
+           </trkpt>
+           <trkpt lat="44.68014" lon="6.07355">
+             <ele>992</ele>
+             <time>2018-03-13T12:46:00Z</time>
+           </trkpt>
+           <trkpt lat="44.67995" lon="6.07358">
+             <ele>987</ele>
+             <time>2018-03-13T12:46:15Z</time>
+           </trkpt>
     </trkseg>
   </trk>
 </gpx>
@@ -5639,58 +6047,151 @@ def nominatim_response() -> List:
 
 OPEN_ELEVATION_RESPONSE = {
     "results": [
-        {"elevation": 998.0, "latitude": 44.68095, "longitude": 6.07367},
-        {"elevation": 998.0, "latitude": 44.68091, "longitude": 6.07367},
-        {"elevation": 994.0, "latitude": 44.6808, "longitude": 6.07364},
-        {"elevation": 994.0, "latitude": 44.68075, "longitude": 6.07364},
-        {"elevation": 994.0, "latitude": 44.68071, "longitude": 6.07364},
-        {"elevation": 993.0, "latitude": 44.68049, "longitude": 6.07361},
-        {"elevation": 992.0, "latitude": 44.68019, "longitude": 6.07356},
-        {"elevation": 992.0, "latitude": 44.68014, "longitude": 6.07355},
-        {"elevation": 987.0, "latitude": 44.67995, "longitude": 6.07358},
-        {"elevation": 987.0, "latitude": 44.67977, "longitude": 6.07364},
-        {"elevation": 987.0, "latitude": 44.67972, "longitude": 6.07367},
-        {"elevation": 987.0, "latitude": 44.67966, "longitude": 6.07368},
-        {"elevation": 986.0, "latitude": 44.67961, "longitude": 6.0737},
-        {"elevation": 986.0, "latitude": 44.67938, "longitude": 6.07377},
-        {"elevation": 986.0, "latitude": 44.67933, "longitude": 6.07381},
-        {"elevation": 985.0, "latitude": 44.67922, "longitude": 6.07385},
-        {"elevation": 980.0, "latitude": 44.67911, "longitude": 6.0739},
-        {"elevation": 980.0, "latitude": 44.679, "longitude": 6.07399},
-        {"elevation": 980.0, "latitude": 44.67896, "longitude": 6.07402},
-        {"elevation": 979.0, "latitude": 44.67884, "longitude": 6.07408},
-        {"elevation": 981.0, "latitude": 44.67863, "longitude": 6.07423},
-        {"elevation": 980.0, "latitude": 44.67858, "longitude": 6.07425},
-        {"elevation": 979.0, "latitude": 44.67842, "longitude": 6.07434},
-        {"elevation": 979.0, "latitude": 44.67837, "longitude": 6.07435},
-        {"elevation": 975.0, "latitude": 44.67822, "longitude": 6.07442},
+        {"elevation": 994.0, "longitude": 6.07367, "latitude": 44.68095},
+        {"latitude": 44.68091, "longitude": 6.07367, "elevation": 994.0},
+        {"elevation": 994.0, "longitude": 6.07364, "latitude": 44.6808},
+        {"elevation": 994.0, "longitude": 6.07364, "latitude": 44.68075},
+        {"latitude": 44.68071, "longitude": 6.07364, "elevation": 994.0},
+        {"latitude": 44.68049, "longitude": 6.07361, "elevation": 994.0},
+        {"latitude": 44.68019, "longitude": 6.07356, "elevation": 994.0},
+        {"latitude": 44.68014, "longitude": 6.07355, "elevation": 994.0},
+        {"elevation": 994.0, "longitude": 6.07358, "latitude": 44.67995},
+        {"elevation": 994.0, "longitude": 6.07364, "latitude": 44.67977},
+        {"elevation": 994.0, "longitude": 6.07367, "latitude": 44.67972},
+        {"elevation": 994.0, "longitude": 6.07368, "latitude": 44.67966},
+        {"elevation": 994.0, "longitude": 6.0737, "latitude": 44.67961},
+        {"elevation": 994.0, "longitude": 6.07377, "latitude": 44.67938},
+        {"elevation": 994.0, "longitude": 6.07381, "latitude": 44.67933},
+        {"elevation": 994.0, "longitude": 6.07385, "latitude": 44.67922},
+        {"latitude": 44.67911, "longitude": 6.0739, "elevation": 969.0},
+        {"latitude": 44.679, "longitude": 6.07399, "elevation": 969.0},
+        {"latitude": 44.67896, "longitude": 6.07402, "elevation": 969.0},
+        {"latitude": 44.67884, "longitude": 6.07408, "elevation": 969.0},
+        {"latitude": 44.67863, "longitude": 6.07423, "elevation": 969.0},
+        {"latitude": 44.67858, "longitude": 6.07425, "elevation": 969.0},
+        {"latitude": 44.67842, "longitude": 6.07434, "elevation": 969.0},
+        {"latitude": 44.67837, "longitude": 6.07435, "elevation": 969.0},
+        {"latitude": 44.67822, "longitude": 6.07442, "elevation": 969.0},
     ]
 }
-VALHALLA_VALUES = [
-    1998.0,
-    1998.0,
-    1994.0,
-    1994.0,
-    1994.0,
-    1993.0,
-    1992.0,
-    1992.0,
-    1987.0,
-    1987.0,
-    1987.0,
-    1987.0,
-    1986.0,
-    1986.0,
-    1986.0,
-    1985.0,
-    1980.0,
-    1980.0,
-    1980.0,
-    1979.0,
-    1981.0,
-    1980.0,
-    1979.0,
-    1979.0,
-    1975.0,
+OPEN_ELEVATION_VALUES = [
+    int(r["elevation"]) for r in OPEN_ELEVATION_RESPONSE["results"]
 ]
-VALHALLA_RESPONSE = {"height": VALHALLA_VALUES}
+
+VALHALLA_VALUES = [
+    996,
+    996,
+    995,
+    995,
+    995,
+    995,
+    993,
+    992,
+    990,
+    989,
+    988,
+    987,
+    987,
+    985,
+    985,
+    984,
+    983,
+    983,
+    982,
+    981,
+    979,
+    978,
+    977,
+    977,
+    976,
+]
+VALHALLA_RESPONSE = {
+    "shape": [
+        {"lat": 44.68095, "lon": 6.07367},
+        {"lat": 44.68091, "lon": 6.07367},
+        {"lat": 44.6808, "lon": 6.07364},
+        {"lat": 44.68075, "lon": 6.07364},
+        {"lat": 44.68071, "lon": 6.07364},
+        {"lat": 44.68049, "lon": 6.07361},
+        {"lat": 44.68019, "lon": 6.07356},
+        {"lat": 44.68014, "lon": 6.07355},
+        {"lat": 44.67995, "lon": 6.07358},
+        {"lat": 44.67977, "lon": 6.07364},
+        {"lat": 44.67972, "lon": 6.07367},
+        {"lat": 44.67966, "lon": 6.07368},
+        {"lat": 44.67961, "lon": 6.0737},
+        {"lat": 44.67938, "lon": 6.07377},
+        {"lat": 44.67933, "lon": 6.07381},
+        {"lat": 44.67922, "lon": 6.07385},
+        {"lat": 44.67911, "lon": 6.0739},
+        {"lat": 44.679, "lon": 6.07399},
+        {"lat": 44.67896, "lon": 6.07402},
+        {"lat": 44.67884, "lon": 6.07408},
+        {"lat": 44.67863, "lon": 6.07423},
+        {"lat": 44.67858, "lon": 6.07425},
+        {"lat": 44.67842, "lon": 6.07434},
+        {"lat": 44.67837, "lon": 6.07435},
+        {"lat": 44.67822, "lon": 6.07442},
+    ],
+    "height": [*VALHALLA_VALUES],
+}
+
+
+ELEVATIONS = [
+    998.0,
+    998.0,
+    994.0,
+    994.0,
+    994.0,
+    1124.0,
+    1124.0,
+    1124.0,
+    1124.0,
+]
+SMOOTHED_ELEVATION_WITH_FLAT_WINDOW = [
+    1009,
+    1024,
+    1038,
+    1052,
+    1066,
+    1080,
+    1095,
+    1095,
+    1095,
+]
+
+FILE_STATS_WITH_DATA = {
+    "ascent": 0.1,
+    "ave_cadence": 70,
+    "ave_hr": 85,
+    "ave_power": 248,
+    "ave_speed": 1.0,
+    "calories": 50,
+    "descent": 22.0,
+    "distance": 320,
+    "duration": 260,
+    "max_cadence": 75,
+    "max_hr": 92,
+    "max_power": 326,
+    "max_speed": 3,
+    "moving": 259,
+    "pauses": 1,
+}
+
+FILE_STATS_WITH_NONE = {
+    "ascent": None,
+    "ave_cadence": None,
+    "ave_hr": None,
+    "ave_power": None,
+    "ave_speed": None,
+    "calories": None,
+    "descent": None,
+    "distance": None,
+    "duration": None,
+    "max_cadence": None,
+    "max_hr": None,
+    "max_power": None,
+    "max_speed": None,
+    "moving": None,
+    "pauses": None,
+}

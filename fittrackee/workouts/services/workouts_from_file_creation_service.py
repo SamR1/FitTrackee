@@ -236,32 +236,24 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
             new_workout.equipments = equipments
 
         # update visibility
-        new_workout.workout_visibility = (
-            self.workouts_data.workout_visibility
-            if self.workouts_data.workout_visibility
-            else self.auth_user.workouts_visibility
+        new_workout.workout_visibility = self.get_visibility_level(
+            "workout_visibility", self.workouts_data
         )
         new_workout.analysis_visibility = get_calculated_visibility(
-            visibility=(
-                self.workouts_data.analysis_visibility
-                if self.workouts_data.analysis_visibility
-                else self.auth_user.analysis_visibility
+            visibility=self.get_visibility_level(
+                "analysis_visibility", self.workouts_data
             ),
             parent_visibility=new_workout.workout_visibility,
         )
         new_workout.map_visibility = get_calculated_visibility(
-            visibility=(
-                self.workouts_data.map_visibility
-                if self.workouts_data.map_visibility
-                else self.auth_user.map_visibility
+            visibility=self.get_visibility_level(
+                "map_visibility", self.workouts_data
             ),
             parent_visibility=new_workout.analysis_visibility,
         )
         new_workout.media_visibility = get_calculated_visibility(
-            visibility=(
-                self.workouts_data.media_visibility
-                if self.workouts_data.media_visibility
-                else self.auth_user.media_visibility
+            visibility=self.get_visibility_level(
+                "media_visibility", self.workouts_data
             ),
             parent_visibility=new_workout.workout_visibility,
         )

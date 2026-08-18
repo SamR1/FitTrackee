@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-03-04 23:57+0100\n"
+"POT-Creation-Date: 2026-08-12 15:41+0200\n"
 "PO-Revision-Date: 2026-01-21 08:41+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: da\n"
@@ -547,19 +547,23 @@ msgid "Trail"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:32
-msgid "Walking"
+msgid "Triathlon"
 msgstr ""
 
 #: fittrackee/feeds/feeds/constants.py:33
+msgid "Walking"
+msgstr ""
+
+#: fittrackee/feeds/feeds/constants.py:34
 msgid "Windsurfing"
 msgstr ""
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:61
+#: fittrackee/feeds/feeds/workouts_feed_service.py:71
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
 msgstr ""
 
-#: fittrackee/feeds/feeds/workouts_feed_service.py:70
+#: fittrackee/feeds/feeds/workouts_feed_service.py:80
 #, python-format
 msgid "%(username)s's workouts feed"
 msgstr ""

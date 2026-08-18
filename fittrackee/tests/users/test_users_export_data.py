@@ -84,6 +84,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                     for record in workout_cycling_user_1.records
                 ],
                 "segments": [],
+                "multi_sports_stats": {},
                 "source": workout_cycling_user_1.source,
                 "weather_start": None,
                 "weather_end": None,
@@ -161,6 +162,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                     }
                     for number, segment in enumerate(workout.segments, start=1)
                 ],
+                "multi_sports_stats": {},
                 "source": workout.source,
                 "weather_start": None,
                 "weather_end": None,
@@ -238,6 +240,7 @@ class TestUserDataExporterGetUserWorkoutsData:
                     }
                     for number, segment in enumerate(workout.segments, start=1)
                 ],
+                "multi_sports_stats": {},
                 "source": workout.source,
                 "weather_start": None,
                 "weather_end": None,

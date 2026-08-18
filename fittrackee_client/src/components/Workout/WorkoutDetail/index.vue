@@ -1,12 +1,20 @@
 <template>
   <div class="workout-detail">
     <Modal
-      v-if="displayModal"
+      v-if="displayModal === 'deleteWorkout'"
       :title="$t('common.CONFIRMATION')"
       :message="$t('workouts.WORKOUT_DELETION_CONFIRMATION')"
       @confirmAction="deleteWorkout(workoutObject.workoutId)"
-      @cancelAction="cancelDelete"
-      @keydown.esc="cancelDelete"
+      @cancelAction="hideModal()"
+      @keydown.esc="hideModal()"
+    />
+    <WorkoutElevationModal
+      v-if="workoutObject && displayModal === 'updateElevation'"
+      :workout-object="workoutObject"
+      :loading="workoutData.elevationLoading"
+      @confirmAction="updateWorkoutElevationData"
+      @cancelAction="hideModal()"
+      @keydown.esc="hideModal()"
     />
     <Card>
       <template #title>
@@ -16,8 +24,7 @@
           :workoutObject="workoutObject"
           :isWorkoutOwner="isWorkoutOwner"
           :refreshLoading="workoutData.refreshLoading"
-          :elevationLoading="workoutData.elevationLoading"
-          @displayModal="updateDisplayModal(true)"
+          @displayModal="updateDisplayModal"
         />
         <ReportForm
           v-if="workoutData.currentReporting"
@@ -86,8 +93,10 @@
   import WorkoutActionAppeal from '@/components/Workout/WorkoutActionAppeal.vue'
   import WorkoutCardTitle from '@/components/Workout/WorkoutDetail/WorkoutCardTitle.vue'
   import WorkoutData from '@/components/Workout/WorkoutDetail/WorkoutData.vue'
+  import WorkoutElevationModal from '@/components/Workout/WorkoutDetail/WorkoutElevationModal.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import WorkoutVisibilityEquipment from '@/components/Workout/WorkoutDetail/WorkoutVisibilityEquipment.vue'
+  import useSports from '@/composables/useSports.ts'
   import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IDisplayOptions } from '@/types/application'
   import type { IGeoJsonOptions, TCoordinates } from '@/types/map'
@@ -96,8 +105,10 @@
   import type {
     IWorkout,
     IWorkoutData,
+    IWorkoutElevationSourceDataPayload,
     IWorkoutObject,
     IWorkoutSegment,
+    TWorkoutModal,
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
   import { formatDate, formatWorkoutDate, getDateWithTZ } from '@/utils/dates'
@@ -112,6 +123,7 @@
     markerCoordinates?: TCoordinates
     isWorkoutOwner: boolean
     cadenceUnit: string
+    segment: IWorkoutSegment | undefined
   }
   const props = withDefaults(defineProps<Props>(), {
     markerCoordinates: () => ({}) as TCoordinates,
@@ -120,25 +132,23 @@
   const route = useRoute()
   const store = useStore()
 
-  const { isWorkoutOwner, markerCoordinates, sport, workoutData } =
-    toRefs(props)
+  const { getObjectSport } = useSports()
+
+  const {
+    displaySegment,
+    isWorkoutOwner,
+    markerCoordinates,
+    segment,
+    sport,
+    workoutData,
+  } = toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
-  )
-  const segmentId: Ref<string | null> = ref(
-    route.params.workoutId ? (route.params.segmentId as string) : null
-  )
-  const segment: ComputedRef<IWorkoutSegment | undefined> = computed(() =>
-    workout.value.segments.length > 0 && segmentId.value
-      ? workout.value.segments.find(
-          (segment) => segment.segment_id === segmentId.value
-        )
-      : undefined
   )
   const segmentNumber: ComputedRef<number | null> = computed(() =>
     segment.value ? segment.value.segment_number : null
   )
-  const displayModal: Ref<boolean> = ref(false)
+  const displayModal: Ref<TWorkoutModal> = ref('none')
   const displayOptions: ComputedRef<IDisplayOptions> = computed(
     () => store.getters[ROOT_STORE.GETTERS.DISPLAY_OPTIONS]
   )
@@ -198,7 +208,7 @@
   ): IWorkoutObject {
     const urls = getWorkoutObjectUrl(
       workout,
-      props.displaySegment,
+      displaySegment.value,
       segmentNumber.value
     )
     const workoutDate = formatWorkoutDate(
@@ -208,6 +218,7 @@
       ),
       displayOptions.value.dateFormat
     )
+    const isMultiActivities = Object.keys(workout.multi_sports_stats).length > 0
     return {
       analysisVisibility: workout.analysis_visibility,
       ascent: segment ? segment.ascent : workout.ascent,
@@ -216,12 +227,14 @@
       avePace: segment ? segment.ave_pace : workout.ave_pace,
       avePower: segment ? segment.ave_power : workout.ave_power,
       aveSpeed: segment ? segment.ave_speed : workout.ave_speed,
-      calories: segment ? null : workout.calories,
+      calories: segment ? segment.calories : workout.calories,
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
       elevationDataSource: segment ? null : workout.elevation_data_source,
+      elevationProcessing: segment ? null : workout.elevation_processing,
       equipments: segment ? null : workout.equipments.sort(sortEquipments),
+      isTransition: segment ? segment.is_transition : false,
       liked: workout.liked,
       likes_count: workout.likes_count,
       mapVisibility: workout.map_visibility,
@@ -234,16 +247,19 @@
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,
       nextUrl: urls.nextUrl,
-      originalFile: segment ? null : workout.original_file,
+      originalFile: workout.original_file,
       pauses: segment ? segment.pauses : workout.pauses,
       previousUrl: urls.previousUrl,
       records: segment ? [] : workout.records,
       segmentId: segment ? segment.segment_id : null,
       segmentNumber: segment ? segment.segment_number : null,
+      sport: getObjectSport(segment || workout),
       source: segment ? null : workout.source || null,
+      statsFromFile:
+        !segment || isMultiActivities ? workout.stats_from_file : false,
       suspended: workout.suspended === undefined ? false : workout.suspended,
       title: workout.title,
-      type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
+      type: displaySegment.value ? 'SEGMENT' : 'WORKOUT',
       workoutDate: workoutDate.workout_date,
       weatherEnd: segment ? null : workout.weather_end,
       workoutFullDate: formatDate(
@@ -259,16 +275,24 @@
       workoutVisibility: workout.workout_visibility,
     }
   }
-  function updateDisplayModal(value: boolean) {
+  function updateDisplayModal(value: TWorkoutModal) {
     displayModal.value = value
   }
-  function cancelDelete() {
-    updateDisplayModal(false)
+  function hideModal() {
+    updateDisplayModal('none')
   }
   function deleteWorkout(workoutId: string) {
     store.dispatch(WORKOUTS_STORE.ACTIONS.DELETE_WORKOUT, {
       workoutId: workoutId,
     })
+  }
+  function updateWorkoutElevationData(
+    payload: IWorkoutElevationSourceDataPayload
+  ) {
+    store.dispatch(
+      WORKOUTS_STORE.ACTIONS.UPDATE_ELEVATION_DATA_SOURCES,
+      payload
+    )
   }
   function scrollToTop() {
     window.scrollTo({
@@ -289,8 +313,7 @@
 
   watch(
     () => route.params.segmentId,
-    async (newSegmentId) => {
-      segmentId.value = newSegmentId as string
+    async () => {
       scrollToTop()
     }
   )
@@ -298,10 +321,18 @@
     () => route.params.workoutId,
     async (workoutId) => {
       if (workoutId) {
-        displayModal.value = false
+        hideModal()
         scrollToTop()
       }
       resetStatuses()
+    }
+  )
+  watch(
+    () => workoutData.value.elevationLoading,
+    (newElevationLoading) => {
+      if (!newElevationLoading) {
+        hideModal()
+      }
     }
   )
 </script>

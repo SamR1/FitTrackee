@@ -51,8 +51,7 @@
     "LABEL": "Altueren eguneraketen iturburua",
     "file": "Fitxategitik",
     "none": "Bat ere ez (altueren datuak fitxategitik)",
-    "open_elevation": "OpenElevation (jatorrizko datuak)",
-    "open_elevation_smooth": "OpenElevation (tratatutako datuak)",
+    "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },
   "END": "bukaera",
@@ -131,7 +130,7 @@
   "POWER": "indarra",
   "PREVIOUS_SEGMENT": "Aurreko segmentoa",
   "PREVIOUS_WORKOUT": "Aurreko ekintza",
-  "PRIVATE_NOTES": "Ohar pribatuak",
+  "PRIVATE_NOTES": "ohar pribatuak",
   "PRIVATE_NOTES_FIELD_HELP": "ohar hauek zuk bakarrik ikusi ditzakezu.",
   "PUBLIC_WORKOUTS_ATOM_FEED": "Ekintza pulikoen Atom jarioa",
   "RADIUS": "erradioa",

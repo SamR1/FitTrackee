@@ -636,8 +636,10 @@
   const store = useStore()
 
   const orderByList: string[] = [
+    'ascent',
     'ave_pace',
     'ave_speed',
+    'descent',
     'distance',
     'duration',
     'workout_date',
@@ -719,6 +721,9 @@
     Object.entries(convertedPayload).map((entry) => {
       if (entry[0].match('speed|distance|radius') && entry[1]) {
         convertedPayload[entry[0]] = convertDistance(+entry[1], 'mi', 'km')
+      }
+      if (entry[0].match('ascent|descent') && entry[1]) {
+        convertedPayload[entry[0]] = convertDistance(+entry[1], 'ft', 'm')
       }
       if (entry[0].match('pace') && entry[1]) {
         convertedPayload[entry[0]] = convertPaceToMetric(entry[1] as string)
@@ -918,7 +923,6 @@
             padding-top: $default-padding * 2;
             padding-bottom: 0;
             font-size: 1.1em;
-            text-transform: lowercase;
             border: none;
             text-align: left;
             font-weight: bold;

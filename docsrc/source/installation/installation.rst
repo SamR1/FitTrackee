@@ -126,6 +126,7 @@ Production environment
 ======================
 
 .. versionchanged:: 1.3.0 Node 20+ is now required on production
+.. versionchanged:: 1.4.0 Node 22+ is now required on production
 
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.

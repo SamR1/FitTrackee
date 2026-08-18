@@ -792,6 +792,7 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
     authApi
       .patch(`workouts/${payload.workoutId}`, {
         elevation_data_source: payload.elevationDataSource,
+        elevation_processing: payload.elevationDataProcessing,
       })
       .then(() => {
         context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
@@ -799,8 +800,13 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
           workoutId: payload.workoutId,
         })
       })
-      .catch(() => {
-        handleError(context, null, 'Error when updating elevation data source')
+      .catch((error) => {
+        const defaultErrorMessage = 'Error when updating elevation data source'
+        const msg =
+          error?.response?.status === 400
+            ? error?.response?.data.message || defaultErrorMessage
+            : defaultErrorMessage
+        handleError(context, null, msg)
       })
       .finally(() =>
         context.commit(
