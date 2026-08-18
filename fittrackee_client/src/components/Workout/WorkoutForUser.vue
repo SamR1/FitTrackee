@@ -61,11 +61,11 @@
 
   defineEmits(['workoutLinkClicked'])
 
-  const { getWorkoutSport } = useSports()
+  const { getObjectSport } = useSports()
   const { dateFormat, imperialUnits, timezone } = useAuthUser()
 
   const sport: ComputedRef<ISport | null> = computed(() =>
-    getWorkoutSport(workout.value)
+    getObjectSport(workout.value)
   )
   const displayWorkoutAppeal: ComputedRef<boolean> = computed(
     () =>

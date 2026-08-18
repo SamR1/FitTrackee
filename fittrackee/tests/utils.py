@@ -2,7 +2,7 @@ import random
 import string
 from datetime import datetime, timezone
 from json import dumps, loads
-from typing import Dict, Optional, Union
+from typing import Any, Dict, Optional, Union
 from uuid import uuid4
 
 from flask import json as flask_json
@@ -89,3 +89,28 @@ TEST_OAUTH_CLIENT_METADATA = {
     "redirect_uris": [random_domain()],
     "scope": "profile:read workouts:read",
 }
+
+
+def duplicate_row(
+    row: Any,
+    *,
+    init_cols: Dict,
+    updated_cols: Optional[Dict] = None,
+) -> Any:
+    if updated_cols is None:
+        updated_cols = {}
+
+    duplicated_row = type(row)(**init_cols)
+
+    for col in row.__table__.columns:
+        if col.name in ["id", "uuid"]:
+            continue
+
+        if col.name in updated_cols:
+            value = updated_cols[col.name]
+        else:
+            value = getattr(row, col.name)
+
+        duplicated_row.__setattr__(col.name, value)
+
+    return duplicated_row

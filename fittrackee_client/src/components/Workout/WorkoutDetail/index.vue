@@ -96,6 +96,7 @@
   import WorkoutElevationModal from '@/components/Workout/WorkoutDetail/WorkoutElevationModal.vue'
   import WorkoutMap from '@/components/Workout/WorkoutDetail/WorkoutMap/index.vue'
   import WorkoutVisibilityEquipment from '@/components/Workout/WorkoutDetail/WorkoutVisibilityEquipment.vue'
+  import useSports from '@/composables/useSports.ts'
   import { REPORTS_STORE, ROOT_STORE, WORKOUTS_STORE } from '@/store/constants'
   import type { IDisplayOptions } from '@/types/application'
   import type { IGeoJsonOptions, TCoordinates } from '@/types/map'
@@ -122,6 +123,7 @@
     markerCoordinates?: TCoordinates
     isWorkoutOwner: boolean
     cadenceUnit: string
+    segment: IWorkoutSegment | undefined
   }
   const props = withDefaults(defineProps<Props>(), {
     markerCoordinates: () => ({}) as TCoordinates,
@@ -130,20 +132,18 @@
   const route = useRoute()
   const store = useStore()
 
-  const { isWorkoutOwner, markerCoordinates, sport, workoutData } =
-    toRefs(props)
+  const { getObjectSport } = useSports()
+
+  const {
+    displaySegment,
+    isWorkoutOwner,
+    markerCoordinates,
+    segment,
+    sport,
+    workoutData,
+  } = toRefs(props)
   const workout: ComputedRef<IWorkout> = computed(
     () => props.workoutData.workout
-  )
-  const segmentId: Ref<string | null> = ref(
-    route.params.workoutId ? (route.params.segmentId as string) : null
-  )
-  const segment: ComputedRef<IWorkoutSegment | undefined> = computed(() =>
-    workout.value.segments.length > 0 && segmentId.value
-      ? workout.value.segments.find(
-          (segment) => segment.segment_id === segmentId.value
-        )
-      : undefined
   )
   const segmentNumber: ComputedRef<number | null> = computed(() =>
     segment.value ? segment.value.segment_number : null
@@ -208,7 +208,7 @@
   ): IWorkoutObject {
     const urls = getWorkoutObjectUrl(
       workout,
-      props.displaySegment,
+      displaySegment.value,
       segmentNumber.value
     )
     const workoutDate = formatWorkoutDate(
@@ -218,6 +218,7 @@
       ),
       displayOptions.value.dateFormat
     )
+    const isMultiActivities = Object.keys(workout.multi_sports_stats).length > 0
     return {
       analysisVisibility: workout.analysis_visibility,
       ascent: segment ? segment.ascent : workout.ascent,
@@ -226,13 +227,14 @@
       avePace: segment ? segment.ave_pace : workout.ave_pace,
       avePower: segment ? segment.ave_power : workout.ave_power,
       aveSpeed: segment ? segment.ave_speed : workout.ave_speed,
-      calories: segment ? null : workout.calories,
+      calories: segment ? segment.calories : workout.calories,
       distance: segment ? segment.distance : workout.distance,
       descent: segment ? segment.descent : workout.descent,
       duration: segment ? segment.duration : workout.duration,
       elevationDataSource: segment ? null : workout.elevation_data_source,
       elevationProcessing: segment ? null : workout.elevation_processing,
       equipments: segment ? null : workout.equipments.sort(sortEquipments),
+      isTransition: segment ? segment.is_transition : false,
       liked: workout.liked,
       likes_count: workout.likes_count,
       mapVisibility: workout.map_visibility,
@@ -245,17 +247,19 @@
       minAlt: segment ? segment.min_alt : workout.min_alt,
       moving: segment ? segment.moving : workout.moving,
       nextUrl: urls.nextUrl,
-      originalFile: segment ? null : workout.original_file,
+      originalFile: workout.original_file,
       pauses: segment ? segment.pauses : workout.pauses,
       previousUrl: urls.previousUrl,
       records: segment ? [] : workout.records,
       segmentId: segment ? segment.segment_id : null,
       segmentNumber: segment ? segment.segment_number : null,
+      sport: getObjectSport(segment || workout),
       source: segment ? null : workout.source || null,
-      statsFromFile: segment ? undefined : workout.stats_from_file || false,
+      statsFromFile:
+        !segment || isMultiActivities ? workout.stats_from_file : false,
       suspended: workout.suspended === undefined ? false : workout.suspended,
       title: workout.title,
-      type: props.displaySegment ? 'SEGMENT' : 'WORKOUT',
+      type: displaySegment.value ? 'SEGMENT' : 'WORKOUT',
       workoutDate: workoutDate.workout_date,
       weatherEnd: segment ? null : workout.weather_end,
       workoutFullDate: formatDate(
@@ -309,8 +313,7 @@
 
   watch(
     () => route.params.segmentId,
-    async (newSegmentId) => {
-      segmentId.value = newSegmentId as string
+    async () => {
       scrollToTop()
     }
   )

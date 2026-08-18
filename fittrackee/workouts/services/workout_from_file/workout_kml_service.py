@@ -1,4 +1,4 @@
-from typing import IO, Tuple
+from typing import IO, TYPE_CHECKING, Dict, List, Tuple
 
 import gpxpy.gpx
 import xmltodict
@@ -7,6 +7,9 @@ from gpxpy.gpxfield import parse_time
 from ...exceptions import WorkoutFileException
 from .workout_gpx_service import WorkoutGpxService
 
+if TYPE_CHECKING:
+    from fittrackee.workouts.models import Sport
+
 
 class WorkoutKmlService(WorkoutGpxService):
     @classmethod
@@ -14,7 +17,8 @@ class WorkoutKmlService(WorkoutGpxService):
         cls,
         workout_file: IO[bytes],
         segments_creation_event: str,
-    ) -> Tuple["gpxpy.gpx.GPX", dict]:
+        sport: "Sport",
+    ) -> Tuple["gpxpy.gpx.GPX", Dict, List[Dict]]:
         """
         Only kml files with Placemark/MultiTrack/Tracks are supported.
         Files with folders or multiple Placemark are no supported.
@@ -116,4 +120,4 @@ class WorkoutKmlService(WorkoutGpxService):
             gpx_track.segments.append(gpx_segment)
         gpx = gpxpy.gpx.GPX()
         gpx.tracks.append(gpx_track)
-        return gpx, {}
+        return gpx, {}, []

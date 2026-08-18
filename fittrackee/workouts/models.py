@@ -1,7 +1,7 @@
 import os
 from datetime import datetime, timedelta, timezone
 from decimal import Decimal
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
 from geoalchemy2 import Geometry, WKBElement
@@ -36,7 +36,9 @@ from fittrackee.visibility_levels import (
 )
 
 from .constants import (
+    MULTI_ACTIVITIES_SPORTS,
     PACE_SPORTS,
+    TIMEDELTA_COLUMNS,
     WGS84_CRS,
 )
 from .exceptions import WorkoutForbiddenException
@@ -44,6 +46,7 @@ from .utils.convert import (
     convert_in_duration,
     convert_value_to_integer,
 )
+from .utils.segments import get_segments_stats
 from .utils.sports import (
     get_cadence,
     get_elevation_data,
@@ -54,6 +57,7 @@ from .utils.sports import (
 )
 
 if TYPE_CHECKING:
+    from sqlalchemy import Row
     from sqlalchemy.orm.attributes import AttributeEvent
 
     from fittrackee.comments.models import Comment
@@ -83,6 +87,7 @@ EMPTY_WORKOUT_VALUES: Dict = {
     "equipments": [],
     "records": [],
     "segments": [],
+    "multi_sports_stats": {},
     "weather_start": None,
     "weather_end": None,
     "notes": "",
@@ -232,6 +237,14 @@ class Sport(BaseModel):
             .count()
             > 0
         )
+
+    @property
+    def sports(self) -> List["Sport"]:
+        if self.label not in MULTI_ACTIVITIES_SPORTS:
+            return []
+        return Sport.query.filter(
+            Sport.label.in_(MULTI_ACTIVITIES_SPORTS[self.label])
+        ).all()
 
     def serialize(
         self,
@@ -437,6 +450,7 @@ class Workout(BaseModel):
         lazy=True,
         cascade="all, delete",
         back_populates="workout",
+        order_by="WorkoutSegment.start_date.asc()",
     )
     records: Mapped[List["Record"]] = relationship(
         "Record",
@@ -573,6 +587,67 @@ class Workout(BaseModel):
                 .all()
             )
         return []
+
+    def get_serialized_segments(
+        self,
+        user: Optional["User"],
+        can_see_analysis_data: bool,
+        can_see_heart_rate: bool,
+        can_see_calories: bool,
+        sport_data_visibility: Optional["SportDisplayedData"] = None,
+    ) -> Tuple[List, Dict]:
+        if not can_see_analysis_data:
+            return [], {}
+
+        segments = []
+        multi_sports_totals = []
+        is_multi_activities_sport = self.sport.label in MULTI_ACTIVITIES_SPORTS
+
+        for number, segment in enumerate(self.segments, start=1):
+            segment_sport_data_visibility = None
+            if (
+                is_multi_activities_sport
+                and not segment.is_transition
+                and segment.sport
+            ):
+                segment_sport_data_visibility = get_sport_displayed_data(
+                    segment.sport, user
+                )
+
+            segment_data: Dict = {
+                **segment.serialize(
+                    user=user,
+                    can_see_heart_rate=can_see_heart_rate,
+                    can_see_calories=can_see_calories,
+                    sport_data_visibility=(
+                        segment_sport_data_visibility or sport_data_visibility
+                    ),
+                ),
+                "segment_number": number,
+            }
+            segments.append({**segment_data})
+
+            if is_multi_activities_sport:
+                # if workout is created from a file different then .fit,
+                # segments are not created in association with a sport or as
+                # transition => multi_sports_totals is an empty dict
+                if segment.is_transition or not segment.sport:
+                    continue
+                for key in TIMEDELTA_COLUMNS:
+                    segment_data[key] = getattr(segment, key)
+                multi_sports_totals.append(segment_data)
+
+        multi_sports_stats: Dict = {}
+        if is_multi_activities_sport:
+            multi_sports_stats = get_segments_stats(
+                multi_sports_totals,
+                user=user,
+                can_see_analysis_data=can_see_analysis_data,
+                can_see_heart_rate=can_see_heart_rate,
+                can_see_calories=can_see_calories,
+            )
+
+        return segments, multi_sports_stats
 
     def get_workout_data(
         self,
@@ -727,26 +802,21 @@ class Workout(BaseModel):
         if light:
             return workout_data
 
+        segments, multi_sports_stats = self.get_serialized_segments(
+            user,
+            can_see_analysis_data,
+            can_see_heart_rate,
+            can_see_calories,
+            sport_data_visibility,
+        )
+
         return {
             **workout_data,
             "creation_date": self.creation_date,
             "modification_date": self.modification_date,
             "pauses": str(self.pauses) if self.pauses else None,
-            "segments": (
-                [
-                    {
-                        **segment.serialize(
-                            user=user,
-                            can_see_heart_rate=can_see_heart_rate,
-                            sport_data_visibility=sport_data_visibility,
-                        ),
-                        "segment_number": number,
-                    }
-                    for number, segment in enumerate(self.segments, start=1)
-                ]
-                if can_see_analysis_data
-                else []
-            ),
+            "segments": segments,
+            "multi_sports_stats": multi_sports_stats,
             "with_geometry": (
                 can_see_map_data
                 and len(self.segments) > 0
@@ -1084,16 +1154,46 @@ def on_workout_delete(
         ).delete()
 
 
+def get_equipment_totals(
+    target: Workout, value: "Equipment"
+) -> Union[Tuple, "Row"]:
+    if (
+        target.sport.label == "Triathlon"
+        and value.equipment_type.label == "Bike"
+    ):
+        params = {"workout_id": target.id, "label": "Cycling (Sport)"}
+        sql = """
+               SELECT sum(workout_segments.distance),
+                      sum(workout_segments.duration),
+                      sum(workout_segments.moving)
+               FROM workout_segments
+               JOIN sports ON sports.id = workout_segments.sport_id
+               WHERE workout_segments.workout_id = :workout_id
+                 AND sports.label = :label
+               GROUP BY workout_segments.workout_id, 
+                        workout_segments.sport_id, 
+                        sports.id
+               """
+        return db.session.execute(text(sql), params).first() or (
+            0.0,
+            timedelta(),
+            timedelta(),
+        )
+    else:
+        return target.distance, target.duration, target.moving
+
+
 @listens_for(Workout.equipments, "append")
 def on_workout_equipments_append(
     target: Workout, value: "Equipment", initiator: "AttributeEvent"
 ) -> None:
-    value.total_distance = float(value.total_distance) + (
-        0.0 if target.distance is None else float(target.distance)
-    )
-    value.total_duration += target.duration
-    if target.moving:
-        value.total_moving += target.moving
+    totals = get_equipment_totals(target, value)
+    if totals[0]:
+        value.total_distance = float(value.total_distance) + float(totals[0])
+    if totals[1]:
+        value.total_duration += totals[1]
+    if totals[2]:
+        value.total_moving += totals[2]
     value.total_workouts += 1
 
 
@@ -1101,12 +1201,13 @@ def on_workout_equipments_append(
 def on_workout_equipments_remove(
     target: Workout, value: "Equipment", initiator: "AttributeEvent"
 ) -> None:
-    value.total_distance = float(value.total_distance) - (
-        0.0 if target.distance is None else float(target.distance)
-    )
-    value.total_duration -= target.duration
-    if target.moving:
-        value.total_moving -= target.moving
+    totals = get_equipment_totals(target, value)
+    if totals[0]:
+        value.total_distance = float(value.total_distance) - float(totals[0])
+    if totals[1]:
+        value.total_duration -= totals[1]
+    if totals[2]:
+        value.total_moving -= totals[2]
     value.total_workouts -= 1
 
 
@@ -1152,10 +1253,9 @@ class WorkoutSegment(BaseModel):
     ave_cadence: Mapped[Optional[int]] = mapped_column(nullable=True)  # rpm
     max_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
     ave_power: Mapped[Optional[int]] = mapped_column(nullable=True)  # W
+    # geometry can be a LineString or a Point
     geom: Mapped["WKBElement"] = mapped_column(
-        Geometry(
-            geometry_type="LINESTRING", srid=WGS84_CRS, spatial_index=True
-        ),
+        Geometry(srid=WGS84_CRS, spatial_index=True),
         nullable=True,  # to handle pre-existing segments for now
     )
     points: Mapped[List[Dict]] = mapped_column(
@@ -1178,9 +1278,19 @@ class WorkoutSegment(BaseModel):
     best_pace: Mapped[Optional[timedelta]] = mapped_column(
         nullable=True
     )  # min/km
+    sport_id: Mapped[Optional[int]] = mapped_column(
+        db.ForeignKey("sports.id"), index=True, nullable=True
+    )
+    is_transition: Mapped[bool] = mapped_column(
+        server_default="false", nullable=False
+    )
+    calories: Mapped[Optional[int]] = mapped_column(nullable=True)  # kcal
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
+    )
+    sport: Mapped["Sport"] = relationship(
+        "Sport", lazy="joined", single_parent=True
     )
 
     def __str__(self) -> str:
@@ -1200,11 +1310,16 @@ class WorkoutSegment(BaseModel):
     def store_geometry(self, coordinates: List[List[float]]) -> None:
         self.geom = str(LineString(coordinates))  # type: ignore
 
+    def store_geometry_as_point(self, coordinates: List[float]) -> None:
+        # only for transition with one point to prevent error on UI
+        self.geom = str(Point(coordinates))  # type: ignore
+
     def serialize(
         self,
         *,
         user: Optional["User"] = None,
         can_see_heart_rate: bool = False,
+        can_see_calories: bool = False,
         sport_data_visibility: Optional["SportDisplayedData"] = None,
     ) -> Dict:
         """
@@ -1212,11 +1327,12 @@ class WorkoutSegment(BaseModel):
         """
         if sport_data_visibility is None:
             sport_data_visibility = get_sport_displayed_data(
-                self.workout.sport, user
+                self.sport or self.workout.sport, user
             )
         return {
             "workout_id": encode_uuid(self.workout_uuid),
             "segment_id": self.short_id,
+            "sport_id": self.sport_id,
             "duration": None if self.duration is None else str(self.duration),
             "pauses": str(self.pauses) if self.pauses else None,
             "moving": None if self.moving is None else str(self.moving),
@@ -1253,6 +1369,8 @@ class WorkoutSegment(BaseModel):
             "max_power": get_power(self.max_power, sport_data_visibility),
             "ave_pace": get_pace(self.ave_pace, sport_data_visibility),
             "best_pace": get_pace(self.best_pace, sport_data_visibility),
+            "calories": self.calories if can_see_calories else None,
+            "is_transition": self.is_transition,
         }
 
 

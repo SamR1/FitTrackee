@@ -171,6 +171,7 @@
   "SPEED": "speed",
   "SPEED_INSTEAD_OF_PACE": "speed instead of pace",
   "SPORT": "sport | sports",
+  "SPORTS_STATS": "Sports statistics",
   "START": "start",
   "START_AND_FINISH": "Start and finish",
   "START_ELEVATION_AT_ZERO": "start elevation axis at zero",
@@ -186,6 +187,8 @@
   "TOTAL_DURATION": "total duration",
   "TOTAL_WORKOUTS_LIMIT_EXCEEDED": "workouts limit exceeded, the most recent workouts are displayed",
   "TOTAL_WORKOUTS_WITH_LOCATION": "total number of workouts with location",
+  "TRANSITION": "transition",
+  "TRANSITION_CAPITALIZED": "Transition",
   "UNITS": {
     "bpm": {
       "LABEL": "beats per minute",

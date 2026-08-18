@@ -177,6 +177,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -252,6 +253,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -343,6 +345,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 }
                 for number, segment in enumerate(workout.segments, start=1)
             ],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -430,6 +433,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 }
                 for number, segment in enumerate(workout.segments, start=1)
             ],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -518,6 +522,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 }
                 for number, segment in enumerate(workout.segments, start=1)
             ],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -692,6 +697,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 }
                 for number, segment in enumerate(workout.segments, start=1)
             ],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -781,6 +787,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 }
                 for number, segment in enumerate(workout.segments, start=1)
             ],
+            "multi_sports_stats": {},
             "source": workout.source,
             "sport_id": workout.sport_id,
             "stats_from_file": False,
@@ -953,6 +960,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "stats_from_file": False,
@@ -1026,6 +1034,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
@@ -1101,6 +1110,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
@@ -1177,6 +1187,7 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": True,
@@ -1425,6 +1436,98 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
             assert equipment.total_moving == timedelta()
             assert equipment.total_workouts == 0
 
+    def test_it_updates_equipments_totals_for_triathlon(
+        self,
+        app: Flask,
+        user_1: User,
+        equipment_bike_user_1: Equipment,
+        equipment_shoes_user_1: Equipment,
+        workout_cycling_user_1: Workout,
+        workout_triathlon_user_1_with_coordinates: Workout,
+        workout_triathlon_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_triathlon_user_1_segment_1_with_coordinates: WorkoutSegment,
+    ) -> None:
+        workout_triathlon_user_1_with_coordinates.equipments = [
+            equipment_shoes_user_1,
+            equipment_bike_user_1,
+        ]
+        db.session.commit()
+
+        assert (
+            equipment_bike_user_1.total_distance
+            == workout_triathlon_user_1_segment_1_with_coordinates.distance
+        )
+        assert (
+            equipment_bike_user_1.total_duration
+            == workout_triathlon_user_1_segment_1_with_coordinates.duration
+        )
+        assert (
+            equipment_bike_user_1.total_moving
+            == workout_triathlon_user_1_segment_1_with_coordinates.moving
+        )
+        assert equipment_bike_user_1.total_workouts == 1
+
+        assert equipment_shoes_user_1.total_distance == (
+            workout_triathlon_user_1_segment_0_with_coordinates.distance  # type: ignore
+            + workout_triathlon_user_1_segment_1_with_coordinates.distance
+        )
+        assert equipment_shoes_user_1.total_duration == (
+            workout_triathlon_user_1_segment_0_with_coordinates.duration
+            + workout_triathlon_user_1_segment_1_with_coordinates.duration
+        )
+        assert equipment_shoes_user_1.total_moving == (
+            workout_triathlon_user_1_segment_0_with_coordinates.moving  # type: ignore
+            + workout_triathlon_user_1_segment_1_with_coordinates.moving
+        )
+        assert equipment_shoes_user_1.total_workouts == 1
+
+        workout_cycling_user_1.equipments = [equipment_bike_user_1]
+        db.session.commit()
+
+        assert equipment_bike_user_1.total_distance == (
+            workout_triathlon_user_1_segment_1_with_coordinates.distance  # type: ignore
+            + workout_cycling_user_1.distance
+        )
+        assert equipment_bike_user_1.total_duration == (
+            workout_triathlon_user_1_segment_1_with_coordinates.duration
+            + workout_cycling_user_1.duration
+        )
+        assert equipment_bike_user_1.total_moving == (
+            workout_triathlon_user_1_segment_1_with_coordinates.moving  # type: ignore
+            + workout_cycling_user_1.moving
+        )
+        assert equipment_bike_user_1.total_workouts == 2
+        assert equipment_shoes_user_1.total_workouts == 1  # unchanged
+
+        workout_triathlon_user_1_with_coordinates.equipments = []
+        db.session.commit()
+
+        assert (
+            equipment_bike_user_1.total_distance
+            == workout_cycling_user_1.distance
+        )
+        assert (
+            equipment_bike_user_1.total_duration
+            == workout_cycling_user_1.duration
+        )
+        assert (
+            equipment_bike_user_1.total_moving == workout_cycling_user_1.moving
+        )
+        assert equipment_bike_user_1.total_workouts == 1
+
+        assert equipment_shoes_user_1.total_distance == 0.0
+        assert equipment_shoes_user_1.total_duration == timedelta()
+        assert equipment_shoes_user_1.total_moving == timedelta()
+        assert equipment_shoes_user_1.total_workouts == 0
+
+        workout_cycling_user_1.equipments = []
+        db.session.commit()
+
+        assert equipment_bike_user_1.total_distance == 0.0
+        assert equipment_bike_user_1.total_duration == timedelta()
+        assert equipment_bike_user_1.total_moving == timedelta()
+        assert equipment_bike_user_1.total_workouts == 0
+
     def test_it_returns_likes_count(
         self,
         app: Flask,
@@ -1613,6 +1716,95 @@ class TestWorkoutModelForOwner(WorkoutModelTestCase):
         )
 
         assert serialized_workout["stats_from_file"] is True
+
+    def test_it_returns_segments_stats_for_multi_activities_sport(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        sport_9_open_water_swimming: "Sport",
+        user_1: "User",
+        workout_triathlon_user_1_with_coordinates: "Workout",
+        workout_triathlon_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_triathlon_user_1_segment_1_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        serialized_workout = (
+            workout_triathlon_user_1_with_coordinates.serialize(
+                user=user_1, light=False
+            )
+        )
+
+        assert serialized_workout["multi_sports_stats"] == {
+            sport_1_cycling.id: {
+                "duration": "0:02:25",
+                "pauses": "0:00:00",
+                "moving": "0:02:25",
+                "distance": 0.186,
+                "min_alt": None,
+                "max_alt": None,
+                "descent": 0,
+                "ascent": 0,
+                "max_speed": 4.62,
+                "ave_speed": 4.62,
+                "ave_cadence": None,
+                "max_cadence": None,
+                "ave_hr": None,
+                "max_hr": None,
+                "ave_power": None,
+                "max_power": None,
+                "ave_pace": None,
+                "best_pace": None,
+                "calories": 0,
+                "sport_id": sport_1_cycling.id,
+            },
+            sport_9_open_water_swimming.id: {
+                "duration": "0:01:30",
+                "pauses": "0:00:00",
+                "moving": "0:01:30",
+                "distance": 0.113,
+                "min_alt": None,
+                "max_alt": None,
+                "descent": 0,
+                "ascent": 0,
+                "max_speed": 5.25,
+                "ave_speed": 4.34,
+                "ave_cadence": None,
+                "max_cadence": None,
+                "ave_hr": None,
+                "max_hr": None,
+                "ave_power": None,
+                "max_power": None,
+                "ave_pace": None,
+                "best_pace": None,
+                "calories": 0,
+                "sport_id": sport_9_open_water_swimming.id,
+            },
+        }
+
+    def test_it_returns_multi_sports_stats_as_empty_dict_when_no_sport_data(
+        self,
+        app: "Flask",
+        sport_1_cycling: "Sport",
+        sport_9_open_water_swimming: "Sport",
+        user_1: "User",
+        workout_triathlon_user_1_with_coordinates: "Workout",
+        workout_triathlon_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_triathlon_user_1_segment_1_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        """
+        In case, the workout is not created from a .fit file (no sport
+        associated with segments)
+        """
+        workout_triathlon_user_1_segment_0_with_coordinates.sport_id = None
+        workout_triathlon_user_1_segment_1_with_coordinates.sport_id = None
+        db.session.commit()
+
+        serialized_workout = (
+            workout_triathlon_user_1_with_coordinates.serialize(
+                user=user_1, light=False
+            )
+        )
+
+        assert serialized_workout["multi_sports_stats"] == {}
 
 
 class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
@@ -2119,6 +2311,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": True,
             "title": "",
@@ -2320,6 +2513,7 @@ class TestWorkoutModelAsFollower(CommentMixin, WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
@@ -2775,6 +2969,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": True,
             "title": "",
@@ -2951,6 +3146,7 @@ class TestWorkoutModelAsUser(CommentMixin, WorkoutModelTestCase):
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
@@ -3521,6 +3717,7 @@ class TestWorkoutModelAsUnauthenticatedUser(
                 if record.record_type not in ["AP", "BP"]
             ],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_1.source,
             "sport_id": workout_cycling_user_1.sport_id,
             "suspended": False,
@@ -3628,6 +3825,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
@@ -3718,6 +3916,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
@@ -3889,6 +4088,7 @@ class TestWorkoutModelAsModerator(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
@@ -3977,6 +4177,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
@@ -4058,6 +4259,7 @@ class TestWorkoutModelAsAdmin(WorkoutModelTestCase):
             "previous_workout": None,
             "records": [],
             "segments": [],
+            "multi_sports_stats": {},
             "source": workout_cycling_user_2.source,
             "sport_id": workout_cycling_user_2.sport_id,
             "suspended": False,
@@ -4168,6 +4370,28 @@ class TestWorkoutModel(WorkoutModelTestCase):
         assert mp_record.workout_id == workout_running_user_1.id
         assert mp_record.workout_uuid == workout_running_user_1.uuid
 
+    def test_it_returns_segments_ordered_by_start_date(
+        self,
+        app: Flask,
+        user_1: User,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+        workout_cycling_user_1_segment_1_with_coordinates: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_segment_0_with_coordinates.start_date = (
+            workout_cycling_user_1_segment_1_with_coordinates.start_date
+            + timedelta(hours=1)
+        )
+
+        segments = workout_cycling_user_1_with_coordinates.segments
+
+        assert segments[0].uuid == (
+            workout_cycling_user_1_segment_1_with_coordinates.uuid
+        )
+        assert segments[1].uuid == (
+            workout_cycling_user_1_segment_0_with_coordinates.uuid
+        )
+
 
 class TestWorkoutSegmentModel:
     def test_workout_segment_model(
@@ -4234,9 +4458,11 @@ class TestWorkoutSegmentModel:
             "ave_power": workout_cycling_user_1_segment.ave_power,
             "ave_speed": workout_cycling_user_1_segment.ave_speed,
             "best_pace": None,
+            "calories": None,
             "descent": workout_cycling_user_1_segment.descent,
             "distance": workout_cycling_user_1_segment.distance,
             "duration": str(workout_cycling_user_1_segment.duration),
+            "is_transition": False,
             "max_alt": workout_cycling_user_1_segment.max_alt,
             "max_cadence": workout_cycling_user_1_segment.max_cadence,
             "max_hr": None,
@@ -4244,8 +4470,9 @@ class TestWorkoutSegmentModel:
             "max_speed": workout_cycling_user_1_segment.max_speed,
             "min_alt": workout_cycling_user_1_segment.min_alt,
             "moving": str(workout_cycling_user_1_segment.moving),
-            "pauses": workout_cycling_user_1_segment.pauses,
+            "pauses": None,
             "segment_id": workout_cycling_user_1_segment.short_id,
+            "sport_id": None,
             "workout_id": workout_cycling_user_1_segment.workout.short_id,
         }
 
@@ -4274,9 +4501,11 @@ class TestWorkoutSegmentModel:
             "ave_power": workout_cycling_user_1_segment.ave_power,
             "ave_speed": workout_cycling_user_1_segment.ave_speed,
             "best_pace": None,
+            "calories": None,
             "descent": workout_cycling_user_1_segment.descent,
             "distance": workout_cycling_user_1_segment.distance,
             "duration": str(workout_cycling_user_1_segment.duration),
+            "is_transition": False,
             "max_alt": workout_cycling_user_1_segment.max_alt,
             "max_cadence": workout_cycling_user_1_segment.max_cadence,
             "max_hr": workout_cycling_user_1_segment.max_hr,
@@ -4284,8 +4513,9 @@ class TestWorkoutSegmentModel:
             "max_speed": workout_cycling_user_1_segment.max_speed,
             "min_alt": workout_cycling_user_1_segment.min_alt,
             "moving": str(workout_cycling_user_1_segment.moving),
-            "pauses": workout_cycling_user_1_segment.pauses,
+            "pauses": None,
             "segment_id": workout_cycling_user_1_segment.short_id,
+            "sport_id": None,
             "workout_id": workout_cycling_user_1_segment.workout.short_id,
         }
 
@@ -4334,6 +4564,37 @@ class TestWorkoutSegmentModel:
         assert serialized_segment["ave_pace"] == "0:08:20"
         assert serialized_segment["best_pace"] == "0:06:35"
 
+    def test_it_does_not_return_calories(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_segment.calories = 124
+
+        serialized_segment = workout_cycling_user_1_segment.serialize()
+
+        assert serialized_segment["calories"] is None
+
+    def test_it_returns_serialized_segment_with_calories(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_segment.calories = 124
+
+        serialized_segment = workout_cycling_user_1_segment.serialize(
+            user=user_2, can_see_calories=True
+        )
+
+        assert serialized_segment["calories"] == 124
+
     def test_it_stores_geometry_as_linestring(
         self,
         app: Flask,
@@ -4355,3 +4616,34 @@ class TestWorkoutSegmentModel:
         assert to_shape(workout_cycling_user_1_segment.geom) == LineString(
             segments_coordinates
         )
+
+    def test_it_stores_geometry_as_point(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        segments_coordinates = [6.07367, 44.68095]
+
+        workout_cycling_user_1_segment.store_geometry_as_point(
+            segments_coordinates
+        )
+        db.session.commit()
+
+        assert to_shape(workout_cycling_user_1_segment.geom) == Point(
+            segments_coordinates
+        )
+
+    def test_it_returns_sport_id_when_set(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_8_trail: "Sport",
+        workout_swimrun_user_1_segment_0_with_coordinates: "Workout",
+    ) -> None:
+        serialized_segment = (
+            workout_swimrun_user_1_segment_0_with_coordinates.serialize()
+        )
+        assert serialized_segment["sport_id"] == sport_8_trail.id

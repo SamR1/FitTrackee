@@ -119,6 +119,23 @@ class TestSportModel:
             "workouts_visibility": None,
         }
 
+    def test_trail_is_not_multi_activities_sport(
+        self, app: "Flask", sport_8_trail: "Sport"
+    ) -> None:
+        assert sport_8_trail.sports == []
+
+    def test_swimrun_is_multi_activities_sport(
+        self,
+        app: "Flask",
+        sport_8_trail: "Sport",
+        sport_9_open_water_swimming: "Sport",
+        sport_10_swimrun: "Sport",
+    ) -> None:
+        assert set(sport_10_swimrun.sports) == {
+            sport_8_trail,
+            sport_9_open_water_swimming,
+        }
+
 
 class TestSportModelWithPreferences(EquipmentMixin):
     def test_sport_model_with_color_preference(

@@ -1,11 +1,13 @@
 import zipfile
-from typing import IO, TYPE_CHECKING, Tuple
+from typing import IO, TYPE_CHECKING, Dict, List, Tuple
 
 from ...exceptions import WorkoutFileException
 from .workout_kml_service import WorkoutKmlService
 
 if TYPE_CHECKING:
     import gpxpy.gpx
+
+    from fittrackee.workouts.models import Sport
 
 
 class WorkoutKmzService(WorkoutKmlService):
@@ -14,7 +16,8 @@ class WorkoutKmzService(WorkoutKmlService):
         cls,
         workout_file: IO[bytes],
         segments_creation_event: str,
-    ) -> Tuple["gpxpy.gpx.GPX", dict]:
+        sport: "Sport",
+    ) -> Tuple["gpxpy.gpx.GPX", Dict, List[Dict]]:
         """
         Only kmz files with Tracks are supported.
         Notes:
@@ -27,7 +30,9 @@ class WorkoutKmzService(WorkoutKmlService):
         # file is already open with Zipfile (in case of workout refresh)
         if not zipfile.is_zipfile(workout_file):
             workout_file.seek(0)
-            return super().parse_file(workout_file, segments_creation_event)
+            return super().parse_file(
+                workout_file, segments_creation_event, sport
+            )
 
         with zipfile.ZipFile(workout_file, "r") as kmz_ref:
             try:
@@ -36,4 +41,4 @@ class WorkoutKmzService(WorkoutKmlService):
                 raise WorkoutFileException(
                     "error", "error when parsing kmz file"
                 ) from e
-        return super().parse_file(kml_content, segments_creation_event)
+        return super().parse_file(kml_content, segments_creation_event, sport)

@@ -61,7 +61,7 @@ if TYPE_CHECKING:
 
 class TestWorkoutGpxServiceParseFile(RandomMixin, WorkoutFileMixin):
     def test_it_raises_error_when_gpx_file_is_invalid(
-        self, app: "Flask", gpx_file_invalid_xml: str
+        self, app: "Flask", gpx_file_invalid_xml: str, sport_1_cycling: "Sport"
     ) -> None:
         with (
             pytest.raises(
@@ -71,6 +71,7 @@ class TestWorkoutGpxServiceParseFile(RandomMixin, WorkoutFileMixin):
             WorkoutGpxService.parse_file(
                 self.get_file_content(gpx_file_invalid_xml),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
     def test_it_raises_error_when_gpx_file_has_no_tracks(
@@ -86,6 +87,7 @@ class TestWorkoutGpxServiceParseFile(RandomMixin, WorkoutFileMixin):
             WorkoutGpxService.parse_file(
                 self.get_file_content(gpx_file_wo_track),
                 segments_creation_event="none",
+                sport=sport_1_cycling,
             )
 
 
@@ -322,9 +324,11 @@ class WorkoutGpxServiceProcessFileTestCase(
             "ave_power": None,
             "ave_speed": 8.94,
             "best_pace": None,
+            "calories": None,
             "descent": 1.0,
             "distance": 0.025,
             "duration": "0:00:10",
+            "is_transition": False,
             "max_alt": 980.0,
             "max_cadence": None,
             "max_hr": None,
@@ -334,6 +338,7 @@ class WorkoutGpxServiceProcessFileTestCase(
             "moving": "0:00:10",
             "pauses": None,
             "segment_id": workout_segments[1].short_id,
+            "sport_id": None,
             "workout_id": workout.short_id,
         }
 

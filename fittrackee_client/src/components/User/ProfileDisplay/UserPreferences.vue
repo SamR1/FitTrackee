@@ -139,23 +139,31 @@
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.MEDIA_VISIBILITY') }}<sup>3</sup>:</dt>
+      <dt class="capitalize">
+        {{ $t('visibility_levels.MEDIA_VISIBILITY') }}<sup>3</sup>:
+      </dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.media_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>:</dt>
+      <dt class="capitalize">
+        {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>:
+      </dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.analysis_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>:</dt>
+      <dt class="capitalize">
+        {{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>:
+      </dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.map_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.HR_VISIBILITY') }}:</dt>
+      <dt class="capitalize">{{ $t('visibility_levels.HR_VISIBILITY') }}:</dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.hr_visibility}`) }}
       </dd>
-      <dt>{{ $t('visibility_levels.CALORIES_VISIBILITY') }}:</dt>
+      <dt class="capitalize">
+        {{ $t('visibility_levels.CALORIES_VISIBILITY') }}:
+      </dt>
       <dd>
         {{ $t(`visibility_levels.LEVELS.${user.calories_visibility}`) }}
       </dd>
@@ -169,6 +177,12 @@
           )
         }}
       </dd>
+      <div class="info-box events-help">
+        <span>
+          <i class="fa fa-info-circle" aria-hidden="true" />
+          {{ $t('user.PROFILE.SEGMENTS_CREATION_EVENT.HELP') }}
+        </span>
+      </div>
     </dl>
     <div class="info-box changes-help">
       <div>

@@ -180,6 +180,7 @@
       "REJECTED": "votre appel a été rejeté"
     },
     "SEGMENTS_CREATION_EVENT": {
+      "HELP": "Cette préférence est ignorée pour les séances associées à des sports comprenant plusieurs activités.",
       "LABEL": "Types de pause déclenchant la création d'un segment (fichiers .fit uniquement)",
       "all": "Tous les évènements de pause",
       "none": "Aucun",

@@ -29,6 +29,7 @@ AVAILABLE_SPORTS = [
     _("Swimrun"),
     _("Tennis (Outdoor)"),
     _("Trail"),
+    _("Triathlon"),
     _("Walking"),
     _("Windsurfing"),
 ]
