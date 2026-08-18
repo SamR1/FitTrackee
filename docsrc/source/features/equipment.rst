@@ -31,7 +31,7 @@ The following equipment types are available, depending on the sport:
      - Sports
    * - .. image:: ../_images/equipment_type/bike.png
      - Bike
-     - Cycling (Sport, Transport, Trekking), Halfbike, Mountain Biking and Mountain Biking (Electric)
+     - Cycling (Sport, Transport, Trekking), Halfbike, Mountain Biking, Mountain Biking (Electric) and Triathlon
    * - .. image:: ../_images/equipment_type/bike_trainer.png
      - Bike Trainer
      - Cycling (Virtual)
@@ -52,7 +52,7 @@ The following equipment types are available, depending on the sport:
      - Padel (Outdoor) and Tennis (Outdoor)
    * - .. image:: ../_images/equipment_type/shoes.png
      - Shoes
-     - Cycling (Sport, Transport, Trekking), Halfbike, Hiking, Mountain Biking and Mountain Biking (Electric), Mountaineering, Padel (Outdoor), Running, Tennis (Outdoor), Trail and Walking
+     - Cycling (Sport, Transport, Trekking), Halfbike, Hiking, Mountain Biking and Mountain Biking (Electric), Mountaineering, Padel (Outdoor), Running, Tennis (Outdoor), Trail, Triathlon and Walking
    * - .. image:: ../_images/equipment_type/skis.png
      - Skis
      - Skiing (Alpine and Cross Country)

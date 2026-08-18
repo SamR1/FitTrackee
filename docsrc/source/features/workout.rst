@@ -48,9 +48,10 @@ The maximum file size and number can be modified by administrators.
 
   For extensions other than .gpx, files are converted to .gpx:
 
-  - .fit: generated .gpx file contains one track (``<trk>``). Depending on user preferences, a new segment (``<trkseg>``) can be created after pause events:
-     - all pause events,
-     - only manual pause event.
+  - | .fit: generated .gpx file contains one track (``<trk>``). Depending on user preferences, a new segment (``<trkseg>``) can be created after pause events:
+    |  - all pause events,
+    |  - only manual pause event.
+    | Pause events are ignored in case of `multi-activities sports <workout.html#multi-activities-sports>`__.
   - .kml: generated .gpx file contains one track (``<trk>``) corresponding to ``<MultiTrack>``, containing one segment (``<trkseg>``) per kml track (``<Track>``)
   - .tcx: generated .gpx file contains one track (``<trk>``) containing one segment (``<trkseg>``) per activity (``<Activity>``)
 
@@ -84,7 +85,7 @@ Users can create a workout without file by entering date, time, duration, distan
 Sports
 ======
 
-27 sports are available.
+30 sports are available.
 
 | Most icons for sports are made by `Freepik <https://www.freepik.com/>`__ from `Flaticon <https://www.flaticon.com/>`__.
 | Sports icons for Canoeing, Kayaking and Rowing are made by `@Von-Birne <https://github.com/Von-Birne>`__.
@@ -251,11 +252,47 @@ Winter sports and mountain sports
      - .. image:: ../_images/sports/snowshoes.png
      - Snowshoes
 
+Multi-activities sports
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. versionadded:: 0.8.7 Swimrun
+.. versionadded:: 1.4.0 Triathlon and multi-activities sports support
+
+.. cssclass:: sports-table
+.. list-table::
+   :header-rows: 1
+   :widths: 15 15 70
+
+   * - Id
+     - Icon
+     - Name
+   * - 18
+     - .. image:: ../_images/sports/swimrun.png
+     - Swimrun
+   * - 30
+     - .. image:: ../_images/sports/triathlon.png
+     - Triathlon
+
+When workouts are uploaded from a ``.fit`` file, segments are created for each activity based on ``Session`` data extracted from file.
+
+.. note::
+   Pause events are therefore ignored when creating segments in this case.
+
+Transitions are also created as segments.
+
+.. figure:: ../_images/multi-activities-segments.png
+   :alt: List of segments for multi-activities sports
+
+Statistics for each activity can also be displayed:
+
+.. figure:: ../_images/multi-activities-segments-stats.png
+   :alt: Table with statistics for Running and Open Water Swimming segment (Swimrun)
+
+Otherwise, for other file formats, workouts are displayed as a single activity with no difference between segments.
 
 Other sports
 ~~~~~~~~~~~~
 .. versionadded:: 0.7.19 Paragliding
-.. versionadded:: 0.8.7 Swimrun
 .. versionadded:: 1.2.0 Inline Skating
 
 .. cssclass:: sports-table
@@ -272,12 +309,6 @@ Other sports
    * - 15
      - .. image:: ../_images/sports/paragliding.png
      - Paragliding
-   * - 18
-     - .. image:: ../_images/sports/swimrun.png
-     - Swimrun
-
-.. note::
-  | Swimrun is displayed as a single activity with no difference between segments for now.
 
 Sports configuration
 --------------------
