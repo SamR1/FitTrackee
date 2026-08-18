@@ -12,7 +12,7 @@ from flask import current_app
 
 # revision identifiers, used by Alembic.
 revision = "e5f7a2c1d9b8"
-down_revision = "2e3a59ebbc59"
+down_revision = "d90ae8ee2222"
 branch_labels = None
 depends_on = None
 
