@@ -20,27 +20,27 @@ if TYPE_CHECKING:
     from .sports import SportDisplayedData
 
 
-def _agg_segments(serie: "pd.Series") -> "pd.Series":
+def _agg_segments(series: "pd.Series") -> "pd.Series":
     cols = {
-        "duration": serie["duration"].sum(),
-        "pauses": serie["pauses"].sum(),
-        "moving": serie["moving"].sum(),
-        "distance": serie["distance"].sum(),
-        "min_alt": serie["min_alt"].min(),
-        "max_alt": serie["max_alt"].max(),
-        "descent": serie["descent"].sum(),
-        "ascent": serie["ascent"].sum(),
-        "max_speed": serie["max_speed"].max(),
-        "ave_speed": serie["ave_speed"].mean(),
-        "ave_cadence": serie["ave_cadence"].mean(),
-        "max_cadence": serie["max_cadence"].max(),
-        "ave_hr": serie["ave_hr"].mean(),
-        "max_hr": serie["max_hr"].max(),
-        "ave_power": serie["ave_power"].mean(),
-        "max_power": serie["max_power"].max(),
-        "ave_pace": serie["ave_pace"].mean(),
-        "best_pace": serie["best_pace"].max(),
-        "calories": serie["calories"].sum(),
+        "duration": series["duration"].sum(),
+        "pauses": series["pauses"].sum(),
+        "moving": series["moving"].sum(),
+        "distance": series["distance"].sum(),
+        "min_alt": series["min_alt"].min(),
+        "max_alt": series["max_alt"].max(),
+        "descent": series["descent"].sum(),
+        "ascent": series["ascent"].sum(),
+        "max_speed": series["max_speed"].max(),
+        "ave_speed": series["ave_speed"].mean(),
+        "ave_cadence": series["ave_cadence"].mean(),
+        "max_cadence": series["max_cadence"].max(),
+        "ave_hr": series["ave_hr"].mean(),
+        "max_hr": series["max_hr"].max(),
+        "ave_power": series["ave_power"].mean(),
+        "max_power": series["max_power"].max(),
+        "ave_pace": series["ave_pace"].mean(),
+        "best_pace": series["best_pace"].max(),
+        "calories": series["calories"].sum(),
     }
     return pd.Series(
         cols,
