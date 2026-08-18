@@ -2,7 +2,7 @@ import os
 import tempfile
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
-from unittest.mock import patch
+from unittest.mock import call, patch
 
 import pytest
 from click.testing import CliRunner
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
     from flask import Flask
 
     from fittrackee.users.models import User
-    from fittrackee.workouts.models import Sport
+    from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
 
 
 class TestCliWorkoutsArchiveUploads(UserTaskMixin):
@@ -934,3 +934,98 @@ class TestCliWorkoutsRefresh(UserTaskMixin):
 
         assert result.exit_code == 1
         assert caplog.messages == [error_message]
+
+
+class TestCliWorkoutsRebuildHeatmap(UserTaskMixin):
+    def test_it_displays_message_when_no_workouts_to_refresh(
+        self, app: "Flask", caplog: "LogCaptureFixture"
+    ) -> None:
+        runner = CliRunner()
+
+        with (
+            patch("click.confirm"),
+            patch(
+                "fittrackee.workouts.commands.HeatmapCellsService.refresh_cells"
+            ) as heatmap_cells_service_mock,
+        ):
+            result = runner.invoke(cli, ["workouts", "rebuild_heatmap"])
+
+        assert result.exit_code == 0
+        assert caplog.messages == ["\nNo workouts to process."]
+        heatmap_cells_service_mock.assert_not_called()
+
+    def test_it_displays_message_when_no_workouts_with_geometries_to_refresh(
+        self,
+        app: "Flask",
+        caplog: "LogCaptureFixture",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        runner = CliRunner()
+
+        with (
+            patch("click.confirm"),
+            patch(
+                "fittrackee.workouts.commands.HeatmapCellsService.refresh_cells"
+            ) as heatmap_cells_service_mock,
+        ):
+            result = runner.invoke(cli, ["workouts", "rebuild_heatmap"])
+
+        assert result.exit_code == 0
+        assert caplog.messages == ["\nNo workouts to process."]
+        heatmap_cells_service_mock.assert_not_called()
+
+    def test_it_calls_heatmap_cells_service(
+        self,
+        app: "Flask",
+        caplog: "LogCaptureFixture",
+        user_1: "User",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_running_user_1_with_coordinates: "Workout",
+        workout_running_user_1_segment_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        runner = CliRunner()
+
+        with (
+            patch("click.confirm"),
+            patch(
+                "fittrackee.workouts.commands.HeatmapCellsService.refresh_cells"
+            ) as heatmap_cells_service_mock,
+        ):
+            result = runner.invoke(cli, ["workouts", "rebuild_heatmap"])
+
+        heatmap_cells_service_mock.assert_has_calls(
+            [
+                call(workout_cycling_user_1_with_coordinates.id),
+                call(workout_running_user_1_with_coordinates.id),
+            ]
+        )
+        assert result.exit_code == 0
+        assert caplog.messages == ["\nWorkouts processed: 2."]
+
+    def test_it_displays_processed_workouts_short_id_when_verbose_is_true(
+        self,
+        app: "Flask",
+        caplog: "LogCaptureFixture",
+        user_1: "User",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_running_user_1_with_coordinates: "Workout",
+        workout_running_user_1_segment_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        runner = CliRunner()
+
+        with (
+            patch("click.confirm"),
+            patch(
+                "fittrackee.workouts.commands.HeatmapCellsService.refresh_cells"
+            ),
+        ):
+            result = runner.invoke(cli, ["workouts", "rebuild_heatmap", "-v"])
+
+        assert result.exit_code == 0
+        assert caplog.messages == [
+            f"[1/2] workout {workout_cycling_user_1_with_coordinates.short_id}",  # noqa: E501
+            f"[2/2] workout {workout_running_user_1_with_coordinates.short_id}",  # noqa: E501
+            "\nWorkouts processed: 2.",
+        ]

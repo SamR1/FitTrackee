@@ -9,6 +9,7 @@ import click
 from fittrackee import db
 from fittrackee.cli.app import app
 from fittrackee.users.models import User
+from fittrackee.utils import encode_uuid
 from fittrackee.workouts.constants import WORKOUT_ALLOWED_EXTENSIONS
 from fittrackee.workouts.models import Sport, Workout, WorkoutHeatmapCell
 from fittrackee.workouts.services.heatmap_cells_service import (
@@ -491,15 +492,24 @@ def workouts_rebuild_heatmap(verbose: bool) -> None:
     """
     with app.app_context():
         logger.setLevel(logging.DEBUG if verbose else logging.INFO)
-        workout_ids = [
-            workout_id
-            for (workout_id,) in db.session.query(Workout.id).order_by(
-                Workout.id
-            )
-        ]
+        workout_all_ids = (
+            db.session.query(Workout.id, Workout.uuid)
+            .where(Workout.start_point_geom != None)  # noqa: E711
+            .order_by(Workout.id)
+            .all()
+        )
+        total_workouts = len(workout_all_ids)
+
+        if not total_workouts:
+            logger.info("\nNo workouts to process.")
+            return
+
         db.session.query(WorkoutHeatmapCell).delete()
-        for count, workout_id in enumerate(workout_ids, start=1):
-            HeatmapCellsService.refresh_cells(workout_id)
+        for count, workout_ids in enumerate(workout_all_ids, start=1):
+            HeatmapCellsService.refresh_cells(workout_ids[0])
             db.session.commit()
-            logger.debug(f"[{count}/{len(workout_ids)}] workout {workout_id}")
-        logger.info(f"\nWorkouts processed: {len(workout_ids)}.")
+            logger.debug(
+                f"[{count}/{total_workouts}] "
+                f"workout {encode_uuid(workout_ids[1])}"
+            )
+        logger.info(f"\nWorkouts processed: {total_workouts}.")
