@@ -7,12 +7,13 @@ import pandas as pd
 
 from ...constants import FIT_MATCHING_SPORTS, NSMAP
 from ...exceptions import WorkoutFileException
-from ...models import Sport
 from .constants import GARMIN_DEVICES
 from .workout_gpx_service import WorkoutGpxService
 
 if TYPE_CHECKING:
     from fitdecode.records import FitDataMessage
+
+    from ...models import Sport
 
 
 FIT_MATCHING_FIELDS = {
@@ -77,7 +78,7 @@ class WorkoutFitService(WorkoutGpxService):
 
     @staticmethod
     def get_sport_id_or_transition(
-        frame: "FitDataMessage",
+        frame: "FitDataMessage", multi_activities_sports: Dict
     ) -> Tuple[Optional[int], bool]:
         sport_key = ""
         if frame.has_field("sport"):
@@ -95,9 +96,8 @@ class WorkoutFitService(WorkoutGpxService):
         if not sport_label:
             return None, False
 
-        sport = Sport.query.filter_by(label=sport_label).first()
-        if sport is not None:
-            return sport.id, False
+        if sport_label in multi_activities_sports:
+            return multi_activities_sports[sport_label], False
 
         return None, False
 
@@ -121,8 +121,7 @@ class WorkoutFitService(WorkoutGpxService):
 
     @classmethod
     def get_file_stats(
-        cls,
-        data_frames: List["FitDataMessage"],
+        cls, data_frames: List["FitDataMessage"], multi_activities_sports: Dict
     ) -> Tuple[Dict, List[Dict]]:
         """
         Multi-sports activities like Swimrun or Triathlon contain multiple
@@ -137,7 +136,9 @@ class WorkoutFitService(WorkoutGpxService):
         sessions_stats = []
 
         for frame in session_frames:
-            sport_id, is_transition = cls.get_sport_id_or_transition(frame)
+            sport_id, is_transition = cls.get_sport_id_or_transition(
+                frame, multi_activities_sports
+            )
             session_stats: Dict = {
                 "sport_id": sport_id,
                 "is_transition": is_transition,
@@ -233,11 +234,13 @@ class WorkoutFitService(WorkoutGpxService):
 
             creator = cls.get_creator(data_frames)
 
-            file_stats, sessions_stats = cls.get_file_stats(data_frames)
             multi_activities = {
                 sport.label: sport.id for sport in sport.sports
             }
             create_segment_on_events = len(multi_activities.keys()) == 0
+            file_stats, sessions_stats = cls.get_file_stats(
+                data_frames, multi_activities
+            )
             session_index = -1
 
             # Handle the actual data frames. We sort them by timestamp
