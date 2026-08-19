@@ -114,7 +114,7 @@
             class="heatmap-legend"
           >
             <span class="legend-title">
-              {{ $t('workouts.WORKOUTS_COUNT') }}
+              {{ $t('workouts.WORKOUT', 0) }}
             </span>
             <span
               v-for="step in heatmapLegend"
