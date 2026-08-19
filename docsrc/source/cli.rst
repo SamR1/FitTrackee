@@ -256,6 +256,25 @@ Can be used if redis is not set (no dramatiq workers running).
      - Maximum number of workouts archive to process.
 
 
+``ftcli workouts rebuild_heatmap``
+""""""""""""""""""""""""""""""""""
+.. versionadded:: 1.4.0
+
+Recompute the heatmap cells of all workouts.
+
+Can be used after changing `HEATMAP_BASE_ZOOM <installation/environments_variables.html#envvar-HEATMAP_BASE_ZOOM>`__, or to fill the cells of an instance with too many workouts to do it on startup.
+
+.. cssclass:: table-bordered
+.. list-table::
+   :widths: 25 50
+   :header-rows: 1
+
+   * - Options
+     - Description
+   * - ``--verbose``, ``-v``
+     - Enable verbose output log (default: disabled).
+
+
 ``ftcli workouts refresh``
 """"""""""""""""""""""""""
 .. versionadded:: 0.12.0

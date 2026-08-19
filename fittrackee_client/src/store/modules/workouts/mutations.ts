@@ -8,6 +8,7 @@ import type {
 } from '@/store/modules/workouts/types'
 import type { IPagination } from '@/types/api'
 import type { IWorkoutsFeatureCollection } from '@/types/geojson.ts'
+import type { IHeatmapCells } from '@/types/map.ts'
 import type {
   IComment,
   ICurrentCommentEdition,
@@ -60,6 +61,12 @@ export const mutations: MutationTree<IWorkoutsState> & TWorkoutsMutations = {
     featureCollection: IWorkoutsFeatureCollection
   ) {
     state.user_workouts_collection = featureCollection
+  },
+  [WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_HEATMAP](
+    state: IWorkoutsState,
+    cells: IHeatmapCells
+  ) {
+    state.user_workouts_heatmap = cells
   },
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUTS_PAGINATION](
     state: IWorkoutsState,

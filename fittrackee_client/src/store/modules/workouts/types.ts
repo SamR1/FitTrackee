@@ -10,6 +10,7 @@ import { WORKOUTS_STORE } from '@/store/constants'
 import type { IRootState } from '@/store/modules/root/types'
 import type { IPagination } from '@/types/api'
 import type { IWorkoutsFeatureCollection } from '@/types/geojson.ts'
+import type { IHeatmapCells } from '@/types/map.ts'
 import type { IUserLightProfile } from '@/types/user.ts'
 import type {
   ICommentForm,
@@ -28,6 +29,7 @@ import type {
   IWorkoutContentEdition,
   ILikesPayload,
   TWorkoutsStatistics,
+  TWorkoutsHeatmapPayload,
   TWorkoutsMapPayload,
   IWorkoutElevationSourceDataPayload,
   IMediaCreatePayload,
@@ -39,6 +41,7 @@ import type {
 export interface IWorkoutsState {
   user_workouts: IWorkout[]
   user_workouts_collection: IWorkoutsFeatureCollection
+  user_workouts_heatmap: IHeatmapCells
   user_workouts_statistics: TWorkoutsStatistics
   calendar_workouts: IWorkout[]
   timeline_workouts: IWorkout[]
@@ -68,6 +71,10 @@ export interface IWorkoutsActions {
   [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_FOR_GLOBAl_MAP](
     context: ActionContext<IWorkoutsState, IRootState>,
     payload: TWorkoutsMapPayload
+  ): void
+  [WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_HEATMAP](
+    context: ActionContext<IWorkoutsState, IRootState>,
+    payload: TWorkoutsHeatmapPayload
   ): void
   [WORKOUTS_STORE.ACTIONS.GET_TIMELINE_WORKOUTS](
     context: ActionContext<IWorkoutsState, IRootState>,
@@ -185,6 +192,9 @@ export interface IWorkoutsGetters {
   [WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_COLLECTION](
     state: IWorkoutsState
   ): IWorkoutsFeatureCollection
+  [WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_HEATMAP](
+    state: IWorkoutsState
+  ): IHeatmapCells
   [WORKOUTS_STORE.GETTERS.WORKOUT_CONTENT_EDITION](
     state: IWorkoutsState
   ): IWorkoutContentEdition
@@ -234,6 +244,10 @@ export type TWorkoutsMutations<S = IWorkoutsState> = {
   [WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION](
     state: S,
     featureCollection: IWorkoutsFeatureCollection
+  ): void
+  [WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_HEATMAP](
+    state: S,
+    cells: IHeatmapCells
   ): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT](state: S, workout: IWorkout): void
   [WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_CHART_DATA](

@@ -1,6 +1,6 @@
 import json
 from datetime import datetime, timedelta, timezone
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, List, Set, Tuple
 from unittest.mock import patch
 
 import pytest
@@ -13,7 +13,12 @@ from fittrackee.constants import PaceSpeedDisplay
 from fittrackee.equipments.models import Equipment
 from fittrackee.users.models import User, UserSportPreference
 from fittrackee.visibility_levels import VisibilityLevel
+from fittrackee.workouts.constants import (
+    DEFAULT_HEATMAP_ZOOM,
+    MAX_HEATMAP_ZOOM,
+)
 from fittrackee.workouts.models import Sport, Workout, WorkoutSegment
+from fittrackee.workouts.utils.heatmap import get_cell_size, get_cells_shift
 
 from ..mixins import WorkoutMixin
 from ..utils import jsonify_dict
@@ -4189,6 +4194,452 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
         assert data["data"]["features"][0]["properties"]["id"] == (
             workout_running_user_1_with_coordinates.short_id
         )
+
+    def test_expected_scope_is_workouts_read(
+        self, app: Flask, user_1: User
+    ) -> None:
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=self.route,
+            invalid_scope="workouts:write",
+            expected_endpoint_scope="workouts:read",
+        )
+
+
+class TestGetWorkoutsHeatmap(WorkoutApiTestCaseMixin):
+    route = "/api/workouts/heatmap"
+
+    @staticmethod
+    def assert_no_features(response: "TestResponse") -> None:
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data == {
+            "data": {
+                "cells": [],
+                "cell_size": get_cell_size(
+                    get_cells_shift(DEFAULT_HEATMAP_ZOOM)
+                ),
+            },
+            "status": "success",
+        }
+
+    def test_it_returns_401_if_user_is_not_authenticated(
+        self, app: "Flask"
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(self.route)
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 401
+        assert "error" in data["status"]
+        assert "provide a valid auth token" in data["message"]
+
+    def test_it_returns_error_when_user_is_suspended(
+        self,
+        app: "Flask",
+        user_1: "User",
+        suspended_user: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
+
+        response = client.get(
+            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_empty_collection_when_no_workouts_for_auth_user(
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
+        )
+
+        self.assert_no_features(response)
+
+    def test_it_returns_empty_collection_when_only_workouts_without_files(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+        another_workout_cycling_user_1: "Workout",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
+        )
+
+        self.assert_no_features(response)
+
+    @staticmethod
+    def get_cells(response: "TestResponse") -> Set[Tuple]:
+        data = json.loads(response.data.decode())
+        return {(cell[0], cell[1]) for cell in data["data"]["cells"]}
+
+    def test_it_returns_one_cell_per_grid_square_crossed_by_segments(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?zoom={MAX_HEATMAP_ZOOM}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        cells = data["data"]["cells"]
+        assert len(cells) > 1
+        for cell in cells:
+            assert cell[2] == 1
+        assert data["data"]["cell_size"] > 0
+
+    def test_it_returns_cells_crossed_by_all_workout_segments(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        route = f"{self.route}?zoom={MAX_HEATMAP_ZOOM}"
+        headers = dict(Authorization=f"Bearer {auth_token}")
+
+        all_segments_cells = self.get_cells(client.get(route, headers=headers))
+
+        # cells of the second segment only
+        db.session.delete(workout_cycling_user_1_segment_0_with_coordinates)
+        db.session.commit()
+        second_segment_cells = self.get_cells(
+            client.get(route, headers=headers)
+        )
+
+        assert second_segment_cells
+        assert second_segment_cells < all_segments_cells
+
+    def test_it_increases_cell_count_when_workouts_overlap(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_coordinates: List[List],
+        workout_running_user_1_with_coordinates: "Workout",
+        workout_running_user_1_segment_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        """
+        the running workout follows the beginning of the cycling one, so
+        their shared cells are crossed twice
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        headers = dict(Authorization=f"Bearer {auth_token}")
+        route = f"{self.route}?zoom={MAX_HEATMAP_ZOOM}"
+
+        response = client.get(route, headers=headers)
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        counts = {cell[2] for cell in data["data"]["cells"]}
+        assert counts == {1, 2}
+
+        # the cells crossed twice are those of the running workout
+        running_cells = self.get_cells(
+            client.get(
+                f"{route}&sport_ids={sport_2_running.id}", headers=headers
+            )
+        )
+        shared_cells = {
+            (cell[0], cell[1])
+            for cell in data["data"]["cells"]
+            if cell[2] == 2
+        }
+        assert shared_cells == running_cells
+
+    def test_it_does_not_return_suspended_workout(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.suspended_at = datetime.now(
+            tz=timezone.utc
+        )
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
+        )
+
+        self.assert_no_features(response)
+
+    def test_it_returns_less_cells_when_zoom_is_lower(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        cells_count = []
+        for zoom in [1, MAX_HEATMAP_ZOOM]:
+            response = client.get(
+                f"{self.route}?zoom={zoom}",
+                headers=dict(Authorization=f"Bearer {auth_token}"),
+            )
+            assert response.status_code == 200
+            data = json.loads(response.data.decode())
+            cells_count.append(len(data["data"]["cells"]))
+
+        # merged down to a single cell when zooming out
+        assert cells_count[0] == 1
+        assert cells_count[0] < cells_count[1]
+
+    def test_it_filters_workouts_on_sport_ids(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        sport_2_running: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+        workout_running_user_1_with_coordinates: "Workout",
+        workout_running_user_1_segment_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        headers = dict(Authorization=f"Bearer {auth_token}")
+        route = f"{self.route}?zoom={MAX_HEATMAP_ZOOM}"
+
+        response = client.get(
+            f"{route}&sport_ids={sport_2_running.id}", headers=headers
+        )
+
+        assert response.status_code == 200
+        running_cells = self.get_cells(response)
+        cycling_cells = self.get_cells(
+            client.get(
+                f"{route}&sport_ids={sport_1_cycling.id}", headers=headers
+            )
+        )
+        all_cells = self.get_cells(client.get(route, headers=headers))
+
+        assert running_cells
+        assert running_cells != all_cells
+        assert running_cells | cycling_cells == all_cells
+
+    def test_it_filters_workouts_on_bounding_box(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?bbox=1.0,1.0,2.0,2.0",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_no_features(response)
+
+    def test_it_returns_workouts_intersecting_bounding_box(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?bbox=6.0,44.6,6.1,44.7",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        # the count does not depend on how many cells the track spans
+        assert data["data"]["cells"]
+        assert {cell[2] for cell in data["data"]["cells"]} == {1}
+
+    def test_it_returns_workouts_created_after_from_date(
+        self,
+        app: "Flask",
+        user_1: "User",
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?from=2019-01-01",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_no_features(response)
+
+    @pytest.mark.parametrize(
+        "input_zoom", ["-1", "abc", str(MAX_HEATMAP_ZOOM + 1)]
+    )
+    def test_it_returns_400_when_zoom_is_invalid(
+        self, app: "Flask", user_1: "User", input_zoom: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?zoom={input_zoom}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, error_message="invalid zoom")
+
+    @pytest.mark.parametrize(
+        "input_bbox",
+        ["1,2,3", "a,b,c,d", "200,0,201,1", "0,-91,1,91", "2,0,1,1"],
+    )
+    def test_it_returns_400_when_bbox_is_invalid(
+        self, app: "Flask", user_1: "User", input_bbox: str
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?bbox={input_bbox}",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, error_message="invalid bbox")
+
+    def test_it_returns_400_when_sport_ids_are_invalid(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?sport_ids=invalid",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, error_message="invalid sport_ids")
+
+    def test_it_returns_400_when_date_format_is_invalid(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            f"{self.route}?from=2019-01",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response, error_message="invalid date format, expecting '%Y-%m-%d'"
+        )
+
+    def test_it_merges_cells_further_when_a_view_returns_too_many(
+        self,
+        app: "Flask",
+        user_1: User,
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_0_coordinates: List[List],
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        headers = dict(Authorization=f"Bearer {auth_token}")
+        route = f"{self.route}?zoom={MAX_HEATMAP_ZOOM}"
+
+        response = client.get(route, headers=headers)
+        cells = json.loads(response.data.decode())["data"]
+
+        with patch("fittrackee.workouts.workouts.MAX_HEATMAP_CELLS", 2):
+            limited_response = client.get(route, headers=headers)
+
+        assert limited_response.status_code == 200
+        limited = json.loads(limited_response.data.decode())["data"]
+        # coarser cells, rather than a heatmap missing its quieter paths
+        assert len(cells["cells"]) > 2
+        assert limited["cell_size"] > cells["cell_size"]
+        assert len(limited["cells"]) <= 2
 
     def test_expected_scope_is_workouts_read(
         self, app: Flask, user_1: User

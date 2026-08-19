@@ -139,6 +139,20 @@ deployment method.
         This is a temporary flag. It will be removed in the next version, which will require all workouts to be updated.
 
 
+.. envvar:: ENABLE_HEATMAP
+
+    .. versionadded:: 1.4.0
+
+    | Enables the workouts heatmap on the global map.
+    | **Keep the value set to** ``False`` **until the heatmap cells have been calculated** (see `Workouts CLI command <../cli.html#ftcli-workouts-rebuild-heatmap>`__).
+    | This variable is case-insensitive.
+
+    :default: ``False``
+
+    .. warning::
+        This is a temporary flag. It will be removed in a future version, which will require the heatmap cells to be calculated.
+
+
 .. envvar:: FLASK_APP
 
     | Name of the module to import at flask run.
@@ -152,6 +166,40 @@ deployment method.
     | Path to **Gunicorn** log file.
     | To disable logging to file, set ``GUNICORN_LOG`` to ``-``, see `Gunicorn documentation <https://gunicorn.org/reference/settings/#errorlog>`__.
 
+
+.. envvar:: HEATMAP_BASE_ZOOM
+
+    .. versionadded:: 1.4.0
+
+    Zoom level the workouts heatmap cells are stored at, between 20 and 24.
+    Each level doubles the detail and roughly doubles the number of stored
+    cells, so raising it trades space for precision. The finest cells mostly
+    resolve the GPS noise.
+
+    Approximate database size (table and indexes) per 1,000 km of tracks:
+
+    .. cssclass:: table-bordered
+    .. list-table::
+       :widths: 20 20 30
+       :header-rows: 1
+
+       * - Zoom
+         - Cell size
+         - Size per 1,000 km
+       * - ``20``
+         - 38 m
+         - 2 MB
+       * - ``22``
+         - 9.6 m
+         - 9 MB
+       * - ``24``
+         - 2.4 m
+         - 41 MB
+
+    After changing it, the cells must be recomputed with
+    ``ftcli workouts rebuild_heatmap``.
+
+    :default: ``20`` (cells of about 38 m)
 
 .. envvar:: HOST
 

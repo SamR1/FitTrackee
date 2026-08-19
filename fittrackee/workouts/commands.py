@@ -6,10 +6,15 @@ from typing import Optional
 
 import click
 
+from fittrackee import db
 from fittrackee.cli.app import app
 from fittrackee.users.models import User
+from fittrackee.utils import encode_uuid
 from fittrackee.workouts.constants import WORKOUT_ALLOWED_EXTENSIONS
-from fittrackee.workouts.models import Sport
+from fittrackee.workouts.models import Sport, Workout, WorkoutHeatmapCell
+from fittrackee.workouts.services.heatmap_cells_service import (
+    HeatmapCellsService,
+)
 from fittrackee.workouts.services.workouts_from_file_refresh_service import (
     WorkoutsFromFileRefreshService,
 )
@@ -468,3 +473,43 @@ def refresh_workouts(
             )
 
         logger.info("\nDone.")
+
+
+@workouts_cli.command("rebuild_heatmap")
+@click.option(
+    "--verbose",
+    "-v",
+    "verbose",
+    is_flag=True,
+    default=False,
+    help="Enable verbose output log (default: disabled).",
+)
+def workouts_rebuild_heatmap(verbose: bool) -> None:
+    """
+    Recompute the heatmap cells of all workouts.
+    To use after changing HEATMAP_BASE_ZOOM, or to fill the cells of an
+    instance with too many workouts to do it on startup.
+    """
+    with app.app_context():
+        logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+        workout_all_ids = (
+            db.session.query(Workout.id, Workout.uuid)
+            .where(Workout.start_point_geom != None)  # noqa: E711
+            .order_by(Workout.id)
+            .all()
+        )
+        total_workouts = len(workout_all_ids)
+
+        if not total_workouts:
+            logger.info("\nNo workouts to process.")
+            return
+
+        db.session.query(WorkoutHeatmapCell).delete()
+        for count, workout_ids in enumerate(workout_all_ids, start=1):
+            HeatmapCellsService.refresh_cells(workout_ids[0])
+            db.session.commit()
+            logger.debug(
+                f"[{count}/{total_workouts}] "
+                f"workout {encode_uuid(workout_ids[1])}"
+            )
+        logger.info(f"\nWorkouts processed: {total_workouts}.")

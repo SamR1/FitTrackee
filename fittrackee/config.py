@@ -9,7 +9,12 @@ from flask import current_app
 from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
 from fittrackee.constants import IMAGE_MIMETYPES
 from fittrackee.languages import SUPPORTED_LANGUAGES
-from fittrackee.workouts.constants import WORKOUT_ALL_ALLOWED_EXTENSIONS
+from fittrackee.workouts.constants import (
+    HEATMAP_DEFAULT_BASE_ZOOM,
+    HEATMAP_MAX_BASE_ZOOM,
+    HEATMAP_MIN_BASE_ZOOM,
+    WORKOUT_ALL_ALLOWED_EXTENSIONS,
+)
 
 broker: Union[Type["RedisBroker"], Type["StubBroker"]] = (
     StubBroker
@@ -22,6 +27,30 @@ XDIST_WORKER = (
     if os.getenv("PYTEST_XDIST_WORKER")
     else ""
 )
+
+
+def get_heatmap_base_zoom() -> int:
+    """
+    Heatmap resolution, from HEATMAP_BASE_ZOOM. Each level doubles the detail
+    and roughly doubles the number of stored cells, so the range is bounded:
+    below the lowest value the tracks show as squares, and above the highest
+    the cells mostly resolve the GPS noise.
+    """
+    value = os.environ.get("HEATMAP_BASE_ZOOM", "")
+    if not value:
+        return HEATMAP_DEFAULT_BASE_ZOOM
+    try:
+        base_zoom = int(value)
+    except ValueError as e:
+        raise ValueError(
+            f"invalid HEATMAP_BASE_ZOOM: '{value}' is not an integer"
+        ) from e
+    if not HEATMAP_MIN_BASE_ZOOM <= base_zoom <= HEATMAP_MAX_BASE_ZOOM:
+        raise ValueError(
+            f"invalid HEATMAP_BASE_ZOOM: {base_zoom} is not between "
+            f"{HEATMAP_MIN_BASE_ZOOM} and {HEATMAP_MAX_BASE_ZOOM}"
+        )
+    return base_zoom
 
 
 class BaseConfig:
@@ -53,6 +82,17 @@ class BaseConfig:
         ),
         "STATICMAP_SUBDOMAINS": os.environ.get("STATICMAP_SUBDOMAINS", ""),
     }
+
+    # resolution the heatmap cells are stored at, as a zoom level: the finest
+    # detail the heatmap can display, at the cost of rows. Changing it needs a
+    # rebuild ('ftcli workouts rebuild_heatmap').
+    HEATMAP_BASE_ZOOM = get_heatmap_base_zoom()
+
+    # Enable heatmap on User Interface
+    # (temporary setting)
+    ENABLE_HEATMAP = (
+        os.environ.get("ENABLE_HEATMAP", "false").lower() == "true"
+    )
 
     OPEN_ELEVATION_API_URL = os.environ.get("OPEN_ELEVATION_API_URL", "")
     VALHALLA_API_URL = os.environ.get("VALHALLA_API_URL", "")

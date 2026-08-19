@@ -280,3 +280,24 @@ If you encountered issues refreshing workouts due to missing files, you can run 
 
   .. note::
     Warnings are displayed during deletion, due to files not found.
+
+
+Upgrading to 1.4.0
+******************
+
+.. note::
+    This paragraph describes the steps needed to enable the heatmap added in version 1.4.0.
+
+The heatmap stores the tracks as the cells of a grid. Cells are calculated for each workout when it is created or refreshed, but the cells of existing workouts must be calculated once, which takes time (nearly 3 minutes for 15,500 km on a Raspberry Pi 4).
+
+`ENABLE_HEATMAP <environments_variables.html#envvar-ENABLE_HEATMAP>`_ tells the migration what to do:
+
+- if it is set to ``True`` before upgrading, the migration calculates the cells and the heatmap is available right after the upgrade.
+
+- otherwise the calculation is skipped and the heatmap is not displayed. Cells can then be calculated with the application running:
+
+  .. code-block:: bash
+
+      $ ftcli workouts rebuild_heatmap -v
+
+  Then set `ENABLE_HEATMAP <environments_variables.html#envvar-ENABLE_HEATMAP>`_ to ``True`` in ``.env`` and restart the application.

@@ -74,6 +74,7 @@ class AppConfig(BaseModel):
             "about": self.about,
             "admin_contact": self.admin_contact,
             "elevation_services": self.elevation_services,
+            "enable_heatmap": current_app.config["ENABLE_HEATMAP"],
             "file_limit_import": self.file_limit_import,
             "file_sync_limit_import": self.file_sync_limit_import,
             "is_email_sending_enabled": current_app.config["CAN_SEND_EMAILS"],

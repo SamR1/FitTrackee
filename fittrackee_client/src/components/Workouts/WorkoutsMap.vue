@@ -57,6 +57,7 @@
           :zoomAnimation="false"
           :preferCanvas="globalMap"
           @ready="fitBounds(bounds)"
+          @moveend="scheduleHeatmapReload"
           ref="workoutsMap"
           :use-global-leaflet="true"
           class="map"
@@ -87,11 +88,46 @@
               aria-hidden="true"
             />
           </LControl>
+          <LControl
+            v-if="globalMap && appConfig.enable_heatmap"
+            position="topleft"
+            class="map-control"
+            tabindex="0"
+            role="button"
+            :title="$t(`workouts.${displayHeatmap ? 'EXIT' : 'VIEW'}_HEATMAP`)"
+            @click="toggleHeatmap"
+            @keydown.enter="toggleHeatmap"
+          >
+            <i
+              :class="`fa fa-${displayHeatmap ? 'map-pin' : 'fire'}`"
+              aria-hidden="true"
+            />
+          </LControl>
           <LTileLayer
             :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
             :attribution="appConfig.map_attribution"
             :maxZoom="19"
           />
+          <LControl
+            v-if="displayHeatmap && heatmapLegend.length > 0"
+            position="bottomright"
+            class="heatmap-legend"
+          >
+            <span class="legend-title">
+              {{ $t('workouts.WORKOUT', 0) }}
+            </span>
+            <span
+              v-for="step in heatmapLegend"
+              :key="step.color"
+              class="legend-step"
+            >
+              <span
+                class="legend-swatch"
+                :style="{ backgroundColor: step.color }"
+              />
+              {{ step.label }}
+            </span>
+          </LControl>
           <LGeoJson v-if="displayedWorkout" :geojson="displayedWorkout">
             <WorkoutPopup
               :workout="displayedWorkout.properties"
@@ -104,6 +140,7 @@
             />
           </LGeoJson>
           <LMarkerClusterGroup
+            v-if="!displayHeatmap"
             :chunked-loading="globalMap"
             :chunk-interval="1"
             :chunk-progress="updateProgressBar"
@@ -140,7 +177,7 @@
     LControl,
   } from '@vue-leaflet/vue-leaflet'
   import type { MultiLineString, Point } from 'geojson'
-  import { type PointExpression, type LatLngBoundsLiteral } from 'leaflet'
+  import { type LatLngBoundsLiteral, type PointExpression } from 'leaflet'
   import {
     computed,
     onMounted,
@@ -152,6 +189,7 @@
   } from 'vue'
   import type { ComputedRef, Reactive, Ref } from 'vue'
   import { LMarkerClusterGroup } from 'vue-leaflet-markercluster'
+  import { useRoute } from 'vue-router'
 
   import 'leaflet/dist/leaflet.css'
   import 'vue-leaflet-markercluster/dist/style.css'
@@ -164,10 +202,19 @@
     IWorkoutFeature,
     IWorkoutsFeatureCollection,
   } from '@/types/geojson.ts'
-  import type { ILeafletObject } from '@/types/map'
+  import type { IHeatmapCells, ILeafletObject } from '@/types/map'
   import type { ITranslatedSport } from '@/types/sports.ts'
+  import type {
+    TMapParamsKeys,
+    TWorkoutsHeatmapPayload,
+  } from '@/types/workouts.ts'
   import { useStore } from '@/use/useStore.ts'
   import { getApiUrl } from '@/utils'
+  import { getHeatmapLegend } from '@/utils/heatmap.ts'
+  import {
+    createHeatmapLayer,
+    type THeatmapLayer,
+  } from '@/utils/heatmapLayer.ts'
   import { getSportColor, getSportLabel } from '@/utils/sports.ts'
 
   interface Props {
@@ -182,6 +229,7 @@
   const { globalMap, translatedSports, userHasWorkouts } = toRefs(props)
 
   const store = useStore()
+  const route = useRoute()
 
   const { appConfig } = useApp()
   const { authUser } = useAuthUser()
@@ -191,6 +239,8 @@
   // when features count exceed following limit, a modal appears to
   // confirm the display of markers.
   const limitForModalDisplay = 3000
+
+  const heatmapRefreshDelay = 500
 
   let progress: HTMLElement | null = null
   let progressBar: HTMLElement | null = null
@@ -203,6 +253,9 @@
   const zoom: Ref<number> = ref(1)
   const displayedWorkoutId: Ref<string | null> = ref(null)
   const timer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
+  const displayHeatmap: Ref<boolean> = ref(false)
+  const heatmapTimer: Ref<ReturnType<typeof setTimeout> | undefined> = ref()
+  let heatmapLayer: THeatmapLayer | null = null
 
   const displayedWorkoutsCollection: Reactive<IWorkoutsFeatureCollection> =
     reactive({
@@ -222,7 +275,74 @@
   const displayedWorkout: ComputedRef<IWorkoutFeature | undefined> = computed(
     () => getWorkoutToDisplay()
   )
+  const heatmapCollection: ComputedRef<IHeatmapCells> = computed(
+    () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_HEATMAP]
+  )
 
+  const heatmapLegend: ComputedRef<{ color: string; label: string }[]> =
+    computed(() => {
+      const samples = getHeatmapLegend(
+        heatmapCollection.value.cells.map((cell) => cell[2])
+      )
+      // a single sample means nothing to compare
+      return samples.length > 1 ? samples : []
+    })
+  function getHeatmapBoundingBox(): string {
+    const mapBounds = workoutsMap.value!.leafletObject.getBounds()
+    return [
+      Math.max(mapBounds.getWest(), -180),
+      Math.max(mapBounds.getSouth(), -90),
+      Math.min(mapBounds.getEast(), 180),
+      Math.min(mapBounds.getNorth(), 90),
+    ]
+      .map((coordinate: number) => coordinate.toFixed(6))
+      .join(',')
+  }
+  function loadHeatmap() {
+    if (!displayHeatmap.value || !workoutsMap.value?.leafletObject) {
+      return
+    }
+    const mapZoom = workoutsMap.value.leafletObject.getZoom()
+    const payload: TWorkoutsHeatmapPayload = {
+      bbox: getHeatmapBoundingBox(),
+      zoom: mapZoom,
+    }
+    const filters: TMapParamsKeys[] = ['from', 'to', 'sport_ids']
+    filters.forEach((key: TMapParamsKeys) => {
+      const value = route.query[key]
+      if (typeof value === 'string') {
+        payload[key] = value
+      }
+    })
+    store.dispatch(
+      WORKOUTS_STORE.ACTIONS.GET_AUTH_USER_WORKOUTS_HEATMAP,
+      payload
+    )
+  }
+  // filtering also moves the map, when it is fitted to the filtered bounds
+  function scheduleHeatmapReload() {
+    if (!displayHeatmap.value) {
+      return
+    }
+    if (heatmapTimer.value) {
+      clearTimeout(heatmapTimer.value)
+    }
+    heatmapTimer.value = setTimeout(loadHeatmap, heatmapRefreshDelay)
+  }
+  function clearHeatmap() {
+    store.commit(WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_HEATMAP, {
+      cells: [],
+      cell_size: 0,
+    })
+  }
+  function toggleHeatmap() {
+    displayHeatmap.value = !displayHeatmap.value
+    if (displayHeatmap.value) {
+      loadHeatmap()
+    } else {
+      clearHeatmap()
+    }
+  }
   function getWorkoutGeoJSON(workoutId: string) {
     store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_GEOJSON, workoutId)
   }
@@ -379,6 +499,34 @@
       }
     }
   )
+  watch(
+    () => route.query,
+    () => {
+      scheduleHeatmapReload()
+    }
+  )
+  watch(
+    () => heatmapCollection.value,
+    (collection: IHeatmapCells) => {
+      const map = workoutsMap.value?.leafletObject
+      if (!map) {
+        return
+      }
+      if (!displayHeatmap.value || collection.cells.length === 0) {
+        if (heatmapLayer) {
+          map.removeLayer(heatmapLayer)
+          heatmapLayer = null
+        }
+        return
+      }
+      if (heatmapLayer) {
+        heatmapLayer.setCells(collection)
+      } else {
+        heatmapLayer = createHeatmapLayer(collection)
+        map.addLayer(heatmapLayer)
+      }
+    }
+  )
 
   onMounted(() => {
     progress = document.getElementById('progress')
@@ -388,12 +536,20 @@
     if (timer.value) {
       clearTimeout(timer.value)
     }
+    if (heatmapTimer.value) {
+      clearTimeout(heatmapTimer.value)
+    }
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_USER_WORKOUTS_COLLECTION, {
       bbox: [],
       features: [],
       type: 'FeatureCollection',
     })
     store.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON, null)
+    if (heatmapLayer) {
+      workoutsMap.value?.leafletObject.removeLayer(heatmapLayer)
+      heatmapLayer = null
+    }
+    clearHeatmap()
   })
 </script>
 
@@ -452,6 +608,33 @@
       }
       ::v-deep(.marker-cluster div) {
         filter: var(--map-filter-cluster);
+      }
+      // inside the map, so the dark mode filter applies to the swatches too
+      .heatmap-legend {
+        display: flex;
+        align-items: center;
+        gap: 3px;
+        background: var(--map-control-bg-color);
+        border: 2px solid var(--map-control-border-color);
+        border-radius: 3px;
+        color: var(--map-control-color);
+        padding: 3px 6px;
+        font-size: 0.8em;
+
+        .legend-title {
+          font-weight: bold;
+          margin-right: 3px;
+        }
+        .legend-step {
+          display: flex;
+          align-items: center;
+          gap: 2px;
+        }
+        .legend-swatch {
+          display: inline-block;
+          height: 10px;
+          width: 10px;
+        }
       }
       .map-control {
         background: var(--map-control-bg-color);
