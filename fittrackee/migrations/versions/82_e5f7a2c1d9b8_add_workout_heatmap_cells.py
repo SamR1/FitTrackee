@@ -49,6 +49,8 @@ def upgrade():
         )
         return
 
+    print("Calculating heatmap cells...")
+
     # the cells are stored at the configured resolution, so that a instance
     # short on space can trade detail for rows
     cell_size = WEB_MERCATOR_WORLD_SIZE / 2 ** current_app.config[
@@ -75,6 +77,7 @@ def upgrade():
         WHERE ST_Intersects(grid.geom, sub.geom)
         """
     )
+    print("Done!")
 
 
 def downgrade():
