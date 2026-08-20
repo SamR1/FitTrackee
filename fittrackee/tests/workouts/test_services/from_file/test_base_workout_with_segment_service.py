@@ -1,7 +1,6 @@
 from typing import TYPE_CHECKING
 from unittest.mock import MagicMock, patch
 
-import pytest
 from staticmap3 import Line, StaticMap
 
 from fittrackee import VERSION
@@ -14,80 +13,6 @@ from fittrackee.workouts.services.workout_from_file import (
 
 if TYPE_CHECKING:
     from flask import Flask
-
-
-class TestBaseWorkoutWithSegmentsCreationServiceGetStaticMapTileServerUrl:
-    @pytest.mark.parametrize(
-        "input_tile_server_url,"
-        "input_tile_server_subdomains,"
-        "expected_tile_server_url",
-        [
-            # tile server without subdomain
-            (
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                "",
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-            ),
-            (
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                "a",
-                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-            ),
-            # tile server with subdomain
-            (
-                "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/"
-                "{z}/{x}/{y}.png",
-                "a",
-                "https://a.tile-cyclosm.openstreetmap.fr/cyclosm/"
-                "{z}/{x}/{y}.png",
-            ),
-            (
-                "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/"
-                "{z}/{x}/{y}.png",
-                "",
-                "https://tile-cyclosm.openstreetmap.fr/cyclosm/"
-                "{z}/{x}/{y}.png",
-            ),
-        ],
-    )
-    def test_it_returns_tile_server_url(
-        self,
-        input_tile_server_url: str,
-        input_tile_server_subdomains: str,
-        expected_tile_server_url: str,
-    ) -> None:
-        tile_config = {
-            "URL": input_tile_server_url,
-            "STATICMAP_SUBDOMAINS": input_tile_server_subdomains,
-        }
-
-        assert (
-            BaseWorkoutWithSegmentsCreationService.get_static_map_tile_server_url(
-                tile_config
-            )
-            == expected_tile_server_url
-        )
-
-    def test_it_returns_tile_server_url_with_random_subdomain(self) -> None:
-        """in case multiple subdomains are provided"""
-        tile_config = {
-            "URL": (
-                "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/"
-                "{z}/{x}/{y}.png"
-            ),
-            "STATICMAP_SUBDOMAINS": "a,b,c",
-        }
-
-        with patch("random.choice", return_value="b"):
-            assert (
-                BaseWorkoutWithSegmentsCreationService.get_static_map_tile_server_url(
-                    tile_config
-                )
-                == (
-                    "https://b.tile-cyclosm.openstreetmap.fr/cyclosm/"
-                    "{z}/{x}/{y}.png"
-                )
-            )
 
 
 class TestBaseWorkoutWithSegmentsCreationServiceGenerateMapImage:
@@ -123,8 +48,8 @@ class TestBaseWorkoutWithSegmentsCreationServiceGenerateMapImage:
 
         call_args, _ = static_map_get_mock.call_args
         assert (
-            app.config["TILE_SERVER"]["URL"]
-            .replace("{s}.", "")
+            app.config["tile_providers"]["default"]
+            .url.replace("{s}.", "")
             .replace("/{z}/{x}/{y}.png", "")
             in call_args[0]
         )
@@ -141,9 +66,9 @@ class TestBaseWorkoutWithSegmentsCreationServiceGenerateMapImage:
 
         call_args, _ = static_map_get_mock.call_args
         assert (
-            app_default_static_map.config["TILE_SERVER"]["URL"].replace(
-                "/{z}/{x}/{y}.png", ""
-            )
+            app_default_static_map.config["tile_providers"][
+                "osm_de"
+            ].url.replace("/{z}/{x}/{y}.png", "")
             not in call_args[0]
         )
 

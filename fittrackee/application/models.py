@@ -3,6 +3,8 @@ from datetime import datetime
 from typing import Dict, Optional
 
 from flask import current_app
+from sqlalchemy import ARRAY, cast
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.orm import Mapped, mapped_column
@@ -13,6 +15,12 @@ from sqlalchemy.sql import text
 from fittrackee import BaseModel, db
 from fittrackee.database import TZDateTime
 from fittrackee.users.models import User
+
+from .tile_servers import (
+    DEFAULT_TILE_PROVIDER,
+    TILE_PROVIDERS,
+    TileProviderBase,
+)
 
 
 class AppConfig(BaseModel):
@@ -48,6 +56,10 @@ class AppConfig(BaseModel):
     max_image_size: Mapped[int] = mapped_column(
         server_default="5242880", nullable=False
     )
+    tile_providers: Mapped[list[str]] = mapped_column(
+        ARRAY(db.String),
+        server_default=cast(postgresql.array([]), ARRAY(db.String)),
+    )
 
     @property
     def is_registration_enabled(self) -> bool:
@@ -56,8 +68,25 @@ class AppConfig(BaseModel):
         return self.max_users == 0 or nb_users < self.max_users
 
     @property
+    def available_tile_providers(self) -> Dict[str, "TileProviderBase"]:
+        available_tile_providers = {}
+        if self.tile_providers:
+            available_tile_providers = {
+                key: TILE_PROVIDERS[key] for key in self.tile_providers
+            }
+        if not available_tile_providers:
+            available_tile_providers = {"default": DEFAULT_TILE_PROVIDER}
+
+        return available_tile_providers
+
+    @property
     def map_attribution(self) -> str:
-        return current_app.config["TILE_SERVER"]["ATTRIBUTION"]
+        key = (
+            "custom"
+            if "custom" in self.available_tile_providers
+            else "default"
+        )
+        return self.available_tile_providers[key].attribution
 
     @property
     def elevation_services(self) -> Dict:

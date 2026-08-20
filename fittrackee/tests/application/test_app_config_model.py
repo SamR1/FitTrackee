@@ -5,12 +5,13 @@ from flask import Flask
 
 from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
 from fittrackee.application.models import AppConfig
+from fittrackee.application.tile_servers import DEFAULT_TILE_PROVIDER
 from fittrackee.users.models import User
 
 from ..utils import random_int, random_string
 
 
-class TestConfigModel:
+class TestAppConfigModel:
     def test_application_config(
         self, app: Flask, monkeypatch: pytest.MonkeyPatch
     ) -> None:
@@ -19,9 +20,7 @@ class TestConfigModel:
         config.admin_contact = "admin@example.com"
 
         assert config.is_registration_enabled is True
-        assert (
-            config.map_attribution == app.config["TILE_SERVER"]["ATTRIBUTION"]
-        )
+        assert config.map_attribution == DEFAULT_TILE_PROVIDER.attribution
 
         serialized_app_config = config.serialize()
         assert serialized_app_config["admin_contact"] == config.admin_contact

@@ -66,19 +66,6 @@ class BaseConfig:
     )
     PICTURE_ALLOWED_EXTENSIONS = set(IMAGE_MIMETYPES.keys())
     WORKOUT_ALLOWED_EXTENSIONS = WORKOUT_ALL_ALLOWED_EXTENSIONS
-    TILE_SERVER = {
-        "URL": os.environ.get(
-            "TILE_SERVER_URL",
-            "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        ),
-        "ATTRIBUTION": os.environ.get(
-            "MAP_ATTRIBUTION",
-            '&copy; <a href="http://www.openstreetmap.org/copyright" '
-            'target="_blank" rel="noopener noreferrer">OpenStreetMap</a>'
-            " contributors",
-        ),
-        "STATICMAP_SUBDOMAINS": os.environ.get("STATICMAP_SUBDOMAINS", ""),
-    }
     DEFAULT_STATICMAP = (
         os.environ.get("DEFAULT_STATICMAP", "false").lower() == "true"
     )

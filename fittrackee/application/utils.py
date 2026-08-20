@@ -71,6 +71,7 @@ def update_app_config_from_database(
             ),
             "stats_workouts_limit": db_config.stats_workouts_limit,
             "global_map_workouts_limit": db_config.global_map_workouts_limit,
+            "tile_providers": db_config.available_tile_providers,
         }
     )
 

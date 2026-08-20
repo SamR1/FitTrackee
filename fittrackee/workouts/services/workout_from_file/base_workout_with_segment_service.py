@@ -1,5 +1,4 @@
 import hashlib
-import random
 from abc import ABC, abstractmethod
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Union
 
@@ -7,7 +6,13 @@ from flask import current_app
 from staticmap3 import Line, StaticMap
 
 from fittrackee import VERSION, appLog, db
-from fittrackee.constants import ElevationDataSource, ElevationProcessing
+from fittrackee.application.tile_servers import (
+    DEFAULT_TILE_PROVIDER,
+)
+from fittrackee.constants import (
+    ElevationDataSource,
+    ElevationProcessing,
+)
 from fittrackee.files import get_absolute_file_path
 
 from ...exceptions import WorkoutException, WorkoutRefreshException
@@ -264,15 +269,6 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         return md5.hexdigest()
 
     @classmethod
-    def get_static_map_tile_server_url(cls, tile_server_config: Dict) -> str:
-        if tile_server_config["STATICMAP_SUBDOMAINS"]:
-            subdomains = tile_server_config["STATICMAP_SUBDOMAINS"].split(",")
-            subdomain = f"{random.choice(subdomains)}."  # noqa:S311
-        else:
-            subdomain = ""
-        return tile_server_config["URL"].replace("{s}.", subdomain)
-
-    @classmethod
     def generate_map_image(cls, map_filepath: str, coordinates: List) -> None:
         m = StaticMap(
             width=400,
@@ -282,9 +278,9 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
             delay_between_retries=5,
         )
         if not current_app.config["DEFAULT_STATICMAP"]:
-            m.url_template = cls.get_static_map_tile_server_url(
-                current_app.config["TILE_SERVER"]
-            )
+            m.url_template = current_app.config.get(
+                "tile_providers", {"default": DEFAULT_TILE_PROVIDER}
+            )["default"].url
         line = Line(coords=coordinates, color="#3388FF", width=4)
         m.add_line(line)
         image = m.render()

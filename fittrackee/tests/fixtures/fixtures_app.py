@@ -1,6 +1,6 @@
 import os
 import shutil
-from typing import Generator, Iterator, Optional, Union
+from typing import Generator, Iterator, List, Optional, Union
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -35,6 +35,7 @@ def get_app_config(
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
     global_map_workouts_limit: Optional[int] = None,
+    tile_providers: Optional[List[str]] = None,
 ) -> AppConfig:
     config = AppConfig.query.one_or_none()
     if not config:
@@ -59,6 +60,7 @@ def get_app_config(
     config.max_users = 100 if max_users is None else max_users
     if global_map_workouts_limit:
         config.global_map_workouts_limit = global_map_workouts_limit
+    config.tile_providers = tile_providers or []
     db.session.commit()
     return config
 
@@ -74,6 +76,7 @@ def get_app(
     max_users: Optional[int] = None,
     global_map_workouts_limit: Optional[int] = None,
     tasks_processing_available: bool = True,
+    tile_providers: Optional[List[str]] = None,
 ) -> Generator:
     app = create_app()
     app.config["TASKS_PROCESSING_AVAILABLE"] = tasks_processing_available
@@ -90,6 +93,7 @@ def get_app(
                     max_zip_file_size,
                     max_users,
                     global_map_workouts_limit,
+                    tile_providers,
                 )
                 update_app_config_from_database(app, app_db_config)
             yield app
@@ -145,11 +149,8 @@ def app_with_enabled_heatmap(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 @pytest.fixture
 def app_default_static_map(monkeypatch: pytest.MonkeyPatch) -> Generator:
-    monkeypatch.setenv(
-        "TILE_SERVER_URL", "https://tile.openstreetmap.de/{z}/{x}/{y}.png"
-    )
     monkeypatch.setenv("DEFAULT_STATICMAP", "True")
-    yield from get_app(with_config=True)
+    yield from get_app(with_config=True, tile_providers=["osm_de"])
 
 
 @pytest.fixture

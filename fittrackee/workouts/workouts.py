@@ -2366,7 +2366,12 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
     Status codes are status codes returned by tile server
 
     """
-    url = current_app.config["TILE_SERVER"]["URL"].format(
+    key = (
+        "custom"
+        if "custom" in current_app.config["tile_providers"]
+        else "default"
+    )
+    url = current_app.config["tile_providers"][key].url.format(
         s=secure_filename(s),
         z=secure_filename(z),
         x=secure_filename(x),
