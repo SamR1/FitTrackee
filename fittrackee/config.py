@@ -77,11 +77,11 @@ class BaseConfig:
             'target="_blank" rel="noopener noreferrer">OpenStreetMap</a>'
             " contributors",
         ),
-        "DEFAULT_STATICMAP": (
-            os.environ.get("DEFAULT_STATICMAP", "false").lower() == "true"
-        ),
         "STATICMAP_SUBDOMAINS": os.environ.get("STATICMAP_SUBDOMAINS", ""),
     }
+    DEFAULT_STATICMAP = (
+        os.environ.get("DEFAULT_STATICMAP", "false").lower() == "true"
+    )
 
     # resolution the heatmap cells are stored at, as a zoom level: the finest
     # detail the heatmap can display, at the cost of rows. Changing it needs a

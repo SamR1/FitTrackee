@@ -281,7 +281,7 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
             headers={"User-Agent": f"FitTrackee v{VERSION}"},
             delay_between_retries=5,
         )
-        if not current_app.config["TILE_SERVER"]["DEFAULT_STATICMAP"]:
+        if not current_app.config["DEFAULT_STATICMAP"]:
             m.url_template = cls.get_static_map_tile_server_url(
                 current_app.config["TILE_SERVER"]
             )
