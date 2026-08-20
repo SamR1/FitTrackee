@@ -18,13 +18,6 @@ depends_on = None
 
 
 def upgrade():
-    op.create_table('multi_activities_sports',
-    sa.Column('sport_id', sa.Integer(), nullable=False),
-    sa.Column('sub_sport_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['sport_id'], ['sports.id'], ),
-    sa.ForeignKeyConstraint(['sub_sport_id'], ['sports.id'], ),
-    sa.PrimaryKeyConstraint('sport_id', 'sub_sport_id')
-    )
     with op.batch_alter_table('workout_segments', schema=None) as batch_op:
         batch_op.add_column(sa.Column('sport_id', sa.Integer(), nullable=True))
         batch_op.add_column(sa.Column('is_transition', sa.Boolean(), server_default='False', nullable=False))
