@@ -165,6 +165,7 @@
     ILeafletObject,
     TCoordinates,
   } from '@/types/map'
+  import type { ITileProvider } from '@/types/tileProviders.ts'
   import type { IMediaAttachment, IWorkoutData } from '@/types/workouts'
   import { useStore } from '@/use/useStore.ts'
   import { getApiUrl } from '@/utils'
@@ -183,7 +184,7 @@
   const { geoJsonOptions, workoutData, markerCoordinates, withHeatmap } =
     toRefs(props)
 
-  const { availableTileProviders, defaultTileProvider } = useTileProviders()
+  const { availableTileProviders } = useTileProviders()
 
   const store = useStore()
 
@@ -214,7 +215,12 @@
       (media) => media.meta.coordinates
     )
   )
-
+  const defaultTileProvider: ComputedRef<ITileProvider> = computed(
+    () =>
+      availableTileProviders.value.find(
+        (provider) => provider.default_for_user
+      ) as ITileProvider
+  )
   function setDisplayedMediaIndex(mediaId: string) {
     const mediaIndex = workoutData.value.workout.media_attachments.findIndex(
       (m) => m.id === mediaId

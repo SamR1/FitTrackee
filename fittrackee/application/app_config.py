@@ -329,6 +329,7 @@ def get_application_tile_providers(
               "api_key_is_missing": false,
               "attribution": "<Map Attribution for OpenStreetMap>",
               "default": true,
+              "default_for_user": true,
               "enabled": true,
               "id": "osm",
               "name": "OSM",
@@ -339,6 +340,7 @@ def get_application_tile_providers(
               "api_key_is_missing": false,
               "attribution": "<Map Attribution for OpenStreetMap (de)>",
               "default": false,
+              "default_for_user": true,
               "enabled": false,
               "id": "osm_de",
               "name": "OSM (de)",
@@ -349,6 +351,7 @@ def get_application_tile_providers(
               "api_key_is_missing": false,
               "attribution": "<Map Attribution for OpenStreetMap (fr)>",
               "default": false,
+              "default_for_user": true,
               "enabled": false,
               "id": "osm_fr",
               "name": "OSM (fr)",
@@ -359,6 +362,7 @@ def get_application_tile_providers(
               "api_key_is_missing": false,
               "attribution": "<Map Attribution for CyclOSM>",
               "default": false,
+              "default_for_user": true,
               "enabled": true,
               "id": "cyclosm",
               "name": "CyclOSM",
@@ -369,6 +373,7 @@ def get_application_tile_providers(
               "api_key_is_missing": true,
               "attribution": "<Map Attribution for Stadia Alidade Smooth>",
               "default": false,
+              "default_for_user": true,
               "enabled": false,
               "id": "stadiamaps_alidade_smooth",
               "name": "Stadia Alidade Smooth",
@@ -379,6 +384,7 @@ def get_application_tile_providers(
               "api_key_is_missing": true,
               "attribution": "<Map Attribution for Stadia Alidade Outdoors>",
               "default": false,
+              "default_for_user": true,
               "enabled": false,
               "id": "stadiamaps_outdoors",
               "name": "Stadia Outdoors",
@@ -389,6 +395,7 @@ def get_application_tile_providers(
               "api_key_is_missing": true,
               "attribution": "<Map Attribution for Thunderforest Landscape>",
               "default": false,
+              "default_for_user": true,
               "enabled": false,
               "id": "thunderforest_landscape",
               "name": "Thunderforest Landscape",
@@ -399,6 +406,7 @@ def get_application_tile_providers(
               "api_key_is_missing": true,
               "attribution": "<Map Attribution for Thunderforest Outdoors>",
               "default": false,
+              "default_for_user": true,
               "enabled": false,
               "id": "thunderforest_outdoors",
               "name": "Thunderforest Outdoors",
@@ -436,6 +444,17 @@ def get_application_tile_providers(
                         "name": tile_provider_config.name,
                         "default": (
                             tile_provider == config.default_tile_provider
+                        ),
+                        "default_for_user": (
+                            tile_provider == auth_user.default_tile_provider
+                            if (
+                                auth_user
+                                and auth_user.default_tile_provider
+                                in current_app.config[
+                                    "available_tile_providers"
+                                ]
+                            )
+                            else tile_provider == config.default_tile_provider
                         ),
                         **(
                             {

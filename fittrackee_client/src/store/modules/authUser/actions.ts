@@ -157,6 +157,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
             res.data.data
           )
+          context.dispatch(TILE_PROVIDERS_STORE.ACTIONS.GET_TILE_PROVIDERS)
           if (profileNotLoaded || payload.updateUI) {
             if (res.data.data.language) {
               context.dispatch(
@@ -429,6 +430,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
             res.data.data
           )
+          context.dispatch(TILE_PROVIDERS_STORE.ACTIONS.GET_TILE_PROVIDERS)
           context.commit(
             ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS,
             res.data.data

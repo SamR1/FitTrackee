@@ -161,6 +161,33 @@ class UserModelAssertMixin:
         assert "total_distance" in serialized_user
         assert "total_duration" in serialized_user
 
+    @staticmethod
+    def assert_preferences_key_are_not_present(serialized_user: Dict) -> None:
+        assert "imperial_units" not in serialized_user
+        assert "language" not in serialized_user
+        assert "timezone" not in serialized_user
+        assert "weekm" not in serialized_user
+        assert "start_elevation_at_zero" not in serialized_user
+        assert "use_raw_gpx_speed" not in serialized_user
+        assert "use_dark_mode" not in serialized_user
+        assert "workouts_visibility" not in serialized_user
+        assert "analysis_visibility" not in serialized_user
+        assert "map_visibility" not in serialized_user
+        assert "hr_visibility" not in serialized_user
+        assert "manually_approves_followers" not in serialized_user
+        assert "hide_profile_in_users_directory" not in serialized_user
+        assert "notification_preferences" not in serialized_user
+        assert "segments_creation_event" not in serialized_user
+        assert "split_workout_charts" not in serialized_user
+        assert "messages_preferences" not in serialized_user
+        assert "display_ascent" not in serialized_user
+        assert "missing_elevations_data_source" not in serialized_user
+        assert "calories_visibility" not in serialized_user
+        assert "media_visibility" not in serialized_user
+        assert "workout_stats_from_file" not in serialized_user
+        assert "elevation_processing" not in serialized_user
+        assert "default_tile_provider" not in serialized_user
+
 
 class TestUserSerializeAsAuthUser(UserModelAssertMixin):
     def test_it_returns_user_account_infos(
@@ -238,6 +265,7 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             serialized_user["workout_stats_from_file"]
             == user_1.workout_stats_from_file
         )
+        assert serialized_user["default_tile_provider"] == "osm"
 
     def test_it_returns_empty_dict_when_notification_preferences_are_none(
         self, app: Flask, user_1: User
@@ -417,29 +445,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
             current_user=user_1_admin, light=False
         )
 
-        assert "imperial_units" not in serialized_user
-        assert "language" not in serialized_user
-        assert "timezone" not in serialized_user
-        assert "weekm" not in serialized_user
-        assert "start_elevation_at_zero" not in serialized_user
-        assert "use_raw_gpx_speed" not in serialized_user
-        assert "use_dark_mode" not in serialized_user
-        assert "workouts_visibility" not in serialized_user
-        assert "analysis_visibility" not in serialized_user
-        assert "map_visibility" not in serialized_user
-        assert "hr_visibility" not in serialized_user
-        assert "manually_approves_followers" not in serialized_user
-        assert "hide_profile_in_users_directory" not in serialized_user
-        assert "notification_preferences" not in serialized_user
-        assert "segments_creation_event" not in serialized_user
-        assert "split_workout_charts" not in serialized_user
-        assert "messages_preferences" not in serialized_user
-        assert "display_ascent" not in serialized_user
-        assert "missing_elevations_data_source" not in serialized_user
-        assert "calories_visibility" not in serialized_user
-        assert "media_visibility" not in serialized_user
-        assert "workout_stats_from_file" not in serialized_user
-        assert "elevation_processing" not in serialized_user
+        self.assert_preferences_key_are_not_present(serialized_user)
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -513,29 +519,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
             current_user=user_1_moderator, light=False
         )
 
-        assert "imperial_units" not in serialized_user
-        assert "language" not in serialized_user
-        assert "timezone" not in serialized_user
-        assert "weekm" not in serialized_user
-        assert "start_elevation_at_zero" not in serialized_user
-        assert "use_raw_gpx_speed" not in serialized_user
-        assert "use_dark_mode" not in serialized_user
-        assert "workouts_visibility" not in serialized_user
-        assert "analysis_visibility" not in serialized_user
-        assert "map_visibility" not in serialized_user
-        assert "hr_visibility" not in serialized_user
-        assert "manually_approves_followers" not in serialized_user
-        assert "hide_profile_in_users_directory" not in serialized_user
-        assert "notification_preferences" not in serialized_user
-        assert "segments_creation_event" not in serialized_user
-        assert "split_workout_charts" not in serialized_user
-        assert "messages_preferences" not in serialized_user
-        assert "display_ascent" not in serialized_user
-        assert "missing_elevations_data_source" not in serialized_user
-        assert "calories_visibility" not in serialized_user
-        assert "media_visibility" not in serialized_user
-        assert "workout_stats_from_file" not in serialized_user
-        assert "elevation_processing" not in serialized_user
+        self.assert_preferences_key_are_not_present(serialized_user)
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -605,26 +589,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
     ) -> None:
         serialized_user = user_2.serialize(current_user=user_1, light=False)
 
-        assert "imperial_units" not in serialized_user
-        assert "language" not in serialized_user
-        assert "timezone" not in serialized_user
-        assert "weekm" not in serialized_user
-        assert "workouts_visibility" not in serialized_user
-        assert "analysis_visibility" not in serialized_user
-        assert "map_visibility" not in serialized_user
-        assert "hr_visibility" not in serialized_user
-        assert "manually_approves_followers" not in serialized_user
-        assert "hide_profile_in_users_directory" not in serialized_user
-        assert "notification_preferences" not in serialized_user
-        assert "segments_creation_event" not in serialized_user
-        assert "split_workout_charts" not in serialized_user
-        assert "messages_preferences" not in serialized_user
-        assert "display_ascent" not in serialized_user
-        assert "missing_elevations_data_source" not in serialized_user
-        assert "calories_visibility" not in serialized_user
-        assert "media_visibility" not in serialized_user
-        assert "workout_stats_from_file" not in serialized_user
-        assert "elevation_processing" not in serialized_user
+        self.assert_preferences_key_are_not_present(serialized_user)
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1: User, user_2: User

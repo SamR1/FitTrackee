@@ -278,6 +278,7 @@ class AbstractWorkoutsCreationService(BaseWorkoutService, WorkoutFileMixin):
             workout_service.generate_map_image(
                 map_filepath=absolute_map_filepath,
                 coordinates=workout_service.coordinates,
+                auth_user=self.auth_user,
             )
             new_workout.map_id = workout_service.get_map_hash(map_filepath)
         except Exception as e:

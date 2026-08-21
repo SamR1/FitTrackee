@@ -15,15 +15,9 @@ export default function useTileProviders() {
     computed(() => store.getters[TILE_PROVIDERS_STORE.GETTERS.TILE_PROVIDERS])
 
   const availableTileProviders: ComputedRef<ITileProvider[]> = computed(() =>
-    tileProviders.value.filter((provider) => provider.enabled)
-  )
-  const defaultTileProvider: ComputedRef<ITileProvider> = computed(
-    () =>
-      tileProviders.value.find((provider) => provider.default) as ITileProvider
-  )
-
-  const mapAttribution: ComputedRef<string> = computed(
-    () => defaultTileProvider.value?.attribution || ''
+    tileProviders.value
+      .filter((provider) => provider.enabled)
+      .sort((a, b) => a.name.localeCompare(b.name))
   )
 
   function updateTileProvider(
@@ -40,8 +34,6 @@ export default function useTileProviders() {
 
   return {
     availableTileProviders,
-    defaultTileProvider,
-    mapAttribution,
     tileProviders,
     updateTileProvider,
   }

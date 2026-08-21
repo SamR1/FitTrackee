@@ -213,6 +213,7 @@
   } from '@/types/geojson.ts'
   import type { IHeatmapCells, ILeafletObject } from '@/types/map'
   import type { ITranslatedSport } from '@/types/sports.ts'
+  import type { ITileProvider } from '@/types/tileProviders.ts'
   import type {
     TMapParamsKeys,
     TWorkoutsHeatmapPayload,
@@ -242,7 +243,7 @@
 
   const { appConfig } = useApp()
   const { authUser } = useAuthUser()
-  const { availableTileProviders, defaultTileProvider } = useTileProviders()
+  const { availableTileProviders } = useTileProviders()
 
   // on some browsers or low-resource devices, displaying a large number of
   // features may cause slowness or errors.
@@ -287,6 +288,12 @@
   )
   const heatmapCollection: ComputedRef<IHeatmapCells> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_HEATMAP]
+  )
+  const defaultTileProvider: ComputedRef<ITileProvider> = computed(
+    () =>
+      availableTileProviders.value.find(
+        (provider) => provider.default_for_user
+      ) as ITileProvider
   )
 
   const heatmapLegend: ComputedRef<{ color: string; label: string }[]> =

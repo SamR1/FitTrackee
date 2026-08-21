@@ -1,6 +1,7 @@
 export interface ITileProvider {
   attribution: string
   default: boolean
+  default_for_user: boolean
   name: string
   id: string
   enabled: boolean

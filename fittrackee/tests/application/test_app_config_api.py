@@ -733,6 +733,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                 {
                     "id": "osm",
                     "default": True,
+                    "default_for_user": True,
                     "enabled": True,
                     "name": expected_tile_provider.name,
                     "attribution": expected_tile_provider.attribution,
@@ -763,14 +764,16 @@ class TestGetTileProviders(ApiTestCaseMixin):
         assert data["data"] == {
             "tile_providers": [
                 {
+                    "default": False,
+                    "default_for_user": True,
                     "id": "osm",
                     "enabled": True,
-                    "default": False,
                     "name": tile_providers["osm"].name,
                     "attribution": tile_providers["osm"].attribution,
                 },
                 {
                     "default": False,
+                    "default_for_user": False,
                     "enabled": True,
                     "id": "osm_fr",
                     "name": tile_providers["osm_fr"].name,
@@ -778,6 +781,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                 },
                 {
                     "default": True,
+                    "default_for_user": False,
                     "enabled": True,
                     "id": "cyclosm",
                     "name": tile_providers["cyclosm"].name,
@@ -807,6 +811,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                 {
                     "api_key_is_missing": False,
                     "default": False,
+                    "default_for_user": False,
                     "enabled": False,
                     "id": "osm",
                     "attribution": tile_providers["osm"].attribution,
@@ -815,6 +820,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                 {
                     "api_key_is_missing": False,
                     "default": True,
+                    "default_for_user": True,
                     "enabled": True,
                     "id": "osm_de",
                     "attribution": tile_providers["osm_de"].attribution,
@@ -823,6 +829,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                 {
                     "api_key_is_missing": False,
                     "default": False,
+                    "default_for_user": False,
                     "enabled": False,
                     "id": "osm_fr",
                     "attribution": tile_providers["osm_fr"].attribution,
@@ -831,6 +838,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                 {
                     "api_key_is_missing": False,
                     "default": False,
+                    "default_for_user": False,
                     "enabled": False,
                     "id": "cyclosm",
                     "attribution": tile_providers["cyclosm"].attribution,
@@ -839,6 +847,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                 {
                     "api_key_is_missing": True,
                     "default": False,
+                    "default_for_user": False,
                     "enabled": False,
                     "id": "stadiamaps_alidade_smooth",
                     "attribution": tile_providers[
@@ -849,6 +858,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                 {
                     "api_key_is_missing": True,
                     "default": False,
+                    "default_for_user": False,
                     "enabled": False,
                     "id": "stadiamaps_outdoors",
                     "attribution": tile_providers[
@@ -859,6 +869,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                 {
                     "api_key_is_missing": True,
                     "default": False,
+                    "default_for_user": False,
                     "enabled": False,
                     "id": "thunderforest_landscape",
                     "attribution": tile_providers[
@@ -869,6 +880,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                 {
                     "api_key_is_missing": True,
                     "default": False,
+                    "default_for_user": False,
                     "enabled": False,
                     "id": "thunderforest_outdoors",
                     "attribution": tile_providers[

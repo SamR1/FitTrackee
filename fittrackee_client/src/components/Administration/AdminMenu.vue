@@ -78,7 +78,7 @@
               </dd>
               <dt>
                 <router-link to="/admin/tile-providers">
-                  {{ $t('admin.TILE_PROVIDERS.LABEL', 0) }}
+                  {{ $t('common.TILE_PROVIDERS', 0) }}
                 </router-link>
               </dt>
               <dd>

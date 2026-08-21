@@ -411,6 +411,9 @@ class User(BaseModel):
         server_default="NONE",
         nullable=False,
     )
+    default_tile_provider: Mapped[Optional[str]] = mapped_column(
+        db.String(25), nullable=False, server_default="osm"
+    )
 
     workouts: Mapped[List["Workout"]] = relationship(
         "Workout", lazy=True, back_populates="user"
@@ -1023,6 +1026,7 @@ class User(BaseModel):
                 "media_visibility": self.media_visibility.value,
                 "workout_stats_from_file": self.workout_stats_from_file,
                 "elevation_processing": self.elevation_processing,
+                "default_tile_provider": self.default_tile_provider,
             }
 
         return serialized_user

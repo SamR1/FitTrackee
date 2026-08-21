@@ -11,7 +11,7 @@
             <thead>
               <tr>
                 <th class="text-left">
-                  {{ $t('admin.TILE_PROVIDERS.LABEL') }}
+                  {{ $t('common.TILE_PROVIDERS', 0) }}
                 </th>
                 <th>{{ $t('admin.TILE_PROVIDERS.ENABLED') }}</th>
                 <th>{{ $t('admin.TILE_PROVIDERS.DEFAULT') }}</th>

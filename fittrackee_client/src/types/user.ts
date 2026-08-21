@@ -59,6 +59,7 @@ export interface IAuthUserProfile extends IUserProfile {
   accepted_privacy_policy: boolean | null
   calories_visibility: TVisibilityLevels
   date_format: string
+  default_tile_provider: string
   display_ascent: boolean
   elevation_processing: TElevationProcessing
   email: string
@@ -129,6 +130,7 @@ export interface IUserPreferencesPayload {
   analysis_visibility: TVisibilityLevels
   calories_visibility: TVisibilityLevels
   date_format: string
+  default_tile_provider: string
   display_ascent: boolean
   elevation_processing: TElevationProcessing
   hide_profile_in_users_directory: boolean

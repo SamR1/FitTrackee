@@ -94,6 +94,9 @@ class TestCliUserCreate(RandomMixin):
         assert user.email == email
         assert bcrypt.check_password_hash(user.password, password)
         assert user.role == UserRole.USER.value
+        assert (
+            user.default_tile_provider == app.config["default_tile_provider"]
+        )
 
     def test_it_displays_password_when_password_is_not_provided(
         self,

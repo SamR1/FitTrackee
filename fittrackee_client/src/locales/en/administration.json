@@ -137,7 +137,6 @@
     "DEFAULT": "Default",
     "DESCRIPTION": "Enable/disable tile providers.",
     "ENABLED": "Enabled",
-    "LABEL": "Tile provider | Tile providers",
     "NO_API_KEY_SET": "No API key set",
     "TITLE": "Tile providers administration"
   },

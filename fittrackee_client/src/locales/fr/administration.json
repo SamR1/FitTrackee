@@ -137,7 +137,6 @@
     "DEFAULT": "Défaut",
     "DESCRIPTION": "Activer/désactiver les serveurs de tuiles.",
     "ENABLED": "Activé",
-    "LABEL": "Serveur de tuiles | Serveurs de tuiles",
     "NO_API_KEY_SET": "Aucune clé API définie",
     "TITLE": "Administration - Serveurs de tuiles"
   },

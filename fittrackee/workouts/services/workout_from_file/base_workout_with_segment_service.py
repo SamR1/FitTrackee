@@ -267,7 +267,9 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         return md5.hexdigest()
 
     @classmethod
-    def generate_map_image(cls, map_filepath: str, coordinates: List) -> None:
+    def generate_map_image(
+        cls, map_filepath: str, coordinates: List, auth_user: "User"
+    ) -> None:
         m = StaticMap(
             width=400,
             height=225,
@@ -276,12 +278,26 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
             delay_between_retries=5,
         )
         if not current_app.config["DEFAULT_STATICMAP"]:
-            default_tile_provider = current_app.config.get(
-                "default_tile_provider", DEFAULT_TILE_PROVIDER
-            )
-            tile_provider = current_app.config["TILE_PROVIDERS"][
+            default_tile_provider = auth_user.default_tile_provider
+
+            # in case of:
+            # - no tile providers available (should not happen) or
+            # - provider set in user preference have been disabled,
+            # get default provider set for application
+            if not current_app.config.get("available_tile_providers") or (
                 default_tile_provider
-            ]
+                not in current_app.config.get("available_tile_providers", {})
+            ):
+                default_tile_provider = current_app.config.get(
+                    "default_tile_provider", DEFAULT_TILE_PROVIDER
+                )
+                tile_provider = current_app.config["TILE_PROVIDERS"][
+                    default_tile_provider
+                ]
+            else:
+                tile_provider = current_app.config["available_tile_providers"][
+                    default_tile_provider
+                ]
             m.url_template = tile_provider.url_with_subdomain
 
         line = Line(coords=coordinates, color="#3388FF", width=4)
