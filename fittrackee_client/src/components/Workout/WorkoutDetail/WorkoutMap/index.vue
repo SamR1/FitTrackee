@@ -111,7 +111,7 @@
             </LLayerGroup>
             <LLayerGroup
               v-if="workoutMedia.length > 0"
-              :name="$t('common.PHOTOS')"
+              :name="capitalize($t('common.PHOTOS'))"
               layer-type="overlay"
             >
               <LMarkerClusterGroup :chunk-interval="1" :chunked-loading="false">
@@ -149,7 +149,7 @@
   import type { GeoJSON } from 'geojson'
   import HeatmapOverlay from 'heatmap.js/plugins/leaflet-heatmap/leaflet-heatmap.js'
   import { type PointExpression, type LatLngBoundsLiteral } from 'leaflet'
-  import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
+  import { capitalize, computed, onUnmounted, ref, toRefs, watch } from 'vue'
   import type { Ref, ComputedRef } from 'vue'
   import 'leaflet/dist/leaflet.css'
   import { LMarkerClusterGroup } from 'vue-leaflet-markercluster'
