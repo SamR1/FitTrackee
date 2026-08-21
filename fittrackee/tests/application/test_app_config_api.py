@@ -10,6 +10,7 @@ from time_machine import travel
 from fittrackee import db
 from fittrackee.application.app_config import MAX_GLOBAL_MAP_WORKOUTS
 from fittrackee.application.models import AppConfig
+from fittrackee.constants import DEFAULT_TILE_PROVIDER
 from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Sport
@@ -697,6 +698,521 @@ class TestUpdateConfig(ApiTestCaseMixin):
                 f"than {MAX_GLOBAL_MAP_WORKOUTS}"
             ),
         )
+
+    def test_expected_scope_is_application_write(
+        self, app: Flask, user_1_admin: User
+    ) -> None:
+        self.assert_response_scope(
+            app=app,
+            user=user_1_admin,
+            client_method="patch",
+            endpoint="/api/config",
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="application:write",
+        )
+
+
+class TestGetTileProviders(ApiTestCaseMixin):
+    route = "/api/tile-providers"
+
+    def test_it_returns_available_tile_providers_when_user_is_not_authenticated(  # noqa
+        self, app: "Flask"
+    ) -> None:
+        client = app.test_client()
+        expected_tile_provider = app.config["TILE_PROVIDERS"][
+            DEFAULT_TILE_PROVIDER
+        ]
+
+        response = client.get(self.route)
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "tile_providers": [
+                {
+                    "id": "osm",
+                    "default": True,
+                    "enabled": True,
+                    "name": expected_tile_provider.name,
+                    "attribution": expected_tile_provider.attribution,
+                },
+            ]
+        }
+
+    def test_it_returns_available_tile_providers_when_user_has_no_admin_rights(
+        self,
+        app_with_multiple_tile_servers_enabled: "Flask",
+        user_1_moderator: "User",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_multiple_tile_servers_enabled, user_1_moderator.email
+        )
+        tile_providers = app_with_multiple_tile_servers_enabled.config[
+            "TILE_PROVIDERS"
+        ]
+
+        response = client.get(
+            self.route,
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "tile_providers": [
+                {
+                    "id": "osm",
+                    "enabled": True,
+                    "default": False,
+                    "name": tile_providers["osm"].name,
+                    "attribution": tile_providers["osm"].attribution,
+                },
+                {
+                    "default": False,
+                    "enabled": True,
+                    "id": "osm_fr",
+                    "name": tile_providers["osm_fr"].name,
+                    "attribution": tile_providers["osm_fr"].attribution,
+                },
+                {
+                    "default": True,
+                    "enabled": True,
+                    "id": "cyclosm",
+                    "name": tile_providers["cyclosm"].name,
+                    "attribution": tile_providers["cyclosm"].attribution,
+                },
+            ]
+        }
+
+    def test_it_returns_available_tile_providers_when_user_has_admin_rights(
+        self, app_default_static_map: "Flask", user_1_admin: "User"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_default_static_map, user_1_admin.email
+        )
+        tile_providers = app_default_static_map.config["TILE_PROVIDERS"]
+
+        response = client.get(
+            self.route,
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert "success" in data["status"]
+        assert data["data"] == {
+            "tile_providers": [
+                {
+                    "api_key_is_missing": False,
+                    "default": False,
+                    "enabled": False,
+                    "id": "osm",
+                    "attribution": tile_providers["osm"].attribution,
+                    "name": tile_providers["osm"].name,
+                },
+                {
+                    "api_key_is_missing": False,
+                    "default": True,
+                    "enabled": True,
+                    "id": "osm_de",
+                    "attribution": tile_providers["osm_de"].attribution,
+                    "name": tile_providers["osm_de"].name,
+                },
+                {
+                    "api_key_is_missing": False,
+                    "default": False,
+                    "enabled": False,
+                    "id": "osm_fr",
+                    "attribution": tile_providers["osm_fr"].attribution,
+                    "name": tile_providers["osm_fr"].name,
+                },
+                {
+                    "api_key_is_missing": False,
+                    "default": False,
+                    "enabled": False,
+                    "id": "cyclosm",
+                    "attribution": tile_providers["cyclosm"].attribution,
+                    "name": tile_providers["cyclosm"].name,
+                },
+                {
+                    "api_key_is_missing": True,
+                    "default": False,
+                    "enabled": False,
+                    "id": "stadiamaps_alidade_smooth",
+                    "attribution": tile_providers[
+                        "stadiamaps_alidade_smooth"
+                    ].attribution,
+                    "name": tile_providers["stadiamaps_alidade_smooth"].name,
+                },
+                {
+                    "api_key_is_missing": True,
+                    "default": False,
+                    "enabled": False,
+                    "id": "stadiamaps_outdoors",
+                    "attribution": tile_providers[
+                        "stadiamaps_outdoors"
+                    ].attribution,
+                    "name": tile_providers["stadiamaps_outdoors"].name,
+                },
+                {
+                    "api_key_is_missing": True,
+                    "default": False,
+                    "enabled": False,
+                    "id": "thunderforest_landscape",
+                    "attribution": tile_providers[
+                        "thunderforest_landscape"
+                    ].attribution,
+                    "name": tile_providers["thunderforest_landscape"].name,
+                },
+                {
+                    "api_key_is_missing": True,
+                    "default": False,
+                    "enabled": False,
+                    "id": "thunderforest_outdoors",
+                    "attribution": tile_providers[
+                        "thunderforest_outdoors"
+                    ].attribution,
+                    "name": tile_providers["thunderforest_outdoors"].name,
+                },
+            ]
+        }
+
+    def test_expected_scope_is_application_read(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=self.route,
+            invalid_scope="application:write",
+            expected_endpoint_scope="application:read",
+        )
+
+
+class TestUpdateTileProvider(ApiTestCaseMixin):
+    route = "/api/tile-providers/{tile_provider}"
+
+    @staticmethod
+    def assert_default_provider_is_osm() -> None:
+        config = AppConfig.query.one()
+        assert config.tile_providers == [DEFAULT_TILE_PROVIDER]
+        assert config.default_tile_provider == DEFAULT_TILE_PROVIDER
+
+    def test_it_returns_401_when_user_is_not_authenticated(
+        self, app: "Flask"
+    ) -> None:
+        client = app.test_client()
+
+        response = client.patch(
+            self.route.format(tile_provider="osm"),
+            json={},
+        )
+
+        self.assert_401(response)
+
+    def test_it_returns_403_when_user_has_no_admin_rights(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            self.route.format(tile_provider="osm"),
+            content_type="application/json",
+            json={},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_403(response)
+
+    def test_it_returns_404_when_tile_provider_is_invalid(
+        self, app: "Flask", user_1_admin: "User"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(tile_provider="invalid"),
+            content_type="application/json",
+            json={},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_404_with_message(
+            response, "tile provider 'invalid' does not exist"
+        )
+
+    def test_it_returns_400_when_payload_is_empty(
+        self, app: "Flask", user_1_admin: "User"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+
+        response = client.patch(
+            self.route.format(tile_provider="osm"),
+            content_type="application/json",
+            json={},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response)
+
+    def test_it_returns_400_when_payload_is_invalid(
+        self, app: "Flask", user_1_admin: "User"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        provider_key = "osm"
+
+        response = client.patch(
+            self.route.format(tile_provider=provider_key),
+            content_type="application/json",
+            json={"default": True, "enabled": False},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message=(
+                "default tile provider cannot be disabled, please set another "
+                "provider as default first"
+            ),
+        )
+        self.assert_default_provider_is_osm()
+
+    def test_it_enables_tile_provider(
+        self, app: "Flask", user_1_admin: "User"
+    ) -> None:
+        """
+        'osm' is the default provider
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        provider_key = "osm_fr"
+
+        response = client.patch(
+            self.route.format(tile_provider=provider_key),
+            content_type="application/json",
+            json={"default": False, "enabled": True},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_response_is_success(response)
+        config = AppConfig.query.one()
+        assert set(config.tile_providers) == {"osm", "osm_fr"}
+        assert config.default_tile_provider == "osm"
+
+    def test_it_enables_and_set_tile_provider_as_default(
+        self, app: "Flask", user_1_admin: "User"
+    ) -> None:
+        """
+        'osm' is the default provider
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        provider_key = "osm_fr"
+
+        response = client.patch(
+            self.route.format(tile_provider=provider_key),
+            content_type="application/json",
+            json={"default": True, "enabled": True},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_response_is_success(response)
+        config = AppConfig.query.one()
+        assert set(config.tile_providers) == {"osm", "osm_fr"}
+        assert config.default_tile_provider == "osm_fr"
+
+    def test_it_disabled_tile_provider(
+        self,
+        app_with_multiple_tile_servers_enabled: "Flask",
+        user_1_admin: "User",
+    ) -> None:
+        """
+        set tile providers: 'osm', 'osm_fr' and 'cyclosm'
+        'cyclosm' is the default provider
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_multiple_tile_servers_enabled, user_1_admin.email
+        )
+        provider_key = "osm"
+
+        response = client.patch(
+            self.route.format(tile_provider=provider_key),
+            content_type="application/json",
+            json={"default": False, "enabled": False},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_response_is_success(response)
+        config = AppConfig.query.one()
+        assert set(config.tile_providers) == {"osm_fr", "cyclosm"}
+        assert config.default_tile_provider == "cyclosm"
+
+    def test_it_disabled_default_tile_provider_set_as_default(
+        self,
+        app_with_multiple_tile_servers_enabled: "Flask",
+        user_1_admin: "User",
+    ) -> None:
+        """
+        set tile providers: 'osm', 'osm_fr' and 'cyclosm'
+        'cyclosm' is the default provider
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_multiple_tile_servers_enabled, user_1_admin.email
+        )
+        provider_key = "cyclosm"
+
+        response = client.patch(
+            self.route.format(tile_provider=provider_key),
+            content_type="application/json",
+            json={"default": False, "enabled": False},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_response_is_success(response)
+        config = AppConfig.query.one()
+        assert set(config.tile_providers) == {"osm", "osm_fr"}
+        assert config.default_tile_provider == "osm"
+
+    def test_it_disabled_default_tile_provider(
+        self,
+        app: "Flask",
+        user_1_admin: "User",
+    ) -> None:
+        app_config = AppConfig.query.one()
+        app_config.tile_providers = ["osm", "osm_fr"]
+        db.session.commit()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        provider_key = "osm_fr"
+
+        response = client.patch(
+            self.route.format(tile_provider=provider_key),
+            content_type="application/json",
+            json={"default": False, "enabled": False},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_response_is_success(response)
+        config = AppConfig.query.one()
+        assert set(config.tile_providers) == {"osm"}
+        assert config.default_tile_provider == "osm"
+
+    def test_it_set_default_as_false(
+        self,
+        app_with_multiple_tile_servers_enabled: "Flask",
+        user_1_admin: "User",
+    ) -> None:
+        """
+        set tile providers: 'osm', 'osm_fr' and 'cyclosm'
+        'cyclosm' is the default provider
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_multiple_tile_servers_enabled, user_1_admin.email
+        )
+        provider_key = "cyclosm"
+
+        response = client.patch(
+            self.route.format(tile_provider=provider_key),
+            content_type="application/json",
+            json={"default": False, "enabled": True},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_response_is_success(response)
+        config = AppConfig.query.one()
+        assert set(config.tile_providers) == {"osm", "osm_fr", provider_key}
+        assert config.default_tile_provider == "osm"
+
+    def test_it_can_not_set_osm_default_as_false_when_it_is_the_only_tile_provider(  # noqa
+        self,
+        app: "Flask",
+        user_1_admin: "User",
+    ) -> None:
+        """
+        'osm' is the only only one provider
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        provider_key = "osm"
+
+        response = client.patch(
+            self.route.format(tile_provider=provider_key),
+            content_type="application/json",
+            json={"default": False, "enabled": True},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message=(
+                "tile provided 'osm' can not be disabled when it is "
+                "the only tile provider"
+            ),
+        )
+        self.assert_default_provider_is_osm()
+
+    def test_it_disables_custom_tile_provider_when_it_is_the_only_provided_set(
+        self,
+        app_with_custom_tile_server: "Flask",
+        user_1_admin: "User",
+    ) -> None:
+        """
+        custom tile server set before FitTrackee 1.4.0
+        """
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_custom_tile_server, user_1_admin.email
+        )
+        provider_key = "custom"
+
+        response = client.patch(
+            self.route.format(tile_provider=provider_key),
+            content_type="application/json",
+            json={"default": False, "enabled": False},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_response_is_success(response)
+        self.assert_default_provider_is_osm()
+
+    def test_it_returns_400_when_api_key_is_missing(
+        self,
+        app: "Flask",
+        user_1_admin: "User",
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1_admin.email
+        )
+        provider_key = "thunderforest_outdoors"
+
+        response = client.patch(
+            self.route.format(tile_provider=provider_key),
+            content_type="application/json",
+            json={"default": False, "enabled": True},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message=(
+                "no api key is not set for this tile provider, please update "
+                "application config first"
+            ),
+        )
+        self.assert_default_provider_is_osm()
 
     def test_expected_scope_is_application_write(
         self, app: Flask, user_1_admin: User

@@ -627,3 +627,14 @@ button {
 .capitalize::first-letter {
   text-transform: capitalize;
 }
+
+.admin-help {
+  display: flex;
+
+  span {
+    font-style: italic;
+  }
+  .fa-info-circle {
+    margin-right: $default-margin;
+  }
+}

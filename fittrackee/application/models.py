@@ -55,7 +55,10 @@ class AppConfig(BaseModel):
     )
     tile_providers: Mapped[list[str]] = mapped_column(
         ARRAY(db.String),
-        server_default=cast(postgresql.array([]), ARRAY(db.String)),
+        server_default=cast(postgresql.array(["osm"]), ARRAY(db.String)),
+    )
+    default_tile_provider: Mapped[Optional[str]] = mapped_column(
+        db.String(25), nullable=False, server_default="osm"
     )
 
     @property
@@ -78,11 +81,6 @@ class AppConfig(BaseModel):
             }
 
         return available_tile_providers
-
-    @property
-    def map_attribution(self) -> str:
-        key = "custom" if "custom" in self.available_tile_providers else "osm"
-        return self.available_tile_providers[key].attribution
 
     @property
     def elevation_services(self) -> Dict:
@@ -109,7 +107,6 @@ class AppConfig(BaseModel):
             "max_single_file_size": self.max_single_file_size,
             "max_zip_file_size": self.max_zip_file_size,
             "max_users": self.max_users,
-            "map_attribution": self.map_attribution,
             "privacy_policy": self.privacy_policy,
             "privacy_policy_date": (
                 self.privacy_policy_date

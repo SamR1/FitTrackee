@@ -10,6 +10,7 @@ import AdminQueuedTasksList from '@/components/Administration/AdminQueuedTasksLi
 import AdminReport from '@/components/Administration/AdminReport.vue'
 import AdminReports from '@/components/Administration/AdminReports.vue'
 import AdminSports from '@/components/Administration/AdminSports.vue'
+import AdminTileProviders from '@/components/Administration/AdminTileProviders.vue'
 import AdminUsers from '@/components/Administration/AdminUsers.vue'
 import Profile from '@/components/User/ProfileDisplay/index.vue'
 import UserAccount from '@/components/User/ProfileDisplay/UserAccount.vue'
@@ -835,6 +836,15 @@ const routes: RouteRecordRaw[] = [
         component: AdminQueuedTasksList,
         meta: {
           title: 'admin.USERS_QUEUED_TASKS.LABEL',
+          minimumRole: 'admin',
+        },
+      },
+      {
+        path: 'tile-providers',
+        name: 'UsersTileProviders',
+        component: AdminTileProviders,
+        meta: {
+          title: 'admin.TILE_PROVIDERS.TITLE',
           minimumRole: 'admin',
         },
       },

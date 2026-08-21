@@ -52,6 +52,7 @@ from .utils import (
 
 if TYPE_CHECKING:
     from geoalchemy2.elements import WKBElement
+    from requests.structures import CaseInsensitiveDict
 
     from fittrackee.equipments.models import Equipment
     from fittrackee.users.models import UserSportPreference
@@ -272,6 +273,12 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         return assert_errored_response(
             response, 500, error_message=error_message, status=status
         )
+
+    @staticmethod
+    def assert_response_is_success(response: "TestResponse") -> None:
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["status"] == "success"
 
     @staticmethod
     def assert_unsupported_grant_type(response: TestResponse) -> Dict:
@@ -706,11 +713,20 @@ class GeometryMixin:
 
 class ResponseMockMixin:
     @staticmethod
-    def get_response(response: Union[List, Dict]) -> "Mock":
+    def get_response(
+        json_response: Union[List, Dict, None],
+        *,
+        content: Optional[bytes] = None,
+        status_code: int = 200,
+        headers: Optional[Union[Dict, "CaseInsensitiveDict"]] = None,
+    ) -> "Mock":
         response_mock = Mock()
+        response_mock.status_code = status_code
+        response_mock.content = content or b""
+        response_mock.headers = headers or {}
         response_mock.raise_for_status = Mock()
         response_mock.json = Mock()
-        response_mock.json.return_value = response
+        response_mock.json.return_value = json_response or {}
         return response_mock
 
 

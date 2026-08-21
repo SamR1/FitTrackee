@@ -62,17 +62,17 @@ def get_heatmap_base_zoom() -> int:
 
 
 def get_tiles_providers() -> Dict[str, TileProviderBase]:
-    tile_providers = {
+    tile_providers: Dict[str, TileProviderBase] = {
         "osm": OSMTileProvider(
-            name="OSM",
+            name="OpenStreetMap",
             url_template="https://tile.openstreetmap.org/{z}/{x}/{y}.png",
         ),
         "osm_de": OSMTileProvider(
-            name="OSM (de)",
+            name="OpenStreetMap (de)",
             url_template="https://tile.openstreetmap.de/{z}/{x}/{y}.png",
         ),
         "osm_fr": OSMTileProvider(
-            name="OSM (fr)",
+            name="OpenStreetMap (fr)",
             url_template="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
         ),
         "cyclosm": OSMTileProvider(
@@ -94,11 +94,11 @@ def get_tiles_providers() -> Dict[str, TileProviderBase]:
         "stadiamaps_outdoors": StadiaTileProvider(
             name="Stadia Outdoors", style="outdoors"
         ),
-        "thunderforest_outdoor": ThunderForestTileProvider(
-            name="Thunderforest Outdoors", style="outdoors"
-        ),
         "thunderforest_landscape": ThunderForestTileProvider(
             name="Thunderforest Landscape", style="landscape"
+        ),
+        "thunderforest_outdoors": ThunderForestTileProvider(
+            name="Thunderforest Outdoors", style="outdoors"
         ),
     }
     custom_provider = get_tile_provider_from_env_var()

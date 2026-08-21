@@ -11,6 +11,7 @@ import {
   ROOT_STORE,
   SPORTS_STORE,
   STATS_STORE,
+  TILE_PROVIDERS_STORE,
   USERS_STORE,
   WORKOUTS_STORE,
 } from '@/store/constants'
@@ -486,6 +487,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       .then((res) => {
         if (res.data.status === 'success') {
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+          context.dispatch(TILE_PROVIDERS_STORE.ACTIONS.GET_TILE_PROVIDERS)
           if (fromSport) {
             router.push(`/profile/sports/${data.sport_id}`)
           }

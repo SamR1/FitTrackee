@@ -66,10 +66,15 @@
               />
             </LControl>
             <LTileLayer
-              :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
-              :attribution="appConfig.map_attribution"
+              v-for="provider in availableTileProviders"
+              :key="provider.id"
+              :name="provider.name"
+              :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png?tile_provider=${provider.id}`"
+              :visible="provider.id === defaultTileProvider.id"
+              :attribution="provider.attribution"
               :bounds="bounds"
               :maxZoom="19"
+              layer-type="base"
             />
             <LGeoJson
               :geojson="geoJson"
@@ -152,7 +157,7 @@
   import CustomMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomMarker.vue'
   import CustomPhotosMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomPhotosMarker.vue'
   import PhotoPopup from '@/components/Workout/WorkoutDetail/WorkoutMap/PhotoPopup.vue'
-  import useApp from '@/composables/useApp'
+  import useTileProviders from '@/composables/useTileProviders.ts'
   import { WORKOUTS_STORE } from '@/store/constants.ts'
   import type { IHeatmapData, IHeatmapOverlay } from '@/types/heatmap.ts'
   import type {
@@ -178,7 +183,7 @@
   const { geoJsonOptions, workoutData, markerCoordinates, withHeatmap } =
     toRefs(props)
 
-  const { appConfig } = useApp()
+  const { availableTileProviders, defaultTileProvider } = useTileProviders()
 
   const store = useStore()
 

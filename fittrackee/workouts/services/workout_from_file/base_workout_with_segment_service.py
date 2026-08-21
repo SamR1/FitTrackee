@@ -7,6 +7,7 @@ from staticmap3 import Line, StaticMap
 
 from fittrackee import VERSION, appLog, db
 from fittrackee.constants import (
+    DEFAULT_TILE_PROVIDER,
     ElevationDataSource,
     ElevationProcessing,
 )
@@ -275,17 +276,13 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
             delay_between_retries=5,
         )
         if not current_app.config["DEFAULT_STATICMAP"]:
-            try:
-                tile_provider = next(
-                    iter(
-                        current_app.config.get(
-                            "available_tile_providers", {}
-                        ).values()
-                    )
-                )
-            except StopIteration:
-                tile_provider = current_app.config["TILE_PROVIDERS"]["osm"]
-            m.url_template = tile_provider.url
+            default_tile_provider = current_app.config.get(
+                "default_tile_provider", DEFAULT_TILE_PROVIDER
+            )
+            tile_provider = current_app.config["TILE_PROVIDERS"][
+                default_tile_provider
+            ]
+            m.url_template = tile_provider.url_with_subdomain
 
         line = Line(coords=coordinates, color="#3388FF", width=4)
         m.add_line(line)

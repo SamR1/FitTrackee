@@ -1,7 +1,7 @@
 import os
 import random
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict
 
 
 # commons
@@ -12,19 +12,38 @@ class TileProviderBase:
     url_template: str
     subdomains: str = ""
     apikey: str = ""
+    apikey_value: str = ""
     style: str = ""
 
+    def __post_init__(self) -> None:
+        if self.apikey:
+            self.apikey_value = os.getenv(self.apikey, "")
+
     @property
-    def url(self) -> str:
+    def url_with_style(self) -> str:
         url = self.url_template
         if self.style:
             url = url.replace("{style}", self.style)
+        return url
+
+    @property
+    def url(self) -> str:
+        url = self.url_with_style
+        if self.apikey_value:
+            url = url.replace("{apikey}", self.apikey_value)
+        return url
+
+    @property
+    def url_with_subdomain(self) -> str:
+        url = self.url
         if self.subdomains:
             subdomains = self.subdomains.split(",")
             url = url.replace("{s}", random.choice(subdomains))  # noqa:S311
-        if self.apikey:
-            url = url.replace("{apikey}", self.apikey)
         return url
+
+    @property
+    def api_key_is_missing(self) -> bool:
+        return "{apikey}" in self.url_template and not self.apikey_value
 
 
 SUBDOMAINS = "a,b,c"
@@ -43,7 +62,7 @@ class OSMTileProvider(TileProviderBase):
 # Stadia Maps
 @dataclass(kw_only=True)
 class StadiaTileProvider(TileProviderBase):
-    apikey: str = os.getenv("STADIAMAPS_API_KEY", "")
+    apikey: str = "STADIAMAPS_API_KEY"
     attribution: str = (
         '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia '
         'Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">'
@@ -52,14 +71,14 @@ class StadiaTileProvider(TileProviderBase):
     )
     url_template: str = (
         "https://tiles.stadiamaps.com/tiles/{style}/{z}/{x}/{y}.png?"
-        "apikey={apikey}"
+        "api_key={apikey}"
     )
 
 
 # Thunderforest
 @dataclass(kw_only=True)
 class ThunderForestTileProvider(TileProviderBase):
-    apikey: str = os.getenv("THUNDERFOREST_API_KEY", "")
+    apikey: str = "THUNDERFOREST_API_KEY"
     attribution: str = (
         '&copy; <a href="http://www.thunderforest.com/">Thunderforest</a>,'
         ' &copy; <a href="http://www.openstreetmap.org/copyright">'
@@ -82,10 +101,3 @@ def get_tile_provider_from_env_var() -> Dict:
         "name": "Custom",
         "url_template": tile_server_url,
     }
-
-
-def get_custom_tile_provider() -> List[str]:
-    tile_server_url = os.environ.get("TILE_SERVER_URL", "")
-    if tile_server_url:
-        return ["custom"]
-    return []

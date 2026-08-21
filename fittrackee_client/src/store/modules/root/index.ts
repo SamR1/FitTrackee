@@ -12,6 +12,7 @@ import { state } from '@/store/modules/root/state'
 import type { IRootState } from '@/store/modules/root/types'
 import sportsModule from '@/store/modules/sports'
 import statsModule from '@/store/modules/statistics'
+import tileProvidersModule from '@/store/modules/tileProviders'
 import usersModule from '@/store/modules/users'
 import workoutsModule from '@/store/modules/workouts'
 
@@ -23,6 +24,7 @@ const modules: ModuleTree<IRootState> = {
   reportsModule,
   sportsModule,
   statsModule,
+  tileProvidersModule,
   usersModule,
   workoutsModule,
 }

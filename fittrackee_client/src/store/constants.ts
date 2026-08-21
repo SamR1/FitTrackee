@@ -39,6 +39,11 @@ import {
   StatisticsMutations,
 } from '@/store/modules/statistics/enums'
 import {
+  TileProvidersActions,
+  TileProvidersGetters,
+  TileProvidersMutations,
+} from '@/store/modules/tileProviders/enums'
+import {
   UsersActions,
   UsersGetters,
   UsersMutations,
@@ -107,4 +112,10 @@ export const EQUIPMENTS_STORE = {
   ACTIONS: EquipmentsActions,
   GETTERS: EquipmentsGetters,
   MUTATIONS: EquipmentsMutation,
+}
+
+export const TILE_PROVIDERS_STORE = {
+  ACTIONS: TileProvidersActions,
+  GETTERS: TileProvidersGetters,
+  MUTATIONS: TileProvidersMutations,
 }

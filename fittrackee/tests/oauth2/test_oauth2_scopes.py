@@ -20,6 +20,7 @@ class TestOAuth2Scopes(ApiTestCaseMixin):
     @pytest.mark.parametrize(
         "input_scope",
         [
+            "application:read",
             "equipments:read",
             "equipments:write",
             "follow:read",

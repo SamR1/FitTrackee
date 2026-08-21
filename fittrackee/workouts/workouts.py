@@ -21,6 +21,7 @@ from werkzeug.exceptions import NotFound, RequestEntityTooLarge
 from werkzeug.utils import secure_filename
 
 from fittrackee import abortable, appLog, db, limiter
+from fittrackee.constants import DEFAULT_TILE_PROVIDER
 from fittrackee.equipments.exceptions import (
     InvalidEquipmentException,
     InvalidEquipmentsException,
@@ -2341,7 +2342,9 @@ def get_map(map_id: int) -> Union[HttpResponse, Response]:
     "/workouts/map_tile/<s>/<z>/<x>/<y>.png", methods=["GET"]
 )
 @limiter.exempt
-def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
+def get_map_tile(
+    s: str, z: str, x: str, y: str
+) -> Union[Tuple[Response, int], "HttpResponse"]:
     """
     Get map tile from tile server.
 
@@ -2366,12 +2369,20 @@ def get_map_tile(s: str, z: str, x: str, y: str) -> Tuple[Response, int]:
     Status codes are status codes returned by tile server
 
     """
-    key = (
-        "custom"
-        if "custom" in current_app.config["tile_providers"]
-        else "default"
+    default_tile_provider = current_app.config.get(
+        "default_tile_provider", DEFAULT_TILE_PROVIDER
     )
-    url = current_app.config["tile_providers"][key].url.format(
+    params = request.args.copy()
+    tile_provider = params.get("tile_provider", default_tile_provider)
+
+    if tile_provider not in current_app.config["available_tile_providers"]:
+        return InvalidPayloadErrorResponse(
+            f"tile provider '{tile_provider}' is not available"
+        )
+
+    url = current_app.config["available_tile_providers"][
+        tile_provider
+    ].url.format(
         s=secure_filename(s),
         z=secure_filename(z),
         x=secure_filename(x),

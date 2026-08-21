@@ -201,6 +201,12 @@
             class="textarea-content"
           />
           <ErrorMessage :message="errorMessages" v-if="errorMessages" />
+          <div v-if="edition" class="admin-help application-restart-help">
+            <span class="info-box">
+              <i class="fa fa-info-circle" aria-hidden="true" />
+              {{ $t('admin.APPLICATION_MAY_BE_RESTARTED_AFTER_CHANGES') }}
+            </span>
+          </div>
           <div class="form-buttons" v-if="edition">
             <button class="confirm" type="submit">
               {{ $t('buttons.SUBMIT') }}
@@ -319,14 +325,8 @@
   @use '~@/scss/vars.scss' as *;
 
   #admin-app {
-    .admin-help {
-      display: flex;
-      span {
-        font-style: italic;
-      }
-      .fa-info-circle {
-        margin-right: $default-margin;
-      }
+    .application-restart-help {
+      margin-top: $default-margin;
     }
     .no-contact {
       font-style: italic;

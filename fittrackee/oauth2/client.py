@@ -9,6 +9,7 @@ from .exceptions import InvalidOAuth2Scopes
 from .models import OAuth2Client
 
 VALID_SCOPES = [
+    "application:read",
     "application:write",
     "equipments:read",
     "equipments:write",
