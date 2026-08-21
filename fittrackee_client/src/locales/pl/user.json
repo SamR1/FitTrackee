@@ -223,7 +223,7 @@
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Odfiltrowana",
       "HELP": "Przy filtrowaniu wartości odstające (które mogą sugerować błąd GPS) nie są brane pod uwagę przy wyliczaniu maksymalnej prędkości.",
-      "LABEL": "Ustalanie prędkości maksymalnej przy GPX",
+      "LABEL": "Strategia obliczania maksymalnej prędkości",
       "RAW_SPEED": "Oryginalna"
     },
     "WORKOUT_CHARTS_DISPLAY": {
