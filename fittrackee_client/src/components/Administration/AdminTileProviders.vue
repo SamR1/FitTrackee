@@ -86,10 +86,19 @@
                         (tileProvider as ITileProviderForAdmin)
                           .api_key_is_missing
                       "
-                      class="api-key-missing"
+                      class="provider-warning"
                     >
                       <i class="fa fa-warning" aria-hidden="true" />
                       {{ $t('admin.TILE_PROVIDERS.NO_API_KEY_SET') }}
+                    </span>
+                    <span
+                      v-if="
+                        (tileProvider as ITileProviderForAdmin).set_by_users
+                      "
+                      class="provider-warning"
+                    >
+                      <i class="fa fa-warning" aria-hidden="true" />
+                      {{ $t('admin.TILE_PROVIDERS.SET_BY_USERS') }}
                     </span>
                   </div>
                 </td>
@@ -148,7 +157,7 @@
       .tile-provider-attribute {
         text-align: center;
       }
-      .api-key-missing {
+      .provider-warning {
         font-size: 0.95em;
         font-style: italic;
         padding: 0 $default-padding;

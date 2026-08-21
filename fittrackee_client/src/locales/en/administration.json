@@ -138,6 +138,7 @@
     "DESCRIPTION": "Enable/disable tile providers.",
     "ENABLED": "Enabled",
     "NO_API_KEY_SET": "No API key set",
+    "SET_BY_USERS": "Set as default by at least one user",
     "TITLE": "Tile providers administration"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration.",

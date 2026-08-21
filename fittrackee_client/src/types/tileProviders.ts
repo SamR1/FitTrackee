@@ -9,6 +9,7 @@ export interface ITileProvider {
 
 export interface ITileProviderForAdmin extends ITileProvider {
   api_key_is_missing: boolean
+  set_by_users: boolean
 }
 
 export interface ITileProviderPayload {

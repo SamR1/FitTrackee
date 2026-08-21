@@ -3,6 +3,7 @@ from typing import Dict, Optional, Union
 
 from flask import Blueprint, current_app, request
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
+from sqlalchemy.sql import text as sql_text
 
 from fittrackee import db
 from fittrackee.constants import DEFAULT_TILE_PROVIDER
@@ -434,6 +435,17 @@ def get_application_tile_providers(
             if has_admin_rights
             else config.available_tile_providers
         )
+
+        sql = """
+            SELECT DISTINCT default_tile_provider
+            FROM users
+            GROUP BY default_tile_provider
+            HAVING COUNT(DISTINCT default_tile_provider) > 0
+        """
+        tile_providers_set_by_users = [
+            row[0] for row in db.session.execute(sql_text(sql)).all()
+        ]
+
         return {
             "status": "success",
             "data": {
@@ -465,6 +477,10 @@ def get_application_tile_providers(
                                     tile_provider in config.tile_providers
                                     if config.tile_providers
                                     else tile_provider == DEFAULT_TILE_PROVIDER
+                                ),
+                                "set_by_users": (
+                                    tile_provider
+                                    in tile_providers_set_by_users
                                 ),
                             }
                             if has_admin_rights

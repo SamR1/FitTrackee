@@ -816,6 +816,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                     "id": "osm",
                     "attribution": tile_providers["osm"].attribution,
                     "name": tile_providers["osm"].name,
+                    "set_by_users": True,
                 },
                 {
                     "api_key_is_missing": False,
@@ -825,6 +826,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                     "id": "osm_de",
                     "attribution": tile_providers["osm_de"].attribution,
                     "name": tile_providers["osm_de"].name,
+                    "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": False,
@@ -834,6 +836,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                     "id": "osm_fr",
                     "attribution": tile_providers["osm_fr"].attribution,
                     "name": tile_providers["osm_fr"].name,
+                    "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": False,
@@ -843,6 +846,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                     "id": "cyclosm",
                     "attribution": tile_providers["cyclosm"].attribution,
                     "name": tile_providers["cyclosm"].name,
+                    "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": True,
@@ -854,6 +858,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                         "stadiamaps_alidade_smooth"
                     ].attribution,
                     "name": tile_providers["stadiamaps_alidade_smooth"].name,
+                    "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": True,
@@ -865,6 +870,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                         "stadiamaps_outdoors"
                     ].attribution,
                     "name": tile_providers["stadiamaps_outdoors"].name,
+                    "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": True,
@@ -876,6 +882,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                         "thunderforest_landscape"
                     ].attribution,
                     "name": tile_providers["thunderforest_landscape"].name,
+                    "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": True,
@@ -887,6 +894,7 @@ class TestGetTileProviders(ApiTestCaseMixin):
                         "thunderforest_outdoors"
                     ].attribution,
                     "name": tile_providers["thunderforest_outdoors"].name,
+                    "set_by_users": False,
                 },
             ]
         }

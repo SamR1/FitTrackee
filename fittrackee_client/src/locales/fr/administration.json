@@ -138,6 +138,7 @@
     "DESCRIPTION": "Activer/désactiver les serveurs de tuiles.",
     "ENABLED": "Activé",
     "NO_API_KEY_SET": "Aucune clé API définie",
+    "SET_BY_USERS": "Définie par défaut par au moins un utilisateur",
     "TITLE": "Administration - Serveurs de tuiles"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application.",
