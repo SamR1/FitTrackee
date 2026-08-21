@@ -6,9 +6,6 @@ from flask import current_app
 from staticmap3 import Line, StaticMap
 
 from fittrackee import VERSION, appLog, db
-from fittrackee.application.tile_servers import (
-    DEFAULT_TILE_PROVIDER,
-)
 from fittrackee.constants import (
     ElevationDataSource,
     ElevationProcessing,
@@ -278,9 +275,18 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
             delay_between_retries=5,
         )
         if not current_app.config["DEFAULT_STATICMAP"]:
-            m.url_template = current_app.config.get(
-                "tile_providers", {"default": DEFAULT_TILE_PROVIDER}
-            )["default"].url
+            try:
+                tile_provider = next(
+                    iter(
+                        current_app.config.get(
+                            "available_tile_providers", {}
+                        ).values()
+                    )
+                )
+            except StopIteration:
+                tile_provider = current_app.config["TILE_PROVIDERS"]["osm"]
+            m.url_template = tile_provider.url
+
         line = Line(coords=coordinates, color="#3388FF", width=4)
         m.add_line(line)
         image = m.render()

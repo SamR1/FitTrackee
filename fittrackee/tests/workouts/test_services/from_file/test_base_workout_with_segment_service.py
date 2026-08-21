@@ -48,7 +48,7 @@ class TestBaseWorkoutWithSegmentsCreationServiceGenerateMapImage:
 
         call_args, _ = static_map_get_mock.call_args
         assert (
-            app.config["tile_providers"]["default"]
+            app.config["available_tile_providers"]["osm"]
             .url.replace("{s}.", "")
             .replace("/{z}/{x}/{y}.png", "")
             in call_args[0]
@@ -66,7 +66,7 @@ class TestBaseWorkoutWithSegmentsCreationServiceGenerateMapImage:
 
         call_args, _ = static_map_get_mock.call_args
         assert (
-            app_default_static_map.config["tile_providers"][
+            app_default_static_map.config["available_tile_providers"][
                 "osm_de"
             ].url.replace("/{z}/{x}/{y}.png", "")
             not in call_args[0]

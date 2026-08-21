@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Dict, List
 
 
+# commons
 @dataclass
 class TileProviderBase:
     attribution: str
@@ -26,7 +27,6 @@ class TileProviderBase:
         return url
 
 
-# commons
 SUBDOMAINS = "a,b,c"
 
 
@@ -38,35 +38,6 @@ class OSMTileProvider(TileProviderBase):
         'target="_blank" rel="noopener noreferrer">OpenStreetMap</a>'
         " contributors"
     )
-
-
-OSM_TILE_PROVIDERS = {
-    "osm": OSMTileProvider(
-        name="OSM",
-        url_template="https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-    ),
-    "osm_de": OSMTileProvider(
-        name="OSM (de)",
-        url_template="https://tile.openstreetmap.de/{z}/{x}/{y}.png",
-    ),
-    "osm_fr": OSMTileProvider(
-        name="OSM (fr)",
-        url_template="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
-    ),
-    "cyclosm": OSMTileProvider(
-        attribution=(
-            '<a href="https://github.com/cyclosm/cyclosm-cartocss-style/'
-            'releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> | '
-            'Map data: &copy; <a href="https://www.openstreetmap.org/copyright"'
-            ">OpenStreetMap</a> contributors"
-        ),
-        name="CyclOSM",
-        subdomains=SUBDOMAINS,
-        url_template=(
-            "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png"
-        ),
-    ),
-}
 
 
 # Stadia Maps
@@ -85,16 +56,6 @@ class StadiaTileProvider(TileProviderBase):
     )
 
 
-STADIAMAPS_TILE_PROVIDERS = {
-    "stadiamaps_alidade_smooth": StadiaTileProvider(
-        name="Stadia Alidade Smooth", style="alidade_smooth"
-    ),
-    "stadiamaps_outdoors": StadiaTileProvider(
-        name="Stadia Outdoors", style="outdoors"
-    ),
-}
-
-
 # Thunderforest
 @dataclass(kw_only=True)
 class ThunderForestTileProvider(TileProviderBase):
@@ -109,22 +70,6 @@ class ThunderForestTileProvider(TileProviderBase):
     )
 
 
-THUNDERFOREST_TILE_PROVIDERS = {
-    "thunderforest_outdoor": ThunderForestTileProvider(
-        name="Thunderforest Outdoors", style="outdoors"
-    ),
-    "thunderforest_landscape": ThunderForestTileProvider(
-        name="Thunderforest Landscape", style="landscape"
-    ),
-}
-TILE_PROVIDERS: Dict[str, TileProviderBase] = {
-    **OSM_TILE_PROVIDERS,
-    **STADIAMAPS_TILE_PROVIDERS,
-    **THUNDERFOREST_TILE_PROVIDERS,
-}
-DEFAULT_TILE_PROVIDER: TileProviderBase = TILE_PROVIDERS["osm"]
-
-
 # Custom
 def get_tile_provider_from_env_var() -> Dict:
     tile_server_url = os.environ.get("TILE_SERVER_URL", "")
@@ -137,11 +82,6 @@ def get_tile_provider_from_env_var() -> Dict:
         "name": "Custom",
         "url_template": tile_server_url,
     }
-
-
-custom_provider = get_tile_provider_from_env_var()
-if custom_provider:
-    TILE_PROVIDERS["custom"] = TileProviderBase(**custom_provider)
 
 
 def get_custom_tile_provider() -> List[str]:

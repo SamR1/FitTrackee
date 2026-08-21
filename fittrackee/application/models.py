@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from typing import Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 
 from flask import current_app
 from sqlalchemy import ARRAY, cast
@@ -16,11 +16,8 @@ from fittrackee import BaseModel, db
 from fittrackee.database import TZDateTime
 from fittrackee.users.models import User
 
-from .tile_servers import (
-    DEFAULT_TILE_PROVIDER,
-    TILE_PROVIDERS,
-    TileProviderBase,
-)
+if TYPE_CHECKING:
+    from .tile_servers import TileProviderBase
 
 
 class AppConfig(BaseModel):
@@ -72,20 +69,19 @@ class AppConfig(BaseModel):
         available_tile_providers = {}
         if self.tile_providers:
             available_tile_providers = {
-                key: TILE_PROVIDERS[key] for key in self.tile_providers
+                key: current_app.config["TILE_PROVIDERS"][key]
+                for key in self.tile_providers
             }
         if not available_tile_providers:
-            available_tile_providers = {"default": DEFAULT_TILE_PROVIDER}
+            available_tile_providers = {
+                "osm": current_app.config["TILE_PROVIDERS"]["osm"]
+            }
 
         return available_tile_providers
 
     @property
     def map_attribution(self) -> str:
-        key = (
-            "custom"
-            if "custom" in self.available_tile_providers
-            else "default"
-        )
+        key = "custom" if "custom" in self.available_tile_providers else "osm"
         return self.available_tile_providers[key].attribution
 
     @property
