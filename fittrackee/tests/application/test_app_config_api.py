@@ -1190,11 +1190,31 @@ class TestUpdateTileProvider(ApiTestCaseMixin):
         app_with_custom_tile_server: "Flask",
         user_1_admin: "User",
     ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_custom_tile_server, user_1_admin.email
+        )
+        provider_key = "custom"
+
+        response = client.patch(
+            self.route.format(tile_provider=provider_key),
+            content_type="application/json",
+            json={"default": False, "enabled": False},
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_response_is_success(response)
+        self.assert_default_provider_is_osm()
+
+    def test_it_disables_deprecated_custom_tile_provider_when_it_is_the_only_provided_set(  # noqa
+        self,
+        app_with_deprecated_custom_tile_server: "Flask",
+        user_1_admin: "User",
+    ) -> None:
         """
         custom tile server set before FitTrackee 1.4.0
         """
         client, auth_token = self.get_test_client_and_auth_token(
-            app_with_custom_tile_server, user_1_admin.email
+            app_with_deprecated_custom_tile_server, user_1_admin.email
         )
         provider_key = "custom"
 

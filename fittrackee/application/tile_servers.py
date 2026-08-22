@@ -91,13 +91,29 @@ class ThunderForestTileProvider(TileProviderBase):
 
 # Custom
 def get_tile_provider_from_env_var() -> Dict:
-    tile_server_url = os.environ.get("TILE_SERVER_URL", "")
+    """
+    For tile provider set before v1.4.0, the environment variables are:
+    - TILE_SERVER_URL
+    - MAP_ATTRIBUTION
+    - STATICMAP_SUBDOMAINS
+    These variables are deprecated. Use variables with prefix
+    'CUSTOM_TILE_PROVIDER_' instead.
+    """
+    tile_server_url = os.environ.get(
+        "CUSTOM_TILE_PROVIDER_URL", os.environ.get("TILE_SERVER_URL", "")
+    )
     if not tile_server_url:
         return {}
 
     return {
-        "attribution": os.environ.get("MAP_ATTRIBUTION", ""),
-        "subdomains": os.environ.get("STATICMAP_SUBDOMAINS", ""),
+        "attribution": os.environ.get(
+            "CUSTOM_TILE_PROVIDER_ATTRIBUTION",
+            os.environ.get("MAP_ATTRIBUTION", ""),
+        ),
+        "subdomains": os.environ.get(
+            "CUSTOM_TILE_PROVIDER_SUBDOMAINS",
+            os.environ.get("STATICMAP_SUBDOMAINS", ""),
+        ),
         "name": "Custom",
         "url_template": tile_server_url,
     }

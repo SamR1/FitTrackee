@@ -132,6 +132,9 @@ def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
     delete_env_vars(
         [
+            "CUSTOM_TILE_PROVIDER_URL",
+            "CUSTOM_TILE_PROVIDER_ATTRIBUTION",
+            "CUSTOM_TILE_PROVIDER_SUBDOMAINS",
             "TILE_SERVER_URL",
             "STATICMAP_SUBDOMAINS",
             "MAP_ATTRIBUTION",
@@ -163,6 +166,9 @@ def app_with_multiple_tile_servers_enabled(
 ) -> Generator:
     delete_env_vars(
         [
+            "CUSTOM_TILE_PROVIDER_URL",
+            "CUSTOM_TILE_PROVIDER_ATTRIBUTION",
+            "CUSTOM_TILE_PROVIDER_SUBDOMAINS",
             "TILE_SERVER_URL",
             "STATICMAP_SUBDOMAINS",
             "MAP_ATTRIBUTION",
@@ -186,11 +192,45 @@ def app_with_custom_tile_server(monkeypatch: pytest.MonkeyPatch) -> Generator:
     custom tile server set before FitTrackee 1.4.0
     """
     monkeypatch.setenv(
+        "CUSTOM_TILE_PROVIDER_URL",
+        "https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX",
+    )
+    delete_env_vars(
+        [
+            "CUSTOM_TILE_PROVIDER_ATTRIBUTION",
+            "CUSTOM_TILE_PROVIDER_SUBDOMAINS",
+            "TILE_SERVER_URL",
+            "STATICMAP_SUBDOMAINS",
+            "MAP_ATTRIBUTION",
+            "STADIAMAPS_API_KEY",
+            "THUNDERFOREST_API_KEY",
+            "DEFAULT_STATICMAP",
+        ],
+        monkeypatch,
+    )
+    yield from get_app(
+        with_config=True,
+        tile_providers=["custom"],
+        default_tile_provider="custom",
+    )
+
+
+@pytest.fixture
+def app_with_deprecated_custom_tile_server(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    """
+    custom tile server set before FitTrackee 1.4.0
+    """
+    monkeypatch.setenv(
         "TILE_SERVER_URL",
         "https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX",
     )
     delete_env_vars(
         [
+            "CUSTOM_TILE_PROVIDER_URL",
+            "CUSTOM_TILE_PROVIDER_ATTRIBUTION",
+            "CUSTOM_TILE_PROVIDER_SUBDOMAINS",
             "STATICMAP_SUBDOMAINS",
             "MAP_ATTRIBUTION",
             "STADIAMAPS_API_KEY",
@@ -210,6 +250,9 @@ def app_with_custom_tile_server(monkeypatch: pytest.MonkeyPatch) -> Generator:
 def app_default_static_map(monkeypatch: pytest.MonkeyPatch) -> Generator:
     delete_env_vars(
         [
+            "CUSTOM_TILE_PROVIDER_URL",
+            "CUSTOM_TILE_PROVIDER_ATTRIBUTION",
+            "CUSTOM_TILE_PROVIDER_SUBDOMAINS",
             "TILE_SERVER_URL",
             "STATICMAP_SUBDOMAINS",
             "MAP_ATTRIBUTION",

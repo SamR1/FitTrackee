@@ -30,8 +30,10 @@ def upgrade():
 
     # ### end Alembic commands ###
 
-    tile_server_url = os.environ.get("TILE_SERVER_URL", "")
-    title_provider = "custom" if tile_server_url else "osm"
+    tile_server_url = os.environ.get(
+        "CUSTOM_TILE_PROVIDER_URL", os.environ.get("TILE_SERVER_URL", "")
+    )
+    tile_provider = "custom" if tile_server_url else "osm"
 
     app_config = table(
         "app_config",
@@ -41,8 +43,8 @@ def upgrade():
     op.execute(
         app_config.update().values(
             {
-                "tile_providers": [title_provider],
-                "default_tile_provider": title_provider,
+                "tile_providers": [tile_provider],
+                "default_tile_provider": tile_provider,
             }
         )
     )
@@ -51,7 +53,7 @@ def upgrade():
         column("default_tile_provider", sa.String(length=25)),
     )
     op.execute(
-        users.update().values({"default_tile_provider": title_provider})
+        users.update().values({"default_tile_provider": tile_provider})
     )
 
 
