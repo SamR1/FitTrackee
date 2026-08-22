@@ -263,11 +263,7 @@ export interface IArchiveUploadTaskError {
   files: Record<string, string>
 }
 export type IArchiveUploadTaskStatus =
-  | 'aborted'
-  | 'errored'
-  | 'in_progress'
-  | 'queued'
-  | 'successful'
+  'aborted' | 'errored' | 'in_progress' | 'queued' | 'successful'
 
 export interface IArchiveUploadTask {
   created_at: string

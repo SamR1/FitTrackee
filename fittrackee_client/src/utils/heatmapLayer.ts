@@ -195,12 +195,14 @@ export function createHeatmapLayer(
   collection: IHeatmapCells,
   options?: object
 ) {
-  return new (HeatmapLayer as unknown as {
-    new (
-      collection: IHeatmapCells,
-      options?: object
-    ): Layer & { setCells: (collection: IHeatmapCells) => void }
-  })(collection, options)
+  return new (
+    HeatmapLayer as unknown as {
+      new (
+        collection: IHeatmapCells,
+        options?: object
+      ): Layer & { setCells: (collection: IHeatmapCells) => void }
+    }
+  )(collection, options)
 }
 
 export type THeatmapLayer = ReturnType<typeof createHeatmapLayer>
