@@ -96,7 +96,7 @@ Prerequisites
    installation
    upgrade
    deployment
-   map_tile_server
+   map_tile_providers
    weather
    elevation
    emails

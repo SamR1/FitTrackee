@@ -62,6 +62,36 @@ deployment method.
 
     :default: 1
 
+.. envvar:: CUSTOM_TILE_PROVIDER_ATTRIBUTION
+
+    .. versionadded:: 1.4.0
+
+    | Map attribution (if using a custom tile server), see `Map tile providers <map_tile_providers.html>`__.
+    | It replaces `MAP_ATTRIBUTION <environments_variables.html#envvar-MAP_ATTRIBUTION>`__ which has been deprecated since version 1.4.0.
+
+    :default: empty string
+
+
+.. envvar:: CUSTOM_TILE_PROVIDER_SUBDOMAINS
+
+    .. versionadded:: 1.4.0
+
+    | Some tile servers require a subdomain, see `Map tile providers <map_tile_providers.html>`__. The subdomain will be chosen randomly.
+    | For instance: "a,b,c" for OSM France.
+    | It replaces `STATICMAP_SUBDOMAINS <environments_variables.html#envvar-STATICMAP_SUBDOMAINS>`__ which has been deprecated since version 1.4.0.
+
+    :default: empty string
+
+.. envvar:: CUSTOM_TILE_PROVIDER_URL
+
+    .. versionadded:: 1.4.0
+
+    | Custom tile server URL (with api key if needed), see `Map tile providers <map_tile_providers.html>`__.
+    | Since **0.4.9**, it's also used to generate static maps (to keep default server, see `DEFAULT_STATICMAP <environments_variables.html#envvar-DEFAULT_STATICMAP>`__)
+    | It replaces `TILE_SERVER_URL <environments_variables.html#envvar-TILE_SERVER_URL>`__ which has been deprecated since version 1.4.0.
+
+    :default: empty string
+
 .. envvar:: DATABASE_DISABLE_POOLING
 
     .. versionadded:: 0.4.0
@@ -86,12 +116,12 @@ deployment method.
     .. versionadded:: 0.4.9
 
     | If ``True``, it keeps using **Static Map 3** default tile server to generate static maps (OSM tile server).
-    | Otherwise, it uses the tile server set in `TILE_SERVER_URL <environments_variables.html#envvar-TILE_SERVER_URL>`__.
+    | Otherwise, it uses the tile server set in `CUSTOM_TILE_PROVIDER_URL <environments_variables.html#envvar-CUSTOM_TILE_PROVIDER_URL>`__.
 
     .. versionchanged:: 0.6.10
 
     | This variable is now case-insensitive.
-    | If ``False``, depending on tile server, `subdomains <environments_variables.html#envvar-STATICMAP_SUBDOMAINS>`__ may be mandatory.
+    | If ``False``, depending on tile server, `subdomains <environments_variables.html#envvar-CUSTOM_TILE_PROVIDER_SUBDOMAINS>`__ may be mandatory.
 
     :default: ``False``
 
@@ -221,10 +251,15 @@ deployment method.
 
     .. versionadded:: 0.4.0
 
-    Map attribution (if using another tile server), see `Map tile server <map_tile_server.html>`__.
+    Map attribution (if using another tile server), see `Map tile providers <map_tile_providers.html>`__.
 
-    :default: ``&copy; <a href="http://www.openstreetmap.org/copyright" target="_blank" rel="noopener noreferrer">OpenStreetMap</a> contributors``
+    .. versionchanged:: 1.4.0
 
+    :default: empty string
+
+    .. warning::
+
+        This variable is deprecated and will be removed in a next version. Please use `CUSTOM_TILE_PROVIDER_ATTRIBUTION <environments_variables.html#envvar-CUSTOM_TILE_PROVIDER_ATTRIBUTION>`__ instead.
 
 .. envvar:: NOMINATIM_URL
 
@@ -271,6 +306,14 @@ deployment method.
     .. note::
         | Some SMTP providers (like GMail) may ignore the sender email and use the email address associated with the SMTP account instead. For Gmail, the workaround is to create an alias.
 
+
+.. envvar:: STADIAMAPS_API_KEY
+
+    .. versionadded:: 1.14.0
+
+    API key for `Stadia Maps <https://stadiamaps.com/>`__ tile provider.
+
+
 .. envvar:: STATICMAP_CACHE_DIR
 
     .. versionadded:: 0.10.0
@@ -287,11 +330,16 @@ deployment method.
 
     .. versionadded:: 0.6.10
 
-    | Some tile servers require a subdomain, see `Map tile server <map_tile_server.html>`__.
+    | Some tile servers require a subdomain, see `Map tile providers <map_tile_providers.html>`__.
     | For instance: "a,b,c" for OSM France.
 
     :default: empty string
 
+    .. versionchanged:: 1.4.0
+
+    .. warning::
+
+        This variable is deprecated and will be removed in a next version. Please use `CUSTOM_TILE_PROVIDER_SUBDOMAINS <environments_variables.html#envvar-CUSTOM_TILE_PROVIDER_SUBDOMAINS>`__ instead.
 
 .. envvar:: TASKS_TIME_LIMIT
 
@@ -302,19 +350,31 @@ deployment method.
     :default: 1800
 
 
+.. envvar:: THUNDERFOREST_API_KEY
+
+    .. versionadded:: 1.14.0
+
+    API key for `Thunderforest <https://www.thunderforest.com/>`__ tile provider.
+
+
 .. envvar:: TILE_SERVER_URL
 
     .. versionadded:: 0.4.0
 
-    | Tile server URL (with api key if needed), see `Map tile server <map_tile_server.html>`__.
+    | Tile server URL (with api key if needed), see `Map tile providers <map_tile_providers.html>`__.
     | Since **0.4.9**, it's also used to generate static maps (to keep default server, see `DEFAULT_STATICMAP <environments_variables.html#envvar-DEFAULT_STATICMAP>`__)
 
     .. versionchanged:: 0.7.23
 
     | The default URL is updated: **OpenStreetMap**'s tile server no longer requires subdomains.
 
-    :default: ``https://tile.openstreetmap.org/{z}/{x}/{y}.png``
+    .. versionchanged:: 1.4.0
 
+    :default: empty string
+
+    .. warning::
+
+        This variable is deprecated and will be removed in a next version. Please use `CUSTOM_TILE_PROVIDER_URL <environments_variables.html#envvar-CUSTOM_TILE_PROVIDER_URL>`__ instead.
 
 .. envvar:: UI_URL
 

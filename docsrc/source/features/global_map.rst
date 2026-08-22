@@ -2,6 +2,7 @@ Global map
 ##########
 
 .. versionadded:: 1.0.0
+.. versionchanged:: 1.4.0 added possibility to select a tile layer, when several tile provider are set
 
 User workouts can be displayed on a global map and filtered by date and sports.
 

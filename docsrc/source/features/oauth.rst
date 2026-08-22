@@ -28,9 +28,11 @@ Scopes
 .. versionchanged:: 0.9.0 added ``follow``, ``notifications``, ``reports`` scopes and added comments to ``workouts`` scopes
 .. versionchanged:: 1.0.0 added ``geocode`` scope
 .. versionchanged:: 1.3.0 added ``media`` scope
+.. versionchanged:: 1.4.0 added ``application:read`` scope
 
 The following scopes are available:
 
+- ``application:read``: grants read access to application configuration (only for users with administration rights),
 - ``application:write``: grants write access to application configuration (only for users with administration rights),
 - ``equipments:read``: grants read access to equipments endpoints,
 - ``equipments:write``: grants write access to equipments endpoints,

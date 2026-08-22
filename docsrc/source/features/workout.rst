@@ -578,6 +578,7 @@ Map
 .. versionchanged:: 0.5.0 added full screen and reset control
 .. versionchanged:: 0.11.0 added heatmap for racket sports
 .. versionchanged:: 1.3.0 photos with coordinates are displayed on map
+.. versionchanged:: 1.4.0 added possibility to select a tile layer, when several tile provider are set
 
 | A map is displayed for workout with a file with the tile server set by the administrators (OpenStreetMap's standard tile layer by default).
 | Controls allow full screen view and position reset.
@@ -587,6 +588,12 @@ If workout is associated to photos and those photos have GPS coordinates, they a
 
 .. figure:: ../_images/map-with-photos.png
    :alt: Map with photos
+
+If several tile providers are set, the tile layer can be selected:
+
+.. figure:: ../_images/map-tile-layers-menu.png
+   :alt: Map menu displaying different tile layer
+
 
 
 Chart

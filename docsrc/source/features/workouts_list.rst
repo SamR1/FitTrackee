@@ -9,6 +9,7 @@ Workouts list
 .. versionchanged:: 0.9.7 added average distance, average duration, average ascent and average descent displayed in statistics
 .. versionchanged:: 1.0.0 added filter on location and radius, map for filtered workouts
 .. versionchanged:: 1.1.0 added filter and sort option on pace
+.. versionchanged:: 1.4.0 added possibility to select a tile layer, when several tile provider are set
 
 By default, the last 10 workouts are displayed in the list.
 

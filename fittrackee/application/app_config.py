@@ -281,7 +281,7 @@ def get_application_tile_providers(
     If user has admin rights, it returns tile providers with API key as enabled
     even API key is missing.
     It allows to identify tile providers that are not properly configured
-    in the administration interface, in particular.
+    in the administration interface.
 
     **Example request**:
 
@@ -305,6 +305,7 @@ def get_application_tile_providers(
             {
               "attribution": "<Map Attribution for OpenStreetMap>",
               "default": true,
+              "default_for_user": true,
               "enabled": true,
               "id": "osm",
               "name": "OpenStreetMap",
@@ -312,6 +313,7 @@ def get_application_tile_providers(
             {
               "attribution": "<Map Attribution for CyclOSM>",
               "default": false,
+              "default_for_user": false,
               "enabled": true,
               "id": "cyclosm",
               "name": "CyclOSM",

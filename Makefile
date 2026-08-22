@@ -35,6 +35,7 @@ clean:
 	rm -rf .pytest_cache
 	rm -rf .ruff_cache
 	rm -rf e2e/.pytest_cache
+	rm -rf docs
 
 clean-install: clean
 	rm -fr $(NODE_MODULES)
