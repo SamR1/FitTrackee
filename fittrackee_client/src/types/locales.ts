@@ -22,5 +22,6 @@ export type TLanguage =
   | 'ru'
   // | 'sl' //disabled for now
   // | 'sv' //disabled for now
+  // | 'ta'
   | 'tr'
   | 'zh_Hans'

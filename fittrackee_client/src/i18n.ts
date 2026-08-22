@@ -23,6 +23,7 @@ import ptMessages from '@/locales/pt/pt'
 import ruMessages from '@/locales/ru/ru'
 // import slMessages from '@/locales/sl/sl'
 // import svMessages from '@/locales/sv/sv'
+// import taMessages from '@/locales/ta/ta'
 import trMessages from '@/locales/tr/tr'
 import zhHansMessages from '@/locales/zh_Hans/zh_Hans'
 
@@ -55,6 +56,7 @@ export default createI18n({
     ru: ruMessages,
     // sl: slMessages,
     // sv: svMessages,
+    // ta: taMessages,
     tr: trMessages,
     zh_Hans: zhHansMessages,
   },
