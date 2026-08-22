@@ -39,6 +39,7 @@ Preferences
 .. versionchanged:: 0.11.0 preferred displayed for charts
 .. versionchanged:: 1.1.0 missing elevation processing
 .. versionchanged:: 1.3.0 added media visibility
+.. versionchanged:: 1.4.0 added default tile provider
 
 .. figure:: ../_images/user-preferences.png
    :alt: User Preferences on FitTrackee
@@ -55,6 +56,7 @@ For account, it is possible to set:
 
 For workouts, it is possible to choose:
 
+- default tile provider
 - between metric system and imperial system for distance, elevation and speed display
 - to display or hide ascent records and total on Dashboard
 - the preferred display for workout chart:

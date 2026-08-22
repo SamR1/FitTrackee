@@ -1,6 +1,6 @@
 import os
 import shutil
-from typing import Generator, Iterator, Optional, Union
+from typing import Generator, Iterator, List, Optional, Union
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -12,6 +12,17 @@ from fittrackee.application.utils import update_app_config_from_database
 from fittrackee.workouts.services.workout_from_file.base_workout_with_segment_service import (  # noqa
     weather_service,
 )
+
+TILE_PROVIDERS_KEYS = [
+    "CUSTOM_TILE_PROVIDER_URL",
+    "CUSTOM_TILE_PROVIDER_ATTRIBUTION",
+    "CUSTOM_TILE_PROVIDER_SUBDOMAINS",
+    "TILE_SERVER_URL",
+    "STATICMAP_SUBDOMAINS",
+    "MAP_ATTRIBUTION",
+    "STADIAMAPS_API_KEY",
+    "THUNDERFOREST_API_KEY",
+]
 
 
 @pytest.fixture(autouse=True)
@@ -35,6 +46,8 @@ def get_app_config(
     max_zip_file_size: Optional[Union[int, float]] = None,
     max_users: Optional[int] = None,
     global_map_workouts_limit: Optional[int] = None,
+    tile_providers: Optional[List[str]] = None,
+    default_tile_provider: Optional[str] = None,
 ) -> AppConfig:
     config = AppConfig.query.one_or_none()
     if not config:
@@ -59,6 +72,10 @@ def get_app_config(
     config.max_users = 100 if max_users is None else max_users
     if global_map_workouts_limit:
         config.global_map_workouts_limit = global_map_workouts_limit
+    if tile_providers:
+        config.tile_providers = tile_providers
+    if default_tile_provider:
+        config.default_tile_provider = default_tile_provider
     db.session.commit()
     return config
 
@@ -74,6 +91,8 @@ def get_app(
     max_users: Optional[int] = None,
     global_map_workouts_limit: Optional[int] = None,
     tasks_processing_available: bool = True,
+    tile_providers: Optional[List[str]] = None,
+    default_tile_provider: Optional[str] = None,
 ) -> Generator:
     app = create_app()
     app.config["TASKS_PROCESSING_AVAILABLE"] = tasks_processing_available
@@ -90,6 +109,8 @@ def get_app(
                     max_zip_file_size,
                     max_users,
                     global_map_workouts_limit,
+                    tile_providers,
+                    default_tile_provider,
                 )
                 update_app_config_from_database(app, app_db_config)
             yield app
@@ -109,31 +130,31 @@ def get_app(
             )
 
 
+def delete_env_vars(
+    env_vars: List[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    for env_var in env_vars:
+        if os.getenv(env_var):
+            monkeypatch.delenv(env_var)
+
+
 @pytest.fixture
 def app(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv("EMAIL_URL", "smtp://none:none@0.0.0.0:1025")
-    if os.getenv("TILE_SERVER_URL"):
-        monkeypatch.delenv("TILE_SERVER_URL")
-    if os.getenv("STATICMAP_SUBDOMAINS"):
-        monkeypatch.delenv("STATICMAP_SUBDOMAINS")
-    if os.getenv("MAP_ATTRIBUTION"):
-        monkeypatch.delenv("MAP_ATTRIBUTION")
-    if os.getenv("DEFAULT_STATICMAP"):
-        monkeypatch.delenv("DEFAULT_STATICMAP")
-    if os.getenv("NOMINATIM_URL"):
-        monkeypatch.delenv("NOMINATIM_URL")
-    if os.getenv("ENABLE_GEOSPATIAL_FEATURES"):
-        monkeypatch.delenv("ENABLE_GEOSPATIAL_FEATURES")
-    if os.getenv("API_RATE_LIMITS"):
-        monkeypatch.delenv("API_RATE_LIMITS")
-    if os.getenv("OPEN_ELEVATION_API_URL"):
-        monkeypatch.delenv("OPEN_ELEVATION_API_URL")
-    if os.getenv("VALHALLA_API_URL"):
-        monkeypatch.delenv("VALHALLA_API_URL")
-    if os.getenv("HEATMAP_BASE_ZOOM"):
-        monkeypatch.delenv("HEATMAP_BASE_ZOOM")
-    if os.getenv("ENABLE_HEATMAP"):
-        monkeypatch.delenv("ENABLE_HEATMAP")
+    delete_env_vars(
+        [
+            *TILE_PROVIDERS_KEYS,
+            "DEFAULT_STATICMAP",
+            "NOMINATIM_URL",
+            "ENABLE_GEOSPATIAL_FEATURES",
+            "API_RATE_LIMITS",
+            "OPEN_ELEVATION_API_URL",
+            "VALHALLA_API_URL",
+            "HEATMAP_BASE_ZOOM",
+            "ENABLE_HEATMAP",
+        ],
+        monkeypatch,
+    )
     yield from get_app(with_config=True)
 
 
@@ -144,12 +165,98 @@ def app_with_enabled_heatmap(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 
 @pytest.fixture
-def app_default_static_map(monkeypatch: pytest.MonkeyPatch) -> Generator:
+def app_with_multiple_tile_servers_enabled(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    delete_env_vars(
+        [
+            *TILE_PROVIDERS_KEYS,
+            "DEFAULT_STATICMAP",
+        ],
+        monkeypatch,
+    )
+    yield from get_app(
+        with_config=True,
+        tile_providers=["osm", "osm_fr", "cyclosm"],
+        default_tile_provider="cyclosm",
+    )
+
+
+@pytest.fixture
+def app_with_custom_tile_server(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    """
+    custom tile server set before FitTrackee 1.4.0
+    """
+    delete_env_vars(
+        [
+            *TILE_PROVIDERS_KEYS,
+            "DEFAULT_STATICMAP",
+        ],
+        monkeypatch,
+    )
     monkeypatch.setenv(
-        "TILE_SERVER_URL", "https://tile.openstreetmap.de/{z}/{x}/{y}.png"
+        "CUSTOM_TILE_PROVIDER_URL",
+        "https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX",
+    )
+    yield from get_app(
+        with_config=True,
+        tile_providers=["custom"],
+        default_tile_provider="custom",
+    )
+
+
+@pytest.fixture
+def app_with_deprecated_custom_tile_server(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    """
+    custom tile server set before FitTrackee 1.4.0
+    """
+    delete_env_vars(
+        [
+            *TILE_PROVIDERS_KEYS,
+            "DEFAULT_STATICMAP",
+        ],
+        monkeypatch,
+    )
+    monkeypatch.setenv(
+        "TILE_SERVER_URL",
+        "https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX",
+    )
+    yield from get_app(
+        with_config=True,
+        tile_providers=["custom"],
+        default_tile_provider="custom",
+    )
+
+
+@pytest.fixture
+def app_default_static_map(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    delete_env_vars(
+        TILE_PROVIDERS_KEYS,
+        monkeypatch,
     )
     monkeypatch.setenv("DEFAULT_STATICMAP", "True")
-    yield from get_app(with_config=True)
+    yield from get_app(
+        with_config=True,
+        tile_providers=["osm_de"],
+        default_tile_provider="osm_de",
+    )
+
+
+@pytest.fixture
+def app_with_missing_tile_provider_api_key(
+    monkeypatch: pytest.MonkeyPatch,
+) -> Generator:
+    delete_env_vars(
+        [*TILE_PROVIDERS_KEYS, "DEFAULT_STATICMAP"],
+        monkeypatch,
+    )
+    yield from get_app(
+        with_config=True,
+        tile_providers=["osm", "cyclosm", "thunderforest_outdoors"],
+        default_tile_provider="cyclosm",
+    )
 
 
 @pytest.fixture
@@ -194,6 +301,20 @@ def app_with_3_users_max(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 @pytest.fixture
 def app_no_config(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    delete_env_vars(
+        [
+            *TILE_PROVIDERS_KEYS,
+            "DEFAULT_STATICMAP",
+            "NOMINATIM_URL",
+            "ENABLE_GEOSPATIAL_FEATURES",
+            "API_RATE_LIMITS",
+            "OPEN_ELEVATION_API_URL",
+            "VALHALLA_API_URL",
+            "HEATMAP_BASE_ZOOM",
+            "ENABLE_HEATMAP",
+        ],
+        monkeypatch,
+    )
     yield from get_app(with_config=False)
 
 
@@ -236,16 +357,20 @@ def app_with_open_elevation_url(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv(
         "OPEN_ELEVATION_API_URL", "https://api.open-elevation.example.com"
     )
-    if os.getenv("VALHALLA_API_URL"):
-        monkeypatch.delenv("VALHALLA_API_URL")
+    delete_env_vars(
+        ["VALHALLA_API_URL"],
+        monkeypatch,
+    )
     yield from get_app(with_config=True)
 
 
 @pytest.fixture
 def app_with_valhalla_url(monkeypatch: pytest.MonkeyPatch) -> Generator:
     monkeypatch.setenv("VALHALLA_API_URL", "https://api.valhalla.example.com")
-    if os.getenv("OPEN_ELEVATION_API_URL"):
-        monkeypatch.delenv("OPEN_ELEVATION_API_URL")
+    delete_env_vars(
+        ["OPEN_ELEVATION_API_URL"],
+        monkeypatch,
+    )
     yield from get_app(with_config=True)
 
 

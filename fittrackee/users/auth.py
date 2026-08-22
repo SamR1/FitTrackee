@@ -204,6 +204,10 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
             new_user.language = language
             new_user.timezone = tz
             new_user.accepted_policy_date = datetime.now(timezone.utc)
+            new_user.default_tile_provider = current_app.config[
+                "default_tile_provider"
+            ]
+
             for admin in User.query.filter(
                 User.role == UserRole.ADMIN.value,
                 User.is_active == True,  # noqa
@@ -343,6 +347,7 @@ def get_authenticated_user_profile(
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "dd/MM/yyyy",
+          "default_tile_provider": "osm",
           "display_ascent": true,
           "email": "sam@example.com",
           "email_to_confirm": null,
@@ -489,6 +494,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "dd/MM/yyyy",
+          "default_tile_provider": "osm",
           "display_ascent": true,
           "email": "sam@example.com",
           "email_to_confirm": null,
@@ -706,6 +712,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "dd/MM/yyyy",
+          "default_tile_provider": "osm",
           "display_ascent": true,
           "email": "sam@example.com",
           "email_to_confirm": null,
@@ -964,6 +971,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "MM/dd/yyyy",
+          "default_tile_provider": "osm",
           "display_ascent": true,
           "email": "sam@example.com",
           "email_to_confirm": null,
@@ -1068,6 +1076,8 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     :<json string analysis_visibility: workout analysis visibility
                   (``public``, ``followers_only``, ``private``)
     :<json string date_format: the format used to display dates in the app
+    :<json string default_tile_provider: id of tile provider (must be enabled
+                  by the administrators)
     :<json boolean display_ascent: display highest ascent records and total
     :<json string elevation_processing: method used when processing elevations
                   (``none`` (elevation are not processed), ``flat_window``
@@ -1123,6 +1133,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         "analysis_visibility",
         "calories_visibility",
         "date_format",
+        "default_tile_provider",
         "display_ascent",
         "elevation_processing",
         "hide_profile_in_users_directory",
@@ -1185,6 +1196,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
     media_visibility = post_data.get("media_visibility")
     workout_stats_from_file = post_data.get("workout_stats_from_file")
     elevation_processing = post_data.get("elevation_processing")
+    default_tile_provider = post_data.get("default_tile_provider")
 
     if (
         missing_elevations_data_source == ElevationDataSource.FILE
@@ -1193,6 +1205,14 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
         return InvalidPayloadErrorResponse(
             "'flat_window' can not be selected  as 'elevation_processing' "
             "when 'missing_elevations_data_source' is 'file'"
+        )
+
+    if (
+        default_tile_provider
+        not in current_app.config["available_tile_providers"]
+    ):
+        return InvalidPayloadErrorResponse(
+            f"tile provider '{default_tile_provider}' does not exist"
         )
 
     try:
@@ -1231,6 +1251,7 @@ def edit_user_preferences(auth_user: User) -> Union[Dict, HttpResponse]:
             parent_visibility=auth_user.workouts_visibility,
         )
         auth_user.workout_stats_from_file = workout_stats_from_file
+        auth_user.default_tile_provider = default_tile_provider
         db.session.commit()
 
         return {
@@ -1526,6 +1547,7 @@ def edit_user_notifications_preferences(
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "dd/MM/yyyy",
+          "default_tile_provider": "osm",
           "display_ascent": true,
           "email": "sam@example.com",
           "email_to_confirm": null,
@@ -1708,6 +1730,7 @@ def edit_user_messages_preferences(
           "birth_date": null,
           "created_at": "Sun, 14 Jul 2019 14:09:58 GMT",
           "date_format": "dd/MM/yyyy",
+          "default_tile_provider": "osm",
           "display_ascent": true,
           "email": "sam@example.com",
           "email_to_confirm": null,

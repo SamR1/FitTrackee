@@ -66,10 +66,15 @@
               />
             </LControl>
             <LTileLayer
-              :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
-              :attribution="appConfig.map_attribution"
+              v-for="provider in availableTileProviders"
+              :key="provider.id"
+              :name="provider.name"
+              :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png?tile_provider=${provider.id}`"
+              :visible="provider.id === defaultTileProvider.id"
+              :attribution="provider.attribution"
               :bounds="bounds"
               :maxZoom="19"
+              layer-type="base"
             />
             <LGeoJson
               :geojson="geoJson"
@@ -106,7 +111,7 @@
             </LLayerGroup>
             <LLayerGroup
               v-if="workoutMedia.length > 0"
-              :name="$t('common.PHOTOS')"
+              :name="capitalize($t('common.PHOTOS'))"
               layer-type="overlay"
             >
               <LMarkerClusterGroup :chunk-interval="1" :chunked-loading="false">
@@ -144,7 +149,7 @@
   import type { GeoJSON } from 'geojson'
   import HeatmapOverlay from 'heatmap.js/plugins/leaflet-heatmap/leaflet-heatmap.js'
   import { type PointExpression, type LatLngBoundsLiteral } from 'leaflet'
-  import { computed, onUnmounted, ref, toRefs, watch } from 'vue'
+  import { capitalize, computed, onUnmounted, ref, toRefs, watch } from 'vue'
   import type { Ref, ComputedRef } from 'vue'
   import 'leaflet/dist/leaflet.css'
   import { LMarkerClusterGroup } from 'vue-leaflet-markercluster'
@@ -152,7 +157,7 @@
   import CustomMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomMarker.vue'
   import CustomPhotosMarker from '@/components/Workout/WorkoutDetail/WorkoutMap/CustomPhotosMarker.vue'
   import PhotoPopup from '@/components/Workout/WorkoutDetail/WorkoutMap/PhotoPopup.vue'
-  import useApp from '@/composables/useApp'
+  import useTileProviders from '@/composables/useTileProviders.ts'
   import { WORKOUTS_STORE } from '@/store/constants.ts'
   import type { IHeatmapData, IHeatmapOverlay } from '@/types/heatmap.ts'
   import type {
@@ -160,6 +165,7 @@
     ILeafletObject,
     TCoordinates,
   } from '@/types/map'
+  import type { ITileProvider } from '@/types/tileProviders.ts'
   import type { IMediaAttachment, IWorkoutData } from '@/types/workouts'
   import { useStore } from '@/use/useStore.ts'
   import { getApiUrl } from '@/utils'
@@ -178,7 +184,7 @@
   const { geoJsonOptions, workoutData, markerCoordinates, withHeatmap } =
     toRefs(props)
 
-  const { appConfig } = useApp()
+  const { availableTileProviders } = useTileProviders()
 
   const store = useStore()
 
@@ -209,7 +215,12 @@
       (media) => media.meta.coordinates
     )
   )
-
+  const defaultTileProvider: ComputedRef<ITileProvider> = computed(
+    () =>
+      availableTileProviders.value.find(
+        (provider) => provider.default_for_user
+      ) as ITileProvider
+  )
   function setDisplayedMediaIndex(mediaId: string) {
     const mediaIndex = workoutData.value.workout.media_attachments.findIndex(
       (m) => m.id === mediaId

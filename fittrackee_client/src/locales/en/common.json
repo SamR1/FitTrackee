@@ -52,6 +52,7 @@
       "LABEL": "per page"
     }
   },
+  "TILE_PROVIDERS": "Tile provider | Tile providers",
   "TOTAL": "total",
   "TOTAL_DURATION_WITH_PAUSES": "total duration with pauses",
   "TYPE": "type",

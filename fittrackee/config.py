@@ -1,5 +1,5 @@
 import os
-from typing import Type, Union
+from typing import Dict, Type, Union
 from uuid import uuid4
 
 from dramatiq.brokers.redis import RedisBroker
@@ -7,6 +7,14 @@ from dramatiq.brokers.stub import StubBroker
 from flask import current_app
 
 from fittrackee import DEFAULT_PRIVACY_POLICY_DATA, VERSION
+from fittrackee.application.tile_servers import (
+    SUBDOMAINS,
+    OSMTileProvider,
+    StadiaTileProvider,
+    ThunderForestTileProvider,
+    TileProviderBase,
+    get_tile_provider_from_env_var,
+)
 from fittrackee.constants import IMAGE_MIMETYPES
 from fittrackee.languages import SUPPORTED_LANGUAGES
 from fittrackee.workouts.constants import (
@@ -53,6 +61,52 @@ def get_heatmap_base_zoom() -> int:
     return base_zoom
 
 
+def get_tiles_providers() -> Dict[str, TileProviderBase]:
+    tile_providers: Dict[str, TileProviderBase] = {
+        "osm": OSMTileProvider(
+            name="OpenStreetMap",
+            url_template="https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+        ),
+        "osm_de": OSMTileProvider(
+            name="OpenStreetMap (de)",
+            url_template="https://tile.openstreetmap.de/{z}/{x}/{y}.png",
+        ),
+        "osm_fr": OSMTileProvider(
+            name="OpenStreetMap (fr)",
+            url_template="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
+        ),
+        "cyclosm": OSMTileProvider(
+            attribution=(
+                '<a href="https://github.com/cyclosm/cyclosm-cartocss-style/'
+                'releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> |'
+                ' Map data: &copy; <a href="https://www.openstreetmap.org/'
+                'copyright">OpenStreetMap</a> contributors'
+            ),
+            name="CyclOSM",
+            subdomains=SUBDOMAINS,
+            url_template=(
+                "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png"
+            ),
+        ),
+        "stadiamaps_alidade_smooth": StadiaTileProvider(
+            name="Stadia Alidade Smooth", style="alidade_smooth"
+        ),
+        "stadiamaps_outdoors": StadiaTileProvider(
+            name="Stadia Outdoors", style="outdoors"
+        ),
+        "thunderforest_landscape": ThunderForestTileProvider(
+            name="Thunderforest Landscape", style="landscape"
+        ),
+        "thunderforest_outdoors": ThunderForestTileProvider(
+            name="Thunderforest Outdoors", style="outdoors"
+        ),
+    }
+    custom_provider = get_tile_provider_from_env_var()
+    if custom_provider:
+        tile_providers["custom"] = TileProviderBase(**custom_provider)
+    return tile_providers
+
+
 class BaseConfig:
     DEBUG = False
     TESTING = False
@@ -66,22 +120,11 @@ class BaseConfig:
     )
     PICTURE_ALLOWED_EXTENSIONS = set(IMAGE_MIMETYPES.keys())
     WORKOUT_ALLOWED_EXTENSIONS = WORKOUT_ALL_ALLOWED_EXTENSIONS
-    TILE_SERVER = {
-        "URL": os.environ.get(
-            "TILE_SERVER_URL",
-            "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-        ),
-        "ATTRIBUTION": os.environ.get(
-            "MAP_ATTRIBUTION",
-            '&copy; <a href="http://www.openstreetmap.org/copyright" '
-            'target="_blank" rel="noopener noreferrer">OpenStreetMap</a>'
-            " contributors",
-        ),
-        "DEFAULT_STATICMAP": (
-            os.environ.get("DEFAULT_STATICMAP", "false").lower() == "true"
-        ),
-        "STATICMAP_SUBDOMAINS": os.environ.get("STATICMAP_SUBDOMAINS", ""),
-    }
+
+    TILE_PROVIDERS = get_tiles_providers()
+    DEFAULT_STATICMAP = (
+        os.environ.get("DEFAULT_STATICMAP", "false").lower() == "true"
+    )
 
     # resolution the heatmap cells are stored at, as a zoom level: the finest
     # detail the heatmap can display, at the cost of rows. Changing it needs a

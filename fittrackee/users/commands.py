@@ -7,6 +7,7 @@ from humanize import naturalsize
 
 from fittrackee import db
 from fittrackee.cli.app import app
+from fittrackee.constants import DEFAULT_TILE_PROVIDER
 from fittrackee.languages import SUPPORTED_LANGUAGES
 from fittrackee.users.exceptions import UserNotFoundException
 from fittrackee.users.export_data import (
@@ -79,6 +80,9 @@ def create_user(
                 user.language = user_language
                 user_timezone = get_timezone(tz)
                 user.timezone = user_timezone
+                user.default_tile_provider = app.config.get(
+                    "default_tile_provider", DEFAULT_TILE_PROVIDER
+                )
                 db.session.commit()
                 user_manager_service.update(activate=True)
                 click.echo(f"User '{username}' created.")

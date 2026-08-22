@@ -131,6 +131,26 @@ Sports
 | It allows to enable or disable a sport (a sport can be disabled even if workout with this sport exists).
 
 
+Tile providers
+**************
+
+.. versionadded:: 1.4.0
+
+Only users with administration rights can access tile providers administration.
+
+.. figure:: ../_images/tile-providers-administration.png
+  :alt: Tile providers administration on FitTrackee
+
+| It allows to enable or disable a tile provider.
+| A provider can be disabled even if it is set as default tile provider by a user. In this case, the default provider is used instead.
+| If a tile provider associated with an API key is enabled and then the API key removed, it still appears as enabled to users with administration rights.
+
+See `Map tile providers <../installation/map_tile_providers.html>`__ for more information.
+
+.. warning::
+
+  The application (and workers) should be restarted for the changes to be effective.
+
 Users
 *****
 

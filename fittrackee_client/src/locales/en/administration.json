@@ -10,6 +10,7 @@
   "ADMINISTRATION": "Administration",
   "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Add/remove admin rights, delete user account.",
   "APPLICATION": "Application",
+  "APPLICATION_MAY_BE_RESTARTED_AFTER_CHANGES": "The application may need to be restarted for the changes to become effective.",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Administrator email for contact",
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Asynchronous zip archive upload is disabled.",
@@ -131,6 +132,14 @@
       "LABEL": "Label"
     },
     "TITLE": "Sports administration"
+  },
+  "TILE_PROVIDERS": {
+    "DEFAULT": "Default",
+    "DESCRIPTION": "Enable/disable tile providers.",
+    "ENABLED": "Enabled",
+    "NO_API_KEY_SET": "No API key set",
+    "SET_BY_USERS": "Set as default by at least one user",
+    "TITLE": "Tile providers administration"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Update application configuration.",
   "UPDATE_USER_EMAIL": "Update email",

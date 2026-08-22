@@ -142,6 +142,22 @@
           </div>
         </div>
         <div class="preferences-section">{{ $t('workouts.WORKOUT', 0) }}</div>
+        <label class="form-items">
+          <span> {{ $t('common.TILE_PROVIDERS') }}<sup>1</sup> </span>
+          <select
+            id="default_tile_provider"
+            v-model="userForm.default_tile_provider"
+            :disabled="tileProvidersItems.length < 2 || authUserLoading"
+          >
+            <option
+              v-for="item in tileProvidersItems"
+              :value="item.value"
+              :key="item.value"
+            >
+              {{ item.label }}
+            </option>
+          </select>
+        </label>
         <div class="form-items form-checkboxes">
           <span class="checkboxes-label">
             {{ $t('user.PROFILE.UNITS.LABEL') }}
@@ -502,7 +518,9 @@
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
+  import useTileProviders from '@/composables/useTileProviders.ts'
   import { AUTH_USER_STORE } from '@/store/constants'
+  import type { ITileProvider } from '@/types/tileProviders.ts'
   import type {
     IUserPreferencesPayload,
     IAuthUserProfile,
@@ -533,6 +551,7 @@
     errorMessages,
   } = useApp()
   const { authUserLoading } = useAuthUser()
+  const { availableTileProviders } = useTileProviders()
 
   const weekStart = [
     {
@@ -629,7 +648,6 @@
     },
   ]
   const segmentsCreationEvents = ['all', 'only_manual', 'none']
-
   const workoutStatsFromFile = [
     {
       label: 'CALCULATED',
@@ -640,11 +658,21 @@
       value: true,
     },
   ]
+  const tileProvidersItems = computed(() =>
+    availableTileProviders.value.map((provider) => ({
+      label: provider.name,
+      value: provider.id,
+    }))
+  )
+  const tileProvider: ComputedRef<ITileProvider | undefined> = computed(() =>
+    availableTileProviders.value.find((provider) => provider.default_for_user)
+  )
 
   const userForm: Reactive<IUserPreferencesPayload> = reactive({
     analysis_visibility: 'private',
     calories_visibility: 'private',
     date_format: 'dd/MM/yyyy',
+    default_tile_provider: 'osm',
     display_ascent: true,
     elevation_processing: 'none',
     hide_profile_in_users_directory: true,
@@ -721,6 +749,11 @@
     userForm.elevation_processing = user.elevation_processing
     userForm.media_visibility = user.media_visibility ?? 'private'
     userForm.workout_stats_from_file = user.workout_stats_from_file
+    userForm.default_tile_provider = availableTileProviders.value.some(
+      (provider) => provider.id === user.default_tile_provider
+    )
+      ? user.default_tile_provider
+      : tileProvider.value?.id || ''
   }
   function updateProfile() {
     store.dispatch(AUTH_USER_STORE.ACTIONS.UPDATE_USER_PREFERENCES, userForm)
@@ -810,7 +843,8 @@
     #media_visibility,
     #segments_creation_event,
     #missing_elevations_data_source,
-    #elevation_processing {
+    #elevation_processing,
+    #default_tile_provider {
       padding: $default-padding * 0.5;
     }
 

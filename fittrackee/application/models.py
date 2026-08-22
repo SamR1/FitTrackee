@@ -1,8 +1,10 @@
 import os
 from datetime import datetime
-from typing import Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 
 from flask import current_app
+from sqlalchemy import ARRAY, cast
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.event import listens_for
 from sqlalchemy.orm import Mapped, mapped_column
@@ -13,6 +15,9 @@ from sqlalchemy.sql import text
 from fittrackee import BaseModel, db
 from fittrackee.database import TZDateTime
 from fittrackee.users.models import User
+
+if TYPE_CHECKING:
+    from .tile_servers import TileProviderBase
 
 
 class AppConfig(BaseModel):
@@ -48,6 +53,13 @@ class AppConfig(BaseModel):
     max_image_size: Mapped[int] = mapped_column(
         server_default="5242880", nullable=False
     )
+    tile_providers: Mapped[list[str]] = mapped_column(
+        ARRAY(db.String),
+        server_default=cast(postgresql.array(["osm"]), ARRAY(db.String)),
+    )
+    default_tile_provider: Mapped[Optional[str]] = mapped_column(
+        db.String(25), nullable=False, server_default="osm"
+    )
 
     @property
     def is_registration_enabled(self) -> bool:
@@ -56,8 +68,22 @@ class AppConfig(BaseModel):
         return self.max_users == 0 or nb_users < self.max_users
 
     @property
-    def map_attribution(self) -> str:
-        return current_app.config["TILE_SERVER"]["ATTRIBUTION"]
+    def available_tile_providers(self) -> Dict[str, "TileProviderBase"]:
+        available_tile_providers = {}
+        if self.tile_providers:
+            available_tile_providers = {
+                key: current_app.config["TILE_PROVIDERS"][key]
+                for key in self.tile_providers
+                if not current_app.config["TILE_PROVIDERS"][
+                    key
+                ].api_key_is_missing
+            }
+        if not available_tile_providers:
+            available_tile_providers = {
+                "osm": current_app.config["TILE_PROVIDERS"]["osm"]
+            }
+
+        return available_tile_providers
 
     @property
     def elevation_services(self) -> Dict:
@@ -84,7 +110,6 @@ class AppConfig(BaseModel):
             "max_single_file_size": self.max_single_file_size,
             "max_zip_file_size": self.max_zip_file_size,
             "max_users": self.max_users,
-            "map_attribution": self.map_attribution,
             "privacy_policy": self.privacy_policy,
             "privacy_policy_date": (
                 self.privacy_policy_date

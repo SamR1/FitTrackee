@@ -77,6 +77,14 @@
                 {{ $t('admin.ENABLE_DISABLE_SPORTS') }}
               </dd>
               <dt>
+                <router-link to="/admin/tile-providers">
+                  {{ $t('common.TILE_PROVIDERS', 0) }}
+                </router-link>
+              </dt>
+              <dd>
+                {{ $t('admin.TILE_PROVIDERS.DESCRIPTION') }}
+              </dd>
+              <dt>
                 <router-link to="/admin/users">
                   {{ capitalize($t('user.USER', 0)) }}
                 </router-link>

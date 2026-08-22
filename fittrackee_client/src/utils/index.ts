@@ -15,6 +15,7 @@ import type { IReportsState } from '@/store/modules/reports/types'
 import type { IRootState } from '@/store/modules/root/types'
 import type { ISportsState } from '@/store/modules/sports/types'
 import type { IStatisticsState } from '@/store/modules/statistics/types'
+import type { ITileProvidersState } from '@/store/modules/tileProviders/types.ts'
 import type { IUsersState } from '@/store/modules/users/types'
 import type { IWorkoutsState } from '@/store/modules/workouts/types'
 import type { IApiErrorMessage } from '@/types/api'
@@ -41,6 +42,7 @@ export const handleError = (
     | ActionContext<IOAuth2State, IRootState>
     | ActionContext<IStatisticsState, IRootState>
     | ActionContext<ISportsState, IRootState>
+    | ActionContext<ITileProvidersState, IRootState>
     | ActionContext<IUsersState, IRootState>
     | ActionContext<IWorkoutsState, IRootState>,
   error: AxiosError | null,
@@ -119,6 +121,7 @@ const getEquipmentError = (
     | ActionContext<IOAuth2State, IRootState>
     | ActionContext<IStatisticsState, IRootState>
     | ActionContext<ISportsState, IRootState>
+    | ActionContext<ITileProvidersState, IRootState>
     | ActionContext<IUsersState, IRootState>
     | ActionContext<IWorkoutsState, IRootState>
 ) => {
@@ -151,6 +154,7 @@ const getMiscEquipmentError = (
     | ActionContext<IOAuth2State, IRootState>
     | ActionContext<IStatisticsState, IRootState>
     | ActionContext<ISportsState, IRootState>
+    | ActionContext<ITileProvidersState, IRootState>
     | ActionContext<IUsersState, IRootState>
     | ActionContext<IWorkoutsState, IRootState>
 ): IMiscEquipmentError | null => {

@@ -111,7 +111,12 @@
   import useAuthUser from '@/composables/useAuthUser'
   import useScroll from '@/composables/useScroll.ts'
   import useSports from '@/composables/useSports'
-  import { SPORTS_STORE, WORKOUTS_STORE } from '@/store/constants'
+  import useTileProviders from '@/composables/useTileProviders.ts'
+  import {
+    SPORTS_STORE,
+    TILE_PROVIDERS_STORE,
+    WORKOUTS_STORE,
+  } from '@/store/constants'
   import type { TCoordinates } from '@/types/map'
   import type { ISport } from '@/types/sports.ts'
   import type {
@@ -136,6 +141,7 @@
   const { displayOptions } = useApp()
   const { getObjectSport, sports } = useSports()
   const { resetTimeout, scrollTo } = useScroll()
+  const { tileProviders } = useTileProviders()
 
   const markerCoordinates: Ref<TCoordinates> = ref({
     latitude: null,
@@ -216,6 +222,9 @@
     store.dispatch(WORKOUTS_STORE.ACTIONS.GET_WORKOUT_DATA, payload)
     if (sports.value.length === 0) {
       store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+    }
+    if (tileProviders.value.length === 0) {
+      store.dispatch(TILE_PROVIDERS_STORE.ACTIONS.GET_TILE_PROVIDERS)
     }
   })
   onMounted(() => {

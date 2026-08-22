@@ -9,6 +9,7 @@
     "REDIRECT_URL": "Redirect URL",
     "SCOPE": {
       "LABEL": "Scope",
+      "application:read_DESCRIPTION": "grants read access to application configuration.",
       "application:write_DESCRIPTION": "grants write access to application configuration.",
       "equipments:read_DESCRIPTION": "grants read access to <code>equipments</code> endpoints.",
       "equipments:write_DESCRIPTION": "grants write access to <code>equipments</code> endpoints.",

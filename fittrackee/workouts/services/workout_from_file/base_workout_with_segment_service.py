@@ -1,5 +1,4 @@
 import hashlib
-import random
 from abc import ABC, abstractmethod
 from typing import IO, TYPE_CHECKING, Dict, List, Optional, Union
 
@@ -7,7 +6,11 @@ from flask import current_app
 from staticmap3 import Line, StaticMap
 
 from fittrackee import VERSION, appLog, db
-from fittrackee.constants import ElevationDataSource, ElevationProcessing
+from fittrackee.constants import (
+    DEFAULT_TILE_PROVIDER,
+    ElevationDataSource,
+    ElevationProcessing,
+)
 from fittrackee.files import get_absolute_file_path
 
 from ...exceptions import WorkoutException, WorkoutRefreshException
@@ -264,16 +267,9 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         return md5.hexdigest()
 
     @classmethod
-    def get_static_map_tile_server_url(cls, tile_server_config: Dict) -> str:
-        if tile_server_config["STATICMAP_SUBDOMAINS"]:
-            subdomains = tile_server_config["STATICMAP_SUBDOMAINS"].split(",")
-            subdomain = f"{random.choice(subdomains)}."  # noqa:S311
-        else:
-            subdomain = ""
-        return tile_server_config["URL"].replace("{s}.", subdomain)
-
-    @classmethod
-    def generate_map_image(cls, map_filepath: str, coordinates: List) -> None:
+    def generate_map_image(
+        cls, map_filepath: str, coordinates: List, auth_user: "User"
+    ) -> None:
         m = StaticMap(
             width=400,
             height=225,
@@ -281,10 +277,29 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
             headers={"User-Agent": f"FitTrackee v{VERSION}"},
             delay_between_retries=5,
         )
-        if not current_app.config["TILE_SERVER"]["DEFAULT_STATICMAP"]:
-            m.url_template = cls.get_static_map_tile_server_url(
-                current_app.config["TILE_SERVER"]
-            )
+        if not current_app.config["DEFAULT_STATICMAP"]:
+            default_tile_provider = auth_user.default_tile_provider
+
+            # in case of:
+            # - no tile providers available (should not happen) or
+            # - provider set in user preference have been disabled,
+            # get default provider set for application
+            if not current_app.config.get("available_tile_providers") or (
+                default_tile_provider
+                not in current_app.config.get("available_tile_providers", {})
+            ):
+                default_tile_provider = current_app.config.get(
+                    "default_tile_provider", DEFAULT_TILE_PROVIDER
+                )
+                tile_provider = current_app.config["TILE_PROVIDERS"][
+                    default_tile_provider
+                ]
+            else:
+                tile_provider = current_app.config["available_tile_providers"][
+                    default_tile_provider
+                ]
+            m.url_template = tile_provider.url_with_subdomain
+
         line = Line(coords=coordinates, color="#3388FF", width=4)
         m.add_line(line)
         image = m.render()

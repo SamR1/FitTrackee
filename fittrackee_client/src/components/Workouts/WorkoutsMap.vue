@@ -63,6 +63,7 @@
           class="map"
           :aria-label="$t('workouts.WORKOUTS_MAP')"
         >
+          <LControlLayers />
           <LControl
             position="topleft"
             class="map-control"
@@ -104,9 +105,15 @@
             />
           </LControl>
           <LTileLayer
-            :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
-            :attribution="appConfig.map_attribution"
+            v-for="provider in availableTileProviders"
+            :key="provider.id"
+            :name="provider.name"
+            :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png?tile_provider=${provider.id}`"
+            :visible="provider.id === defaultTileProvider.id"
+            :attribution="provider.attribution"
+            :bounds="bounds"
             :maxZoom="19"
+            layer-type="base"
           />
           <LControl
             v-if="displayHeatmap && heatmapLegend.length > 0"
@@ -175,6 +182,7 @@
     LTileLayer,
     LGeoJson,
     LControl,
+    LControlLayers,
   } from '@vue-leaflet/vue-leaflet'
   import type { MultiLineString, Point } from 'geojson'
   import { type LatLngBoundsLiteral, type PointExpression } from 'leaflet'
@@ -197,6 +205,7 @@
   import WorkoutPopup from '@/components/Workouts/WorkoutPopup.vue'
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser.ts'
+  import useTileProviders from '@/composables/useTileProviders.ts'
   import { AUTH_USER_STORE, WORKOUTS_STORE } from '@/store/constants.ts'
   import type {
     IWorkoutFeature,
@@ -204,6 +213,7 @@
   } from '@/types/geojson.ts'
   import type { IHeatmapCells, ILeafletObject } from '@/types/map'
   import type { ITranslatedSport } from '@/types/sports.ts'
+  import type { ITileProvider } from '@/types/tileProviders.ts'
   import type {
     TMapParamsKeys,
     TWorkoutsHeatmapPayload,
@@ -233,6 +243,7 @@
 
   const { appConfig } = useApp()
   const { authUser } = useAuthUser()
+  const { availableTileProviders } = useTileProviders()
 
   // on some browsers or low-resource devices, displaying a large number of
   // features may cause slowness or errors.
@@ -277,6 +288,12 @@
   )
   const heatmapCollection: ComputedRef<IHeatmapCells> = computed(
     () => store.getters[WORKOUTS_STORE.GETTERS.AUTH_USER_WORKOUTS_HEATMAP]
+  )
+  const defaultTileProvider: ComputedRef<ITileProvider> = computed(
+    () =>
+      availableTileProviders.value.find(
+        (provider) => provider.default_for_user
+      ) as ITileProvider
   )
 
   const heatmapLegend: ComputedRef<{ color: string; label: string }[]> =

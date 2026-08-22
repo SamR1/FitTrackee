@@ -52,6 +52,7 @@
       "LABEL": "par page"
     }
   },
+  "TILE_PROVIDERS": "Serveur de tuiles | Serveurs de tuiles",
   "TOTAL": "total",
   "TOTAL_DURATION_WITH_PAUSES": "durée totale, pauses comprises",
   "TYPE": "type",

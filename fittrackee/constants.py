@@ -34,3 +34,5 @@ IMAGE_MIMETYPES = {
     "png": ["image/png"],
     "webp": ["image/webp"],
 }
+
+DEFAULT_TILE_PROVIDER = "osm"

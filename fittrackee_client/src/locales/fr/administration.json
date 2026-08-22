@@ -10,6 +10,7 @@
   "ADMINISTRATION": "Administration",
   "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Ajouter/retirer des droits d'administration, supprimer des comptes utilisateurs.",
   "APPLICATION": "Application",
+  "APPLICATION_MAY_BE_RESTARTED_AFTER_CHANGES": "Il peut être nécessaire de redémarrer l'application pour que les changements soient pris en compte.",
   "APP_CONFIG": {
     "ADMIN_CONTACT": "Email de l'administrateur pour contact ",
     "ASYNCHRONOUS_UPLOAD_DISABLED": "Le chargement asynchrone des archives zip est désactivé.",
@@ -131,6 +132,14 @@
       "LABEL": "Label"
     },
     "TITLE": "Administration - Sports"
+  },
+  "TILE_PROVIDERS": {
+    "DEFAULT": "Défaut",
+    "DESCRIPTION": "Activer/désactiver les serveurs de tuiles.",
+    "ENABLED": "Activé",
+    "NO_API_KEY_SET": "Aucune clé API définie",
+    "SET_BY_USERS": "Définie par défaut par au moins un utilisateur",
+    "TITLE": "Administration - Serveurs de tuiles"
   },
   "UPDATE_APPLICATION_DESCRIPTION": "Configurer l'application.",
   "UPDATE_USER_EMAIL": "Changer l'email",

@@ -1,7 +1,12 @@
+from typing import TYPE_CHECKING
+
 from flask import Flask
 
 from fittrackee.application.models import AppConfig
 from fittrackee.application.utils import get_or_init_config
+
+if TYPE_CHECKING:
+    import pytest
 
 
 class TestGetOrInitAppConfig:
@@ -62,3 +67,27 @@ class TestGetOrInitAppConfig:
 
             assert config is not None
             assert config.max_users == 100
+
+    def test_it_sets_osm_as_tile_provider_when_no_custom_tile_provider_url_is_set(  # noqa
+        self, app_no_config: Flask
+    ) -> None:
+        with app_no_config.app_context():
+            get_or_init_config()
+
+            config = AppConfig.query.one()
+            assert config.default_tile_provider == "osm"
+            assert config.tile_providers == ["osm"]
+
+    def test_it_sets_custom_tile_provider_when_custom_tile_provider_url_is_set(
+        self, app_no_config: Flask, monkeypatch: "pytest.MonkeyPatch"
+    ) -> None:
+        monkeypatch.setenv(
+            "CUSTOM_TILE_PROVIDER_URL",
+            "https://{s}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=XXXX",
+        )
+        with app_no_config.app_context():
+            get_or_init_config()
+
+            config = AppConfig.query.one()
+            assert config.default_tile_provider == "custom"
+            assert config.tile_providers == ["custom"]

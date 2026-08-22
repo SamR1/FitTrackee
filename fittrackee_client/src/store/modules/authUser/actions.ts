@@ -11,6 +11,7 @@ import {
   ROOT_STORE,
   SPORTS_STORE,
   STATS_STORE,
+  TILE_PROVIDERS_STORE,
   USERS_STORE,
   WORKOUTS_STORE,
 } from '@/store/constants'
@@ -156,6 +157,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             USERS_STORE.MUTATIONS.UPDATE_USER_IN_USERS,
             res.data.data
           )
+          context.dispatch(TILE_PROVIDERS_STORE.ACTIONS.GET_TILE_PROVIDERS)
           if (profileNotLoaded || payload.updateUI) {
             if (res.data.data.language) {
               context.dispatch(
@@ -428,6 +430,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
             AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE,
             res.data.data
           )
+          context.dispatch(TILE_PROVIDERS_STORE.ACTIONS.GET_TILE_PROVIDERS)
           context.commit(
             ROOT_STORE.MUTATIONS.UPDATE_DISPLAY_OPTIONS,
             res.data.data
@@ -486,6 +489,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       .then((res) => {
         if (res.data.status === 'success') {
           context.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
+          context.dispatch(TILE_PROVIDERS_STORE.ACTIONS.GET_TILE_PROVIDERS)
           if (fromSport) {
             router.push(`/profile/sports/${data.sport_id}`)
           }

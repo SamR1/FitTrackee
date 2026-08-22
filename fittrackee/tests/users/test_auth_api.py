@@ -43,6 +43,32 @@ USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0"
 )
 
+PREFERENCES_PAYLOAD = {
+    "analysis_visibility": "followers_only",
+    "calories_visibility": "followers_only",
+    "date_format": "yyyy-MM-dd",
+    "default_tile_provider": "osm",
+    "display_ascent": False,
+    "elevation_processing": "flat_window",
+    "hide_profile_in_users_directory": False,
+    "hr_visibility": "followers_only",
+    "imperial_units": True,
+    "language": "en",
+    "manually_approves_followers": False,
+    "map_visibility": "private",
+    "media_visibility": "followers_only",
+    "missing_elevations_data_source": "open_elevation",
+    "segments_creation_event": "none",
+    "split_workout_charts": True,
+    "start_elevation_at_zero": False,
+    "timezone": "America/New_York",
+    "use_dark_mode": True,
+    "use_raw_gpx_speed": True,
+    "weekm": True,
+    "workout_stats_from_file": True,
+    "workouts_visibility": "public",
+}
+
 
 class TestUserRegistration(ApiTestCaseMixin):
     def test_it_returns_error_if_payload_is_empty(self, app: Flask) -> None:
@@ -312,9 +338,9 @@ class TestUserRegistration(ApiTestCaseMixin):
         assert "auth_token" not in data
 
     def test_it_creates_inactive_user_with_default_values_when_minimal_data_are_provided(  # noqa
-        self, app: Flask
+        self, app_with_multiple_tile_servers_enabled: Flask
     ) -> None:
-        client = app.test_client()
+        client = app_with_multiple_tile_servers_enabled.test_client()
         username = self.random_string()
 
         client.post(
@@ -355,6 +381,12 @@ class TestUserRegistration(ApiTestCaseMixin):
         )
         assert new_user.calories_visibility == VisibilityLevel.PRIVATE
         assert new_user.media_visibility == VisibilityLevel.PRIVATE
+        assert (
+            new_user.default_tile_provider
+            == app_with_multiple_tile_servers_enabled.config[
+                "default_tile_provider"
+            ]
+        )
 
     @pytest.mark.parametrize(
         "input_timezone,expected_timezone",
@@ -1586,32 +1618,10 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         response = client.post(
             "/api/auth/profile/edit/preferences",
             content_type="application/json",
-            data=json.dumps(
-                dict(
-                    timezone="America/New_York",
-                    weekm=True,
-                    language=input_language,
-                    imperial_units=True,
-                    display_ascent=False,
-                    start_elevation_at_zero=False,
-                    use_dark_mode=True,
-                    use_raw_gpx_speed=True,
-                    date_format="yyyy-MM-dd",
-                    map_visibility="private",
-                    analysis_visibility="followers_only",
-                    workouts_visibility="public",
-                    manually_approves_followers=False,
-                    hide_profile_in_users_directory=False,
-                    hr_visibility="followers_only",
-                    segments_creation_event="none",
-                    split_workout_charts=True,
-                    missing_elevations_data_source="open_elevation",
-                    calories_visibility="followers_only",
-                    media_visibility="followers_only",
-                    workout_stats_from_file=True,
-                    elevation_processing="flat_window",
-                )
-            ),
+            json={
+                **PREFERENCES_PAYLOAD,
+                "language": input_language,
+            },
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -1644,6 +1654,11 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
     def test_it_updates_user_preferences_with_deprecated_key(
         self, app_with_open_elevation_url: Flask, user_1: User
     ) -> None:
+        payload = {
+            **PREFERENCES_PAYLOAD,
+            "missing_elevations_processing": "open_elevation",
+        }
+        del payload["missing_elevations_data_source"]
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_open_elevation_url, user_1.email
         )
@@ -1652,32 +1667,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             response = client.post(
                 "/api/auth/profile/edit/preferences",
                 content_type="application/json",
-                data=json.dumps(
-                    dict(
-                        timezone="America/New_York",
-                        weekm=True,
-                        language="en",
-                        imperial_units=True,
-                        display_ascent=False,
-                        start_elevation_at_zero=False,
-                        use_dark_mode=True,
-                        use_raw_gpx_speed=True,
-                        date_format="yyyy-MM-dd",
-                        map_visibility="private",
-                        analysis_visibility="followers_only",
-                        workouts_visibility="public",
-                        manually_approves_followers=False,
-                        hide_profile_in_users_directory=False,
-                        hr_visibility="followers_only",
-                        segments_creation_event="none",
-                        split_workout_charts=True,
-                        missing_elevations_processing="open_elevation",
-                        calories_visibility="followers_only",
-                        media_visibility="followers_only",
-                        workout_stats_from_file=True,
-                        elevation_processing="flat_window",
-                    )
-                ),
+                json=payload,
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
@@ -1702,33 +1692,10 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         response = client.post(
             "/api/auth/profile/edit/preferences",
             content_type="application/json",
-            data=json.dumps(
-                dict(
-                    timezone="America/New_York",
-                    weekm=True,
-                    language="en",
-                    imperial_units=True,
-                    display_ascent=False,
-                    start_elevation_at_zero=False,
-                    use_dark_mode=True,
-                    use_raw_gpx_speed=True,
-                    date_format="yyyy-MM-dd",
-                    map_visibility="private",
-                    analysis_visibility="followers_only",
-                    workouts_visibility="public",
-                    manually_approves_followers=False,
-                    hide_profile_in_users_directory=False,
-                    hr_visibility="followers_only",
-                    segments_creation_event="none",
-                    split_workout_charts=True,
-                    missing_elevations_data_source="open_elevation",
-                    missing_elevations_processing="valhalla",
-                    calories_visibility="followers_only",
-                    media_visibility="followers_only",
-                    workout_stats_from_file=True,
-                    elevation_processing="flat_window",
-                )
-            ),
+            json={
+                **PREFERENCES_PAYLOAD,
+                "missing_elevations_processing": "valhalla",
+            },
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -1791,32 +1758,13 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         response = client.post(
             "/api/auth/profile/edit/preferences",
             content_type="application/json",
-            data=json.dumps(
-                dict(
-                    timezone="America/New_York",
-                    weekm=True,
-                    language="fr",
-                    imperial_units=True,
-                    display_ascent=True,
-                    date_format="MM/dd/yyyy",
-                    start_elevation_at_zero=False,
-                    use_raw_gpx_speed=False,
-                    manually_approves_followers=True,
-                    hide_profile_in_users_directory=True,
-                    use_dark_mode=None,
-                    map_visibility=input_map_visibility.value,
-                    analysis_visibility=input_analysis_visibility.value,
-                    workouts_visibility=input_workout_visibility.value,
-                    hr_visibility=input_workout_visibility.value,
-                    segments_creation_event="none",
-                    split_workout_charts=False,
-                    missing_elevations_data_source="file",
-                    calories_visibility=VisibilityLevel.PRIVATE,
-                    media_visibility=VisibilityLevel.PRIVATE,
-                    workout_stats_from_file=False,
-                    elevation_processing="none",
-                )
-            ),
+            json={
+                **PREFERENCES_PAYLOAD,
+                "map_visibility": input_map_visibility.value,
+                "analysis_visibility": input_analysis_visibility.value,
+                "workouts_visibility": input_workout_visibility.value,
+                "hr_visibility": input_workout_visibility.value,
+            },
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -1873,32 +1821,11 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         response = client.post(
             "/api/auth/profile/edit/preferences",
             content_type="application/json",
-            data=json.dumps(
-                dict(
-                    timezone="America/New_York",
-                    weekm=True,
-                    language="fr",
-                    imperial_units=True,
-                    display_ascent=True,
-                    date_format="MM/dd/yyyy",
-                    start_elevation_at_zero=False,
-                    use_raw_gpx_speed=False,
-                    manually_approves_followers=True,
-                    hide_profile_in_users_directory=True,
-                    use_dark_mode=None,
-                    map_visibility=VisibilityLevel.PRIVATE,
-                    analysis_visibility=VisibilityLevel.PRIVATE,
-                    workouts_visibility=input_workout_visibility.value,
-                    hr_visibility=VisibilityLevel.PRIVATE,
-                    segments_creation_event="none",
-                    split_workout_charts=False,
-                    missing_elevations_data_source="file",
-                    calories_visibility=VisibilityLevel.PRIVATE,
-                    media_visibility=input_media_visibility.value,
-                    workout_stats_from_file=False,
-                    elevation_processing="none",
-                )
-            ),
+            json={
+                **PREFERENCES_PAYLOAD,
+                "workouts_visibility": input_workout_visibility.value,
+                "media_visibility": expected_media_visibility.value,
+            },
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -1924,32 +1851,12 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         response = client.post(
             "/api/auth/profile/edit/preferences",
             content_type="application/json",
-            data=json.dumps(
-                dict(
-                    analysis_visibility=VisibilityLevel.PUBLIC.value,
-                    timezone="America/New_York",
-                    weekm=True,
-                    language="fr",
-                    imperial_units=True,
-                    display_ascent=True,
-                    date_format="MM/dd/yyyy",
-                    map_visibility=VisibilityLevel.PUBLIC.value,
-                    start_elevation_at_zero=False,
-                    use_raw_gpx_speed=False,
-                    workouts_visibility=VisibilityLevel.PUBLIC.value,
-                    manually_approves_followers=True,
-                    hide_profile_in_users_directory=True,
-                    use_dark_mode=None,
-                    hr_visibility=VisibilityLevel.PUBLIC.value,
-                    segments_creation_event="none",
-                    split_workout_charts=False,
-                    missing_elevations_data_source="file",
-                    calories_visibility=VisibilityLevel.PRIVATE.value,
-                    media_visibility=VisibilityLevel.PRIVATE.value,
-                    workout_stats_from_file=False,
-                    elevation_processing="none",
-                )
-            ),
+            json={
+                **PREFERENCES_PAYLOAD,
+                "analysis_visibility": VisibilityLevel.PUBLIC.value,
+                "map_visibility": VisibilityLevel.PUBLIC.value,
+                "workouts_visibility": VisibilityLevel.PUBLIC.value,
+            },
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -1975,32 +1882,11 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         response = client.post(
             "/api/auth/profile/edit/preferences",
             content_type="application/json",
-            data=json.dumps(
-                dict(
-                    analysis_visibility=VisibilityLevel.PUBLIC.value,
-                    timezone="America/New_York",
-                    weekm=True,
-                    language="fr",
-                    imperial_units=True,
-                    display_ascent=True,
-                    date_format="MM/dd/yyyy",
-                    map_visibility=VisibilityLevel.PUBLIC.value,
-                    start_elevation_at_zero=False,
-                    use_raw_gpx_speed=False,
-                    workouts_visibility=VisibilityLevel.PUBLIC.value,
-                    manually_approves_followers=True,
-                    hide_profile_in_users_directory=True,
-                    use_dark_mode=None,
-                    hr_visibility=VisibilityLevel.PUBLIC.value,
-                    segments_creation_event="none",
-                    split_workout_charts=False,
-                    calories_visibility=VisibilityLevel.PRIVATE.value,
-                    media_visibility=VisibilityLevel.PRIVATE.value,
-                    workout_stats_from_file=False,
-                    missing_elevations_data_source="file",
-                    elevation_processing="flat_window",
-                )
-            ),
+            json={
+                **PREFERENCES_PAYLOAD,
+                "missing_elevations_data_source": "file",
+                "elevation_processing": "flat_window",
+            },
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
@@ -2011,6 +1897,71 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                 "when 'missing_elevations_data_source' is 'file'"
             ),
         )
+
+    def test_it_updates_default_tile_provider(
+        self,
+        app_with_multiple_tile_servers_enabled: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_multiple_tile_servers_enabled, user_1.email
+        )
+
+        response = client.post(
+            "/api/auth/profile/edit/preferences",
+            content_type="application/json",
+            json={
+                **PREFERENCES_PAYLOAD,
+                "default_tile_provider": "cyclosm",
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        data = json.loads(response.data.decode())
+        assert data["data"]["default_tile_provider"] == "cyclosm"
+
+    def test_it_returns_400_when_default_tile_provider_is_invalid(
+        self,
+        app_with_multiple_tile_servers_enabled: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_multiple_tile_servers_enabled, user_1.email
+        )
+
+        response = client.post(
+            "/api/auth/profile/edit/preferences",
+            content_type="application/json",
+            json={
+                **PREFERENCES_PAYLOAD,
+                "default_tile_provider": "invalid",
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "tile provider 'invalid' does not exist")
+
+    def test_it_returns_400_when_default_tile_provider_is_not_enabled(
+        self,
+        app: Flask,
+        user_1: User,
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/auth/profile/edit/preferences",
+            content_type="application/json",
+            json={
+                **PREFERENCES_PAYLOAD,
+                "default_tile_provider": "cyclosm",
+            },
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(response, "tile provider 'cyclosm' does not exist")
 
     def test_expected_scope_is_profile_write(
         self, app: Flask, user_1: User

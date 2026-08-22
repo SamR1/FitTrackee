@@ -1,16 +1,19 @@
 from datetime import datetime, timezone
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 
 from flask import Blueprint, current_app, request
 from sqlalchemy.orm.exc import MultipleResultsFound, NoResultFound
+from sqlalchemy.sql import text as sql_text
 
 from fittrackee import db
+from fittrackee.constants import DEFAULT_TILE_PROVIDER
 from fittrackee.database import PSQL_INTEGER_LIMIT
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
     InvalidConfigValueErrorResponse,
     InvalidPayloadErrorResponse,
+    NotFoundErrorResponse,
     handle_error_and_return_response,
 )
 from fittrackee.users.models import User
@@ -264,4 +267,360 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
     except Exception as e:
         return handle_error_and_return_response(
             e, message="error when updating configuration"
+        )
+
+
+@config_blueprint.route("/tile-providers", methods=["GET"])
+@require_auth(scopes=["application:read"], optional_auth_user=True)
+def get_application_tile_providers(
+    auth_user: Optional["User"],
+) -> Union[Dict, HttpResponse]:
+    """
+    Get tile providers.
+
+    If user has admin rights, it returns tile providers with API key as enabled
+    even API key is missing.
+    It allows to identify tile providers that are not properly configured
+    in the administration interface.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      GET /api/tile-providers HTTP/1.1
+      Content-Type: application/json
+
+    **Example responses**:
+
+    - For non admin user:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "tile_providers": [
+            {
+              "attribution": "<Map Attribution for OpenStreetMap>",
+              "default": true,
+              "default_for_user": true,
+              "enabled": true,
+              "id": "osm",
+              "name": "OpenStreetMap",
+            },
+            {
+              "attribution": "<Map Attribution for CyclOSM>",
+              "default": false,
+              "default_for_user": false,
+              "enabled": true,
+              "id": "cyclosm",
+              "name": "CyclOSM",
+            }
+          ]
+        },
+        "status": "success"
+      }
+
+    - For user with admin rights:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "data": {
+          "tile_providers": [
+            {
+              "api_key_is_missing": false,
+              "attribution": "<Map Attribution for OpenStreetMap>",
+              "default": true,
+              "default_for_user": true,
+              "enabled": true,
+              "id": "osm",
+              "name": "OSM",
+              "subdomains": "",
+              "url": "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            },
+            {
+              "api_key_is_missing": false,
+              "attribution": "<Map Attribution for OpenStreetMap (de)>",
+              "default": false,
+              "default_for_user": true,
+              "enabled": false,
+              "id": "osm_de",
+              "name": "OSM (de)",
+              "subdomains": "",
+              "url": "https://tile.openstreetmap.de/{z}/{x}/{y}.png",
+            },
+            {
+              "api_key_is_missing": false,
+              "attribution": "<Map Attribution for OpenStreetMap (fr)>",
+              "default": false,
+              "default_for_user": true,
+              "enabled": false,
+              "id": "osm_fr",
+              "name": "OSM (fr)",
+              "subdomains": "",
+              "url": "https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
+            },
+            {
+              "api_key_is_missing": false,
+              "attribution": "<Map Attribution for CyclOSM>",
+              "default": false,
+              "default_for_user": true,
+              "enabled": true,
+              "id": "cyclosm",
+              "name": "CyclOSM",
+              "subdomains": "a,b,c",
+              "url": "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
+            },
+            {
+              "api_key_is_missing": true,
+              "attribution": "<Map Attribution for Stadia Alidade Smooth>",
+              "default": false,
+              "default_for_user": true,
+              "enabled": false,
+              "id": "stadiamaps_alidade_smooth",
+              "name": "Stadia Alidade Smooth",
+              "subdomains": "",
+              "url": "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png?apikey={apikey}",
+            },
+            {
+              "api_key_is_missing": true,
+              "attribution": "<Map Attribution for Stadia Alidade Outdoors>",
+              "default": false,
+              "default_for_user": true,
+              "enabled": false,
+              "id": "stadiamaps_outdoors",
+              "name": "Stadia Outdoors",
+              "subdomains": "",
+              "url": "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png?apikey={apikey}",
+            },
+            {
+              "api_key_is_missing": true,
+              "attribution": "<Map Attribution for Thunderforest Landscape>",
+              "default": false,
+              "default_for_user": true,
+              "enabled": false,
+              "id": "thunderforest_landscape",
+              "name": "Thunderforest Landscape",
+              "subdomains": "",
+              "url": "https://api.thunderforest.com/landscape/{z}/{x}/{y}.png?apikey={apikey}",
+            },
+            {
+              "api_key_is_missing": true,
+              "attribution": "<Map Attribution for Thunderforest Outdoors>",
+              "default": false,
+              "default_for_user": true,
+              "enabled": false,
+              "id": "thunderforest_outdoors",
+              "name": "Thunderforest Outdoors",
+              "subdomains": "",
+              "url": "https://api.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey={apikey}",
+            },
+          ]
+        },
+        "status": "success"
+      }
+
+    :statuscode 200: ``success``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 500: ``error on getting tile providers``
+    """
+
+    try:
+        config = AppConfig.query.one()
+        has_admin_rights = auth_user and auth_user.role >= UserRole.ADMIN.value
+        tile_providers = (
+            current_app.config["TILE_PROVIDERS"]
+            if has_admin_rights
+            else config.available_tile_providers
+        )
+
+        sql = """
+            SELECT DISTINCT default_tile_provider
+            FROM users
+            GROUP BY default_tile_provider
+            HAVING COUNT(DISTINCT default_tile_provider) > 0
+        """
+        tile_providers_set_by_users = [
+            row[0] for row in db.session.execute(sql_text(sql)).all()
+        ]
+
+        return {
+            "status": "success",
+            "data": {
+                "tile_providers": [
+                    {
+                        "attribution": tile_provider_config.attribution,
+                        "id": tile_provider,
+                        "name": tile_provider_config.name,
+                        "default": (
+                            tile_provider == config.default_tile_provider
+                        ),
+                        "default_for_user": (
+                            tile_provider == auth_user.default_tile_provider
+                            if (
+                                auth_user
+                                and auth_user.default_tile_provider
+                                in current_app.config[
+                                    "available_tile_providers"
+                                ]
+                            )
+                            else tile_provider == config.default_tile_provider
+                        ),
+                        **(
+                            {
+                                "api_key_is_missing": (
+                                    tile_provider_config.api_key_is_missing
+                                ),
+                                "enabled": (
+                                    tile_provider in config.tile_providers
+                                    if config.tile_providers
+                                    else tile_provider == DEFAULT_TILE_PROVIDER
+                                ),
+                                "set_by_users": (
+                                    tile_provider
+                                    in tile_providers_set_by_users
+                                ),
+                            }
+                            if has_admin_rights
+                            else {"enabled": True}
+                        ),
+                    }
+                    for tile_provider, tile_provider_config in tile_providers.items()
+                ],
+            },
+        }
+    except (MultipleResultsFound, NoResultFound) as e:
+        return handle_error_and_return_response(
+            e, message="error on getting tile providers"
+        )
+
+
+@config_blueprint.route(
+    "/tile-providers/<string:tile_provider>", methods=["PATCH"]
+)
+@require_auth(scopes=["application:write"], role=UserRole.ADMIN)
+def set_application_tile_providers(
+    auth_user: "User", tile_provider: str
+) -> Union[Dict, HttpResponse]:
+    """
+    Update tile provider for the application.
+
+    **Example request**:
+
+    .. sourcecode:: http
+
+      POST /api/tile-providers/default HTTP/1.1
+      Content-Type: application/json
+
+    **Example response**:
+
+    .. sourcecode:: http
+
+      HTTP/1.1 200 OK
+      Content-Type: application/json
+
+      {
+        "status": "success"
+      }
+
+    :param string tile_provider: tile provider id
+
+    :<json string default: default status
+    :<json string enabled: enabled status
+
+    :statuscode 200: ``success``
+    :statuscode 400:
+        - ``invalid payload``
+        - ``default tile provider cannot be disabled, please set another provider as default first``
+        - ``no api key is not set for this tile provider, please update application config first``
+        - ``tile provided 'osm' can not be disabled when it is the only tile provider``
+    :statuscode 401:
+        - ``provide a valid auth token``
+        - ``signature expired, please log in again``
+        - ``invalid token, please log in again``
+    :statuscode 403:
+        - ``you do not have permissions``
+    :statuscode 404: ``tile provider not found``
+    :statuscode 500: ``error on getting tile providers``
+    """
+
+    if tile_provider not in current_app.config["TILE_PROVIDERS"]:
+        return NotFoundErrorResponse(
+            f"tile provider '{tile_provider}' does not exist"
+        )
+
+    config_data = request.get_json()
+    if (
+        not config_data
+        or config_data.get("default") is None
+        or config_data.get("enabled") is None
+    ):
+        return InvalidPayloadErrorResponse()
+
+    if config_data["default"] and not config_data["enabled"]:
+        return InvalidPayloadErrorResponse(
+            "default tile provider cannot be disabled, please set another "
+            "provider as default first"
+        )
+
+    try:
+        config = AppConfig.query.one()
+
+        if config_data["enabled"]:
+            config.tile_providers = list(
+                {*config.tile_providers, tile_provider}
+            )
+        else:
+            config.tile_providers = [
+                enabled_tile_provider
+                for enabled_tile_provider in config.tile_providers
+                if enabled_tile_provider != tile_provider
+            ]
+
+        if config_data["default"]:
+            config.default_tile_provider = tile_provider
+        elif (
+            tile_provider == "osm"
+            and config.default_tile_provider == DEFAULT_TILE_PROVIDER
+            and config.tile_providers == [DEFAULT_TILE_PROVIDER]
+        ):
+            db.session.rollback()
+            return InvalidPayloadErrorResponse(
+                "tile provided 'osm' can not be disabled when it is "
+                "the only tile provider"
+            )
+        elif config.default_tile_provider == tile_provider:
+            config.default_tile_provider = DEFAULT_TILE_PROVIDER
+
+        if (
+            tile_provider in config.tile_providers
+            and current_app.config["TILE_PROVIDERS"][
+                tile_provider
+            ].api_key_is_missing
+        ):
+            db.session.rollback()
+            return InvalidPayloadErrorResponse(
+                "no api key is not set for this tile provider, please update "
+                "application config first"
+            )
+
+        if not config.tile_providers:
+            config.tile_providers = [DEFAULT_TILE_PROVIDER]
+            config.default_tile_provider = DEFAULT_TILE_PROVIDER
+
+        db.session.commit()
+        update_app_config_from_database(current_app, config)
+        return {"status": "success"}
+    except (MultipleResultsFound, NoResultFound) as e:
+        return handle_error_and_return_response(
+            e, message="error on getting tile providers"
         )

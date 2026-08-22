@@ -17,4 +17,4 @@ export const oauth2_scopes = [
   'workouts:write',
 ]
 
-export const admin_oauth2_scopes = ['application:write']
+export const admin_oauth2_scopes = ['application:read', 'application:write']

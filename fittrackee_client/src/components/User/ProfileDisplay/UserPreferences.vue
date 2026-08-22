@@ -38,6 +38,10 @@
     </dl>
     <div class="preferences-section">{{ $t('workouts.WORKOUT', 0) }}</div>
     <dl>
+      <dt>{{ $t('common.TILE_PROVIDERS') }}<sup>1</sup>:</dt>
+      <dd>
+        {{ tileProvider?.name }}
+      </dd>
       <dt>{{ $t('user.PROFILE.UNITS.LABEL') }}:</dt>
       <dd>
         {{
@@ -215,6 +219,8 @@
 
   import useApp from '@/composables/useApp.ts'
   import useAuthUser from '@/composables/useAuthUser'
+  import useTileProviders from '@/composables/useTileProviders.ts'
+  import type { ITileProvider } from '@/types/tileProviders.ts'
   import type { IAuthUserProfile } from '@/types/user'
   import { languageLabels } from '@/utils/locales'
 
@@ -226,6 +232,7 @@
 
   const { elevationServices } = useApp()
   const { dateFormat, timezone } = useAuthUser()
+  const { availableTileProviders } = useTileProviders()
 
   const userLanguage: ComputedRef<string> = computed(() =>
     user.value.language && user.value.language in languageLabels
@@ -245,6 +252,9 @@
   )
   const workoutStatsFromFile = computed(() =>
     user.value.workout_stats_from_file ? 'FROM_FILE' : 'CALCULATED'
+  )
+  const tileProvider: ComputedRef<ITileProvider | undefined> = computed(() =>
+    availableTileProviders.value.find((provider) => provider.default_for_user)
   )
 </script>
 
