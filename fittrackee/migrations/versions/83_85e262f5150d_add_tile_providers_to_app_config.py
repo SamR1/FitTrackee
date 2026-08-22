@@ -11,6 +11,7 @@ import sqlalchemy as sa
 from alembic import op
 from sqlalchemy.sql import table, column
 
+from fittrackee.application.tile_servers import get_custom_tile_provider
 
 # revision identifiers, used by Alembic.
 revision = '85e262f5150d'
@@ -30,11 +31,7 @@ def upgrade():
 
     # ### end Alembic commands ###
 
-    tile_server_url = os.environ.get(
-        "CUSTOM_TILE_PROVIDER_URL", os.environ.get("TILE_SERVER_URL", "")
-    )
-    tile_provider = "custom" if tile_server_url else "osm"
-
+    tile_provider = get_custom_tile_provider()
     app_config = table(
         "app_config",
         column("tile_providers", sa.ARRAY(sa.String())),

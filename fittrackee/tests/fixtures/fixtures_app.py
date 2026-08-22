@@ -301,6 +301,20 @@ def app_with_3_users_max(monkeypatch: pytest.MonkeyPatch) -> Generator:
 
 @pytest.fixture
 def app_no_config(monkeypatch: pytest.MonkeyPatch) -> Generator:
+    delete_env_vars(
+        [
+            *TILE_PROVIDERS_KEYS,
+            "DEFAULT_STATICMAP",
+            "NOMINATIM_URL",
+            "ENABLE_GEOSPATIAL_FEATURES",
+            "API_RATE_LIMITS",
+            "OPEN_ELEVATION_API_URL",
+            "VALHALLA_API_URL",
+            "HEATMAP_BASE_ZOOM",
+            "ENABLE_HEATMAP",
+        ],
+        monkeypatch,
+    )
     yield from get_app(with_config=False)
 
 

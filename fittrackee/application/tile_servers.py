@@ -90,6 +90,17 @@ class ThunderForestTileProvider(TileProviderBase):
 
 
 # Custom
+def _get_custom_tile_provider_url() -> str:
+    return os.environ.get(
+        "CUSTOM_TILE_PROVIDER_URL", os.environ.get("TILE_SERVER_URL", "")
+    )
+
+
+def get_custom_tile_provider() -> str:
+    tile_server_url = _get_custom_tile_provider_url()
+    return "custom" if tile_server_url else "osm"
+
+
 def get_tile_provider_from_env_var() -> Dict:
     """
     For tile provider set before v1.4.0, the environment variables are:
@@ -99,9 +110,7 @@ def get_tile_provider_from_env_var() -> Dict:
     These variables are deprecated. Use variables with prefix
     'CUSTOM_TILE_PROVIDER_' instead.
     """
-    tile_server_url = os.environ.get(
-        "CUSTOM_TILE_PROVIDER_URL", os.environ.get("TILE_SERVER_URL", "")
-    )
+    tile_server_url = _get_custom_tile_provider_url()
     if not tile_server_url:
         return {}
 

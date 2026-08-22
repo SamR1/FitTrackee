@@ -9,6 +9,7 @@ from fittrackee import db
 from ..dates import get_datetime_in_utc
 from .exceptions import AppConfigException
 from .models import AppConfig
+from .tile_servers import get_custom_tile_provider
 
 MAX_FILE_SIZE = 1 * 1024 * 1024  # 1MB
 
@@ -35,6 +36,9 @@ def get_or_init_config() -> AppConfig:
                 config.max_users = 0  # no limitation
                 config.max_single_file_size = MAX_FILE_SIZE
                 config.max_zip_file_size = MAX_FILE_SIZE * 10
+                tile_provider = get_custom_tile_provider()
+                config.default_tile_provider = tile_provider
+                config.tile_providers = [tile_provider]
                 db.session.add(config)
                 db.session.commit()
                 return config
