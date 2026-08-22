@@ -17,6 +17,7 @@ export const loadLanguagePackage = async (language: string) => {
   // - Russian
   // - Slovenian
   // - Swedish
+  // - Tamil
   // - Turkish
   // fallback to english
   switch (language) {
