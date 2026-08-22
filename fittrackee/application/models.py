@@ -74,6 +74,9 @@ class AppConfig(BaseModel):
             available_tile_providers = {
                 key: current_app.config["TILE_PROVIDERS"][key]
                 for key in self.tile_providers
+                if not current_app.config["TILE_PROVIDERS"][
+                    key
+                ].api_key_is_missing
             }
         if not available_tile_providers:
             available_tile_providers = {

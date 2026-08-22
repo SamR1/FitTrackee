@@ -276,7 +276,12 @@ def get_application_tile_providers(
     auth_user: Optional["User"],
 ) -> Union[Dict, HttpResponse]:
     """
-    Get tile providers
+    Get tile providers.
+
+    If user has admin rights, it returns tile providers with API key as enabled
+    even API key is missing.
+    It allows to identify tile providers that are not properly configured
+    in the administration interface, in particular.
 
     **Example request**:
 

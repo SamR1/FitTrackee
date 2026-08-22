@@ -256,3 +256,26 @@ class TestAppConfigModel:
             ]["cyclosm"],
         }
         assert config.default_tile_provider == "cyclosm"
+
+    def test_it_returns_only_tiles_providers_without_missing_api_key(
+        self, app_with_missing_tile_provider_api_key: "Flask"
+    ) -> None:
+        """
+        api key is missing for Thunderforest Outdoor tile server
+        """
+        config = AppConfig.query.one()
+
+        assert config.tile_providers == [
+            "osm",
+            "cyclosm",
+            "thunderforest_outdoors",
+        ]
+        assert config.available_tile_providers == {
+            "osm": app_with_missing_tile_provider_api_key.config[
+                "TILE_PROVIDERS"
+            ]["osm"],
+            "cyclosm": app_with_missing_tile_provider_api_key.config[
+                "TILE_PROVIDERS"
+            ]["cyclosm"],
+        }
+        assert config.default_tile_provider == "cyclosm"
