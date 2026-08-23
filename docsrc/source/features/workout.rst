@@ -419,11 +419,18 @@ Users can report a workout that violates instance rules. This will send a notifi
 Calculated data
 ===============
 
+.. versionchanged:: 1.4.0 added possibility to get statistics from ``.fit`` file
+
 .. admonition:: Technical notes
 
   Related data are stored in database in metric system.
 
-Calculated values may differ from values calculated by the application or device that originally generated the files, in particular the maximum speed or the duration of pauses.
+In case of ``.fit`` files, if the `preference <account_and_preferences.html#preferences>`__ "Workout statistics" is set to "From file", the statistics are not calculated by **FitTrackee** (and ``gpxpy``), but extracted from the file.
+
+.. note::
+    Statistics are always calculated for segments regardless of preferences (except in case of sports that combine multiple disciplines like **SwimRun** and **Triathlon**)
+
+Otherwise, the calculated values may differ from values calculated by the application or device that originally generated the files, in particular the maximum speed or the duration of pauses.
 
 By default, extreme speed values (which may be related to GPS errors) are excluded, which also affects the maximum speed (and pace).
 
@@ -459,17 +466,19 @@ Elevation
 ---------
 .. versionchanged:: 1.0.6 elevation is not displayed for flatwater sports
 .. versionchanged:: 1.1.0 add missing elevation and elevation data source change
+.. versionchanged:: 1.4.0 allow smoothing to be applied regardless of elevation data source
 
 Elevation-related data for racket sports (Outdoor Tennis and Padel), flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) and Ice Skating are not displayed if the file contains elevation
 
-| If some elevation data are missing and an `elevation service <../installation/elevation.html>`__ is enabled by the administrators, the missing elevations can be retrieved on workout creation if the user preference is set.
+| If some elevation data are missing and an `elevation service <../installation/elevation.html>`__ is enabled by the administrators, the missing elevations can be retrieved on workout creation if the user `preference <account_and_preferences.html#preferences>`__ is set.
 | In this case, all elevations are updated.
 
 .. note::
 
     The elevation services that are enabled are displayed on the **About** page.
 
-Elevation data source can also be changed after creation.
+Elevation data source can also be changed after creation, and smoothing can be applied regardless of elevation data.
+
 
 Records
 -------
@@ -726,9 +735,6 @@ The calculated data can be refreshed by clicking on **Refresh** button and weath
 .. figure:: ../_images/elevations-choices.png
    :alt: List of available elevation sources
 
-It is also possible to get the elevation again from the file:
-
-.. figure:: ../_images/elevations-choices-with-file.png
-   :alt: List of available elevation sources with file
+It is also possible to get the elevation again from the file.
 
 A workout can be deleted by clicking on the **Delete** button.

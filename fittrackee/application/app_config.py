@@ -70,7 +70,7 @@ def get_application_config() -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "1.3.4",
+          "version": "1.4.0b1",
           "weather_provider": null
         },
         "status": "success"
@@ -135,7 +135,7 @@ def update_application_config(auth_user: User) -> Union[Dict, HttpResponse]:
           "privacy_policy": null,
           "privacy_policy_date": null,
           "stats_workouts_limit": 10000,
-          "version": "1.3.4",
+          "version": "1.4.0b1",
           "weather_provider": null
         },
         "status": "success"
@@ -386,7 +386,7 @@ def get_application_tile_providers(
               "id": "stadiamaps_alidade_smooth",
               "name": "Stadia Alidade Smooth",
               "subdomains": "",
-              "url": "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png?apikey={apikey}",
+              "url": "https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}.png?api_key={apikey}",
             },
             {
               "api_key_is_missing": true,
@@ -397,7 +397,7 @@ def get_application_tile_providers(
               "id": "stadiamaps_outdoors",
               "name": "Stadia Outdoors",
               "subdomains": "",
-              "url": "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png?apikey={apikey}",
+              "url": "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}.png?api_key={apikey}",
             },
             {
               "api_key_is_missing": true,

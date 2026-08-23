@@ -28,6 +28,9 @@ The tracks are stored as the cells of a grid, whose resolution is set with
 and merged further on a dense view, so the map stays readable and the response
 bounded whatever the number of workouts.
 
+.. figure:: ../_images/global-heatmap.png
+   :alt: FitTrackee Global Heatmap
+
 .. note::
   | The heatmap is displayed only if `ENABLE_HEATMAP <../installation/environments_variables.html#envvar-ENABLE_HEATMAP>`__ is set to ``True``.
   | The cells are computed when a workout is created or its file refreshed, and for existing workouts when upgrading.

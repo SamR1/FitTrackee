@@ -251,7 +251,7 @@ deployment method.
 
     .. versionadded:: 0.4.0
 
-    Map attribution (if using another tile server), see `Map tile providers <map_tile_providers.html>`__.
+    Map attribution (if using a custom tile server), see `Map tile providers <map_tile_providers.html>`__.
 
     .. versionchanged:: 1.4.0
 
@@ -361,7 +361,7 @@ deployment method.
 
     .. versionadded:: 0.4.0
 
-    | Tile server URL (with api key if needed), see `Map tile providers <map_tile_providers.html>`__.
+    | Custom tile server URL (with api key if needed), see `Map tile providers <map_tile_providers.html>`__.
     | Since **0.4.9**, it's also used to generate static maps (to keep default server, see `DEFAULT_STATICMAP <environments_variables.html#envvar-DEFAULT_STATICMAP>`__)
 
     .. versionchanged:: 0.7.23
