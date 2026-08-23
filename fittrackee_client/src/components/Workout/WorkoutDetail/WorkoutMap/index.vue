@@ -74,7 +74,9 @@
               :attribution="provider.attribution"
               :bounds="bounds"
               :maxZoom="19"
-              layer-type="base"
+              :layer-type="
+                availableTileProviders.length > 1 ? 'base' : undefined
+              "
             />
             <LGeoJson
               :geojson="geoJson"
