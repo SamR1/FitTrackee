@@ -13,19 +13,21 @@
       @keydown.esc="updateDisplayModal(false)"
     />
     <dl>
-      <dt>{{ capitalize($t('workouts.SPORT', 1)) }}</dt>
-      <dd>
+      <dt class="capitalize">{{ $t('workouts.SPORT', 1) }}</dt>
+      <dd class="capitalize">
         {{ sport.translatedLabel }}
       </dd>
-      <dt>{{ capitalize($t('user.PROFILE.SPORT.COLOR')) }}</dt>
-      <dd>
+      <dt class="capitalize">
+        {{ $t('user.PROFILE.SPORT.COLOR') }}
+      </dt>
+      <dd class="capitalize">
         <SportImage
           :title="sport.translatedLabel"
           :sport-label="sport.label"
           :color="sport.color ? sport.color : sportColors[sport.label]"
         />
       </dd>
-      <dt>{{ capitalize($t('workouts.WORKOUT', 0)) }}</dt>
+      <dt class="capitalize">{{ $t('workouts.WORKOUT', 0) }}</dt>
       <dd>
         <i
           :class="`fa fa-${
@@ -34,8 +36,8 @@
           aria-hidden="true"
         />
       </dd>
-      <dt>
-        {{ capitalize($t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD')) }}
+      <dt class="capitalize">
+        {{ $t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD') }}
       </dt>
       <dd>
         <Distance
@@ -46,8 +48,8 @@
         />
       </dd>
       <template v-if="sportsWithPace.includes(sport.label)">
-        <dt>
-          {{ capitalize($t('user.PROFILE.SPORT.PACE_SPEED_DISPLAY.LABEL')) }}
+        <dt class="capitalize">
+          {{ $t('user.PROFILE.SPORT.PACE_SPEED_DISPLAY.LABEL') }}
         </dt>
         <dd>
           {{
@@ -57,7 +59,7 @@
           }}
         </dd>
       </template>
-      <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>
+      <dt class="capitalize">{{ $t('common.ACTIVE', 0) }}</dt>
       <dd>
         <i
           :class="`fa fa-${sport.is_active_for_user ? 'check-' : ''}square-o`"
@@ -65,31 +67,35 @@
         />
       </dd>
       <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}:</dt>
-      <dd>
+      <dd class="capitalize">
         {{
           $t(
             `visibility_levels.LEVELS.${sport.workouts_visibility || authUser.workouts_visibility}`
           )
         }}
       </dd>
-      <dt>{{ $t('visibility_levels.MEDIA_VISIBILITY') }}:</dt>
-      <dd>
+      <dt class="capitalize">
+        {{ $t('visibility_levels.MEDIA_VISIBILITY') }}:
+      </dt>
+      <dd class="capitalize">
         {{
           $t(
             `visibility_levels.LEVELS.${sport.media_visibility || authUser.media_visibility}`
           )
         }}
       </dd>
-      <dt>{{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}:</dt>
-      <dd>
+      <dt class="capitalize">
+        {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}:
+      </dt>
+      <dd class="capitalize">
         {{
           $t(
             `visibility_levels.LEVELS.${sport.analysis_visibility || authUser.analysis_visibility}`
           )
         }}
       </dd>
-      <dt>{{ $t('visibility_levels.MAP_VISIBILITY') }}:</dt>
-      <dd>
+      <dt class="capitalize">{{ $t('visibility_levels.MAP_VISIBILITY') }}:</dt>
+      <dd class="capitalize">
         {{
           $t(
             `visibility_levels.LEVELS.${sport.map_visibility || authUser.map_visibility}`
@@ -146,7 +152,7 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, toRefs, watch } from 'vue'
+  import { computed, toRefs, watch } from 'vue'
   import type { ComputedRef } from 'vue'
   import { useRoute } from 'vue-router'
 

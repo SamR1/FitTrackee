@@ -362,12 +362,12 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
             </option>
           </select>
         </label>
         <label class="form-items">
-          <span>
+          <span class="capitalize">
             {{ $t('visibility_levels.MEDIA_VISIBILITY') }}<sup>3</sup>
           </span>
           <select
@@ -381,7 +381,7 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
             </option>
           </select>
         </label>
@@ -400,7 +400,7 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
             </option>
           </select>
         </label>
@@ -418,7 +418,7 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
             </option>
           </select>
         </label>
@@ -436,7 +436,7 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
             </option>
           </select>
         </label>
@@ -454,7 +454,7 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
             </option>
           </select>
         </label>
@@ -512,7 +512,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, reactive, onMounted, toRefs } from 'vue'
+  import { computed, reactive, onMounted, toRefs, capitalize, watch } from 'vue'
   import type { ComputedRef, Reactive } from 'vue'
 
   import TimezoneDropdown from '@/components/User/ProfileEdition/TimezoneDropdown.vue'
@@ -789,6 +789,15 @@
         ? 'none'
         : userForm.elevation_processing
   }
+
+  watch(
+    () => tileProvider?.value,
+    () => {
+      if (user.value) {
+        updateUserForm(user.value)
+      }
+    }
+  )
 
   onMounted(() => {
     if (user.value) {

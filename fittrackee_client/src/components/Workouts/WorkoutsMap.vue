@@ -63,7 +63,7 @@
           class="map"
           :aria-label="$t('workouts.WORKOUTS_MAP')"
         >
-          <LControlLayers />
+          <LControlLayers v-if="availableTileProviders.length > 1" />
           <LControl
             position="topleft"
             class="map-control"

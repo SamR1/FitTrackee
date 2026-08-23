@@ -338,7 +338,7 @@
                     :value="level"
                     :key="level"
                   >
-                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                    {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
                   </option>
                 </select>
               </div>
@@ -357,7 +357,7 @@
                     :value="level"
                     :key="level"
                   >
-                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                    {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
                   </option>
                 </select>
               </div>
@@ -375,7 +375,7 @@
                     :value="level"
                     :key="level"
                   >
-                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                    {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
                   </option>
                 </select>
               </div>
@@ -433,7 +433,7 @@
                     :value="level"
                     :key="level"
                   >
-                    {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                    {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
                   </option>
                 </select>
               </div>
@@ -469,7 +469,15 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onMounted, reactive, ref, toRefs, watch } from 'vue'
+  import {
+    capitalize,
+    computed,
+    onMounted,
+    reactive,
+    ref,
+    toRefs,
+    watch,
+  } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
   import { useRoute, useRouter } from 'vue-router'

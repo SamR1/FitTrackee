@@ -140,35 +140,35 @@
         </span>
       </div>
       <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>3</sup>:</dt>
-      <dd>
+      <dd class="capitalize">
         {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
       </dd>
       <dt class="capitalize">
         {{ $t('visibility_levels.MEDIA_VISIBILITY') }}<sup>3</sup>:
       </dt>
-      <dd>
+      <dd class="capitalize">
         {{ $t(`visibility_levels.LEVELS.${user.media_visibility}`) }}
       </dd>
       <dt class="capitalize">
         {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}<sup>3</sup>:
       </dt>
-      <dd>
+      <dd class="capitalize">
         {{ $t(`visibility_levels.LEVELS.${user.analysis_visibility}`) }}
       </dd>
       <dt class="capitalize">
         {{ $t('visibility_levels.MAP_VISIBILITY') }}<sup>3</sup>:
       </dt>
-      <dd>
+      <dd class="capitalize">
         {{ $t(`visibility_levels.LEVELS.${user.map_visibility}`) }}
       </dd>
       <dt class="capitalize">{{ $t('visibility_levels.HR_VISIBILITY') }}:</dt>
-      <dd>
+      <dd class="capitalize">
         {{ $t(`visibility_levels.LEVELS.${user.hr_visibility}`) }}
       </dd>
       <dt class="capitalize">
         {{ $t('visibility_levels.CALORIES_VISIBILITY') }}:
       </dt>
-      <dd>
+      <dd class="capitalize">
         {{ $t(`visibility_levels.LEVELS.${user.calories_visibility}`) }}
       </dd>
       <dt>
