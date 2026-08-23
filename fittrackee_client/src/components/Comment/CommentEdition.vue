@@ -48,7 +48,7 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.COMMENT_LEVELS.${level}`) }}
+              {{ capitalize($t(`visibility_levels.COMMENT_LEVELS.${level}`)) }}
             </option>
           </select>
         </div>
@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, onUnmounted, ref, toRefs } from 'vue'
+  import { capitalize, computed, onUnmounted, ref, toRefs } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
 
   import UserPicture from '@/components/User/UserPicture.vue'

@@ -6,14 +6,14 @@
     >
       <div class="form-items">
         <div class="form-item">
-          <label for="sport-label">
-            {{ capitalize($t('workouts.SPORT', 1)) }}
+          <label for="sport-label" class="capitalize">
+            {{ $t('workouts.SPORT', 1) }}
           </label>
           {{ sport.translatedLabel }}
         </div>
         <div class="form-item">
-          <label for="sport-color">
-            {{ capitalize($t('user.PROFILE.SPORT.COLOR')) }}
+          <label for="sport-color" class="capitalize">
+            {{ $t('user.PROFILE.SPORT.COLOR') }}
           </label>
           <input
             id="sport-color"
@@ -27,8 +27,8 @@
           />
         </div>
         <div class="form-item">
-          <label for="sport-threshold">
-            {{ capitalize($t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD')) }}
+          <label for="sport-threshold" class="capitalize">
+            {{ $t('user.PROFILE.SPORT.STOPPED_SPEED_THRESHOLD') }}
             ({{ `${authUser.imperial_units ? 'mi' : 'km'}/h` }})*
           </label>
           <input
@@ -46,10 +46,8 @@
         </div>
         <template v-if="sportsWithPace.includes(sport.label)">
           <div class="form-item">
-            <label for="sport-pace-speed-display">
-              {{
-                capitalize($t('user.PROFILE.SPORT.PACE_SPEED_DISPLAY.LABEL'))
-              }}
+            <label for="sport-pace-speed-display" class="capitalize">
+              {{ $t('user.PROFILE.SPORT.PACE_SPEED_DISPLAY.LABEL') }}
             </label>
             <select
               id="sport-pace-speed-display"
@@ -94,12 +92,12 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
             </option>
           </select>
         </label>
         <label class="form-items">
-          <span>
+          <span class="capitalize">
             {{ $t('visibility_levels.MEDIA_VISIBILITY') }}
           </span>
           <select
@@ -113,12 +111,12 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
             </option>
           </select>
         </label>
         <label class="form-items">
-          <span>
+          <span class="capitalize">
             {{ $t('visibility_levels.ANALYSIS_VISIBILITY') }}
           </span>
           <select
@@ -132,12 +130,12 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
             </option>
           </select>
         </label>
         <label class="form-items">
-          <span>
+          <span class="capitalize">
             {{ $t('visibility_levels.MAP_VISIBILITY') }}
           </span>
           <select
@@ -150,7 +148,7 @@
               :value="level"
               :key="level"
             >
-              {{ $t(`visibility_levels.LEVELS.${level}`) }}
+              {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
             </option>
           </select>
         </label>

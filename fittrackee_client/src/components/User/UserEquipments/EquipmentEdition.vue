@@ -7,8 +7,8 @@
       <form :class="{ errors: formErrors }" @submit.prevent="submit">
         <div class="form-items">
           <div class="form-item">
-            <label for="equipment-label">
-              {{ capitalize($t('common.LABEL')) }}*
+            <label for="equipment-label" class="capitalize">
+              {{ $t('common.LABEL') }}*
             </label>
             <input
               id="equipment-label"
@@ -26,8 +26,8 @@
             </div>
           </div>
           <div class="form-item">
-            <label for="equipment-type-id">
-              {{ capitalize($t('equipments.EQUIPMENT_TYPE')) }}*
+            <label for="equipment-type-id" class="capitalize">
+              {{ $t('equipments.EQUIPMENT_TYPE') }}*
             </label>
             <select
               id="equipment-type-id"
@@ -80,8 +80,8 @@
             />
           </div>
           <div class="form-item">
-            <label for="equipment-visibility">
-              {{ capitalize($t('visibility_levels.VISIBILITY')) }}
+            <label for="equipment-visibility" class="capitalize">
+              {{ $t('visibility_levels.VISIBILITY') }}
             </label>
             <select id="workout_visibility" v-model="equipmentForm.visibility">
               <option
@@ -89,13 +89,13 @@
                 :value="level"
                 :key="level"
               >
-                {{ $t(`visibility_levels.LEVELS.${level}`) }}
+                {{ capitalize($t(`visibility_levels.LEVELS.${level}`)) }}
               </option>
             </select>
           </div>
           <div class="form-item-checkbox" v-if="equipmentForm.id">
-            <label for="equipment-active">
-              {{ capitalize($t('common.ACTIVE')) }}
+            <label for="equipment-active" class="capitalize">
+              {{ $t('common.ACTIVE') }}
             </label>
             <input
               id="equipment-active"
@@ -105,8 +105,8 @@
             />
           </div>
           <div class="form-item">
-            <label for="equipment-sports">
-              {{ capitalize($t('equipments.DEFAULT_FOR_SPORTS', 0)) }}
+            <label for="equipment-sports" class="capitalize">
+              {{ $t('equipments.DEFAULT_FOR_SPORTS', 0) }}
             </label>
             <SportsMultiSelect
               :sports="filteredSports"

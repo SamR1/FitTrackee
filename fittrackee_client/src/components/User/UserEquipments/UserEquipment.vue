@@ -15,9 +15,11 @@
       @keydown.esc="updateDisplayModal(false)"
     />
     <dl>
-      <dt>{{ capitalize($t('common.LABEL')) }}</dt>
+      <dt class="capitalize">{{ $t('common.LABEL') }}</dt>
       <dd>{{ equipment.label }}</dd>
-      <dt>{{ capitalize($t('equipments.EQUIPMENT_TYPE')) }}</dt>
+      <dt class="capitalize">
+        {{ $t('equipments.EQUIPMENT_TYPE') }}
+      </dt>
       <dd class="equipment-type">
         <EquipmentTypeImage
           :title="$t(`equipment_types.${equipment.equipment_type.label}.LABEL`)"
@@ -43,7 +45,7 @@
           {{ $t('common.NO_DESCRIPTION') }}
         </span>
       </dd>
-      <dt>{{ capitalize($t('workouts.WORKOUT', 0)) }}</dt>
+      <dt class="capitalize">{{ $t('workouts.WORKOUT', 0) }}</dt>
       <dd>
         <router-link
           :to="`/workouts?equipment_id=${equipment.id}`"
@@ -54,7 +56,9 @@
         <template v-else>{{ equipment.workouts_count }}</template>
       </dd>
       <template v-if="equipment.total_distance !== null">
-        <dt>{{ capitalize($t('workouts.TOTAL_DISTANCE', 0)) }}</dt>
+        <dt class="capitalize">
+          {{ $t('workouts.TOTAL_DISTANCE', 0) }}
+        </dt>
         <dd>
           <Distance
             :distance="equipment.total_distance"
@@ -68,16 +72,20 @@
           </span>
         </dd>
       </template>
-      <dt>{{ capitalize($t('workouts.TOTAL_DURATION', 0)) }}</dt>
+      <dt class="capitalize">
+        {{ $t('workouts.TOTAL_DURATION', 0) }}
+      </dt>
       <dd>
         {{ equipment.total_duration_in_hours }}
         {{ $t('common.HOURS', equipment.total_duration_in_hours || 0) }}
       </dd>
-      <dt>{{ capitalize($t('visibility_levels.VISIBILITY')) }}</dt>
-      <dd>
+      <dt class="capitalize">
+        {{ $t('visibility_levels.VISIBILITY') }}
+      </dt>
+      <dd class="capitalize">
         {{ $t(`visibility_levels.LEVELS.${equipment.visibility}`) }}
       </dd>
-      <dt>{{ capitalize($t('common.ACTIVE', 0)) }}</dt>
+      <dt class="capitalize">{{ $t('common.ACTIVE', 0) }}</dt>
       <dd>
         <i
           :class="`fa fa-${equipment.is_active ? 'check-' : ''}square-o`"
@@ -85,7 +93,9 @@
         />
       </dd>
       <template v-if="equipment.default_for_sport_ids.length > 0">
-        <dt>{{ capitalize($t('equipments.DEFAULT_FOR_SPORTS', 0)) }}</dt>
+        <dt class="capitalize">
+          {{ $t('equipments.DEFAULT_FOR_SPORTS', 0) }}
+        </dt>
         <dd class="sports-list">
           <SportBadge
             v-for="sport in equipmentTranslatedSports"
@@ -147,7 +157,7 @@
 </template>
 
 <script setup lang="ts">
-  import { capitalize, computed, onBeforeMount, ref, toRefs } from 'vue'
+  import { computed, onBeforeMount, ref, toRefs } from 'vue'
   import type { ComputedRef, Ref } from 'vue'
   import { useI18n } from 'vue-i18n'
 

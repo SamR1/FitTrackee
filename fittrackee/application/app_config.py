@@ -475,6 +475,7 @@ def get_application_tile_providers(
                             )
                             else tile_provider == config.default_tile_provider
                         ),
+                        "link": tile_provider_config.link,
                         **(
                             {
                                 "api_key_is_missing": (

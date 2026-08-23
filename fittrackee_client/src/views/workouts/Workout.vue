@@ -111,7 +111,6 @@
   import useAuthUser from '@/composables/useAuthUser'
   import useScroll from '@/composables/useScroll.ts'
   import useSports from '@/composables/useSports'
-  import useTileProviders from '@/composables/useTileProviders.ts'
   import {
     SPORTS_STORE,
     TILE_PROVIDERS_STORE,
@@ -141,7 +140,6 @@
   const { displayOptions } = useApp()
   const { getObjectSport, sports } = useSports()
   const { resetTimeout, scrollTo } = useScroll()
-  const { tileProviders } = useTileProviders()
 
   const markerCoordinates: Ref<TCoordinates> = ref({
     latitude: null,
@@ -223,9 +221,7 @@
     if (sports.value.length === 0) {
       store.dispatch(SPORTS_STORE.ACTIONS.GET_SPORTS)
     }
-    if (tileProviders.value.length === 0) {
-      store.dispatch(TILE_PROVIDERS_STORE.ACTIONS.GET_TILE_PROVIDERS)
-    }
+    store.dispatch(TILE_PROVIDERS_STORE.ACTIONS.GET_TILE_PROVIDERS)
   })
   onMounted(() => {
     nextTick(() => {

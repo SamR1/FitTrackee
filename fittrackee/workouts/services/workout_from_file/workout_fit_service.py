@@ -119,9 +119,40 @@ class WorkoutFitService(WorkoutGpxService):
             return df[key].max()
         return None
 
+    @staticmethod
+    def _get_session_frame_data(frame: "FitDataMessage") -> Dict:
+        frame_stats: Dict = {}
+
+        for key, value in FIT_MATCHING_FIELDS.items():
+            frame_stats[value] = (
+                frame.get_value(key) if frame.has_field(key) else None
+            )
+
+        if frame_stats["moving"] and frame_stats["duration"]:
+            frame_stats["pauses"] = (
+                frame_stats["duration"] - frame_stats["moving"]
+            )
+            if frame_stats["pauses"] < 0:
+                frame_stats["pauses"] = 0
+                frame_stats["duration"] = frame_stats["moving"]
+        else:
+            frame_stats["pauses"] = None
+
+        return frame_stats
+
+    @staticmethod
+    def get_empty_stats() -> Tuple[Dict, List[Dict]]:
+        return {
+            **{value: None for value in FIT_MATCHING_FIELDS.values()},
+            "pauses": None,
+        }, []
+
     @classmethod
     def get_file_stats(
-        cls, data_frames: List["FitDataMessage"], multi_activities_sports: Dict
+        cls,
+        data_frames: List["FitDataMessage"],
+        create_segment_on_events: bool,
+        multi_activities_sports: Dict,
     ) -> Tuple[Dict, List[Dict]]:
         """
         Multi-sports activities like Swimrun or Triathlon contain multiple
@@ -133,7 +164,15 @@ class WorkoutFitService(WorkoutGpxService):
                 f.get_value("start_time") if f.has_field("start_time") else -1
             ),
         )
-        sessions_stats = []
+        sessions_stats: List[Dict] = []
+
+        # for sport without several activities
+        if create_segment_on_events:
+            if not session_frames:
+                return cls.get_empty_stats()
+            return cls._get_session_frame_data(
+                session_frames[0]
+            ), sessions_stats
 
         for frame in session_frames:
             sport_id, is_transition = cls.get_sport_id_or_transition(
@@ -142,30 +181,12 @@ class WorkoutFitService(WorkoutGpxService):
             session_stats: Dict = {
                 "sport_id": sport_id,
                 "is_transition": is_transition,
+                **cls._get_session_frame_data(frame),
             }
-
-            for key, value in FIT_MATCHING_FIELDS.items():
-                session_stats[value] = (
-                    frame.get_value(key) if frame.has_field(key) else None
-                )
-
-            if session_stats["moving"] and session_stats["duration"]:
-                session_stats["pauses"] = (
-                    session_stats["duration"] - session_stats["moving"]
-                )
-                if session_stats["pauses"] < 0:
-                    session_stats["pauses"] = 0
-                    session_stats["duration"] = session_stats["moving"]
-
-            else:
-                session_stats["pauses"] = None
             sessions_stats.append(session_stats)
 
         if len(sessions_stats) == 0:
-            return {
-                **{value: None for value in FIT_MATCHING_FIELDS.values()},
-                "pauses": None,
-            }, []
+            return cls.get_empty_stats()
 
         if len(sessions_stats) == 1:
             return sessions_stats[0], sessions_stats
@@ -239,7 +260,7 @@ class WorkoutFitService(WorkoutGpxService):
             }
             create_segment_on_events = len(multi_activities.keys()) == 0
             file_stats, sessions_stats = cls.get_file_stats(
-                data_frames, multi_activities
+                data_frames, create_segment_on_events, multi_activities
             )
             session_index = -1
 

@@ -2,9 +2,10 @@ export interface ITileProvider {
   attribution: string
   default: boolean
   default_for_user: boolean
+  enabled: boolean
   name: string
   id: string
-  enabled: boolean
+  link: string
 }
 
 export interface ITileProviderForAdmin extends ITileProvider {
