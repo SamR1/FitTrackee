@@ -9,7 +9,7 @@ Workouts list
 .. versionchanged:: 0.9.7 added average distance, average duration, average ascent and average descent displayed in statistics
 .. versionchanged:: 1.0.0 added filter on location and radius, map for filtered workouts
 .. versionchanged:: 1.1.0 added filter and sort option on pace
-.. versionchanged:: 1.4.0 added possibility to select a tile layer, when several tile provider are set
+.. versionchanged:: 1.4.0 added possibility to filter and sort on ascent and descent and select a tile layer when several tile providers are set
 
 By default, the last 10 workouts are displayed in the list.
 
@@ -32,6 +32,8 @@ Users can filter workouts on:
   - average pace
   - maximum pace (= best pace)
 
+- ascent and descent
+
 .. figure:: ../_images/workouts-list.png
    :alt: Workouts List on FitTrackee
 
@@ -42,6 +44,8 @@ Workouts can be sorted by:
 - duration
 - average speed
 - average pace (when only one sport is displayed and 'pace' is set in the sport preference)
+- ascent
+- descent
 
 The number of displayed workouts can be changed (10, 25, 50 or 100 per page).
 

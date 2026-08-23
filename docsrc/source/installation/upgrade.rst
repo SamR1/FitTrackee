@@ -66,12 +66,12 @@ Prod environment
 
 - Change to the directory where FitTrackee directory is located
 
-- Download the last release (for now, it is the release v1.3.4) and overwrite existing files:
+- Download the last release (for now, it is the release v1.4.0b1) and overwrite existing files:
 
 .. code:: bash
 
-   $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.3.4.tar.gz
-   $ tar -xzf v1.3.4.tar.gz
+   $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.4.0b1.tar.gz
+   $ tar -xzf v1.4.0b1.tar.gz
    $ cd fittrackee
 
 .. warning::
@@ -81,8 +81,8 @@ Prod environment
 
     .. code:: bash
 
-       $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.3.4.tar.gz
-       $ tar -xzf v1.3.4.tar.gz
+       $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.4.0b1.tar.gz
+       $ tar -xzf v1.4.0b1.tar.gz
        $ cp -R fittrackee/* FitTrackee/
        $ cd FitTrackee
 
@@ -286,7 +286,10 @@ Upgrading to 1.4.0
 ******************
 
 .. note::
-    This paragraph describes the steps needed to enable the heatmap added in version 1.4.0.
+    This paragraph describes the steps needed to enable the heatmap added in version 1.4.0 and changes about tile providers.
+
+Heatmap
+=======
 
 The heatmap stores the tracks as the cells of a grid. Cells are calculated for each workout when it is created or refreshed, but the cells of existing workouts must be calculated once, which takes time (nearly 3 minutes for 15,500 km on a Raspberry Pi 4).
 
@@ -301,3 +304,18 @@ The heatmap stores the tracks as the cells of a grid. Cells are calculated for e
       $ ftcli workouts rebuild_heatmap -v
 
   Then set `ENABLE_HEATMAP <environments_variables.html#envvar-ENABLE_HEATMAP>`_ to ``True`` in ``.env`` and restart the application.
+
+
+Tile providers
+==============
+
+| For versions prior to v1.4.0, only one tile server could be set.
+| If no server was configured, the **OpenStreetMap** server was used instead.
+
+Starting with v1.4.0, it is possible to enable one or more of the preconfigured servers.
+
+Depending on the existing configuration prior to the upgrade, several options are possible:
+
+- If no server was configured, no changes are necessary. The **OpenStreetMap** tile server will continue to be used.
+- If a server was configured and it matches one of the preconfigured servers (see the `list <map_tile_providers.html>`__), the variables can be removed. In the case of **Thunderforest** and **Stadia Maps** tile servers, the corresponding API key must be set (`THUNDERFOREST_API_KEY <environments_variables.html#envvar-THUNDERFOREST_API_KEY>`__ and/or `STADIAMAPS_API_KEY <environments_variables.html#envvar-STADIAMAPS_API_KEY>`__).
+- If the server is not listed, the variables beginning with `CUSTOM_TILE_PROVIDER_ <environments_variables.html#envvar-CUSTOM_TILE_PROVIDER_ATTRIBUTION>`__ must be set in place of the previous ones, which are now deprecated and will be removed in a future version.

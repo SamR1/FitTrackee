@@ -13,9 +13,9 @@ The following tile providers can be set in `Administration <../features/administ
 - `OpenStreetMap (Standard tile layer) <https://www.openstreetmap.org/>`__, id: ``osm``
 - `OpenStreetMap (German variant of the Standard tile layer) <https://openstreetmap.de/>`__, id: ``osm_de``
 - `OpenStreetMap (French variant of the Standard tile layer) <https://www.openstreetmap.fr/fonds-de-carte/>`__, id: ``osm_fr``
-- `CyclOSM <https://www.cyclosm.org>`__., id: ``cyclosm``
-- `Stadia Maps <https://stadiamaps.com/>`__ (`Alidade Smooth <https://stadiamaps.com/explore-the-map/#style=alidade_smooth>`__ (id ``stadiamaps_alidade_smooth``) and `Outdoors <https://stadiamaps.com/explore-the-map/#style=outdoors>`__ (id ``stadiamaps_outdoors``)). This provider requires an API key (see `STADIAMAPS_API_KEY <environments_variables.html#envvar-STADIAMAPS_API_KEY>`__ )
-- `Thunderforest <https://www.thunderforest.com/>`__ (`Landscape <https://www.thunderforest.com/maps/landscape/>`__ (id ``thunderforest_landscape``) and `Outdoors <https://www.thunderforest.com/maps/outdoors/>`__ (id ``thunderforest_outdoors``)). This provider requires an API key (see `THUNDERFOREST_API_KEY <environments_variables.html#envvar-THUNDERFOREST_API_KEY>`__ )
+- `CyclOSM <https://www.cyclosm.org>`__, id: ``cyclosm``
+- `Stadia Maps <https://stadiamaps.com/>`__ (`Alidade Smooth <https://stadiamaps.com/explore-the-map/#style=alidade_smooth>`__ (id: ``stadiamaps_alidade_smooth``) and `Outdoors <https://stadiamaps.com/explore-the-map/#style=outdoors>`__ (id: ``stadiamaps_outdoors``)). This provider requires an API key (see `STADIAMAPS_API_KEY <environments_variables.html#envvar-STADIAMAPS_API_KEY>`__ )
+- `Thunderforest <https://www.thunderforest.com/>`__ (`Landscape <https://www.thunderforest.com/maps/landscape/>`__ (id: ``thunderforest_landscape``) and `Outdoors <https://www.thunderforest.com/maps/outdoors/>`__ (id: ``thunderforest_outdoors``)). This provider requires an API key (see `THUNDERFOREST_API_KEY <environments_variables.html#envvar-THUNDERFOREST_API_KEY>`__ )
 
 Default tile server is **OpenStreetMap**'s standard tile layer (if environment variables are not initialized).
 
@@ -39,3 +39,5 @@ It is possible to set a custom tile provider (id: ``custom``) by updating the fo
     | - `MAP_ATTRIBUTION <environments_variables.html#envvar-MAP_ATTRIBUTION>`__
     | - `STATICMAP_SUBDOMAINS <environments_variables.html#envvar-STATICMAP_SUBDOMAINS>`__
     | If a tile provider was set before v1.4.0, it is preserved as a custom tile provider.
+
+The list of available tile providers is displayed on the **About** page.
