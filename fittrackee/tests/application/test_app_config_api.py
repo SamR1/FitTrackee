@@ -731,12 +731,13 @@ class TestGetTileProviders(ApiTestCaseMixin):
         assert data["data"] == {
             "tile_providers": [
                 {
-                    "id": "osm",
+                    "attribution": expected_tile_provider.attribution,
                     "default": True,
                     "default_for_user": True,
                     "enabled": True,
+                    "id": "osm",
+                    "link": expected_tile_provider.link,
                     "name": expected_tile_provider.name,
-                    "attribution": expected_tile_provider.attribution,
                 },
             ]
         }
@@ -764,28 +765,31 @@ class TestGetTileProviders(ApiTestCaseMixin):
         assert data["data"] == {
             "tile_providers": [
                 {
+                    "attribution": tile_providers["osm"].attribution,
                     "default": False,
                     "default_for_user": True,
                     "id": "osm",
                     "enabled": True,
                     "name": tile_providers["osm"].name,
-                    "attribution": tile_providers["osm"].attribution,
+                    "link": tile_providers["osm"].link,
                 },
                 {
+                    "attribution": tile_providers["osm_fr"].attribution,
                     "default": False,
                     "default_for_user": False,
                     "enabled": True,
                     "id": "osm_fr",
+                    "link": tile_providers["osm_fr"].link,
                     "name": tile_providers["osm_fr"].name,
-                    "attribution": tile_providers["osm_fr"].attribution,
                 },
                 {
+                    "attribution": tile_providers["cyclosm"].attribution,
                     "default": True,
                     "default_for_user": False,
                     "enabled": True,
                     "id": "cyclosm",
+                    "link": tile_providers["cyclosm"].link,
                     "name": tile_providers["cyclosm"].name,
-                    "attribution": tile_providers["cyclosm"].attribution,
                 },
             ]
         }
@@ -810,89 +814,97 @@ class TestGetTileProviders(ApiTestCaseMixin):
             "tile_providers": [
                 {
                     "api_key_is_missing": False,
+                    "attribution": tile_providers["osm"].attribution,
                     "default": False,
                     "default_for_user": False,
                     "enabled": False,
                     "id": "osm",
-                    "attribution": tile_providers["osm"].attribution,
+                    "link": tile_providers["osm"].link,
                     "name": tile_providers["osm"].name,
                     "set_by_users": True,
                 },
                 {
                     "api_key_is_missing": False,
+                    "attribution": tile_providers["osm_de"].attribution,
                     "default": True,
                     "default_for_user": True,
                     "enabled": True,
                     "id": "osm_de",
-                    "attribution": tile_providers["osm_de"].attribution,
+                    "link": tile_providers["osm_de"].link,
                     "name": tile_providers["osm_de"].name,
                     "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": False,
+                    "attribution": tile_providers["osm_fr"].attribution,
                     "default": False,
                     "default_for_user": False,
                     "enabled": False,
                     "id": "osm_fr",
-                    "attribution": tile_providers["osm_fr"].attribution,
+                    "link": tile_providers["osm_fr"].link,
                     "name": tile_providers["osm_fr"].name,
                     "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": False,
+                    "attribution": tile_providers["cyclosm"].attribution,
                     "default": False,
                     "default_for_user": False,
                     "enabled": False,
                     "id": "cyclosm",
-                    "attribution": tile_providers["cyclosm"].attribution,
+                    "link": tile_providers["cyclosm"].link,
                     "name": tile_providers["cyclosm"].name,
                     "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": True,
+                    "attribution": tile_providers[
+                        "stadiamaps_alidade_smooth"
+                    ].attribution,
                     "default": False,
                     "default_for_user": False,
                     "enabled": False,
                     "id": "stadiamaps_alidade_smooth",
-                    "attribution": tile_providers[
-                        "stadiamaps_alidade_smooth"
-                    ].attribution,
+                    "link": tile_providers["stadiamaps_alidade_smooth"].link,
                     "name": tile_providers["stadiamaps_alidade_smooth"].name,
                     "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": True,
+                    "attribution": tile_providers[
+                        "stadiamaps_outdoors"
+                    ].attribution,
                     "default": False,
                     "default_for_user": False,
                     "enabled": False,
                     "id": "stadiamaps_outdoors",
-                    "attribution": tile_providers[
-                        "stadiamaps_outdoors"
-                    ].attribution,
+                    "link": tile_providers["stadiamaps_outdoors"].link,
                     "name": tile_providers["stadiamaps_outdoors"].name,
                     "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": True,
+                    "attribution": tile_providers[
+                        "thunderforest_landscape"
+                    ].attribution,
                     "default": False,
                     "default_for_user": False,
                     "enabled": False,
                     "id": "thunderforest_landscape",
-                    "attribution": tile_providers[
-                        "thunderforest_landscape"
-                    ].attribution,
+                    "link": tile_providers["thunderforest_landscape"].link,
                     "name": tile_providers["thunderforest_landscape"].name,
                     "set_by_users": False,
                 },
                 {
                     "api_key_is_missing": True,
+                    "attribution": tile_providers[
+                        "thunderforest_outdoors"
+                    ].attribution,
                     "default": False,
                     "default_for_user": False,
                     "enabled": False,
                     "id": "thunderforest_outdoors",
-                    "attribution": tile_providers[
-                        "thunderforest_outdoors"
-                    ].attribution,
+                    "link": tile_providers["thunderforest_outdoors"].link,
                     "name": tile_providers["thunderforest_outdoors"].name,
                     "set_by_users": False,
                 },

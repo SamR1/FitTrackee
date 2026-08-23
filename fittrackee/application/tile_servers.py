@@ -14,6 +14,7 @@ class TileProviderBase:
     apikey: str = ""
     apikey_value: str = ""
     style: str = ""
+    link: str = ""
 
     def __post_init__(self) -> None:
         if self.apikey:

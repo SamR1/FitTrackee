@@ -66,14 +66,17 @@ def get_tiles_providers() -> Dict[str, TileProviderBase]:
         "osm": OSMTileProvider(
             name="OpenStreetMap",
             url_template="https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+            link="https://www.openstreetmap.org",
         ),
         "osm_de": OSMTileProvider(
             name="OpenStreetMap (de)",
             url_template="https://tile.openstreetmap.de/{z}/{x}/{y}.png",
+            link="https://openstreetmap.de",
         ),
         "osm_fr": OSMTileProvider(
             name="OpenStreetMap (fr)",
             url_template="https://{s}.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png",
+            link="https://www.openstreetmap.fr/fonds-de-carte",
         ),
         "cyclosm": OSMTileProvider(
             attribution=(
@@ -87,18 +90,27 @@ def get_tiles_providers() -> Dict[str, TileProviderBase]:
             url_template=(
                 "https://{s}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png"
             ),
+            link="https://www.cyclosm.org",
         ),
         "stadiamaps_alidade_smooth": StadiaTileProvider(
-            name="Stadia Alidade Smooth", style="alidade_smooth"
+            name="Stadia Alidade Smooth",
+            style="alidade_smooth",
+            link="https://stadiamaps.com/explore-the-map/#style=alidade_smooth",
         ),
         "stadiamaps_outdoors": StadiaTileProvider(
-            name="Stadia Outdoors", style="outdoors"
+            name="Stadia Outdoors",
+            style="outdoors",
+            link="https://stadiamaps.com/explore-the-map/#style=outdoors",
         ),
         "thunderforest_landscape": ThunderForestTileProvider(
-            name="Thunderforest Landscape", style="landscape"
+            name="Thunderforest Landscape",
+            style="landscape",
+            link="https://www.thunderforest.com/maps/landscape",
         ),
         "thunderforest_outdoors": ThunderForestTileProvider(
-            name="Thunderforest Outdoors", style="outdoors"
+            name="Thunderforest Outdoors",
+            style="outdoors",
+            link="https://www.thunderforest.com/maps/outdoors",
         ),
     }
     custom_provider = get_tile_provider_from_env_var()

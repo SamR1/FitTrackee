@@ -53,6 +53,37 @@
       <div v-if="elevationServices.length > 0">
         {{ $t('about.ELEVATION_DATA_FROM') }} {{ elevationServices.join(', ') }}
       </div>
+      <div v-if="availableTileProviders.length > 0" class="tile-providers">
+        {{ $t('about.AVAILABLE_TILE_LAYERS') }}
+        <span v-if="availableTileProviders.length === 1">
+          <a
+            :href="availableTileProviders[0].link"
+            target="_blank"
+            rel="nofollow noopener"
+            v-if="availableTileProviders[0].link"
+          >
+            {{ availableTileProviders[0].name }}
+          </a>
+          <span v-else>
+            {{ availableTileProviders[0].name }}
+          </span>
+        </span>
+        <ul v-else>
+          <li v-for="provider in availableTileProviders" :key="provider.id">
+            <a
+              :href="provider.link"
+              target="_blank"
+              rel="nofollow noopener"
+              v-if="provider.link"
+            >
+              {{ provider.name }}
+            </a>
+            <span v-else>
+              {{ provider.name }}
+            </span>
+          </li>
+        </ul>
+      </div>
       <template v-if="appConfig.about">
         <p class="about-instance">{{ $t('about.ABOUT_THIS_INSTANCE') }}</p>
         <div v-html="convertToMarkdown(appConfig.about)" />
@@ -62,13 +93,19 @@
 </template>
 
 <script lang="ts" setup>
-  import { computed, capitalize } from 'vue'
+  import { computed, capitalize, onBeforeMount } from 'vue'
   import type { ComputedRef } from 'vue'
 
   import useApp from '@/composables/useApp'
+  import useTileProviders from '@/composables/useTileProviders.ts'
+  import { TILE_PROVIDERS_STORE } from '@/store/constants.ts'
+  import { useStore } from '@/use/useStore.ts'
   import { convertToMarkdown } from '@/utils/inputs'
 
+  const store = useStore()
+
   const { appConfig, elevationServices, appLanguage } = useApp()
+  const { availableTileProviders } = useTileProviders()
 
   const weatherProvider: ComputedRef<Record<string, string>> = computed(() =>
     get_weather_provider()
@@ -93,6 +130,9 @@
     }
     return link
   }
+  onBeforeMount(() => {
+    store.dispatch(TILE_PROVIDERS_STORE.ACTIONS.GET_TILE_PROVIDERS)
+  })
 </script>
 
 <style lang="scss" scoped>
@@ -114,6 +154,11 @@
     .about-instance {
       font-weight: bold;
       margin-top: $default-margin * 3;
+    }
+    .tile-providers {
+      ul {
+        margin: 0;
+      }
     }
   }
 </style>

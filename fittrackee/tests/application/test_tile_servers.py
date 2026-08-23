@@ -26,6 +26,7 @@ class TestTileProviderBase:
         assert tile_provider.api_key_is_missing is False
         assert tile_provider.apikey_value == ""
         assert tile_provider.attribution == tile_config["attribution"]
+        assert tile_provider.link == ""
         assert tile_provider.name == tile_config["name"]
         assert tile_provider.subdomains == ""
         assert tile_provider.style == ""
@@ -34,7 +35,7 @@ class TestTileProviderBase:
         assert tile_provider.url_with_style == tile_config["url_template"]
         assert tile_provider.url_with_subdomain == tile_config["url_template"]
 
-    def test_it_instantiates_tile_provider_with_all_value(
+    def test_it_instantiates_tile_provider_with_all_values(
         self, monkeypatch: "pytest.MonkeyPatch"
     ) -> None:
         api_key_value = "some-value"
@@ -53,6 +54,7 @@ class TestTileProviderBase:
             "subdomains": "a",
             "apikey": "SOME_KEY",
             "style": "outdoors",
+            "link": "https://example.com",
         }
 
         tile_provider = TileProviderBase(**tile_config)
@@ -61,6 +63,7 @@ class TestTileProviderBase:
         assert tile_provider.api_key_is_missing is False
         assert tile_provider.apikey_value == api_key_value
         assert tile_provider.attribution == tile_config["attribution"]
+        assert tile_provider.link == tile_config["link"]
         assert tile_provider.name == tile_config["name"]
         assert tile_provider.subdomains == tile_config["subdomains"]
         assert tile_provider.style == tile_config["style"]
