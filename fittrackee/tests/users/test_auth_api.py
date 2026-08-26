@@ -10,7 +10,11 @@ from flask import Flask
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
+from fittrackee.constants import (
+    ElevationDataSource,
+    ElevationProcessing,
+    PaceSpeedDisplay,
+)
 from fittrackee.equipments.models import Equipment
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import (
@@ -357,36 +361,44 @@ class TestUserRegistration(ApiTestCaseMixin):
         )
 
         new_user = User.query.filter_by(username=username).one()
-        assert new_user.date_format == "MM/dd/yyyy"
-        assert new_user.timezone == "Europe/Paris"
-        assert new_user.language == "en"
-        assert new_user.is_active is False
         assert new_user.role == UserRole.USER.value
-        # preferences
-        assert new_user.start_elevation_at_zero is True
-        assert new_user.use_raw_gpx_speed is False
+        assert new_user.is_active is False
+        # UI preferences
+        assert new_user.language == "en"
         assert new_user.use_dark_mode is False
+        assert new_user.timezone == "Europe/Paris"
+        assert new_user.date_format == "MM/dd/yyyy"
+        assert new_user.weekm is False
+        # Account preferences
         assert new_user.manually_approves_followers is True
         assert new_user.hide_profile_in_users_directory is True
-        assert new_user.workouts_visibility == VisibilityLevel.PRIVATE
-        assert new_user.map_visibility == VisibilityLevel.PRIVATE
-        assert new_user.analysis_visibility == VisibilityLevel.PRIVATE
-        assert new_user.notification_preferences is None
-        assert new_user.hr_visibility == VisibilityLevel.PRIVATE
-        assert new_user.segments_creation_event == "only_manual"
-        assert new_user.split_workout_charts is True
-        assert new_user.messages_preferences is None
-        assert (
-            new_user.missing_elevations_data_source == ElevationDataSource.FILE
-        )
-        assert new_user.calories_visibility == VisibilityLevel.PRIVATE
-        assert new_user.media_visibility == VisibilityLevel.PRIVATE
+        # Workouts preferences
         assert (
             new_user.default_tile_provider
             == app_with_multiple_tile_servers_enabled.config[
                 "default_tile_provider"
             ]
         )
+        assert new_user.imperial_units is False
+        assert new_user.display_ascent is True
+        assert new_user.split_workout_charts is True
+        assert new_user.start_elevation_at_zero is True
+        assert new_user.workout_stats_from_file is False
+        assert new_user.use_raw_gpx_speed is False
+        assert new_user.missing_elevations_data_source == (
+            ElevationDataSource.FILE
+        )
+        assert new_user.elevation_processing == ElevationProcessing.NONE
+        assert new_user.workouts_visibility == VisibilityLevel.PRIVATE
+        assert new_user.media_visibility == VisibilityLevel.PRIVATE
+        assert new_user.analysis_visibility == VisibilityLevel.PRIVATE
+        assert new_user.map_visibility == VisibilityLevel.PRIVATE
+        assert new_user.hr_visibility == VisibilityLevel.PRIVATE
+        assert new_user.calories_visibility == VisibilityLevel.PRIVATE
+        assert new_user.segments_creation_event == "only_manual"
+        # Message and notifications preferences preferences
+        assert new_user.messages_preferences is None
+        assert new_user.notification_preferences is None
 
     @pytest.mark.parametrize(
         "input_timezone,expected_timezone",
@@ -1584,9 +1596,13 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
 
         self.assert_400(response)
 
-    def test_it_returns_error_if_fields_are_missing(
-        self, app: Flask, user_1: User
+    @pytest.mark.parametrize("missing_key", [*PREFERENCES_PAYLOAD.keys()])
+    def test_it_returns_error_if_a_key_is_missing(
+        self, app: Flask, user_1: User, missing_key: str
     ) -> None:
+        payload = {**PREFERENCES_PAYLOAD}
+        del payload[missing_key]
+
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
@@ -1594,22 +1610,14 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         response = client.post(
             "/api/auth/profile/edit/preferences",
             content_type="application/json",
-            data=json.dumps(dict(weekm=True)),
+            json=payload,
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         self.assert_400(response)
 
-    @pytest.mark.parametrize(
-        "input_language,expected_language",
-        [("en", "en"), ("fr", "fr"), ("invalid", "en"), (None, "en")],
-    )
     def test_it_updates_user_preferences(
-        self,
-        app_with_open_elevation_url: Flask,
-        user_1: User,
-        input_language: Optional[str],
-        expected_language: str,
+        self, app_with_open_elevation_url: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_open_elevation_url, user_1.email
@@ -1618,38 +1626,52 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         response = client.post(
             "/api/auth/profile/edit/preferences",
             content_type="application/json",
-            json={
-                **PREFERENCES_PAYLOAD,
-                "language": input_language,
-            },
+            json=PREFERENCES_PAYLOAD,
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
+        db.session.refresh(user_1)
+        for key, value in PREFERENCES_PAYLOAD.items():
+            assert getattr(user_1, key) == value
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["message"] == "user preferences updated"
-        assert data["data"]["display_ascent"] is False
-        assert data["data"]["start_elevation_at_zero"] is False
-        assert data["data"]["use_raw_gpx_speed"] is True
-        assert data["data"]["imperial_units"] is True
-        assert data["data"]["language"] == expected_language
-        assert data["data"]["timezone"] == "America/New_York"
-        assert data["data"]["date_format"] == "yyyy-MM-dd"
-        assert data["data"]["weekm"] is True
-        assert data["data"]["use_dark_mode"] is True
-        assert data["data"]["manually_approves_followers"] is False
-        assert data["data"]["hide_profile_in_users_directory"] is False
-        assert data["data"]["hr_visibility"] == VisibilityLevel.FOLLOWERS
-        assert data["data"]["segments_creation_event"] == "none"
-        assert data["data"]["split_workout_charts"] is True
-        assert (
-            data["data"]["missing_elevations_data_source"] == "open_elevation"
+        assert data["data"] == jsonify_dict(
+            user_1.serialize(current_user=user_1, light=False)
         )
-        assert data["data"]["calories_visibility"] == VisibilityLevel.FOLLOWERS
-        assert data["data"]["media_visibility"] == VisibilityLevel.FOLLOWERS
-        assert data["data"]["workout_stats_from_file"] is True
-        assert data["data"]["elevation_processing"] == "flat_window"
+
+    @pytest.mark.parametrize(
+        "input_language,expected_language",
+        [("en", "en"), ("fr", "fr"), ("invalid", "en"), (None, "en")],
+    )
+    def test_it_updates_language_preference(
+        self,
+        app_with_open_elevation_url: Flask,
+        user_1: User,
+        input_language: Optional[str],
+        expected_language: str,
+    ) -> None:
+        payload = {
+            **PREFERENCES_PAYLOAD,
+            "language": input_language,
+        }
+        client, auth_token = self.get_test_client_and_auth_token(
+            app_with_open_elevation_url, user_1.email
+        )
+
+        response = client.post(
+            "/api/auth/profile/edit/preferences",
+            content_type="application/json",
+            json=payload,
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        assert response.status_code == 200
+        db.session.refresh(user_1)
+        assert user_1.language == expected_language
+        data = json.loads(response.data.decode())
+        assert data["data"]["language"] == expected_language
 
     def test_it_updates_user_preferences_with_deprecated_key(
         self, app_with_open_elevation_url: Flask, user_1: User
@@ -1672,11 +1694,10 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             )
 
         assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert (
-            data["data"]["missing_elevations_data_source"] == "open_elevation"
+        db.session.refresh(user_1)
+        assert user_1.missing_elevations_data_source == (
+            ElevationDataSource.OPEN_ELEVATION.value
         )
-        assert data["data"]["elevation_processing"] == "flat_window"
         logger_mock.warning.assert_called_once_with(
             "'missing_elevations_processing' is deprecated, "
             "please use 'missing_elevations_data_source' instead."
@@ -1685,6 +1706,9 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
     def test_it_updates_user_preferences_with_missing_elevations_processing_when_both_keys_are_provided(  # noqa
         self, app_with_open_elevation_and_valhalla_url: Flask, user_1: User
     ) -> None:
+        """
+        'missing_elevations_processing' is ignored
+        """
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_open_elevation_and_valhalla_url, user_1.email
         )
@@ -1700,6 +1724,13 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         )
 
         assert response.status_code == 200
+        db.session.refresh(user_1)
+        assert user_1.missing_elevations_data_source == (
+            ElevationDataSource.OPEN_ELEVATION.value
+        )
+        assert user_1.elevation_processing == (
+            ElevationProcessing.FLAT_WINDOW.value
+        )
         data = json.loads(response.data.decode())
         assert (
             data["data"]["missing_elevations_data_source"] == "open_elevation"
@@ -1769,6 +1800,10 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         )
 
         assert response.status_code == 200
+        db.session.refresh(user_1)
+        assert user_1.map_visibility == expected_map_visibility.value
+        assert user_1.analysis_visibility == expected_analysis_visibility.value
+        assert user_1.workouts_visibility == input_workout_visibility.value
         data = json.loads(response.data.decode())
         assert data["data"]["map_visibility"] == expected_map_visibility.value
         assert (
@@ -1830,6 +1865,9 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         )
 
         assert response.status_code == 200
+        db.session.refresh(user_1)
+        assert user_1.media_visibility == expected_media_visibility.value
+        assert user_1.workouts_visibility == input_workout_visibility.value
         data = json.loads(response.data.decode())
         assert (
             data["data"]["workouts_visibility"]
@@ -1861,13 +1899,13 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         )
 
         assert response.status_code == 200
-        data = json.loads(response.data.decode())
-        assert data["data"]["map_visibility"] == VisibilityLevel.PUBLIC.value
-        assert (
-            data["data"]["analysis_visibility"] == VisibilityLevel.PUBLIC.value
+        db.session.refresh(suspended_user)
+        assert suspended_user.map_visibility == VisibilityLevel.PUBLIC.value
+        assert suspended_user.analysis_visibility == (
+            VisibilityLevel.PUBLIC.value
         )
-        assert (
-            data["data"]["workouts_visibility"] == VisibilityLevel.PUBLIC.value
+        assert suspended_user.workouts_visibility == (
+            VisibilityLevel.PUBLIC.value
         )
 
     def test_it_returns_error_when_elevation_processing_is_invalid(
@@ -1903,6 +1941,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         app_with_multiple_tile_servers_enabled: Flask,
         user_1: User,
     ) -> None:
+        default_tile_provider = "cyclosm"
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_multiple_tile_servers_enabled, user_1.email
         )
@@ -1912,14 +1951,16 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             content_type="application/json",
             json={
                 **PREFERENCES_PAYLOAD,
-                "default_tile_provider": "cyclosm",
+                "default_tile_provider": default_tile_provider,
             },
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
         assert response.status_code == 200
+        db.session.refresh(user_1)
+        assert user_1.default_tile_provider == default_tile_provider
         data = json.loads(response.data.decode())
-        assert data["data"]["default_tile_provider"] == "cyclosm"
+        assert data["data"]["default_tile_provider"] == default_tile_provider
 
     def test_it_returns_400_when_default_tile_provider_is_invalid(
         self,
