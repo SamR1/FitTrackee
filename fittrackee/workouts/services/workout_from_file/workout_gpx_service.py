@@ -814,12 +814,13 @@ class WorkoutGpxService(
         # in case elevation processing changed (from 'none' to 'flat_window'),
         # the exiting elevation can be reused with calling elevation service
         if self.reuse_existing_elevation:
-            try:
-                existing_elevations = self.get_smoothed_elevations_from_df(
-                    existing_elevations, self.elevation_processing
-                )
-            except ElevationException as e:
-                raise WorkoutElevationException() from e
+            if self.update_existing_elevation:
+                try:
+                    existing_elevations = self.get_smoothed_elevations_from_df(
+                        existing_elevations, self.elevation_processing
+                    )
+                except ElevationException as e:
+                    raise WorkoutElevationException() from e
         # - previous data source is not 'file' and switching to 'file'
         # or
         # - applying processing on a workout with data source from file
