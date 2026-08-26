@@ -2451,6 +2451,49 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParameters(
             "time": "2018-03-13 12:44:45+00:00",
         }
 
+    def test_it_does_not_smooth_elevations_again_when_elevations_are_already_smoothed(  # noqa
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_segments: str,
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.FILE
+        )
+        workout_cycling_user_1_with_coordinates.elevation_processing = (
+            ElevationProcessing.FLAT_WINDOW
+        )
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_with_segments,
+            get_elevation_on_refresh=False,
+            workout=workout_cycling_user_1_with_coordinates,
+        )
+
+        with (
+            patch.object(
+                WorkoutGpxService,
+                "get_smoothed_elevations_from_df",
+            ) as get_smoothed_elevations_from_df_mock,
+        ):
+            service.process_workout()
+
+        get_smoothed_elevations_from_df_mock.assert_not_called()
+        db.session.refresh(workout_cycling_user_1_with_coordinates)
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_data_source
+            == ElevationDataSource.FILE
+        )
+        assert (
+            workout_cycling_user_1_with_coordinates.elevation_processing
+            == ElevationProcessing.FLAT_WINDOW
+        )
+
 
 @pytest.mark.disable_autouse_update_records_patch
 class TestWorkoutGpxServiceProcessFileOnRefreshWithElevationParameters(
