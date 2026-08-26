@@ -42,6 +42,9 @@ def upgrade():
         UPDATE workouts 
         SET elevation_data_source = 'OPEN_ELEVATION', elevation_processing = 'FLAT_WINDOW'
         WHERE workouts.elevation_data_source = 'OPEN_ELEVATION_SMOOTH';
+        UPDATE users 
+        SET missing_elevations_processing = 'OPEN_ELEVATION', elevation_processing = 'FLAT_WINDOW'
+        WHERE users.missing_elevations_processing = 'OPEN_ELEVATION_SMOOTH';
 """
     )
     op.execute("ALTER TYPE elevation_data_source RENAME TO elevation_data_source_old")
@@ -89,6 +92,9 @@ def downgrade():
             UPDATE workouts 
             SET elevation_data_source = 'OPEN_ELEVATION_SMOOTH'
             WHERE workouts.elevation_data_source = 'OPEN_ELEVATION' and elevation_processing = 'FLAT_WINDOW';
+            UPDATE users 
+            SET missing_elevations_processing = 'OPEN_ELEVATION_SMOOTH'
+            WHERE users.missing_elevations_processing = 'OPEN_ELEVATION' and elevation_processing = 'FLAT_WINDOW';
     """
     )
     op.execute("DROP TYPE elevation_data_source_old")
