@@ -96,6 +96,9 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
             elevation_processing,
         )
 
+        # only for .fit for now
+        self.all_data_from_file = False
+
     @classmethod
     @abstractmethod
     def parse_file(

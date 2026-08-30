@@ -679,6 +679,8 @@ class TestWorkoutGpxServiceInstantiationOnRefresh(
         assert service.elevation_service is None
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)
+        # used only in case of .fit file
+        assert service.all_data_from_file is False
 
     def test_it_instantiates_service_when_gpx_has_missing_elevation_and_no_elevation_service_set(  # noqa
         self,

@@ -5,6 +5,8 @@ import gpxpy.gpx
 import numpy as np
 import pandas as pd
 
+from fittrackee.constants import ElevationDataSource, ElevationProcessing
+
 from ...constants import FIT_MATCHING_SPORTS, NSMAP
 from ...exceptions import WorkoutFileException
 from .constants import GARMIN_DEVICES
@@ -13,7 +15,9 @@ from .workout_gpx_service import WorkoutGpxService
 if TYPE_CHECKING:
     from fitdecode.records import FitDataMessage
 
-    from ...models import Sport
+    from fittrackee.users.models import User
+
+    from ...models import Sport, Workout
 
 
 FIT_MATCHING_FIELDS = {
@@ -36,6 +40,57 @@ ALL_KEYS = [*FIT_MATCHING_FIELDS.values(), "pauses"]
 
 
 class WorkoutFitService(WorkoutGpxService):
+    def __init__(
+        self,
+        auth_user: "User",
+        workout_file: IO[bytes],
+        sport: "Sport",
+        stopped_speed_threshold: float,
+        *,
+        get_weather: bool = True,
+        get_elevation_on_refresh: bool = True,
+        workout: Optional["Workout"] = None,
+        change_elevation_source: Optional["ElevationDataSource"] = None,
+        elevation_processing: Optional["ElevationProcessing"] = None,
+    ):
+        super().__init__(
+            auth_user,
+            workout_file,
+            sport,
+            stopped_speed_threshold,
+            workout=workout,
+            get_weather=get_weather,
+            get_elevation_on_refresh=get_elevation_on_refresh,
+            change_elevation_source=change_elevation_source,
+            elevation_processing=elevation_processing,
+        )
+
+        # if stats are from file, elevation preferences are overridden
+        if self.auth_user.workout_stats_from_file:
+            # unless the user modifies elevation data source or processing
+            if (
+                self.workout
+                and change_elevation_source
+                and elevation_processing
+            ):
+                return
+
+            if self.workout:
+                self.updated_elevation_data_source = ElevationDataSource.FILE
+                self.update_existing_elevation = (
+                    self.workout.elevation_data_source
+                    != ElevationDataSource.FILE
+                ) or (
+                    self.workout.elevation_processing
+                    != ElevationProcessing.NONE
+                )
+            else:
+                self.updated_elevation_data_source = None
+
+            self.all_data_from_file = True
+            self.elevation_processing = ElevationProcessing.NONE
+            self.elevation_service = None
+
     @staticmethod
     def get_coordinate(value: int) -> float:
         """

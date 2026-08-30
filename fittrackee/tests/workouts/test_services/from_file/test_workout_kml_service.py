@@ -241,3 +241,5 @@ class TestWorkoutKmlServiceInstantiation(WorkoutFileMixin):
         assert service.update_existing_elevation is False
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)
+        # used only in case of .fit file
+        assert service.all_data_from_file is False

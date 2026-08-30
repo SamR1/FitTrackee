@@ -18,6 +18,9 @@ from fittrackee.tests.workouts.mixins import WorkoutFileMixin
 from fittrackee.workouts.exceptions import WorkoutFileException
 from fittrackee.workouts.models import Workout, WorkoutSegment
 from fittrackee.workouts.services import WorkoutFitService
+from fittrackee.workouts.services.elevation.open_elevation_service import (
+    OpenElevationService,
+)
 
 if TYPE_CHECKING:
     from flask import Flask
@@ -133,8 +136,8 @@ class TestWorkoutFitServiceParseFile(WorkoutFileMixin):
         assert sessions_stats == []
 
 
-class TestWorkoutFitServiceInstantiation(WorkoutFileMixin):
-    def test_it_instantiates_service(
+class TestWorkoutFitServiceInstantiationOnCreation(WorkoutFileMixin):
+    def test_it_instantiates_service_with_default_preferences(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
         service = WorkoutFitService(
@@ -162,8 +165,155 @@ class TestWorkoutFitServiceInstantiation(WorkoutFileMixin):
         assert service.get_elevation_on_refresh is False
         assert service.updated_elevation_data_source is None
         assert service.elevation_processing == ElevationProcessing.NONE
+        assert service.all_data_from_file is False
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)
+
+    def test_it_instantiates_service_when_workout_stats_are_extracted_from_file(  # noqa
+        self,
+        app_with_open_elevation_url: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_coordinates: "WorkoutSegment",
+    ) -> None:
+        """
+        In this case, it ignores elevation data source and elevation processing
+        """
+        user_1.elevation_data_source = ElevationDataSource.OPEN_ELEVATION
+        user_1.elevation_processing = ElevationProcessing.FLAT_WINDOW
+        user_1.process_only_missing_elevations = False
+        user_1.workout_stats_from_file = True
+
+        service = WorkoutFitService(
+            user_1,
+            self.get_fit_file_content(
+                app_with_open_elevation_url, file_name="example.fit"
+            ),
+            sport_1_cycling,
+            sport_1_cycling.stopped_speed_threshold,
+        )
+
+        assert service.updated_elevation_data_source is None
+        assert service.elevation_processing == ElevationProcessing.NONE
+        assert service.get_elevation_on_refresh is False
+        assert service.reuse_existing_elevation is False
+        assert service.update_existing_elevation is False
+        assert service.workout_has_missing_elevation is False
+        assert service.elevation_service is None
+        assert service.all_data_from_file is True
+
+
+class TestWorkoutFitServiceInstantiationOnRefresh(WorkoutFileMixin):
+    def test_it_instantiates_service_when_workout_stats_are_extracted_from_file_and_no_elevation_parameters(  # noqa
+        self,
+        app_with_open_elevation_url: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        """
+        In this case, it ignores elevation data source and elevation processing
+        """
+        user_1.elevation_data_source = ElevationDataSource.OPEN_ELEVATION
+        user_1.elevation_processing = ElevationProcessing.FLAT_WINDOW
+        user_1.process_only_missing_elevations = False
+        user_1.workout_stats_from_file = True
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.OPEN_ELEVATION
+        )
+        workout_cycling_user_1_with_coordinates.elevation_processing = (
+            ElevationProcessing.FLAT_WINDOW
+        )
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.FILE
+        )
+        with patch.object(
+            WorkoutFitService,
+            "get_file_stats",
+            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+        ):
+            service = WorkoutFitService(
+                user_1,
+                self.get_fit_file_content(
+                    app_with_open_elevation_url,
+                    file_name="example.fit",
+                ),
+                sport_1_cycling,
+                sport_1_cycling.stopped_speed_threshold,
+                get_elevation_on_refresh=True,
+                workout=workout_cycling_user_1_with_coordinates,
+            )
+
+        assert (
+            service.updated_elevation_data_source == ElevationDataSource.FILE
+        )
+        assert service.elevation_processing == ElevationProcessing.NONE
+        assert service.get_elevation_on_refresh is True
+        assert service.reuse_existing_elevation is False
+        assert service.update_existing_elevation is True
+        assert service.workout_has_missing_elevation is False
+        assert service.elevation_service is None
+        assert service.all_data_from_file is True
+
+    def test_it_instantiates_service_when_workout_stats_are_extracted_from_file_and_elevation_parameters(  # noqa
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+        workout_cycling_user_1_with_coordinates: "Workout",
+        workout_cycling_user_1_segment_0_with_coordinates: "WorkoutSegment",
+        workout_cycling_user_1_segment_1_with_coordinates: "WorkoutSegment",
+    ) -> None:
+        """
+        In this case, it ignores elevation data source and elevation processing
+        """
+        user_1.elevation_data_source = ElevationDataSource.VALHALLA
+        user_1.elevation_processing = ElevationProcessing.NONE
+        user_1.process_only_missing_elevations = False
+        user_1.workout_stats_from_file = True
+        workout_cycling_user_1_with_coordinates.elevation_data_source = (
+            ElevationDataSource.FILE
+        )
+        workout_cycling_user_1_with_coordinates.elevation_processing = (
+            ElevationProcessing.NONE
+        )
+
+        with patch.object(
+            WorkoutFitService,
+            "get_file_stats",
+            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+        ):
+            service = WorkoutFitService(
+                user_1,
+                self.get_fit_file_content(
+                    app_with_open_elevation_and_valhalla_url,
+                    file_name="example.fit",
+                ),
+                sport_1_cycling,
+                sport_1_cycling.stopped_speed_threshold,
+                get_elevation_on_refresh=True,
+                workout=workout_cycling_user_1_with_coordinates,
+                change_elevation_source=ElevationDataSource.OPEN_ELEVATION,
+                elevation_processing=ElevationProcessing.FLAT_WINDOW,
+            )
+
+        assert (
+            service.updated_elevation_data_source
+            == ElevationDataSource.OPEN_ELEVATION
+        )
+        assert service.elevation_processing == ElevationProcessing.FLAT_WINDOW
+        assert service.get_elevation_on_refresh is True
+        assert service.reuse_existing_elevation is False
+        assert service.update_existing_elevation is True
+        assert service.workout_has_missing_elevation is False
+        assert isinstance(
+            service.elevation_service.elevation_service,  # type: ignore
+            OpenElevationService,
+        )
+        assert service.all_data_from_file is False
 
 
 class TestWorkoutFitServiceProcessWorkout(
