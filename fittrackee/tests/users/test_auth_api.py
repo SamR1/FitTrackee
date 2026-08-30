@@ -53,6 +53,7 @@ PREFERENCES_PAYLOAD = {
     "date_format": "yyyy-MM-dd",
     "default_tile_provider": "osm",
     "display_ascent": False,
+    "elevation_data_source": "open_elevation",
     "elevation_processing": "flat_window",
     "hide_profile_in_users_directory": False,
     "hr_visibility": "followers_only",
@@ -61,7 +62,7 @@ PREFERENCES_PAYLOAD = {
     "manually_approves_followers": False,
     "map_visibility": "private",
     "media_visibility": "followers_only",
-    "missing_elevations_data_source": "open_elevation",
+    "process_only_missing_elevations": False,
     "segments_creation_event": "none",
     "split_workout_charts": True,
     "start_elevation_at_zero": False,
@@ -385,10 +386,9 @@ class TestUserRegistration(ApiTestCaseMixin):
         assert new_user.start_elevation_at_zero is True
         assert new_user.workout_stats_from_file is False
         assert new_user.use_raw_gpx_speed is False
-        assert new_user.missing_elevations_data_source == (
-            ElevationDataSource.FILE
-        )
+        assert new_user.elevation_data_source == ElevationDataSource.FILE
         assert new_user.elevation_processing == ElevationProcessing.NONE
+        assert new_user.process_only_missing_elevations is True
         assert new_user.workouts_visibility == VisibilityLevel.PRIVATE
         assert new_user.media_visibility == VisibilityLevel.PRIVATE
         assert new_user.analysis_visibility == VisibilityLevel.PRIVATE
@@ -1680,7 +1680,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             **PREFERENCES_PAYLOAD,
             "missing_elevations_processing": "open_elevation",
         }
-        del payload["missing_elevations_data_source"]
+        del payload["elevation_data_source"]
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_open_elevation_url, user_1.email
         )
@@ -1695,12 +1695,13 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
 
         assert response.status_code == 200
         db.session.refresh(user_1)
-        assert user_1.missing_elevations_data_source == (
-            ElevationDataSource.OPEN_ELEVATION.value
+        assert (
+            user_1.elevation_data_source
+            == ElevationDataSource.OPEN_ELEVATION.value
         )
         logger_mock.warning.assert_called_once_with(
             "'missing_elevations_processing' is deprecated, "
-            "please use 'missing_elevations_data_source' instead."
+            "please use 'elevation_data_source' instead."
         )
 
     def test_it_updates_user_preferences_with_missing_elevations_processing_when_both_keys_are_provided(  # noqa
@@ -1725,16 +1726,14 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
 
         assert response.status_code == 200
         db.session.refresh(user_1)
-        assert user_1.missing_elevations_data_source == (
+        assert user_1.elevation_data_source == (
             ElevationDataSource.OPEN_ELEVATION.value
         )
         assert user_1.elevation_processing == (
             ElevationProcessing.FLAT_WINDOW.value
         )
         data = json.loads(response.data.decode())
-        assert (
-            data["data"]["missing_elevations_data_source"] == "open_elevation"
-        )
+        assert data["data"]["elevation_data_source"] == "open_elevation"
         assert data["data"]["elevation_processing"] == "flat_window"
 
     @pytest.mark.parametrize(
@@ -1906,34 +1905,6 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
         )
         assert suspended_user.workouts_visibility == (
             VisibilityLevel.PUBLIC.value
-        )
-
-    def test_it_returns_error_when_elevation_processing_is_invalid(
-        self,
-        app: Flask,
-        user_1: User,
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-
-        response = client.post(
-            "/api/auth/profile/edit/preferences",
-            content_type="application/json",
-            json={
-                **PREFERENCES_PAYLOAD,
-                "missing_elevations_data_source": "file",
-                "elevation_processing": "flat_window",
-            },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_400(
-            response,
-            (
-                "'flat_window' can not be selected  as 'elevation_processing' "
-                "when 'missing_elevations_data_source' is 'file'"
-            ),
         )
 
     def test_it_updates_default_tile_provider(

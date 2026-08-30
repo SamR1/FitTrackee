@@ -180,8 +180,9 @@ class UserModelAssertMixin:
         assert "start_elevation_at_zero" not in serialized_user
         assert "workout_stats_from_file" not in serialized_user
         assert "use_raw_gpx_speed" not in serialized_user
-        assert "missing_elevations_data_source" not in serialized_user
+        assert "elevation_data_source" not in serialized_user
         assert "elevation_processing" not in serialized_user
+        assert "process_only_missing_elevations" not in serialized_user
         assert "workouts_visibility" not in serialized_user
         assert "media_visibility" not in serialized_user
         assert "analysis_visibility" not in serialized_user
@@ -255,12 +256,16 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         )
         assert serialized_user["use_raw_gpx_speed"] == user_1.use_raw_gpx_speed
         assert (
-            serialized_user["missing_elevations_data_source"]
-            == user_1.missing_elevations_data_source
+            serialized_user["elevation_data_source"]
+            == user_1.calculated_elevation_data_source
         )
         assert (
             serialized_user["elevation_processing"]
-            == user_1.elevation_processing
+            == user_1.calculated_elevation_processing
+        )
+        assert (
+            serialized_user["process_only_missing_elevations"]
+            == user_1.calculated_process_only_missing_elevations
         )
         assert (
             serialized_user["workouts_visibility"]
@@ -382,59 +387,149 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert serialized_user["sanctions_count"] == 0
 
     @pytest.mark.parametrize(
-        "input_preference",
+        (
+            "input_elevation_data_source, input_elevation_processing,"
+            "input_process_only_missing_elevations,"
+            "expected_elevation_data_source, expected_elevation_processing,"
+            "expected_process_only_missing_elevations"
+        ),
         [
-            ElevationDataSource.OPEN_ELEVATION,
-            ElevationDataSource.VALHALLA,
+            (
+                ElevationDataSource.OPEN_ELEVATION,
+                ElevationProcessing.FLAT_WINDOW,
+                True,
+                ElevationDataSource.OPEN_ELEVATION,
+                ElevationProcessing.FLAT_WINDOW,
+                True,
+            ),
+            (
+                ElevationDataSource.VALHALLA,
+                ElevationProcessing.NONE,
+                False,
+                ElevationDataSource.VALHALLA,
+                ElevationProcessing.NONE,
+                False,
+            ),
+            (
+                ElevationDataSource.FILE,
+                ElevationProcessing.NONE,
+                True,
+                ElevationDataSource.FILE,
+                ElevationProcessing.NONE,
+                True,
+            ),
+            (
+                ElevationDataSource.FILE,
+                ElevationProcessing.FLAT_WINDOW,
+                False,
+                ElevationDataSource.FILE,
+                ElevationProcessing.FLAT_WINDOW,
+                False,
+            ),
+            (
+                ElevationDataSource.FILE,
+                ElevationProcessing.FLAT_WINDOW,
+                True,
+                ElevationDataSource.FILE,
+                ElevationProcessing.NONE,
+                False,
+            ),
         ],
     )
-    def test_it_returns_missing_elevations_processing_as_none_when_no_elevation_service_set(  # noqa
+    def test_it_returns_elevation_preferences(
         self,
-        app: Flask,
+        app_with_open_elevation_and_valhalla_url: Flask,
         user_1: User,
-        input_preference: "ElevationDataSource",
+        input_elevation_data_source: "ElevationDataSource",
+        input_elevation_processing: "ElevationProcessing",
+        input_process_only_missing_elevations: bool,
+        expected_elevation_data_source: "ElevationDataSource",
+        expected_elevation_processing: "ElevationProcessing",
+        expected_process_only_missing_elevations: bool,
     ) -> None:
-        user_1.missing_elevations_data_source = input_preference
+        user_1.elevation_data_source = input_elevation_data_source
+        user_1.elevation_processing = input_elevation_processing
+        user_1.process_only_missing_elevations = (
+            input_process_only_missing_elevations
+        )
+
+        # assert calculated values
+        assert user_1.calculated_elevation_data_source == (
+            expected_elevation_data_source
+        )
+        assert user_1.calculated_elevation_processing == (
+            expected_elevation_processing
+        )
+        assert user_1.calculated_process_only_missing_elevations == (
+            expected_process_only_missing_elevations
+        )
+
+        # serialized values
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert (
-            serialized_user["missing_elevations_data_source"]
-            == ElevationDataSource.FILE
+            serialized_user["elevation_data_source"]
+            == expected_elevation_data_source
+        )
+        assert (
+            serialized_user["elevation_processing"]
+            == expected_elevation_processing
+        )
+        assert (
+            serialized_user["process_only_missing_elevations"]
+            == expected_process_only_missing_elevations
         )
 
     @pytest.mark.parametrize(
-        "input_preference",
+        (
+            "input_elevation_data_source, input_elevation_processing,"
+            "input_process_only_missing_elevations,"
+            "expected_elevation_data_source, expected_elevation_processing,"
+            "expected_process_only_missing_elevations"
+        ),
         [
-            ElevationDataSource.OPEN_ELEVATION,
-            ElevationDataSource.VALHALLA,
+            (
+                ElevationDataSource.OPEN_ELEVATION,
+                ElevationProcessing.FLAT_WINDOW,
+                True,
+                ElevationDataSource.VALHALLA,
+                ElevationProcessing.FLAT_WINDOW,
+                True,
+            ),
+            (
+                ElevationDataSource.FILE,
+                ElevationProcessing.NONE,
+                False,
+                ElevationDataSource.FILE,
+                ElevationProcessing.NONE,
+                False,
+            ),
         ],
     )
-    def test_it_returns_missing_elevations_processing_when_elevation_service_set(  # noqa
+    def test_it_calculates_elevation_preferences_when_no_elevation_service_set(
         self,
-        app_with_open_elevation_and_valhalla_url: Flask,
+        app: Flask,
         user_1: User,
-        input_preference: "ElevationDataSource",
+        input_elevation_data_source: "ElevationDataSource",
+        input_elevation_processing: "ElevationProcessing",
+        input_process_only_missing_elevations: bool,
+        expected_elevation_data_source: "ElevationDataSource",
+        expected_elevation_processing: "ElevationProcessing",
+        expected_process_only_missing_elevations: bool,
     ) -> None:
-        user_1.missing_elevations_data_source = input_preference
-        serialized_user = user_1.serialize(current_user=user_1, light=False)
-
-        assert (
-            serialized_user["missing_elevations_data_source"]
-            == input_preference
-        )
-
-    def test_it_returns_elevation_gain_calculation(
-        self,
-        app_with_open_elevation_and_valhalla_url: Flask,
-        user_1: User,
-    ) -> None:
+        user_1.elevation_data_source = input_elevation_data_source
         user_1.elevation_processing = ElevationProcessing.FLAT_WINDOW
-        serialized_user = user_1.serialize(current_user=user_1, light=False)
+        user_1.process_only_missing_elevations = True
+
+        user_1.serialize(current_user=user_1, light=False)
 
         assert (
-            serialized_user["elevation_processing"]
-            == ElevationProcessing.FLAT_WINDOW.value
+            user_1.calculated_elevation_data_source == ElevationDataSource.FILE
         )
+        assert (
+            user_1.calculated_elevation_processing == ElevationProcessing.NONE
+        )
+        assert user_1.calculated_process_only_missing_elevations is False
 
 
 class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):

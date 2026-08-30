@@ -161,7 +161,7 @@ class TestWorkoutFitServiceInstantiation(WorkoutFileMixin):
         assert service.get_weather is True
         assert service.get_elevation_on_refresh is False
         assert service.updated_elevation_data_source is None
-        assert service.elevation_processing is None
+        assert service.elevation_processing == ElevationProcessing.NONE
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)
 
@@ -295,7 +295,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
         workout_cycling_user_1_segment_0_coordinates: "WorkoutSegment",
         input_workout_stats_from_file: bool,
     ) -> None:
-        user_1.missing_elevations_data_source = ElevationDataSource.VALHALLA
+        user_1.elevation_data_source = ElevationDataSource.VALHALLA
         user_1.workout_stats_from_file = input_workout_stats_from_file
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.FILE
@@ -341,9 +341,7 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
         """
         It ignores 'workout_stats_from_file' when True
         """
-        user_1.missing_elevations_data_source = (
-            ElevationDataSource.OPEN_ELEVATION
-        )
+        user_1.elevation_data_source = ElevationDataSource.OPEN_ELEVATION
         user_1.workout_stats_from_file = input_workout_stats_from_file
         workout_cycling_user_1_with_coordinates.elevation_data_source = (
             ElevationDataSource.FILE

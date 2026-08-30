@@ -97,6 +97,12 @@
     "EDIT_NOTIFICATION_PREFERENCES": "Modifier les préférences de notification",
     "EDIT_PREFERENCES": "Modifier les préférences",
     "EDIT_SPORTS_PREFERENCES": "Modifier les préférences des sports",
+    "ELEVATIONS_DATA_SOURCE_LABEL": "Source pour les altitudes lors de la création",
+    "ELEVATIONS_PROCESSING": {
+      "LABEL": "Traitement des altitudes lors de la création",
+      "flat_window": "Lisser les données",
+      "none": "Aucun traitement"
+    },
     "ELEVATION_CHART_START": {
       "LABEL": "Début de l'axe pour le graphe affichant l'altitude",
       "MIN_ALT": "Altitude minimale",
@@ -131,12 +137,6 @@
     },
     "MESSAGES_EDITION": "Edition des préférences des messages",
     "MESSAGES_PREFERENCES": "Preferences des messages",
-    "MISSING_ELEVATIONS_DATA_SOURCE_LABEL": "Source pour les altitudes manquantes lors de la création",
-    "MISSING_ELEVATIONS_PROCESSING": {
-      "LABEL": "Traitement des altitudes manquantes lors de la création, si une source de données est sélectionnée",
-      "flat_window": "Lisser les données",
-      "none": "Aucun traitement"
-    },
     "MONDAY": "Lundi",
     "NOTIFICATIONS": {
       "account_creation": "Quelqu'un s'est enregistré",
@@ -159,6 +159,7 @@
     "PICTURE_UPDATE": "Mettre à jour l'image",
     "PREFERENCES_EDITION": "Mise à jour des préférences",
     "PRIVACY-POLICY_EDITION": "Politique de confidentialité",
+    "PROCESS_ONLY_MISSING_ELEVATIONS": "Traiter uniquement les séances pour lesquelles il manque des données d'altitude",
     "PROFILE_EDITION": "Mise à jour du profil",
     "PROFILE_IN_USERS_DIRECTORY": {
       "DISPLAYED": "Affiché",

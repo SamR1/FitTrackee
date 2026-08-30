@@ -51,7 +51,6 @@
     "CHANGE_SOURCE": "Canvia la font de dades d'elevació",
     "LABEL": "Elevacions actualitzades des de",
     "file": "Des de l'arxiu",
-    "none": "Cap (dades d'elevació des de l'arxiu)",
     "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },

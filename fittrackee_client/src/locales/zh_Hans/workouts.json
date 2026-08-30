@@ -51,7 +51,6 @@
     "CHANGE_SOURCE": "更改海拔数据源",
     "LABEL": "海拔数据更新自",
     "file": "来自文件",
-    "none": "无（使用文件中的海拔数据）",
     "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },

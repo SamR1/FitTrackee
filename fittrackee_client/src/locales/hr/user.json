@@ -131,9 +131,6 @@
     },
     "MESSAGES_EDITION": "Uređivanje postavki poruka",
     "MESSAGES_PREFERENCES": "Postavke poruka",
-    "MISSING_ELEVATIONS_PROCESSING": {
-      "LABEL": "Nedostaje obrada podataka o elevaciji prilikom stvaranja"
-    },
     "MONDAY": "Ponedjeljak",
     "NOTIFICATIONS": {
       "account_creation": "Netko se registrira",

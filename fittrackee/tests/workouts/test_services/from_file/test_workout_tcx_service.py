@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 import gpxpy
 import pytest
 
+from fittrackee.constants import ElevationProcessing
 from fittrackee.tests.workouts.mixins import (
     WorkoutFileMixin,
 )
@@ -343,7 +344,7 @@ class TestWorkoutTcxServiceInstantiation(WorkoutFileMixin):
         assert service.get_weather is True
         assert service.get_elevation_on_refresh is False
         assert service.updated_elevation_data_source is None
-        assert service.elevation_processing is None
+        assert service.elevation_processing is ElevationProcessing.NONE
         assert service.update_existing_elevation is False
         # from WorkoutGpxService
         assert isinstance(service.gpx, gpxpy.gpx.GPX)
