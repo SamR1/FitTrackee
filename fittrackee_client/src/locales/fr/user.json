@@ -159,7 +159,7 @@
     "PICTURE_UPDATE": "Mettre à jour l'image",
     "PREFERENCES_EDITION": "Mise à jour des préférences",
     "PRIVACY-POLICY_EDITION": "Politique de confidentialité",
-    "PROCESS_ONLY_MISSING_ELEVATIONS": "Traiter uniquement les séances pour lesquelles il manque des données d'altitude",
+    "PROCESS_ONLY_MISSING_ELEVATIONS": "Pour la source des données et leur traitement, ne prendre en compte que les séances pour lesquelles il manque des données d'altitude",
     "PROFILE_EDITION": "Mise à jour du profil",
     "PROFILE_IN_USERS_DIRECTORY": {
       "DISPLAYED": "Affiché",
@@ -256,7 +256,7 @@
     "WORKOUT_STATS_FROM_FILE": {
       "CALCULATED": "Calculées",
       "FROM_FILE": "Extraites du fichier",
-      "HELP": "Si extraites du fichier, les durées, les vitesses/allures, l'altitude et les dénivelés sont extraits du fichier .fit. De plus, les paramètres de source et traitement des données d'altitude sont ignorés.",
+      "HELP": "Si extraites du fichier, les durées, les vitesses/allures, l'altitude et les dénivelés sont extraits du fichier .fit.\nLes paramètres de stratégie de calcul de la vitesse maximale, des source et traitement des données d'altitude sont ignorés.",
       "LABEL": "Statistiques de la séance (fichiers .fit uniquement)"
     }
   },

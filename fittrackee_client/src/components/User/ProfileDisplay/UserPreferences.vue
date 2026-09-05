@@ -78,7 +78,7 @@
       <dd>
         {{ $t(`user.PROFILE.WORKOUT_STATS_FROM_FILE.${workoutStatsFromFile}`) }}
       </dd>
-      <div class="info-box raw-speed-help">
+      <div class="info-box stats-from-file-help">
         <span>
           <i class="fa fa-info-circle" aria-hidden="true" />
           {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.HELP') }}
@@ -259,6 +259,7 @@
       text-transform: uppercase;
       border-bottom: 1px solid var(--card-border-color);
     }
+    .stats-from-file-help,
     .raw-speed-help,
     .missing-elevations-help {
       margin-top: -$default-margin * 0.5;
@@ -266,6 +267,9 @@
     .changes-help,
     .missing-elevations-help {
       margin-bottom: $default-margin;
+    }
+    .stats-from-file-help {
+      white-space: break-spaces;
     }
   }
 </style>

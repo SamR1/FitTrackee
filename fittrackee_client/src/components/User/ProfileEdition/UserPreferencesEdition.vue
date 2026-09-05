@@ -260,7 +260,7 @@
               </span>
             </label>
           </div>
-          <div class="info-box raw-speed-help">
+          <div class="info-box stats-from-file-help">
             <span>
               <i class="fa fa-info-circle" aria-hidden="true" />
               {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.HELP') }}
@@ -498,8 +498,12 @@
           </div>
           <div>
             2.
+            {{ $t('user.PROFILE.CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI')
+            }}{{ ' ' }}
             {{
-              $t('user.PROFILE.CHANGES_CAN_BE_APPLIED_WHEN_REFRESH_WITH_CLI')
+              $t(
+                'user.PROFILE.VISIBILITY_LEVELS_CAN_BE_OVERRIDEN_BY_SPORT_PREFERENCES'
+              )
             }}
           </div>
           <div>3. {{ $t('user.PROFILE.CHANGES_ONLY_TO_NEW_WORKOUTS') }}</div>
