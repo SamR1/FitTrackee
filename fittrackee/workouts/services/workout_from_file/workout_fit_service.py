@@ -84,6 +84,10 @@ class WorkoutFitService(WorkoutGpxService):
                     self.workout.elevation_processing
                     != ElevationProcessing.NONE
                 )
+                self.reuse_existing_elevation = (
+                    not self.update_existing_elevation
+                )
+
             else:
                 self.updated_elevation_data_source = None
 

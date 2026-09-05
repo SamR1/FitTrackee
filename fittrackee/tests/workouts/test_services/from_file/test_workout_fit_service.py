@@ -11,6 +11,7 @@ from fittrackee.constants import ElevationDataSource, ElevationProcessing
 from fittrackee.tests.fixtures.fixtures_workouts import (
     FILE_STATS_WITH_DATA,
     FILE_STATS_WITH_NONE,
+    OPEN_ELEVATION_RESPONSE,
     VALHALLA_RESPONSE,
 )
 from fittrackee.tests.mixins import ResponseMockMixin
@@ -543,4 +544,168 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
             "pace": None,
             "speed": 0.0,
             "time": "2018-03-13 12:44:45+00:00",
+        }
+
+    def test_it_refreshes_when_changing_workout_from_stats(
+        self,
+        app_with_open_elevation_and_valhalla_url: "Flask",
+        sport_1_cycling: "Sport",
+        user_1: "User",
+    ) -> None:
+        """
+        user refresh workout on UI
+        """
+        # user preferences
+        user_1.elevation_data_source = ElevationDataSource.OPEN_ELEVATION
+        user_1.elevation_processing = ElevationProcessing.FLAT_WINDOW
+        user_1.process_only_missing_elevations = False
+        user_1.workout_stats_from_file = False
+
+        # workout creation with calculated stats smooth elevation from
+        # OpenElevation
+        service = WorkoutFitService(
+            user_1,
+            self.get_fit_file_content(
+                app_with_open_elevation_and_valhalla_url,
+                file_name="example.fit",
+            ),
+            sport_1_cycling,
+            sport_1_cycling.stopped_speed_threshold,
+        )
+        with (
+            patch.object(
+                requests,
+                "post",
+                return_value=self.get_response(OPEN_ELEVATION_RESPONSE),
+            ) as requests_mock,
+        ):
+            service.process_workout()
+        db.session.commit()
+
+        requests_mock.assert_called_once()
+        workout = Workout.query.one()
+        assert workout.elevation_data_source == (
+            ElevationDataSource.OPEN_ELEVATION
+        )
+        assert workout.elevation_processing == (
+            ElevationProcessing.FLAT_WINDOW
+        )
+        assert workout.segments[0].points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 993,  # smoothed
+            "latitude": 44.68094998039305,
+            "longitude": 6.073670033365488,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert workout.segments[0].points[-1] == {
+            "distance": 318.1085348379698,
+            "duration": 250,
+            "elevation": 976,  # smoothed
+            "latitude": 44.67821999453008,
+            "longitude": 6.074419962242246,
+            "pace": 0.8530805687,
+            "speed": 4.22,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
+        # change preference in order to get workouts stats from file
+        user_1.workout_stats_from_file = True
+
+        # refresh workout
+        with patch.object(
+            WorkoutFitService,
+            "get_file_stats",
+            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+        ):
+            service = WorkoutFitService(
+                user_1,
+                self.get_fit_file_content(
+                    app_with_open_elevation_and_valhalla_url,
+                    file_name="example.fit",
+                ),
+                sport_1_cycling,
+                sport_1_cycling.stopped_speed_threshold,
+                get_elevation_on_refresh=False,
+                workout=workout,
+            )
+        service.process_workout()
+        db.session.commit()
+
+        # refresh workout (data from file)
+        db.session.refresh(workout)
+        self.assert_data_from_file(workout, FILE_STATS_WITH_DATA)
+        assert workout.elevation_data_source == ElevationDataSource.FILE
+        assert workout.elevation_processing == ElevationProcessing.NONE
+        assert workout.segments[0].points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 997.0,  # original value
+            "latitude": 44.68094998039305,
+            "longitude": 6.073670033365488,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert workout.segments[0].points[-1] == {
+            "distance": 318.2150026297633,
+            "duration": 250,
+            "elevation": 976.0,  # original value
+            "latitude": 44.67821999453008,
+            "longitude": 6.074419962242246,
+            "pace": 0.8470588235,
+            "speed": 4.25,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
+        # change preference back to initial values
+        user_1.workout_stats_from_file = False
+
+        # refresh workout (data from file, since no refresh on elevation)
+        service = WorkoutFitService(
+            user_1,
+            self.get_fit_file_content(
+                app_with_open_elevation_and_valhalla_url,
+                file_name="example.fit",
+            ),
+            sport_1_cycling,
+            sport_1_cycling.stopped_speed_threshold,
+            get_elevation_on_refresh=False,
+            workout=workout,
+        )
+        with (
+            patch.object(
+                requests,
+                "post",
+                return_value=self.get_response(OPEN_ELEVATION_RESPONSE),
+            ) as requests_mock,
+        ):
+            service.process_workout()
+        db.session.commit()
+
+        requests_mock.assert_not_called()
+        db.session.refresh(workout)
+        assert workout.elevation_data_source == ElevationDataSource.FILE
+        assert workout.elevation_processing == ElevationProcessing.NONE
+        assert workout.segments[0].points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 997.0,  # original value
+            "latitude": 44.68094998039305,
+            "longitude": 6.073670033365488,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert workout.segments[0].points[-1] == {
+            "distance": 318.2150026297633,
+            "duration": 250,
+            "elevation": 976.0,  # original value
+            "latitude": 44.67821999453008,
+            "longitude": 6.074419962242246,
+            "pace": 0.8470588235,
+            "speed": 4.25,
+            "time": "2018-03-13 12:48:55+00:00",
         }
