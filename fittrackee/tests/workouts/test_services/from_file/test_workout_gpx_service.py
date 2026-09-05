@@ -1267,6 +1267,48 @@ class TestWorkoutGpxServiceProcessFileOnCreationWithFileWithElevation(
             "time": "2018-03-13 12:48:55+00:00",
         }
 
+    def test_it_creates_workout_with_smoothed_elevation_when_file_contains_duplicated_point(  # noqa
+        self,
+        app: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_duplicated_point: str,
+    ) -> None:
+        user_1.elevation_data_source = ElevationDataSource.FILE
+        user_1.elevation_processing = ElevationProcessing.FLAT_WINDOW
+        user_1.process_only_missing_elevations = False
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_duplicated_point
+        )
+
+        service.process_workout()
+        db.session.commit()
+
+        workout = Workout.query.one()
+        assert workout.elevation_data_source == ElevationDataSource.FILE
+        user_1.elevation_processing = ElevationProcessing.FLAT_WINDOW
+        workout_segment = workout.segments[0]
+        assert workout_segment.points[0] == {
+            "distance": 0.0,
+            "duration": 0,
+            "elevation": 991.0,
+            "latitude": 44.68095,
+            "longitude": 6.07367,
+            "pace": None,
+            "speed": 0.0,
+            "time": "2018-03-13 12:44:45+00:00",
+        }
+        assert workout_segment.points[-1] == {
+            "distance": 317.5933987948165,
+            "duration": 250,
+            "elevation": 981.0,
+            "latitude": 44.67822,
+            "longitude": 6.07442,
+            "pace": 0.8530805687,
+            "speed": 4.22,
+            "time": "2018-03-13 12:48:55+00:00",
+        }
+
     def test_it_creates_workout_with_set_elevation_data_source(
         self,
         app_with_valhalla_url: "Flask",
@@ -2573,7 +2615,7 @@ class TestWorkoutGpxServiceProcessFileOnCreationWithFileWithoutElevation(
         db.session.commit()
 
         workout = self.assert_workout_without_elevation()
-        assert workout.elevation_data_source == (ElevationDataSource.FILE)
+        assert workout.elevation_data_source == ElevationDataSource.FILE
         assert workout.elevation_processing == ElevationProcessing.NONE
 
     def test_it_calls_open_elevation_for_each_segment(

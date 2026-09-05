@@ -3932,6 +3932,18 @@ def gpx_file_with_one_point_on_last_segment(gpx_file: str) -> str:
 
 
 @pytest.fixture()
+def gpx_file_with_duplicated_point(gpx_file: str) -> str:
+    return gpx_file.replace(
+        "<time>2018-03-13T12:45:10Z</time>",
+        """<time>2018-03-13T12:45:10Z</time>
+           </trkpt>
+           <trkpt lat="44.68071" lon="6.07364">
+             <ele>994</ele>
+             <time>2018-03-13T12:45:10Z</time>""",
+    )
+
+
+@pytest.fixture()
 def gpx_file_with_segments() -> str:
     return (
         """<?xml version='1.0' encoding='UTF-8'?>

@@ -632,6 +632,14 @@ class WorkoutGpxService(
             if points:
                 segment_df = pd.DataFrame(points).set_index(["idx"])
                 file_elevations = pd.concat([file_elevations, segment_df])
+
+        # that shouldn't be the case, but some files may
+        # contain duplicate points
+        if not file_elevations.index.is_unique:
+            file_elevations = file_elevations.loc[
+                ~file_elevations.index.duplicated(), :
+            ]
+
         return file_elevations
 
     def _get_elevation_from_file(
