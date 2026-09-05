@@ -39,7 +39,7 @@ Preferences
 .. versionchanged:: 0.11.0 preferred displayed for charts
 .. versionchanged:: 1.1.0 missing elevation processing
 .. versionchanged:: 1.3.0 added media visibility
-.. versionchanged:: 1.4.0 added workout statistics from ``.fit`` file and default tile provider, updated missing elevation processing
+.. versionchanged:: 1.4.0 added workout statistics from ``.fit`` file and default tile provider, updated elevation processing
 
 .. figure:: ../_images/user-preferences.png
    :alt: User Preferences on FitTrackee
@@ -67,7 +67,7 @@ For workouts, it is possible to choose:
 - workout statistics (.fit files only):
 
   - calculated (default)
-  - from file ("Max. speed calculation strategy" preference is ignored)
+  - from file (preferences for calculating maximum speed and for the source and processing of elevation data will be ignored)
 
 - elevation chart axis start: zero or minimum altitude
 - to exclude extreme values (which may be GPS errors) when calculating the maximum speed (by default, extreme values are excluded)
@@ -75,16 +75,21 @@ For workouts, it is possible to choose:
   .. note::
     Changing this preference will only affect next file uploads.
 
-- source when elevation is missing if an elevation service is set:
+- elevation source on creation if an elevation service is set:
 
   - none (elevation data from file)
   - OpenElevation
   - Valhalla
 
-- smoothing elevation if OpenElevation or Valhalla are selected as source when elevation is missing:
+- smoothing elevation on creation:
 
   - no processing
   - smooth data
+
+- for the data source and processing, include only the workouts for which elevation data is missing:
+
+  - no (all workouts will be created based on elevation preferences)
+  - yes (only workouts for which elevation data is missing will be created based on elevation preferences)
 
 - default visibility for workout data, media (photos), analysis, map and heart rate.
 
