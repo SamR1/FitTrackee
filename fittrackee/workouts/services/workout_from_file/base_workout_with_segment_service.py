@@ -166,8 +166,16 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
             self.updated_elevation_data_source = (
                 None
                 if (
-                    self.auth_user.elevation_data_source
+                    not self.workout
+                    and self.auth_user.elevation_data_source
                     == ElevationDataSource.FILE
+                )
+                # in case elevation are not missing anymore
+                or (
+                    self.workout
+                    and not self.workout_has_missing_elevation
+                    and self.workout.elevation_data_source
+                    == self.auth_user.elevation_data_source
                 )
                 else self.auth_user.elevation_data_source
             )

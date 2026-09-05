@@ -6117,7 +6117,7 @@ VALHALLA_VALUES = [
     977,
     976,
 ]
-VALHALLA_RESPONSE = {
+VALHALLA_RESPONSE: Dict = {
     "shape": [
         {"lat": 44.68095, "lon": 6.07367},
         {"lat": 44.68091, "lon": 6.07367},
@@ -6206,4 +6206,143 @@ FILE_STATS_WITH_NONE = {
     "max_speed": None,
     "moving": None,
     "pauses": None,
+}
+
+
+FILE_FIRST_POINT = {
+    "distance": 0.0,
+    "duration": 0,
+    "elevation": 998.0,
+    "latitude": 44.68095,
+    "longitude": 6.07367,
+    "pace": None,
+    "speed": 0.0,
+    "time": "2018-03-13 12:44:45+00:00",
+}
+FILE_LAST_POINT = {
+    "distance": 320.12787035769946,
+    "duration": 250,
+    "elevation": 975.0,
+    "latitude": 44.67822,
+    "longitude": 6.07442,
+    "pace": 0.831408776,
+    "speed": 4.33,
+    "time": "2018-03-13 12:48:55+00:00",
+}
+FILE_FIRST_POINT_W_EXTENSIONS = {
+    **FILE_FIRST_POINT,
+    "cadence": 0,
+    "heart_rate": 92,
+    "power": 0,
+}
+FILE_FIRST_POINT_WO_ELEVATION = {
+    **FILE_FIRST_POINT,
+    "elevation": None,
+}
+FILE_LAST_POINT_WO_ELEVATION = {
+    **FILE_LAST_POINT,
+    "distance": 317.15294405358054,
+    "elevation": None,
+    "pace": 0.8530805687,
+    "speed": 4.22,
+}
+FILE_FIRST_SMOOTHED_POINT = {
+    "distance": 0.0,
+    "duration": 0,
+    "elevation": 991.0,
+    "latitude": 44.68095,
+    "longitude": 6.07367,
+    "pace": None,
+    "speed": 0.0,
+    "time": "2018-03-13 12:44:45+00:00",
+}
+FILE_LAST_SMOOTHED_POINT = {
+    "distance": 317.5933987948165,
+    "duration": 250,
+    "elevation": 981.0,
+    "latitude": 44.67822,
+    "longitude": 6.07442,
+    "pace": 0.8530805687,
+    "speed": 4.22,
+    "time": "2018-03-13 12:48:55+00:00",
+}
+OPEN_ELEVATION_FIRST_POINT = {
+    "distance": 0.0,
+    "duration": 0,
+    "elevation": 994.0,
+    "latitude": 44.68095,
+    "longitude": 6.07367,
+    "pace": None,
+    "speed": 0.0,
+    "time": "2018-03-13 12:44:45+00:00",
+}
+OPEN_ELEVATION_LAST_POINT = {
+    "distance": 332.4018384319535,
+    "duration": 250,
+    "elevation": 969,
+    "latitude": 44.67822,
+    "longitude": 6.07442,
+    "pace": 0.8530805687,
+    "speed": 4.22,
+    "time": "2018-03-13 12:48:55+00:00",
+}
+OPEN_ELEVATION_SMOOTHED_FIRST_POINT = {
+    "distance": 0.0,
+    "duration": 0,
+    "elevation": 993,  # smoothed
+    "latitude": 44.68095,
+    "longitude": 6.07367,
+    "pace": None,
+    "speed": 0.0,
+    "time": "2018-03-13 12:44:45+00:00",
+}
+OPEN_ELEVATION_SMOOTHED_LAST_POINT = {
+    "distance": 318.10946707808796,
+    "duration": 250,
+    "elevation": 976.0,  # smoothed
+    "latitude": 44.67822,
+    "longitude": 6.07442,
+    "pace": 0.8530805687,
+    "speed": 4.22,
+    "time": "2018-03-13 12:48:55+00:00",
+}
+VALHALLA_FIRST_POINT = {
+    "distance": 0.0,
+    "duration": 0,
+    "elevation": 996.0,
+    "latitude": 44.68095,
+    "longitude": 6.07367,
+    "pace": None,
+    "speed": 0.0,
+    "time": "2018-03-13 12:44:45+00:00",
+}
+VALHALLA_LAST_POINT = {
+    "distance": 318.1188938989862,
+    "duration": 250,
+    "elevation": 976,
+    "latitude": 44.67822,
+    "longitude": 6.07442,
+    "pace": 0.8510638298,
+    "speed": 4.23,
+    "time": "2018-03-13 12:48:55+00:00",
+}
+VALHALLA_SMOOTHED_FIRST_POINT = {
+    "distance": 0.0,
+    "duration": 0,
+    "elevation": 991,  # smoothed
+    "latitude": 44.68095,
+    "longitude": 6.07367,
+    "pace": None,
+    "speed": 0.0,
+    "time": "2018-03-13 12:44:45+00:00",
+}
+VALHALLA_SMOOTHED_LAST_POINT = {
+    "distance": 317.6981479954701,
+    "duration": 250,
+    "elevation": 981,  # smoothed
+    "latitude": 44.67822,
+    "longitude": 6.07442,
+    "pace": 0.8530805687,
+    "speed": 4.22,
+    "time": "2018-03-13 12:48:55+00:00",
 }

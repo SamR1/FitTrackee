@@ -442,6 +442,15 @@ class WorkoutGpxService(
                     "Error when getting elevation from elevation service",
                 ) from e
 
+            if (
+                not elevations
+                and self.is_creation
+                and self.workout_has_missing_elevation
+                and self.workout
+            ):
+                self.workout.elevation_data_source = ElevationDataSource.FILE
+                self.workout.elevation_processing = ElevationProcessing.NONE
+
         for point_idx, point in enumerate(points):
             if point_idx == 0:
                 if not point.time:
