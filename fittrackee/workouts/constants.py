@@ -67,9 +67,10 @@ MULTI_ACTIVITIES_SPORTS = {
 # Only sports for multiple activities sport for now
 FIT_MATCHING_SPORTS = {
     "cycling|generic": "Cycling (Sport)",
-    "swimming|open_water": "Open Water Swimming",
+    "cycling|mountain": "Mountain Biking",
     "running|trail": "Trail",
     "running|generic": "Running",
+    "swimming|open_water": "Open Water Swimming",
 }
 
 
