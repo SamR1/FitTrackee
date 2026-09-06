@@ -107,9 +107,9 @@ class TestElevationServiceGetElevations:
         gpx_track_points_without_elevations: List["GPXTrackPoint"],
         input_preferences: "ElevationDataSource",
     ) -> None:
-        user_1.missing_elevations_data_source = input_preferences
+        user_1.elevation_data_source = input_preferences
         service = ElevationService(
-            user_1.missing_elevations_data_source, ElevationProcessing.NONE
+            user_1.elevation_data_source, ElevationProcessing.NONE
         )
 
         with (

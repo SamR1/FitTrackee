@@ -385,12 +385,10 @@ class User(BaseModel):
     messages_preferences: Mapped[Optional[Dict]] = mapped_column(
         postgresql.JSONB, nullable=True
     )
-    missing_elevations_data_source: Mapped[ElevationDataSource] = (
-        mapped_column(
-            Enum(ElevationDataSource, name="elevation_data_source"),
-            server_default="FILE",
-            nullable=False,
-        )
+    elevation_data_source: Mapped[ElevationDataSource] = mapped_column(
+        Enum(ElevationDataSource, name="elevation_data_source"),
+        server_default="FILE",
+        nullable=False,
     )
     calories_visibility: Mapped[VisibilityLevel] = mapped_column(
         Enum(VisibilityLevel, name="visibility_levels"),
@@ -413,6 +411,10 @@ class User(BaseModel):
     )
     default_tile_provider: Mapped[Optional[str]] = mapped_column(
         db.String(25), nullable=False, server_default="osm"
+    )
+    process_only_missing_elevations: Mapped[bool] = mapped_column(
+        server_default="True",
+        nullable=False,
     )
 
     workouts: Mapped[List["Workout"]] = relationship(
@@ -856,23 +858,46 @@ class User(BaseModel):
         return records
 
     @property
-    def calculated_missing_elevations_processing(
+    def calculated_elevation_data_source(
         self,
     ) -> "ElevationDataSource":
         if (
-            self.missing_elevations_data_source
-            == ElevationDataSource.OPEN_ELEVATION
+            self.elevation_data_source == ElevationDataSource.OPEN_ELEVATION
             and not current_app.config["OPEN_ELEVATION_API_URL"]
         ):
             return ElevationDataSource.FILE
 
         if (
-            self.missing_elevations_data_source == ElevationDataSource.VALHALLA
+            self.elevation_data_source == ElevationDataSource.VALHALLA
             and not current_app.config["VALHALLA_API_URL"]
         ):
             return ElevationDataSource.FILE
 
-        return self.missing_elevations_data_source
+        return self.elevation_data_source
+
+    @property
+    def calculated_elevation_processing(
+        self,
+    ) -> "ElevationProcessing":
+
+        if (
+            self.calculated_elevation_data_source == ElevationDataSource.FILE
+            and self.elevation_processing == ElevationProcessing.FLAT_WINDOW
+            and self.process_only_missing_elevations is True
+        ):
+            return ElevationProcessing.NONE
+        return self.elevation_processing
+
+    @property
+    def calculated_process_only_missing_elevations(
+        self,
+    ) -> bool:
+        if (
+            self.calculated_elevation_data_source == ElevationDataSource.FILE
+            and self.elevation_processing == ElevationProcessing.FLAT_WINDOW
+        ):
+            return False
+        return self.process_only_missing_elevations
 
     def serialize(
         self,
@@ -1019,13 +1044,16 @@ class User(BaseModel):
                     if self.messages_preferences
                     else {}
                 ),
-                "missing_elevations_data_source": (
-                    self.calculated_missing_elevations_processing
-                ),
                 "calories_visibility": self.calories_visibility.value,
                 "media_visibility": self.media_visibility.value,
                 "workout_stats_from_file": self.workout_stats_from_file,
-                "elevation_processing": self.elevation_processing,
+                "elevation_data_source": (
+                    self.calculated_elevation_data_source
+                ),
+                "elevation_processing": self.calculated_elevation_processing,
+                "process_only_missing_elevations": (
+                    self.calculated_process_only_missing_elevations
+                ),
                 "default_tile_provider": self.default_tile_provider,
             }
 

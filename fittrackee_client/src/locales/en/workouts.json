@@ -60,7 +60,6 @@
     "LABEL": "Elevations updated from",
     "MODAL_LABEL": "Update elevation data",
     "file": "from file",
-    "none": "None (elevation data from file)",
     "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },

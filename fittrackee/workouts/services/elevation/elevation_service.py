@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 class ElevationService:
     """
     Available elevation services:
-    - Open Elevation (with or without smoothing processing)
+    - Open Elevation
     - Valhalla
     """
 
@@ -48,6 +48,10 @@ class ElevationService:
         if service and service.is_enabled:
             return service, elevation_data_source
         return None, ElevationDataSource.FILE
+
+    @property
+    def is_available(self) -> bool:
+        return self.elevation_service is not None
 
     def get_elevations(
         self, points: List["GPXTrackPoint"]

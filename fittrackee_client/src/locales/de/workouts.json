@@ -51,7 +51,6 @@
     "CHANGE_SOURCE": "Quelle der Höhendaten ändern",
     "LABEL": "Höhendaten aktualisiert von",
     "file": "Aus Datei",
-    "none": "Keine (Höhendaten aus Datei)",
     "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },

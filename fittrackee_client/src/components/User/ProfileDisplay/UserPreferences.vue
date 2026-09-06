@@ -78,7 +78,7 @@
       <dd>
         {{ $t(`user.PROFILE.WORKOUT_STATS_FROM_FILE.${workoutStatsFromFile}`) }}
       </dd>
-      <div class="info-box raw-speed-help">
+      <div class="info-box stats-from-file-help">
         <span>
           <i class="fa fa-info-circle" aria-hidden="true" />
           {{ $t('user.PROFILE.WORKOUT_STATS_FROM_FILE.HELP') }}
@@ -103,32 +103,10 @@
     </dl>
     <dl>
       <dt>
-        {{ $t('user.PROFILE.MISSING_ELEVATIONS_DATA_SOURCE_LABEL')
-        }}<sup>2</sup>:
+        {{ $t('user.PROFILE.ELEVATIONS_DATA_SOURCE_LABEL') }}<sup>2</sup>:
       </dt>
-      <dd>
-        {{
-          $t(
-            `workouts.ELEVATION_DATA_SOURCE.${
-              user.missing_elevations_data_source === 'file'
-                ? 'none'
-                : user.missing_elevations_data_source
-            }`
-          )
-        }}
-      </dd>
-      <dt>
-        {{ $t('user.PROFILE.MISSING_ELEVATIONS_PROCESSING.LABEL')
-        }}<sup>2</sup>:
-      </dt>
-      <dd>
-        {{
-          $t(
-            `user.PROFILE.MISSING_ELEVATIONS_PROCESSING.${
-              user.elevation_processing
-            }`
-          )
-        }}
+      <dd class="capitalize">
+        {{ $t(`workouts.ELEVATION_DATA_SOURCE.${user.elevation_data_source}`) }}
       </dd>
       <div
         v-if="elevationServices.length === 0"
@@ -139,6 +117,20 @@
           {{ $t('user.PROFILE.NO_ELEVATION_SERVICE_AVAILABLE') }}
         </span>
       </div>
+      <dt>{{ $t('user.PROFILE.ELEVATIONS_PROCESSING.LABEL') }}<sup>2</sup>:</dt>
+      <dd>
+        {{
+          $t(`user.PROFILE.ELEVATIONS_PROCESSING.${user.elevation_processing}`)
+        }}
+      </dd>
+      <dt>
+        {{ $t('user.PROFILE.PROCESS_ONLY_MISSING_ELEVATIONS') }}<sup>2</sup>:
+      </dt>
+      <dd>
+        {{
+          $t(`common.${user.process_only_missing_elevations ? 'YES' : 'NO'}`)
+        }}
+      </dd>
       <dt>{{ $t('visibility_levels.WORKOUTS_VISIBILITY') }}<sup>3</sup>:</dt>
       <dd class="capitalize">
         {{ $t(`visibility_levels.LEVELS.${user.workouts_visibility}`) }}
@@ -267,6 +259,7 @@
       text-transform: uppercase;
       border-bottom: 1px solid var(--card-border-color);
     }
+    .stats-from-file-help,
     .raw-speed-help,
     .missing-elevations-help {
       margin-top: -$default-margin * 0.5;
@@ -274,6 +267,9 @@
     .changes-help,
     .missing-elevations-help {
       margin-bottom: $default-margin;
+    }
+    .stats-from-file-help {
+      white-space: break-spaces;
     }
   }
 </style>

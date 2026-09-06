@@ -556,9 +556,7 @@ class TestWorkoutFromFileRefreshServiceRefresh(
         gpx_file_without_elevation: str,
         default_weather_service: MagicMock,
     ) -> None:
-        user_1.missing_elevations_data_source = (
-            ElevationDataSource.OPEN_ELEVATION
-        )
+        user_1.elevation_data_source = ElevationDataSource.OPEN_ELEVATION
         workout_cycling_user_1.original_file = "workouts/1/example.gpx"
         service = WorkoutFromFileRefreshService(
             workout=workout_cycling_user_1, get_elevation_on_refresh=True
@@ -588,9 +586,7 @@ class TestWorkoutFromFileRefreshServiceRefresh(
         gpx_file_without_elevation: str,
         default_weather_service: MagicMock,
     ) -> None:
-        user_1.missing_elevations_data_source = (
-            ElevationDataSource.OPEN_ELEVATION
-        )
+        user_1.elevation_data_source = ElevationDataSource.OPEN_ELEVATION
         workout_cycling_user_1.original_file = "workouts/1/example.gpx"
         service = WorkoutFromFileRefreshService(
             workout=workout_cycling_user_1, get_elevation_on_refresh=False

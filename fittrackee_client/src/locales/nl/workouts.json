@@ -51,7 +51,6 @@
     "CHANGE_SOURCE": "Pas hoogtedatabron aan",
     "LABEL": "Hoogtedata geüpdatet uit",
     "file": "Uit bestand",
-    "none": "Geen (hoogtedata uit bestand)",
     "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },

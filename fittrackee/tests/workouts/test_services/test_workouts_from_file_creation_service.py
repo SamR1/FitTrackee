@@ -1179,9 +1179,7 @@ class TestWorkoutsFromFileCreationServiceCreateWorkout(
         tcx_with_one_lap_and_one_track: str,
         sport_1_cycling: "Sport",
     ) -> None:
-        user_1.missing_elevations_data_source = (
-            ElevationDataSource.OPEN_ELEVATION
-        )
+        user_1.elevation_data_source = ElevationDataSource.OPEN_ELEVATION
         regex = re.compile("<AltitudeMeters>(.*)</AltitudeMeters>")
         tcx_without_elevation = regex.sub("", tcx_with_one_lap_and_one_track)
         kml_file_storage = FileStorage(

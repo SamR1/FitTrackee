@@ -61,6 +61,7 @@ export interface IAuthUserProfile extends IUserProfile {
   date_format: string
   default_tile_provider: string
   display_ascent: boolean
+  elevation_data_source: TElevationDataSource
   elevation_processing: TElevationProcessing
   email: string
   hide_profile_in_users_directory: boolean
@@ -71,9 +72,9 @@ export interface IAuthUserProfile extends IUserProfile {
   map_visibility: TVisibilityLevels
   media_visibility: TVisibilityLevels
   messages_preferences: TMessagePreferences
-  missing_elevations_data_source: TElevationDataSource
   nb_sports: number
   notification_preferences: TNotificationPreferences
+  process_only_missing_elevations: boolean
   records: IRecord[]
   segments_creation_event: TSegmentsCreationEvent
   sports_list: number[]
@@ -132,6 +133,7 @@ export interface IUserPreferencesPayload {
   date_format: string
   default_tile_provider: string
   display_ascent: boolean
+  elevation_data_source: TElevationDataSource
   elevation_processing: TElevationProcessing
   hide_profile_in_users_directory: boolean
   hr_visibility: TVisibilityLevels
@@ -140,7 +142,7 @@ export interface IUserPreferencesPayload {
   manually_approves_followers: boolean
   map_visibility: TVisibilityLevels
   media_visibility: TVisibilityLevels
-  missing_elevations_data_source: TElevationDataSource
+  process_only_missing_elevations: boolean
   segments_creation_event: TSegmentsCreationEvent
   split_workout_charts: boolean
   start_elevation_at_zero: boolean

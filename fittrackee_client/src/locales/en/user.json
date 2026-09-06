@@ -97,6 +97,12 @@
     "EDIT_NOTIFICATION_PREFERENCES": "Edit notification preferences",
     "EDIT_PREFERENCES": "Edit preferences",
     "EDIT_SPORTS_PREFERENCES": "Edit sports preferences",
+    "ELEVATIONS_DATA_SOURCE_LABEL": "Source for elevations on creation",
+    "ELEVATIONS_PROCESSING": {
+      "LABEL": "Elevations processing on creation",
+      "flat_window": "Smooth data",
+      "none": "No processing"
+    },
     "ELEVATION_CHART_START": {
       "LABEL": "Elevation chart starts at",
       "MIN_ALT": "Minimum altitude",
@@ -131,12 +137,6 @@
     },
     "MESSAGES_EDITION": "Message preferences edition",
     "MESSAGES_PREFERENCES": "Messages preferences",
-    "MISSING_ELEVATIONS_DATA_SOURCE_LABEL": "Source for missing elevations on creation",
-    "MISSING_ELEVATIONS_PROCESSING": {
-      "LABEL": "Missing elevations processing on creation, if elevation data source is selected",
-      "flat_window": "Smooth data",
-      "none": "No processing"
-    },
     "MONDAY": "Monday",
     "NOTIFICATIONS": {
       "account_creation": "Someone registers",
@@ -159,6 +159,7 @@
     "PICTURE_UPDATE": "Update picture",
     "PREFERENCES_EDITION": "Preferences edition",
     "PRIVACY-POLICY_EDITION": "Privacy policy",
+    "PROCESS_ONLY_MISSING_ELEVATIONS": "For the data source and processing, include only the workouts for which elevation data is missing",
     "PROFILE_EDITION": "Profile edition",
     "PROFILE_IN_USERS_DIRECTORY": {
       "DISPLAYED": "Displayed",
@@ -255,7 +256,7 @@
     "WORKOUT_STATS_FROM_FILE": {
       "CALCULATED": "Calculated",
       "FROM_FILE": "From file",
-      "HELP": "If from file, the durations, speeds/paces, elevation and ascents/descents are extracted from the .fit file.",
+      "HELP": "If from file, the durations, speeds/paces, elevation and ascents/descents are extracted from the .fit file.\nThe parameters for calculating maximum speed and for the source and processing of elevation data are ignored.",
       "LABEL": "Workout statistics (.fit files only)"
     }
   },

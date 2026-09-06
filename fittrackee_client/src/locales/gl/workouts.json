@@ -51,7 +51,6 @@
     "CHANGE_SOURCE": "Cambiar orixe dos datos de elevación",
     "LABEL": "Elevación actualizada desde",
     "file": "Desde ficheiro",
-    "none": "Ningunha (datos desde o ficheiro)",
     "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },

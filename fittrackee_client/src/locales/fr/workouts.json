@@ -60,7 +60,6 @@
     "LABEL": "Altitudes mises à jour à partir de",
     "MODAL_LABEL": "Mettre à jour les données d'altitude",
     "file": "à partir du fichier",
-    "none": "Aucun (données d'altitude à partir du fichier)",
     "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },

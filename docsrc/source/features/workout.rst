@@ -419,23 +419,29 @@ Users can report a workout that violates instance rules. This will send a notifi
 Calculated data
 ===============
 
-.. versionchanged:: 1.4.0 added possibility to get statistics from ``.fit`` file
-
 .. admonition:: Technical notes
 
   Related data are stored in database in metric system.
 
-In case of ``.fit`` files, if the `preference <account_and_preferences.html#preferences>`__ "Workout statistics" is set to "From file", the statistics are not calculated by **FitTrackee** (and ``gpxpy``), but extracted from the file.
+By default, **FitTrackee** extracts points from files and calculates all statistics using `gpxpy <https://github.com/tkrajina/gpxpy>`_.
+
+This explains the differences between the statistics displayed by **FitTrackee** and those displayed by the app or device that originally recorded the file.
+These differences are particularly noticeable for the duration of pauses and the maximum speed.
+
+By default, extreme speed values (which may be related to GPS errors) are excluded, which also affects the maximum speed (and pace).
+
+Some `preferences <account_and_preferences.html#preferences>`__ allow to change the default behavior.
+
+Extracting statistics from the file
+-----------------------------------
+.. versionadded:: 1.4.0
+
+In case of ``.fit`` files only, if the `preference <account_and_preferences.html#preferences>`__ "Workout statistics" is set to "From file", the statistics are not calculated by **FitTrackee**, but extracted from the file.
 
 .. note::
     Statistics are always calculated for segments regardless of preferences (except in case of sports that combine multiple disciplines like **SwimRun** and **Triathlon**)
 
-Otherwise, the calculated values may differ from values calculated by the application or device that originally generated the files, in particular the maximum speed or the duration of pauses.
-
-By default, extreme speed values (which may be related to GPS errors) are excluded, which also affects the maximum speed (and pace).
-
-.. note::
-  A user preference allows this behavior to be disabled (see `Account & preferences <account_and_preferences.html#preferences>`__).
+In addition, the preferences for the source and processing of elevation data are ignored.
 
 
 Stopped speed threshold
@@ -466,12 +472,13 @@ Elevation
 ---------
 .. versionchanged:: 1.0.6 elevation is not displayed for flatwater sports
 .. versionchanged:: 1.1.0 add missing elevation and elevation data source change
-.. versionchanged:: 1.4.0 allow smoothing to be applied regardless of elevation data source
+.. versionchanged:: 1.4.0 allow smoothing to be applied regardless of elevation data source or missing elevation
 
 Elevation-related data for racket sports (Outdoor Tennis and Padel), flatwater sports (Canoeing, Kayaking, Rowing, Open Water Swimming, Rowing and Standup Paddleboarding) and Ice Skating are not displayed if the file contains elevation
 
 | If some elevation data are missing and an `elevation service <../installation/elevation.html>`__ is enabled by the administrators, the missing elevations can be retrieved on workout creation if the user `preference <account_and_preferences.html#preferences>`__ is set.
 | In this case, all elevations are updated.
+| This preference can also be applied to workouts for which no elevation data is missing.
 
 .. note::
 

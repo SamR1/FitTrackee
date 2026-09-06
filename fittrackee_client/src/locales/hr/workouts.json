@@ -51,7 +51,6 @@
     "CHANGE_SOURCE": "Promijeni izvor podataka o elevaciji",
     "LABEL": "Podatci elevacije ažurirani sa",
     "file": "Iz datoteke",
-    "none": "Nema (podatci o elevaciji su iz datoteke)",
     "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },

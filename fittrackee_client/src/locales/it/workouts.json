@@ -50,7 +50,6 @@
     "CHANGE_SOURCE": "Modifica la sorgente dati del dislivello",
     "LABEL": "Dislivello aggiornato da",
     "file": "Da file",
-    "none": "Nessuno (dati del dislivello da file)",
     "open_elevation": "OpenElevation",
     "valhalla": "Valhalla"
   },

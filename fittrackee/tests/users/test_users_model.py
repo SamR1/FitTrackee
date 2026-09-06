@@ -162,31 +162,37 @@ class UserModelAssertMixin:
         assert "total_duration" in serialized_user
 
     @staticmethod
-    def assert_preferences_key_are_not_present(serialized_user: Dict) -> None:
-        assert "imperial_units" not in serialized_user
+    def assert_preferences_keys_are_not_present(serialized_user: Dict) -> None:
+        # UI preferences
         assert "language" not in serialized_user
-        assert "timezone" not in serialized_user
-        assert "weekm" not in serialized_user
-        assert "start_elevation_at_zero" not in serialized_user
-        assert "use_raw_gpx_speed" not in serialized_user
         assert "use_dark_mode" not in serialized_user
+        assert "timezone" not in serialized_user
+        assert "date_format" not in serialized_user
+        assert "weekm" not in serialized_user
+        # Account preferences
+        assert "manually_approves_followers" not in serialized_user
+        assert "hide_profile_in_users_directory" not in serialized_user
+        # Workouts preferences
+        assert "default_tile_provider" not in serialized_user
+        assert "imperial_units" not in serialized_user
+        assert "display_ascent" not in serialized_user
+        assert "split_workout_charts" not in serialized_user
+        assert "start_elevation_at_zero" not in serialized_user
+        assert "workout_stats_from_file" not in serialized_user
+        assert "use_raw_gpx_speed" not in serialized_user
+        assert "elevation_data_source" not in serialized_user
+        assert "elevation_processing" not in serialized_user
+        assert "process_only_missing_elevations" not in serialized_user
         assert "workouts_visibility" not in serialized_user
+        assert "media_visibility" not in serialized_user
         assert "analysis_visibility" not in serialized_user
         assert "map_visibility" not in serialized_user
         assert "hr_visibility" not in serialized_user
-        assert "manually_approves_followers" not in serialized_user
-        assert "hide_profile_in_users_directory" not in serialized_user
-        assert "notification_preferences" not in serialized_user
-        assert "segments_creation_event" not in serialized_user
-        assert "split_workout_charts" not in serialized_user
-        assert "messages_preferences" not in serialized_user
-        assert "display_ascent" not in serialized_user
-        assert "missing_elevations_data_source" not in serialized_user
         assert "calories_visibility" not in serialized_user
-        assert "media_visibility" not in serialized_user
-        assert "workout_stats_from_file" not in serialized_user
-        assert "elevation_processing" not in serialized_user
-        assert "default_tile_provider" not in serialized_user
+        assert "segments_creation_event" not in serialized_user
+        # Message and notifications preferences preferences
+        assert "messages_preferences" not in serialized_user
+        assert "notification_preferences" not in serialized_user
 
 
 class TestUserSerializeAsAuthUser(UserModelAssertMixin):
@@ -211,28 +217,16 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         self, app: Flask, user_1: User
     ) -> None:
         user_1.update_notification_preferences({"mention": True})
+
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-        assert serialized_user["imperial_units"] == user_1.imperial_units
+        # UI preferences
         assert serialized_user["language"] == user_1.language
-        assert serialized_user["timezone"] == user_1.timezone
-        assert serialized_user["weekm"] == user_1.weekm
-        assert serialized_user["display_ascent"] == user_1.display_ascent
-        assert (
-            serialized_user["start_elevation_at_zero"]
-            == user_1.start_elevation_at_zero
-        )
-        assert serialized_user["use_raw_gpx_speed"] == user_1.use_raw_gpx_speed
         assert serialized_user["use_dark_mode"] == user_1.use_dark_mode
-        assert (
-            serialized_user["workouts_visibility"]
-            == user_1.workouts_visibility
-        )
-        assert (
-            serialized_user["analysis_visibility"]
-            == user_1.analysis_visibility
-        )
-        assert serialized_user["map_visibility"] == user_1.map_visibility
+        assert serialized_user["timezone"] == user_1.timezone
+        assert serialized_user["date_format"] == user_1.date_format
+        assert serialized_user["weekm"] == user_1.weekm
+        # Account preferences
         assert (
             serialized_user["manually_approves_followers"]
             == user_1.manually_approves_followers
@@ -241,31 +235,63 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
             serialized_user["hide_profile_in_users_directory"]
             == user_1.hide_profile_in_users_directory
         )
+        # Workouts preferences
         assert (
-            serialized_user["notification_preferences"]
-            == user_1.notification_preferences
+            serialized_user["default_tile_provider"]
+            == user_1.default_tile_provider
         )
-        assert serialized_user["hr_visibility"] == user_1.hr_visibility
-        assert (
-            serialized_user["segments_creation_event"]
-            == user_1.segments_creation_event
-        )
+        assert serialized_user["imperial_units"] == user_1.imperial_units
+        assert serialized_user["display_ascent"] == user_1.display_ascent
         assert (
             serialized_user["split_workout_charts"]
             == user_1.split_workout_charts
         )
-        assert serialized_user["messages_preferences"] == {}
-        assert serialized_user["missing_elevations_data_source"] == "file"
-        assert serialized_user["elevation_processing"] == "none"
         assert (
-            serialized_user["calories_visibility"]
-            == user_1.calories_visibility
+            serialized_user["start_elevation_at_zero"]
+            == user_1.start_elevation_at_zero
         )
         assert (
             serialized_user["workout_stats_from_file"]
             == user_1.workout_stats_from_file
         )
-        assert serialized_user["default_tile_provider"] == "osm"
+        assert serialized_user["use_raw_gpx_speed"] == user_1.use_raw_gpx_speed
+        assert (
+            serialized_user["elevation_data_source"]
+            == user_1.calculated_elevation_data_source
+        )
+        assert (
+            serialized_user["elevation_processing"]
+            == user_1.calculated_elevation_processing
+        )
+        assert (
+            serialized_user["process_only_missing_elevations"]
+            == user_1.calculated_process_only_missing_elevations
+        )
+        assert (
+            serialized_user["workouts_visibility"]
+            == user_1.workouts_visibility
+        )
+        assert serialized_user["media_visibility"] == user_1.media_visibility
+        assert (
+            serialized_user["analysis_visibility"]
+            == user_1.analysis_visibility
+        )
+        assert serialized_user["map_visibility"] == user_1.map_visibility
+        assert serialized_user["hr_visibility"] == user_1.hr_visibility
+        assert (
+            serialized_user["calories_visibility"]
+            == user_1.calories_visibility
+        )
+        assert (
+            serialized_user["segments_creation_event"]
+            == user_1.segments_creation_event
+        )
+        # Message and notifications preferences preferences
+        assert serialized_user["messages_preferences"] == {}
+        assert (
+            serialized_user["notification_preferences"]
+            == user_1.notification_preferences
+        )
 
     def test_it_returns_empty_dict_when_notification_preferences_are_none(
         self, app: Flask, user_1: User
@@ -361,59 +387,149 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
         assert serialized_user["sanctions_count"] == 0
 
     @pytest.mark.parametrize(
-        "input_preference",
+        (
+            "input_elevation_data_source, input_elevation_processing,"
+            "input_process_only_missing_elevations,"
+            "expected_elevation_data_source, expected_elevation_processing,"
+            "expected_process_only_missing_elevations"
+        ),
         [
-            ElevationDataSource.OPEN_ELEVATION,
-            ElevationDataSource.VALHALLA,
+            (
+                ElevationDataSource.OPEN_ELEVATION,
+                ElevationProcessing.FLAT_WINDOW,
+                True,
+                ElevationDataSource.OPEN_ELEVATION,
+                ElevationProcessing.FLAT_WINDOW,
+                True,
+            ),
+            (
+                ElevationDataSource.VALHALLA,
+                ElevationProcessing.NONE,
+                False,
+                ElevationDataSource.VALHALLA,
+                ElevationProcessing.NONE,
+                False,
+            ),
+            (
+                ElevationDataSource.FILE,
+                ElevationProcessing.NONE,
+                True,
+                ElevationDataSource.FILE,
+                ElevationProcessing.NONE,
+                True,
+            ),
+            (
+                ElevationDataSource.FILE,
+                ElevationProcessing.FLAT_WINDOW,
+                False,
+                ElevationDataSource.FILE,
+                ElevationProcessing.FLAT_WINDOW,
+                False,
+            ),
+            (
+                ElevationDataSource.FILE,
+                ElevationProcessing.FLAT_WINDOW,
+                True,
+                ElevationDataSource.FILE,
+                ElevationProcessing.NONE,
+                False,
+            ),
         ],
     )
-    def test_it_returns_missing_elevations_processing_as_none_when_no_elevation_service_set(  # noqa
+    def test_it_returns_elevation_preferences(
         self,
-        app: Flask,
+        app_with_open_elevation_and_valhalla_url: Flask,
         user_1: User,
-        input_preference: "ElevationDataSource",
+        input_elevation_data_source: "ElevationDataSource",
+        input_elevation_processing: "ElevationProcessing",
+        input_process_only_missing_elevations: bool,
+        expected_elevation_data_source: "ElevationDataSource",
+        expected_elevation_processing: "ElevationProcessing",
+        expected_process_only_missing_elevations: bool,
     ) -> None:
-        user_1.missing_elevations_data_source = input_preference
+        user_1.elevation_data_source = input_elevation_data_source
+        user_1.elevation_processing = input_elevation_processing
+        user_1.process_only_missing_elevations = (
+            input_process_only_missing_elevations
+        )
+
+        # assert calculated values
+        assert user_1.calculated_elevation_data_source == (
+            expected_elevation_data_source
+        )
+        assert user_1.calculated_elevation_processing == (
+            expected_elevation_processing
+        )
+        assert user_1.calculated_process_only_missing_elevations == (
+            expected_process_only_missing_elevations
+        )
+
+        # serialized values
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
         assert (
-            serialized_user["missing_elevations_data_source"]
-            == ElevationDataSource.FILE
+            serialized_user["elevation_data_source"]
+            == expected_elevation_data_source
+        )
+        assert (
+            serialized_user["elevation_processing"]
+            == expected_elevation_processing
+        )
+        assert (
+            serialized_user["process_only_missing_elevations"]
+            == expected_process_only_missing_elevations
         )
 
     @pytest.mark.parametrize(
-        "input_preference",
+        (
+            "input_elevation_data_source, input_elevation_processing,"
+            "input_process_only_missing_elevations,"
+            "expected_elevation_data_source, expected_elevation_processing,"
+            "expected_process_only_missing_elevations"
+        ),
         [
-            ElevationDataSource.OPEN_ELEVATION,
-            ElevationDataSource.VALHALLA,
+            (
+                ElevationDataSource.OPEN_ELEVATION,
+                ElevationProcessing.FLAT_WINDOW,
+                True,
+                ElevationDataSource.VALHALLA,
+                ElevationProcessing.FLAT_WINDOW,
+                True,
+            ),
+            (
+                ElevationDataSource.FILE,
+                ElevationProcessing.NONE,
+                False,
+                ElevationDataSource.FILE,
+                ElevationProcessing.NONE,
+                False,
+            ),
         ],
     )
-    def test_it_returns_missing_elevations_processing_when_elevation_service_set(  # noqa
+    def test_it_calculates_elevation_preferences_when_no_elevation_service_set(
         self,
-        app_with_open_elevation_and_valhalla_url: Flask,
+        app: Flask,
         user_1: User,
-        input_preference: "ElevationDataSource",
+        input_elevation_data_source: "ElevationDataSource",
+        input_elevation_processing: "ElevationProcessing",
+        input_process_only_missing_elevations: bool,
+        expected_elevation_data_source: "ElevationDataSource",
+        expected_elevation_processing: "ElevationProcessing",
+        expected_process_only_missing_elevations: bool,
     ) -> None:
-        user_1.missing_elevations_data_source = input_preference
-        serialized_user = user_1.serialize(current_user=user_1, light=False)
-
-        assert (
-            serialized_user["missing_elevations_data_source"]
-            == input_preference
-        )
-
-    def test_it_returns_elevation_gain_calculation(
-        self,
-        app_with_open_elevation_and_valhalla_url: Flask,
-        user_1: User,
-    ) -> None:
+        user_1.elevation_data_source = input_elevation_data_source
         user_1.elevation_processing = ElevationProcessing.FLAT_WINDOW
-        serialized_user = user_1.serialize(current_user=user_1, light=False)
+        user_1.process_only_missing_elevations = True
+
+        user_1.serialize(current_user=user_1, light=False)
 
         assert (
-            serialized_user["elevation_processing"]
-            == ElevationProcessing.FLAT_WINDOW.value
+            user_1.calculated_elevation_data_source == ElevationDataSource.FILE
         )
+        assert (
+            user_1.calculated_elevation_processing == ElevationProcessing.NONE
+        )
+        assert user_1.calculated_process_only_missing_elevations is False
 
 
 class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
@@ -445,7 +561,7 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
             current_user=user_1_admin, light=False
         )
 
-        self.assert_preferences_key_are_not_present(serialized_user)
+        self.assert_preferences_keys_are_not_present(serialized_user)
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -519,7 +635,7 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
             current_user=user_1_moderator, light=False
         )
 
-        self.assert_preferences_key_are_not_present(serialized_user)
+        self.assert_preferences_keys_are_not_present(serialized_user)
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -589,7 +705,7 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
     ) -> None:
         serialized_user = user_2.serialize(current_user=user_1, light=False)
 
-        self.assert_preferences_key_are_not_present(serialized_user)
+        self.assert_preferences_keys_are_not_present(serialized_user)
 
     def test_it_returns_workouts_infos(
         self, app: Flask, user_1: User, user_2: User
