@@ -145,8 +145,12 @@ class WorkoutFitService(WorkoutGpxService):
             if sport_key == "transition":
                 return None, True
 
-            if frame.has_field("sub_sport"):
-                sport_key = f"{sport_key}|{frame.get_value('sub_sport')}"
+            sub_sport = (
+                frame.get_value("sub_sport")
+                if frame.has_field("sub_sport")
+                else "generic"
+            )
+            sport_key = f"{sport_key}|{sub_sport}"
 
         if not sport_key:
             return None, False
