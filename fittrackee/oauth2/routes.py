@@ -14,7 +14,7 @@ from fittrackee.responses import (
 from fittrackee.users.models import User
 
 from .client import create_oauth2_client
-from .exceptions import InvalidOAuth2Scopes
+from .exceptions import InvalidOAuth2RedirectUris, InvalidOAuth2Scopes
 from .models import OAuth2Client, OAuth2Token
 from .server import authorization_server, require_auth
 
@@ -185,7 +185,11 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: ``success``
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
+        - ``Invalid URI scheme for '<URI>', expected: 'http' or 'https'``
+        - ``OAuth2 client invalid scopes``
+        - ``OAuth2 client metadata missing``
+        - ``OAuth2 client metadata missing keys: <KEYS>``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -218,6 +222,8 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
         return InvalidPayloadErrorResponse(
             message="OAuth2 client invalid scopes"
         )
+    except InvalidOAuth2RedirectUris as e:
+        return InvalidPayloadErrorResponse(message=str(e))
 
     db.session.add(new_client)
     db.session.commit()

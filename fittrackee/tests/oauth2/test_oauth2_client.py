@@ -6,16 +6,19 @@ import pytest
 from flask import Flask
 
 from fittrackee.oauth2.client import check_scope, create_oauth2_client
-from fittrackee.oauth2.exceptions import InvalidOAuth2Scopes
+from fittrackee.oauth2.exceptions import (
+    InvalidOAuth2RedirectUris,
+    InvalidOAuth2Scopes,
+)
 from fittrackee.oauth2.models import OAuth2Client
 from fittrackee.users.models import User
 
-from ..utils import random_domain, random_string
+from ..utils import random_string, random_uri
 
 TEST_METADATA = {
     "client_name": random_string(),
-    "client_uri": random_string(),
-    "redirect_uris": [random_domain()],
+    "client_uri": random_uri(),
+    "redirect_uris": [f"{random_uri()}/callback"],
     "scope": "profile:read",
 }
 
@@ -78,10 +81,28 @@ class TestCreateOAuth2Client:
 
         assert oauth_client.client_description == client_description
 
+    def test_oauth_client_raises_exception_when_client_uri_scheme_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        invalid_uri_1 = random_uri(scheme="", tld=".org")
+        client_metadata: Dict = {
+            **TEST_METADATA,
+            "client_uri": invalid_uri_1,
+        }
+
+        with pytest.raises(
+            InvalidOAuth2RedirectUris,
+            match=(
+                f"Invalid URI scheme for '{invalid_uri_1}', "
+                f"expected: 'http' or 'https'"
+            ),
+        ):
+            create_oauth2_client(client_metadata, user_1)
+
     def test_oauth_client_has_expected_client_uri(
         self, app: Flask, user_1: User
     ) -> None:
-        client_uri = random_domain()
+        client_uri = random_uri()
         client_metadata: Dict = {**TEST_METADATA, "client_uri": client_uri}
 
         oauth_client = create_oauth2_client(client_metadata, user_1)
@@ -98,10 +119,36 @@ class TestCreateOAuth2Client:
             "refresh_token",
         ]
 
+    def test_oauth_client_raises_exception_when_redirect_uri_scheme_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        invalid_uri_1 = random_uri(scheme="", tld=".org")
+        invalid_uri_2 = random_uri(scheme="javascript:", tld="")
+        valid_uri_1 = random_uri(scheme="https://", tld=".social")
+        valid_uri_2 = random_uri(scheme="http://", tld=".com")
+        client_metadata: Dict = {
+            **TEST_METADATA,
+            "redirect_uris": [
+                invalid_uri_1,
+                valid_uri_1,
+                invalid_uri_2,
+                valid_uri_2,
+            ],
+        }
+
+        with pytest.raises(
+            InvalidOAuth2RedirectUris,
+            match=(
+                f"Invalid URI scheme for '{invalid_uri_1}', "
+                f"'{invalid_uri_2}', expected: 'http' or 'https'"
+            ),
+        ):
+            create_oauth2_client(client_metadata, user_1)
+
     def test_oauth_client_has_expected_redirect_uris(
         self, app: Flask, user_1: User
     ) -> None:
-        redirect_uris = [random_domain()]
+        redirect_uris = [random_uri()]
         client_metadata: Dict = {
             **TEST_METADATA,
             "redirect_uris": redirect_uris,

@@ -29,7 +29,8 @@
             <label for="app-url">{{ $t('oauth2.APP.URL') }}*</label>
             <input
               id="app-url"
-              type="text"
+              type="url"
+              pattern="http[s]?://.+"
               required
               v-model="appForm.client_uri"
             />
@@ -40,7 +41,8 @@
             </label>
             <input
               id="app-redirect-uri"
-              type="text"
+              type="url"
+              pattern="http[s]?://.+"
               required
               v-model="appForm.redirect_uri"
             />
@@ -93,11 +95,15 @@
 
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
-  import { OAUTH2_STORE } from '@/store/constants'
+  import { OAUTH2_STORE, ROOT_STORE } from '@/store/constants'
   import type { ICustomTextareaData } from '@/types/forms'
   import type { IOAuth2ClientPayload } from '@/types/oauth'
   import { useStore } from '@/use/useStore'
-  import { admin_oauth2_scopes, oauth2_scopes } from '@/utils/oauth'
+  import {
+    admin_oauth2_scopes,
+    isUriSchemeValid,
+    oauth2_scopes,
+  } from '@/utils/oauth'
 
   const store = useStore()
 
@@ -118,6 +124,15 @@
   )
 
   function createApp() {
+    // additional check, in case HTML is modified
+    if (!isUriSchemeValid(appForm.redirect_uri)) {
+      store.commit(
+        ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
+        'api.ERROR.INVALID_REDIRECT_URI_SCHEME'
+      )
+      return
+    }
+    store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     const payload: IOAuth2ClientPayload = {
       client_name: appForm.client_name,
       client_description: appForm.client_description,

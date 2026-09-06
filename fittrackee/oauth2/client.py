@@ -1,11 +1,12 @@
 from time import time
-from typing import Dict
+from typing import Dict, List
+from urllib.parse import urlparse
 
 from werkzeug.security import gen_salt
 
 from fittrackee.users.models import User
 
-from .exceptions import InvalidOAuth2Scopes
+from .exceptions import InvalidOAuth2RedirectUris, InvalidOAuth2Scopes
 from .models import OAuth2Client
 
 VALID_SCOPES = [
@@ -48,6 +49,21 @@ def check_scope(scope: str) -> str:
     return " ".join(valid_scopes)
 
 
+def check_uris_scheme(redirect_uris: List[str]) -> None:
+    invalid_uris = []
+    for uri in redirect_uris:
+        parsed_uri = urlparse(uri)
+        if not parsed_uri.scheme or parsed_uri.scheme not in ["http", "https"]:
+            invalid_uris.append(uri)
+
+    if invalid_uris:
+        invalid_uris_str = ", ".join(f"'{uri}'" for uri in invalid_uris)
+        raise InvalidOAuth2RedirectUris(
+            f"Invalid URI scheme for {invalid_uris_str}, "
+            "expected: 'http' or 'https'"
+        )
+
+
 def create_oauth2_client(metadata: Dict, user: User) -> OAuth2Client:
     """
     Create OAuth2 client for 3rd-party applications.
@@ -56,6 +72,8 @@ def create_oauth2_client(metadata: Dict, user: User) -> OAuth2Client:
     is supported.
     Code challenge can be used if provided on authorization.
     """
+    check_uris_scheme([metadata["client_uri"], *metadata["redirect_uris"]])
+
     client_metadata = {
         "client_name": metadata["client_name"],
         "client_description": metadata.get("client_description"),

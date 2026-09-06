@@ -110,6 +110,33 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
             error_message="OAuth2 client invalid scopes",
         )
 
+    def test_it_returns_error_when_redirect_uri_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        invalid_uri = self.random_string()
+        metadata: Dict = {
+            **TEST_OAUTH_CLIENT_METADATA,
+            "redirect_uris": [invalid_uri],
+        }
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            data=json.dumps(metadata),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message=(
+                f"Invalid URI scheme for '{invalid_uri}', "
+                f"expected: 'http' or 'https'"
+            ),
+        )
+
     def test_it_creates_oauth_client(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
