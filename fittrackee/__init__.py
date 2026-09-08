@@ -249,12 +249,13 @@ def create_app(init_email: bool = True) -> Flask:
         appLog.setLevel(logging.DEBUG)
 
     if app_settings == "fittrackee.config.ProductionConfig":
+
         @app.after_request
         def add_headers(response: "Response") -> "Response":
             response.headers["Content-Security-Policy"] = (
                 "font-src 'self'; "
                 "script-src 'self'; "
-                "style-src 'self' 'unsafe-inline'; " # for inline style on maps
+                "style-src 'self' 'unsafe-inline'; "  # for inline style on map
                 "frame-ancestors 'none'; "
                 "object-src 'none';"
             )
