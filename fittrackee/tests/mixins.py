@@ -48,6 +48,7 @@ from .utils import (
     random_email,
     random_int,
     random_string,
+    random_uri,
 )
 
 if TYPE_CHECKING:
@@ -69,6 +70,10 @@ class RandomMixin:
     @staticmethod
     def random_domain() -> str:
         return random_string(prefix="https://", suffix="com")
+
+    @staticmethod
+    def random_uri(scheme: str = "https://", tld: str = ".social") -> str:
+        return random_uri(scheme, tld)
 
     @staticmethod
     def random_email() -> str:

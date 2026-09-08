@@ -28,6 +28,9 @@ VALID_SCOPES = [
     "workouts:read",
     "workouts:write",
 ]
+INVALID_SCHEME_ERROR_MESSAGE = (
+    "Invalid URI scheme for {invalid_uris}, expected: 'http' or 'https'"
+)
 
 
 def check_scope(scope: str) -> str:
@@ -49,18 +52,21 @@ def check_scope(scope: str) -> str:
     return " ".join(valid_scopes)
 
 
+def is_uri_scheme_valid(redirect_uri: str) -> bool:
+    parsed_uri = urlparse(redirect_uri)
+    return parsed_uri.scheme in ["http", "https"]
+
+
 def check_uris_scheme(redirect_uris: List[str]) -> None:
     invalid_uris = []
     for uri in redirect_uris:
-        parsed_uri = urlparse(uri)
-        if not parsed_uri.scheme or parsed_uri.scheme not in ["http", "https"]:
+        if not is_uri_scheme_valid(uri):
             invalid_uris.append(uri)
 
     if invalid_uris:
         invalid_uris_str = ", ".join(f"'{uri}'" for uri in invalid_uris)
         raise InvalidOAuth2RedirectUris(
-            f"Invalid URI scheme for {invalid_uris_str}, "
-            "expected: 'http' or 'https'"
+            INVALID_SCHEME_ERROR_MESSAGE.format(invalid_uris=invalid_uris_str)
         )
 
 

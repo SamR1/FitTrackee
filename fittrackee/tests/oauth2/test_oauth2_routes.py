@@ -16,6 +16,9 @@ from fittrackee.oauth2.models import (
 )
 from fittrackee.users.models import User
 
+from ..custom_asserts import (
+    assert_errored_response,
+)
 from ..mixins import ApiTestCaseMixin
 from ..utils import TEST_OAUTH_CLIENT_METADATA
 
@@ -397,6 +400,35 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
             client_id=oauth_client.client_id
         ).first()
         assert code is None
+
+    def test_it_returns_error_when_redirect_url_scheme_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth2_client(user_1)
+        invalid_uri = "invalid://example.com"
+        oauth_client._client_metadata = oauth_client._client_metadata.replace(
+            "https://example.com", invalid_uri
+        )
+
+        response = client.post(
+            self.route,
+            data={
+                "client_id": oauth_client.client_id,
+                "response_type": "code",
+                "confirm": True,
+            },
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
+            ),
+        )
+
+        assert_errored_response(
+            response, 400, match=f"Invalid URI scheme for {invalid_uri}"
+        )
 
     def test_it_returns_redirect_url_with_code(
         self, app: Flask, user_1: User
