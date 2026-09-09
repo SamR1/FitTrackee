@@ -35,6 +35,10 @@ def random_domain() -> str:
     return random_string(suffix=".social")
 
 
+def random_uri(scheme: str = "https://", tld: str = ".social") -> str:
+    return random_string(prefix=scheme, suffix=tld)
+
+
 def get_date_string(
     date_format: str,
     date: Optional[datetime] = None,
@@ -84,8 +88,8 @@ def jsonify_dict(data: Dict) -> Dict:
 
 
 TEST_OAUTH_CLIENT_METADATA = {
-    "client_name": random_string(),
-    "client_uri": random_domain(),
-    "redirect_uris": [random_domain()],
+    "client_name": "My App",
+    "client_uri": "https://example.com",
+    "redirect_uris": ["https://example.com/callback"],
     "scope": "profile:read workouts:read",
 }
