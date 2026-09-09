@@ -248,9 +248,24 @@ def create_app(init_email: bool = True) -> Flask:
         logging.getLogger("flake8").propagate = False
         appLog.setLevel(logging.DEBUG)
 
+    if app_settings == "fittrackee.config.ProductionConfig":
+
+        @app.after_request
+        def add_headers(response: "Response") -> "Response":
+            response.headers["Content-Security-Policy"] = (
+                "font-src 'self'; "
+                "script-src 'self'; "
+                "style-src 'self' 'unsafe-inline'; "  # for inline style on map
+                "frame-ancestors 'none'; "
+                "object-src 'none';"
+            )
+            response.headers["X-Frame-Options"] = "DENY"
+            response.headers["X-Content-Type-Options"] = "nosniff"
+            return response
+    else:  # dev or tests config
         # Enable CORS
-        @app.after_request  # type: ignore
-        def after_request(response: Response) -> Response:
+        @app.after_request
+        def after_request(response: "Response") -> "Response":
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add(
                 "Access-Control-Allow-Headers", "Content-Type,Authorization"
