@@ -35,7 +35,7 @@ AUTHORIZED_URI_SCHEMES = [
     # for non-web apps
     "myapp",
     "app",
-    "indoorbike",
+    "indoorbike",  # temporary?
 ]
 
 
