@@ -22,7 +22,9 @@ export const admin_oauth2_scopes = ['application:write']
 export const isUriSchemeValid = (redirectUri: string): boolean => {
   try {
     const url = new URL(redirectUri)
-    return ['http:', 'https:'].includes(url.protocol)
+    return ['http:', 'https:', 'myapp:', 'app:', 'indoorbike:'].includes(
+      url.protocol
+    )
   } catch {
     return false
   }

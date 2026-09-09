@@ -29,6 +29,14 @@ VALID_SCOPES = [
     "workouts:read",
     "workouts:write",
 ]
+AUTHORIZED_URI_SCHEMES = [
+    "http",
+    "https",
+    # for non-web apps
+    "myapp",
+    "app",
+    "indoorbike",
+]
 
 
 def check_scope(scope: str) -> str:
@@ -52,7 +60,7 @@ def check_scope(scope: str) -> str:
 
 def check_redirect_uri(redirect_uri: str) -> None:
     parsed_uri = urlparse(redirect_uri)
-    if parsed_uri.scheme not in ["http", "https"]:
+    if parsed_uri.scheme not in AUTHORIZED_URI_SCHEMES:
         raise InvalidOAuth2RedirectUris("Invalid redirect URI scheme")
 
 

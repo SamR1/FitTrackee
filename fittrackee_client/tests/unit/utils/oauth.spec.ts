@@ -24,6 +24,18 @@ describe('isUriSchemeValid', () => {
       inputRedirectUri: "javascript:alert('Hello, world!')",
       expectedValue: false,
     },
+    {
+      inputRedirectUri: 'myapp://oauth',
+      expectedValue: true,
+    },
+    {
+      inputRedirectUri: 'app://callback',
+      expectedValue: true,
+    },
+    {
+      inputRedirectUri: 'indoorbike://oauth',
+      expectedValue: true,
+    },
   ]
 
   testsParams.map((testParams) => {

@@ -30,7 +30,7 @@
             <input
               id="app-url"
               type="url"
-              pattern="http[s]?://.+"
+              :pattern="urlPattern"
               required
               v-model="appForm.client_uri"
             />
@@ -42,7 +42,7 @@
             <input
               id="app-redirect-uri"
               type="url"
-              pattern="http[s]?://.+"
+              :pattern="urlPattern"
               required
               v-model="appForm.redirect_uri"
             />
@@ -118,6 +118,7 @@
     redirect_uri: '',
   })
   const scopes: Reactive<string[]> = reactive([])
+  const urlPattern = String.raw`^((http[s]?)|((my)?app)|(indoorbike)):\/\/.+`
 
   const filtered_scopes: ComputedRef<string[]> = computed(() =>
     getScopes(authUserHasAdminRights.value, admin_oauth2_scopes, oauth2_scopes)

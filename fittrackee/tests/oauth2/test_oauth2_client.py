@@ -118,18 +118,27 @@ class TestCreateOAuth2Client:
         ):
             create_oauth2_client(client_metadata, user_1)
 
+    @pytest.mark.parametrize(
+        "input_redirect_uri",
+        [
+            "https://example.com/callback",
+            "http://localhost:5000/callback",
+            "app://oauth2/callback",
+            "myapp://callback",
+            "indoorbike://oauth",
+        ],
+    )
     def test_oauth_client_has_expected_redirect_uris(
-        self, app: Flask, user_1: User
+        self, app: Flask, user_1: User, input_redirect_uri: str
     ) -> None:
-        redirect_uris = [random_uri()]
         client_metadata: Dict = {
             **TEST_METADATA,
-            "redirect_uris": redirect_uris,
+            "redirect_uris": [input_redirect_uri],
         }
 
         oauth_client = create_oauth2_client(client_metadata, user_1)
 
-        assert oauth_client.redirect_uris == redirect_uris
+        assert oauth_client.redirect_uris == [input_redirect_uri]
 
     def test_oauth_client_has_expected_response_types(
         self, app: Flask, user_1: User
