@@ -81,24 +81,6 @@ class TestCreateOAuth2Client:
 
         assert oauth_client.client_description == client_description
 
-    def test_oauth_client_raises_exception_when_client_uri_scheme_is_invalid(
-        self, app: Flask, user_1: User
-    ) -> None:
-        invalid_uri_1 = random_uri(scheme="", tld=".org")
-        client_metadata: Dict = {
-            **TEST_METADATA,
-            "client_uri": invalid_uri_1,
-        }
-
-        with pytest.raises(
-            InvalidOAuth2RedirectUris,
-            match=(
-                f"Invalid URI scheme for '{invalid_uri_1}', "
-                f"expected: 'http' or 'https'"
-            ),
-        ):
-            create_oauth2_client(client_metadata, user_1)
-
     def test_oauth_client_has_expected_client_uri(
         self, app: Flask, user_1: User
     ) -> None:
@@ -119,29 +101,20 @@ class TestCreateOAuth2Client:
             "refresh_token",
         ]
 
+    @pytest.mark.parametrize(
+        "input_redirect_uri", ["javascript:invalid//", "example.com"]
+    )
     def test_oauth_client_raises_exception_when_redirect_uri_scheme_is_invalid(
-        self, app: Flask, user_1: User
+        self, app: Flask, user_1: User, input_redirect_uri: str
     ) -> None:
-        invalid_uri_1 = random_uri(scheme="", tld=".org")
-        invalid_uri_2 = random_uri(scheme="javascript:", tld="")
-        valid_uri_1 = random_uri(scheme="https://", tld=".social")
-        valid_uri_2 = random_uri(scheme="http://", tld=".com")
         client_metadata: Dict = {
             **TEST_METADATA,
-            "redirect_uris": [
-                invalid_uri_1,
-                valid_uri_1,
-                invalid_uri_2,
-                valid_uri_2,
-            ],
+            "redirect_uris": [input_redirect_uri],
         }
 
         with pytest.raises(
             InvalidOAuth2RedirectUris,
-            match=(
-                f"Invalid URI scheme for '{invalid_uri_1}', "
-                f"'{invalid_uri_2}', expected: 'http' or 'https'"
-            ),
+            match="Invalid redirect URI scheme",
         ):
             create_oauth2_client(client_metadata, user_1)
 

@@ -16,9 +16,6 @@ from fittrackee.oauth2.models import (
 )
 from fittrackee.users.models import User
 
-from ..custom_asserts import (
-    assert_errored_response,
-)
 from ..mixins import ApiTestCaseMixin
 from ..utils import TEST_OAUTH_CLIENT_METADATA
 
@@ -134,10 +131,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
 
         self.assert_400(
             response,
-            error_message=(
-                f"Invalid URI scheme for '{invalid_uri}', "
-                f"expected: 'http' or 'https'"
-            ),
+            error_message="Invalid redirect URI scheme",
         )
 
     def test_it_creates_oauth_client(self, app: Flask, user_1: User) -> None:
@@ -426,9 +420,7 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
             ),
         )
 
-        assert_errored_response(
-            response, 400, match=f"Invalid URI scheme for {invalid_uri}"
-        )
+        self.assert_400(response, "Invalid redirect URI scheme")
 
     def test_it_returns_redirect_url_with_code(
         self, app: Flask, user_1: User

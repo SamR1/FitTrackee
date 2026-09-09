@@ -1,7 +1,8 @@
 from time import time
 from typing import Dict, List
-from urllib.parse import urlparse
+from urllib.parse import parse_qsl, urlparse
 
+from urllib3.util import parse_url
 from werkzeug.security import gen_salt
 
 from fittrackee.users.models import User
@@ -28,9 +29,6 @@ VALID_SCOPES = [
     "workouts:read",
     "workouts:write",
 ]
-INVALID_SCHEME_ERROR_MESSAGE = (
-    "Invalid URI scheme for {invalid_uris}, expected: 'http' or 'https'"
-)
 
 
 def check_scope(scope: str) -> str:
@@ -52,21 +50,24 @@ def check_scope(scope: str) -> str:
     return " ".join(valid_scopes)
 
 
-def is_uri_scheme_valid(redirect_uri: str) -> bool:
+def check_redirect_uri(redirect_uri: str) -> None:
     parsed_uri = urlparse(redirect_uri)
-    return parsed_uri.scheme in ["http", "https"]
+    if parsed_uri.scheme not in ["http", "https"]:
+        raise InvalidOAuth2RedirectUris("Invalid redirect URI scheme")
 
 
 def check_uris_scheme(redirect_uris: List[str]) -> None:
-    invalid_uris = []
     for uri in redirect_uris:
-        if not is_uri_scheme_valid(uri):
-            invalid_uris.append(uri)
+        check_redirect_uri(uri)
 
-    if invalid_uris:
-        invalid_uris_str = ", ".join(f"'{uri}'" for uri in invalid_uris)
+
+def check_response_location(url: str) -> None:
+    check_redirect_uri(url)
+
+    query = dict(parse_qsl(parse_url(url).query))
+    if query.get("error"):
         raise InvalidOAuth2RedirectUris(
-            INVALID_SCHEME_ERROR_MESSAGE.format(invalid_uris=invalid_uris_str)
+            query.get("error_description", "invalid payload")
         )
 
 
@@ -78,7 +79,7 @@ def create_oauth2_client(metadata: Dict, user: User) -> OAuth2Client:
     is supported.
     Code challenge can be used if provided on authorization.
     """
-    check_uris_scheme([metadata["client_uri"], *metadata["redirect_uris"]])
+    check_uris_scheme([*metadata["redirect_uris"]])
 
     client_metadata = {
         "client_name": metadata["client_name"],
