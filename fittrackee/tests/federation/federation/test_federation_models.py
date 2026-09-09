@@ -102,7 +102,7 @@ class TestActivityPubDomainModel:
         "input_software_version,",
         [
             (None,),
-            (uuid4().hex,),
+            ("v1.0.0",),
         ],
     )
     def test_it_returns_current_version_when_remote(

@@ -22,6 +22,7 @@ LANGUAGES_DATE_STRING = {
     "ru": "d MMM yyyy",  # Russian
     # "sl": "d. MMMM yyyy",  # Slovenian  # disabled for now
     # "sv": "d MMMM yyyy",  # Swedish  # disabled for now
+    # "ta": "d MMM yyyy",   # Tamil  # disabled for now
     "tr": "d MMM yyyy",  # Turkish
     "zh_Hans": "y年M月d日",  # Chinese (Simplified Han script)
 }

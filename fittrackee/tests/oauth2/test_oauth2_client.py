@@ -6,16 +6,19 @@ import pytest
 from flask import Flask
 
 from fittrackee.oauth2.client import check_scope, create_oauth2_client
-from fittrackee.oauth2.exceptions import InvalidOAuth2Scopes
+from fittrackee.oauth2.exceptions import (
+    InvalidOAuth2RedirectUris,
+    InvalidOAuth2Scopes,
+)
 from fittrackee.oauth2.models import OAuth2Client
 from fittrackee.users.models import User
 
-from ..utils import random_domain, random_string
+from ..utils import random_string, random_uri
 
 TEST_METADATA = {
     "client_name": random_string(),
-    "client_uri": random_string(),
-    "redirect_uris": [random_domain()],
+    "client_uri": random_uri(),
+    "redirect_uris": [f"{random_uri()}/callback"],
     "scope": "profile:read",
 }
 
@@ -81,7 +84,7 @@ class TestCreateOAuth2Client:
     def test_oauth_client_has_expected_client_uri(
         self, app: Flask, user_1: User
     ) -> None:
-        client_uri = random_domain()
+        client_uri = random_uri()
         client_metadata: Dict = {**TEST_METADATA, "client_uri": client_uri}
 
         oauth_client = create_oauth2_client(client_metadata, user_1)
@@ -98,18 +101,44 @@ class TestCreateOAuth2Client:
             "refresh_token",
         ]
 
-    def test_oauth_client_has_expected_redirect_uris(
-        self, app: Flask, user_1: User
+    @pytest.mark.parametrize(
+        "input_redirect_uri", ["javascript:invalid//", "example.com"]
+    )
+    def test_oauth_client_raises_exception_when_redirect_uri_scheme_is_invalid(
+        self, app: Flask, user_1: User, input_redirect_uri: str
     ) -> None:
-        redirect_uris = [random_domain()]
         client_metadata: Dict = {
             **TEST_METADATA,
-            "redirect_uris": redirect_uris,
+            "redirect_uris": [input_redirect_uri],
+        }
+
+        with pytest.raises(
+            InvalidOAuth2RedirectUris,
+            match="Invalid redirect URI scheme",
+        ):
+            create_oauth2_client(client_metadata, user_1)
+
+    @pytest.mark.parametrize(
+        "input_redirect_uri",
+        [
+            "https://example.com/callback",
+            "http://localhost:5000/callback",
+            "app://oauth2/callback",
+            "myapp://callback",
+            "indoorbike://oauth",
+        ],
+    )
+    def test_oauth_client_has_expected_redirect_uris(
+        self, app: Flask, user_1: User, input_redirect_uri: str
+    ) -> None:
+        client_metadata: Dict = {
+            **TEST_METADATA,
+            "redirect_uris": [input_redirect_uri],
         }
 
         oauth_client = create_oauth2_client(client_metadata, user_1)
 
-        assert oauth_client.redirect_uris == redirect_uris
+        assert oauth_client.redirect_uris == [input_redirect_uri]
 
     def test_oauth_client_has_expected_response_types(
         self, app: Flask, user_1: User

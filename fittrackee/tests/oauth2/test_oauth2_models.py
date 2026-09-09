@@ -47,8 +47,8 @@ class TestOAuth2ClientSerialize(OAuth2Mixin):
         oauth_client.set_client_metadata(
             {
                 "client_name": self.random_string(),
-                "redirect_uris": [self.random_string()],
-                "client_uri": self.random_domain(),
+                "redirect_uris": [self.random_uri()],
+                "client_uri": self.random_uri(),
             }
         )
 

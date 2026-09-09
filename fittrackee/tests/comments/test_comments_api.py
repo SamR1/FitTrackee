@@ -88,7 +88,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
             content_type="application/json",
             data=json.dumps(
                 dict(
-                    text=self.random_domain(),
+                    text=self.random_uri(),
                 )
             ),
             headers=dict(

@@ -52,11 +52,14 @@ The following scopes are available:
 
 Flow
 ~~~~
+.. versionchanged:: 1.3.5 limited number of allowed schemes for OAuth 2.0 redirect URLs
 
 - The user creates an App (client) on FitTrackee for a third-party application.
 
   .. figure:: ../_images/oauth2-client-creation.png
    :alt: OAuth2 client creation on FitTrackee
+
+  | Only a limited number of schemes is allowed for the redirect URL: ``http``, ``https``, ``app`` and ``myapp``.
 
   | After registration, the client id and secret are shown.
   | They must be stored in the 3rd-party application by the user.

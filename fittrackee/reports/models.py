@@ -127,7 +127,7 @@ class Report(BaseModel):
     )
 
     @property
-    def reported_object(self) -> Union[Comment, None, User, Workout]:
+    def reported_object(self) -> Union[Comment, User, Workout, None]:
         # util method, used by tests
         if self.object_type == "comment":
             return self.reported_comment

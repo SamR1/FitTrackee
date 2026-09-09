@@ -33,7 +33,10 @@
             @getCoordinates="updateCoordinates"
           />
           <WorkoutMediaGallery
-            v-if="workoutData.workout.media_attachments.length > 0"
+            v-if="
+              !displaySegment &&
+              workoutData.workout.media_attachments.length > 0
+            "
             :media-attachments="workoutData.workout.media_attachments"
             :media-visibility="workoutData.workout.media_visibility"
             :is-workout-owner="isWorkoutOwner"

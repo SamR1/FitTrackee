@@ -398,7 +398,7 @@ class UpdateActivity(AbstractActivity):
 
 class LikeActivity(AbstractActivity):
     def process_activity(self) -> None:
-        like: Union[None, WorkoutLike, CommentLike] = None
+        like: Union[WorkoutLike, CommentLike, None] = None
         actor = self.get_actor(create_remote_actor=True)
         object_ap_id = self.activity["object"]
 

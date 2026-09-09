@@ -1,9 +1,7 @@
 from typing import Dict, Optional, Tuple, Union
-from urllib.parse import parse_qsl
 
 from authlib.oauth2 import OAuth2Error
 from flask import Blueprint, Response, request
-from urllib3.util import parse_url
 
 from fittrackee import db
 from fittrackee.responses import (
@@ -13,8 +11,8 @@ from fittrackee.responses import (
 )
 from fittrackee.users.models import User
 
-from .client import create_oauth2_client
-from .exceptions import InvalidOAuth2Scopes
+from .client import check_response_location, create_oauth2_client
+from .exceptions import InvalidOAuth2RedirectUris, InvalidOAuth2Scopes
 from .models import OAuth2Client, OAuth2Token
 from .server import authorization_server, require_auth
 
@@ -27,13 +25,6 @@ EXPECTED_METADATA_KEYS = [
     "scope",
 ]
 DEFAULT_PER_PAGE = 5
-
-
-def is_errored(url: str) -> Optional[str]:
-    query = dict(parse_qsl(parse_url(url).query))
-    if query.get("error"):
-        return query.get("error_description", "invalid payload")
-    return None
 
 
 @oauth2_blueprint.route("/oauth/apps", methods=["GET"])
@@ -185,7 +176,11 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
     :reqheader Authorization: OAuth 2.0 Bearer Token
 
     :statuscode 200: ``success``
-    :statuscode 400: ``invalid payload``
+    :statuscode 400:
+        - ``Invalid redirect URI scheme``
+        - ``OAuth2 client invalid scopes``
+        - ``OAuth2 client metadata missing``
+        - ``OAuth2 client metadata missing keys: <KEYS>``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
@@ -218,6 +213,8 @@ def create_client(auth_user: User) -> Union[HttpResponse, Tuple[Dict, int]]:
         return InvalidPayloadErrorResponse(
             message="OAuth2 client invalid scopes"
         )
+    except InvalidOAuth2RedirectUris as e:
+        return InvalidPayloadErrorResponse(message=str(e))
 
     db.session.add(new_client)
     db.session.commit()
@@ -549,6 +546,7 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
     :statuscode 200: ``success``
     :statuscode 400:
         - ``invalid payload``
+        - ``Invalid redirect URI scheme``
         - errors returned by Authlib library
     :statuscode 401:
         - ``provide a valid auth token``
@@ -579,9 +577,11 @@ def authorize(auth_user: User) -> Union[HttpResponse, Dict]:
     response = authorization_server.create_authorization_response(
         grant_user=grant_user, grant=grant
     )
-    error_message = is_errored(url=response.location)
-    if error_message:
-        return InvalidPayloadErrorResponse(error_message)
+    try:
+        check_response_location(url=response.location)
+    except InvalidOAuth2RedirectUris as e:
+        return InvalidPayloadErrorResponse(str(e))
+
     return {"redirect_url": response.location}
 
 
