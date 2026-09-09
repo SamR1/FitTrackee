@@ -130,12 +130,12 @@ Production environment
 .. warning::
     | Note that FitTrackee is under heavy development, some features may be unstable.
 
--  Download the last release (for now, it is the release v1.3.4):
+-  Download the last release (for now, it is the release v1.3.5):
 
 .. code:: bash
 
-   $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.3.4.tar.gz
-   $ tar -xzf v1.3.4.tar.gz
+   $ wget https://codeberg.org/FitTrackee/FitTrackee/archive/v1.3.5.tar.gz
+   $ tar -xzf v1.3.5.tar.gz
    $ cd fittrackee
 
 -  Create **.env** from example and update it

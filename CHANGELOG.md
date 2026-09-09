@@ -1,5 +1,59 @@
 # Change log
 
+## Version 1.3.5 (2026/09/09)
+
+This version contains a security fix ([GHSA-p67x-83gj-56rg](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-p67x-83gj-56rg)).  
+Thanks to [@0xnh4tty](https://github.com/0xnh4tty) for the report.
+
+### Security
+
+* [PR#1225](https://codeberg.org/FitTrackee/FitTrackee/pulls/1225) - Allow only a limited number of OAuth 2.0 redirect URI schemes
+
+### Bugs Fixed
+
+* [PR#1205](https://codeberg.org/FitTrackee/FitTrackee/pulls/1205) - @pytest.mark.parametrize: compatibility with 9.1.1
+* [PR#1208](https://codeberg.org/FitTrackee/FitTrackee/pulls/1208) - Display media only on workouts details
+
+### Translations
+
+* [PR#1210](https://codeberg.org/FitTrackee/FitTrackee/pulls/1210) - Translations update from Hosted Weblate (Polish)
+* [PR#1213](https://codeberg.org/FitTrackee/FitTrackee/pulls/1213) - Init Tamil translations files
+* [PR#1216](https://codeberg.org/FitTrackee/FitTrackee/pulls/1216) - Translations update from Hosted Weblate (Polish)
+* [PR#1221](https://codeberg.org/FitTrackee/FitTrackee/pulls/1221) - Translations update from Hosted Weblate (Turkish)
+* [PR#1222](https://codeberg.org/FitTrackee/FitTrackee/pulls/1222) - Translations update from Hosted Weblate (Turkish)
+
+Translation status for languages available on the interface:
+- Basque: 97%
+- Bulgarian: 50%
+- Catalan: 58%
+- Chinese (Simplified): 99%
+- Croatian: 99%
+- Czech: 49%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 99%
+- Italian: 97%
+- Kabyle: 5%
+- Norwegian Bokmål: 42%
+- Polish: 99%
+- Portuguese: 50%
+- Russian: 94%
+- Spanish: 67%
+- Turkish: 3%
+
+### Misc
+
+* [PR#1214](https://codeberg.org/FitTrackee/FitTrackee/pulls/1214) - update token expiration duration
+
+Thanks to the contributors:
+- [@easytigrrr](https://github.com/easytigrrr)
+- [@egeguenes](https://github.com/egeguenes)
+- [@tebriel](https://codeberg.org/tebriel)
+- Rybomir Sledzioski
+
+
 ## Version 1.3.4 (2026/07/29)
 
 This version contains a security fix ([GHSA-rc38-72q6-pc7w](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-rc38-72q6-pc7w)).  
