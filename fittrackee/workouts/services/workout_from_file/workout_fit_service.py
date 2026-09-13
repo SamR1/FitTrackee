@@ -186,6 +186,9 @@ class WorkoutFitService(WorkoutGpxService):
     def _get_session_frame_data(frame: "FitDataMessage") -> Dict:
         frame_stats: Dict = {}
 
+        if frame.has_field("timestamp"):
+            frame_stats["start_time"] = frame.get_value("timestamp")
+
         for key, value in FIT_MATCHING_FIELDS.items():
             frame_stats[value] = (
                 frame.get_value(key) if frame.has_field(key) else None
@@ -208,6 +211,7 @@ class WorkoutFitService(WorkoutGpxService):
         return {
             **{value: None for value in FIT_MATCHING_FIELDS.values()},
             "pauses": None,
+            "start_time": None,
         }, []
 
     @classmethod
@@ -352,8 +356,8 @@ class WorkoutFitService(WorkoutGpxService):
                 if not create_segment_on_events and frame.name == "session":
                     session_index += 1
                     if session_index > 0:
-                        if gpx_segment.points:
-                            gpx_track.segments.append(gpx_segment)
+                        # note: Some transitions may not contain any points
+                        gpx_track.segments.append(gpx_segment)
                         gpx_segment = gpxpy.gpx.GPXTrackSegment()
                     continue
 

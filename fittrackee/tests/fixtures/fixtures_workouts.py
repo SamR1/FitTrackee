@@ -6188,6 +6188,9 @@ FILE_STATS_WITH_DATA = {
     "max_speed": 3,
     "moving": 259,
     "pauses": 1,
+    "start_time": datetime(
+        2018, 3, 13, hour=12, minute=44, second=45, tzinfo=timezone.utc
+    ),
 }
 
 FILE_STATS_WITH_NONE = {
@@ -6206,6 +6209,7 @@ FILE_STATS_WITH_NONE = {
     "max_speed": None,
     "moving": None,
     "pauses": None,
+    "start_time": None,
 }
 
 
