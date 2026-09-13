@@ -83,6 +83,8 @@ class WorkoutFitServiceProcessFileTestCase(WorkoutFileMixin):
         assert object_to_check.max_power == file_data["max_power"]
         if isinstance(object_to_check, Workout):
             assert object_to_check.workout_stats_from_file is True
+        else:
+            assert object_to_check.segment_stats_from_file is True
 
 
 class TestWorkoutFitServiceGetCoordinate(WorkoutFileMixin):
@@ -352,6 +354,10 @@ class TestWorkoutFitServiceProcessWorkout(
         assert service.workout_name is None
         workout = self.assert_workout_with_calculated_data()
         assert workout.elevation_data_source == ElevationDataSource.FILE
+        segment = workout.segments[0]
+        assert float(segment.distance) == pytest.approx(0.318, 0.001)  # type: ignore
+        assert segment.duration == timedelta(minutes=4, seconds=10)
+        assert segment.segment_stats_from_file is False
 
     def test_it_creates_workout_when_stats_are_extracted_from_file(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
@@ -393,7 +399,10 @@ class TestWorkoutFitServiceProcessWorkout(
         with patch.object(
             WorkoutFitService,
             "get_file_stats",
-            return_value=(FILE_STATS_WITH_NONE, []),
+            return_value=(
+                FILE_STATS_WITH_NONE,  # file
+                [],  # segments
+            ),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -430,6 +439,7 @@ class TestWorkoutFitServiceProcessWorkout(
         assert len(segments) == 1
         assert segments[0].sport_id is None
         assert segments[0].is_transition is False
+        assert segments[0].segment_stats_from_file is False
 
 
 @pytest.mark.disable_autouse_update_records_patch

@@ -42,6 +42,7 @@ export interface IWorkoutSegment {
   segment_id: string
   segment_number: number
   sport_id: number | null
+  stats_from_file?: boolean
   workout_id: string
 }
 

@@ -1,6 +1,6 @@
 <template>
   <div id="workout-info">
-    <div v-if="workoutObject.originalFile === 'fit'" class="data-origin">
+    <div v-if="workoutObject.statsFromFile !== undefined" class="data-origin">
       {{
         t(
           `workouts.${workoutObject.statsFromFile ? 'DATA_FROM_FILE' : 'CALCULATED_DATA'}`

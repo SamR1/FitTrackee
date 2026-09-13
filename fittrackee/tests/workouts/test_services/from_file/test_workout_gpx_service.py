@@ -353,6 +353,7 @@ class WorkoutGpxServiceProcessFileTestCase(
             "moving": "0:00:10",
             "pauses": None,
             "segment_id": workout_segments[1].short_id,
+            "stats_from_file": False,
             "sport_id": None,
             "workout_id": workout.short_id,
         }

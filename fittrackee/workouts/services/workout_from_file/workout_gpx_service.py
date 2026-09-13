@@ -231,6 +231,8 @@ class WorkoutGpxService(
         object_to_update.max_power = file_stats["max_power"]
         if isinstance(object_to_update, Workout):
             object_to_update.workout_stats_from_file = True
+        else:
+            object_to_update.segment_stats_from_file = True
 
     def set_calculated_data(
         self,
@@ -252,6 +254,7 @@ class WorkoutGpxService(
             object_to_update.best_pace = convert_speed_into_pace_duration(
                 object_to_update.max_speed
             )
+            object_to_update.segment_stats_from_file = False
         else:
             object_to_update.workout_stats_from_file = False
 
@@ -279,6 +282,32 @@ class WorkoutGpxService(
             timedelta(seconds=gpx_info.stopped_time)
             + stopped_time_between_segments
         )
+
+    def _use_file_stats(
+        self,
+        file_stats: Dict,
+        all_data_from_file: bool,
+        object_to_update: Union["Workout", "WorkoutSegment"],
+    ) -> bool:
+        if (
+            not file_stats
+            or not self.auth_user.workout_stats_from_file
+            or not all_data_from_file
+        ):
+            return False
+
+        if isinstance(object_to_update, Workout):
+            return True
+
+        # workaround for bug with Sunnto watches:
+        # sometimes distance is not stored on last session in .fit file
+        if (
+            file_stats.get("distance") is None
+            and file_stats.get("duration") is not None
+        ):
+            return False
+
+        return True
 
     def set_statistics(
         self,
@@ -308,10 +337,8 @@ class WorkoutGpxService(
             use_raw_gpx_speed=use_raw_gpx_speed,
         )
 
-        if (
-            file_stats
-            and self.auth_user.workout_stats_from_file
-            and all_data_from_file
+        if file_stats and self._use_file_stats(
+            file_stats, all_data_from_file, object_to_update
         ):
             self.set_stats_from_file(object_to_update, gpx_info, file_stats)
             if isinstance(object_to_update, WorkoutSegment):
@@ -342,6 +369,19 @@ class WorkoutGpxService(
             ]
             object_to_update.max_hr = hr_cadence_power_stats["max_hr"]
             object_to_update.max_power = hr_cadence_power_stats["max_power"]
+
+            # workaround for bug with Sunnto watches:
+            # add missing distance
+            if (
+                isinstance(object_to_update, WorkoutSegment)
+                and all_data_from_file
+                and self.auth_user.workout_stats_from_file
+                and file_stats
+            ):
+                try:
+                    self.file_stats["distance"] += gpx_info.distance
+                except Exception:  # noqa
+                    pass
 
         return object_to_update
 

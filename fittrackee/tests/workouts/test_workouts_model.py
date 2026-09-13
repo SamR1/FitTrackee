@@ -4595,6 +4595,39 @@ class TestWorkoutSegmentModel:
 
         assert serialized_segment["calories"] == 124
 
+    def test_it_returns_segment_stats_from_file_for_owner(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_segment.segment_stats_from_file = True
+
+        serialized_segment = workout_cycling_user_1_segment.serialize(
+            user=user_1
+        )
+
+        assert serialized_segment["stats_from_file"] is True
+
+    def test_it_does_returns_stats_from_file_when_user_is_not_owner(
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        workout_cycling_user_1_segment.segment_stats_from_file = True
+
+        serialized_segment = workout_cycling_user_1_segment.serialize(
+            user=user_2
+        )
+
+        assert "stats_from_file" not in serialized_segment
+
     def test_it_stores_geometry_as_linestring(
         self,
         app: Flask,
