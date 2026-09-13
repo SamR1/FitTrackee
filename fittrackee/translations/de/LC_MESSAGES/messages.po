@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-08-12 15:41+0200\n"
-"PO-Revision-Date: 2026-05-31 23:01+0000\n"
-"Last-Translator: PeterPwr <peterpwr@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2026-08-29 11:52+0000\n"
+"Last-Translator: Ege Günes <senugege@gmail.com>\n"
 "Language: de\n"
 "Language-Team: German <https://hosted.weblate.org/projects/fittrackee"
 "/fittrackee-api-emails/de/>\n"
@@ -42,7 +42,7 @@ msgstr ""
 #: fittrackee/emails/templates/layout.html:238
 #: fittrackee/emails/templates/layout.txt:5
 msgid "Thanks,"
-msgstr "Danke"
+msgstr "Danke,"
 
 #: fittrackee/emails/templates/layout.html:239
 #: fittrackee/emails/templates/layout.txt:6
@@ -56,7 +56,7 @@ msgstr "Bestätige dein Konto"
 
 #: fittrackee/emails/templates/account_confirmation/body.html:3
 msgid "Use this link to confirm your account."
-msgstr "Verwendet diesen Link, um dein Konto zu bestätigen."
+msgstr "Verwende diesen Link, um dein Konto zu bestätigen."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:4
 #: fittrackee/emails/templates/account_confirmation/body.txt:1

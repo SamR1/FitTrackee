@@ -11,6 +11,7 @@ import type {
   IOAuth2ClientAuthorizePayload,
 } from '@/types/oauth'
 import { handleError } from '@/utils'
+import { isUriSchemeValid } from '@/utils/oauth.ts'
 
 const get_client = (
   context: ActionContext<IOAuth2State, IRootState>,
@@ -58,6 +59,13 @@ export const actions: ActionTree<IOAuth2State, IRootState> & IOAuth2Actions = {
       })
       .then((res) => {
         if (res.status == 200 && res.data.redirect_url) {
+          if (!isUriSchemeValid(res.data.redirect_url)) {
+            context.commit(
+              ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
+              'api.ERROR.INVALID_REDIRECT_URI_SCHEME'
+            )
+            return
+          }
           window.location.href = res.data.redirect_url
         } else {
           handleError(context, null)

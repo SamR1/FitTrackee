@@ -1,11 +1,13 @@
 from time import time
-from typing import Dict
+from typing import Dict, List
+from urllib.parse import parse_qsl, urlparse
 
+from urllib3.util import parse_url
 from werkzeug.security import gen_salt
 
 from fittrackee.users.models import User
 
-from .exceptions import InvalidOAuth2Scopes
+from .exceptions import InvalidOAuth2RedirectUris, InvalidOAuth2Scopes
 from .models import OAuth2Client
 
 VALID_SCOPES = [
@@ -28,6 +30,14 @@ VALID_SCOPES = [
     "workouts:read",
     "workouts:write",
 ]
+AUTHORIZED_URI_SCHEMES = [
+    "http",
+    "https",
+    # for non-web apps
+    "myapp",
+    "app",
+    "indoorbike",  # temporary?
+]
 
 
 def check_scope(scope: str) -> str:
@@ -49,6 +59,27 @@ def check_scope(scope: str) -> str:
     return " ".join(valid_scopes)
 
 
+def check_redirect_uri(redirect_uri: str) -> None:
+    parsed_uri = urlparse(redirect_uri)
+    if parsed_uri.scheme not in AUTHORIZED_URI_SCHEMES:
+        raise InvalidOAuth2RedirectUris("Invalid redirect URI scheme")
+
+
+def check_uris_scheme(redirect_uris: List[str]) -> None:
+    for uri in redirect_uris:
+        check_redirect_uri(uri)
+
+
+def check_response_location(url: str) -> None:
+    check_redirect_uri(url)
+
+    query = dict(parse_qsl(parse_url(url).query))
+    if query.get("error"):
+        raise InvalidOAuth2RedirectUris(
+            query.get("error_description", "invalid payload")
+        )
+
+
 def create_oauth2_client(metadata: Dict, user: User) -> OAuth2Client:
     """
     Create OAuth2 client for 3rd-party applications.
@@ -57,6 +88,8 @@ def create_oauth2_client(metadata: Dict, user: User) -> OAuth2Client:
     is supported.
     Code challenge can be used if provided on authorization.
     """
+    check_uris_scheme([*metadata["redirect_uris"]])
+
     client_metadata = {
         "client_name": metadata["client_name"],
         "client_description": metadata.get("client_description"),

@@ -2,6 +2,7 @@
   "ERROR": {
     "<time> is missing in gpx file": "Elément <time> manquant dans le fichier .gpx.",
     "Error when updating elevation data source": "Erreur lors de la mise à jour de la source de données d'altitude",
+    "INVALID_REDIRECT_URI_SCHEME": "Protocole de l'URL de redirection invalide",
     "Network Error": "Erreur réseau.",
     "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
     "a maximum of 5 pieces of Misc equipment can be added": "Un maximum de 5 équipements \"Autres\" peut être ajouté.",

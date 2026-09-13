@@ -1,5 +1,6 @@
 {
   "ANALYSIS_VISIBILITY": "widoczność analizy",
+  "CALORIES_VISIBILITY": "widoczność kalorii",
   "COMMENT_LEVELS": {
     "followers_only": "tylko śledzący",
     "private": "prywatne (tylko oznaczeni użytkownicy)",
@@ -12,6 +13,7 @@
     "public": "publiczne (każdy)"
   },
   "MAP_VISIBILITY": "widoczność mapy",
+  "MEDIA_VISIBILITY": "widoczność zdjęć",
   "VISIBILITY": "Widoczność",
   "WORKOUTS_VISIBILITY": "Widoczność danych związanych z treningiem",
   "WORKOUT_VISIBILITY": "widoczność treningu"

@@ -8,10 +8,11 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-08-12 15:41+0200\n"
-"PO-Revision-Date: 2025-06-08 22:01+0200\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"PO-Revision-Date: 2026-08-29 11:52+0000\n"
+"Last-Translator: Ege Günes <senugege@gmail.com>\n"
 "Language: tr\n"
-"Language-Team: tr <LL@li.org>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/fittrackee"
+"/fittrackee-api-emails/tr/>\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -22,7 +23,7 @@ msgstr ""
 #: fittrackee/emails/templates/layout.txt:1
 #, python-format
 msgid "Hi %(username)s,"
-msgstr ""
+msgstr "Merhaba %(username)s,"
 
 #: fittrackee/emails/templates/account_confirmation/body.txt:6
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:3
@@ -35,48 +36,50 @@ msgid ""
 "For security, this request was received from a %(operating_system)s "
 "device using %(browser_name)s."
 msgstr ""
+"Güvenlik amacıyla, bu istek %(browser_name)s kullanan bir "
+"%(operating_system)s cihazından alınmıştır."
 
 #: fittrackee/emails/templates/layout.html:238
 #: fittrackee/emails/templates/layout.txt:5
 msgid "Thanks,"
-msgstr ""
+msgstr "Teșekkürler,"
 
 #: fittrackee/emails/templates/layout.html:239
 #: fittrackee/emails/templates/layout.txt:6
 msgid "The FitTrackee Team"
-msgstr ""
+msgstr "FitTrackee Takımı"
 
 #: fittrackee/emails/templates/account_confirmation/body.html:2
 #: fittrackee/emails/templates/account_confirmation/subject.txt:1
 msgid "Confirm your account"
-msgstr ""
+msgstr "Hesabınızı onaylayın"
 
 #: fittrackee/emails/templates/account_confirmation/body.html:3
 msgid "Use this link to confirm your account."
-msgstr ""
+msgstr "Bu linki kullanarak hesabınızı onaylayın."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:4
 #: fittrackee/emails/templates/account_confirmation/body.txt:1
 msgid "You have created an account on FitTrackee."
-msgstr ""
+msgstr "FitTrackee'de hesap olușturdun."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:4
 msgid "Use the button below to confirm your address email."
-msgstr ""
+msgstr "Așağıdaki tuşa tıklayarak hesabınızın email adresini onaylayın."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:11
 #: fittrackee/emails/templates/account_confirmation/body.txt:4
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:11
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:4
 msgid "Verify your email"
-msgstr ""
+msgstr "Email adresini onayla"
 
 #: fittrackee/emails/templates/account_confirmation/body.html:18
 #: fittrackee/emails/templates/account_confirmation/body.txt:7
 msgid ""
 "If this account creation wasn't initiated by you, please ignore this "
 "email."
-msgstr ""
+msgstr "Eğer hesap senin tarafın oluşturulmadıyda, lütfen bu emaili görmezden gel."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:22
 #: fittrackee/emails/templates/comment_suspension/body.html:37
@@ -89,18 +92,18 @@ msgstr ""
 msgid ""
 "If you're having trouble with the button above, copy and paste the URL "
 "below into your web browser."
-msgstr ""
+msgstr "Eğer yukarıdaki tuş çalışmıyorsa, aşağıdaki linki tarayıcına yapıştır."
 
 #: fittrackee/emails/templates/account_confirmation/body.txt:2
 msgid "Use the link below to confirm your address email."
-msgstr ""
+msgstr "Aşağıdaki linke tıklayarak email adresini onayla."
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:2
 #: fittrackee/emails/templates/user_warning_lifting/body.html:2
 #: fittrackee/emails/templates/user_warning_lifting/subject.txt:1
 #, python-format
 msgid "Warning for %(username)s lifted"
-msgstr ""
+msgstr "Kullanıcı %(username)s için uyarı kaldırıldı"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:3
 msgid "Your appeal has been rejected"
@@ -130,7 +133,7 @@ msgstr ""
 #: fittrackee/emails/templates/user_warning_lifting/body.html:6
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:3
 msgid "Comment:"
-msgstr ""
+msgstr "Yorum:"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:22
 #: fittrackee/emails/templates/appeal_rejected/body.txt:7
@@ -141,7 +144,7 @@ msgstr ""
 #: fittrackee/emails/templates/workout_suspension/body.txt:5
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:5
 msgid "Workout:"
-msgstr ""
+msgstr "Antrenman:"
 
 #: fittrackee/emails/templates/appeal_rejected/body.txt:5
 #: fittrackee/emails/templates/appeal_rejected/body.txt:9
@@ -152,7 +155,7 @@ msgstr ""
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:9
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:7
 msgid "Link:"
-msgstr ""
+msgstr "Link:"
 
 #: fittrackee/emails/templates/appeal_rejected/subject.txt:1
 msgid "Appeal rejected"
@@ -161,13 +164,13 @@ msgstr ""
 #: fittrackee/emails/templates/comment_suspension/body.html:2
 #: fittrackee/emails/templates/comment_suspension/subject.txt:1
 msgid "Your comment has been suspended"
-msgstr ""
+msgstr "Yorumun askıya alındı"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:3
 #: fittrackee/emails/templates/comment_suspension/body.html:4
 #: fittrackee/emails/templates/comment_suspension/body.txt:1
 msgid "Your comment has been suspended, it is no longer visible"
-msgstr ""
+msgstr "Yorumun askıya alındı, artik görüntülenemez"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:5
 #: fittrackee/emails/templates/comment_suspension/body.txt:3
@@ -184,7 +187,7 @@ msgstr ""
 #: fittrackee/emails/templates/workout_unsuspension/body.html:5
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:3
 msgid "Reason:"
-msgstr ""
+msgstr "Sebep:"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:20
 #: fittrackee/emails/templates/comment_suspension/body.txt:7
@@ -195,49 +198,49 @@ msgstr ""
 #: fittrackee/emails/templates/workout_suspension/body.html:23
 #: fittrackee/emails/templates/workout_suspension/body.txt:7
 msgid "If you think this is an error, you can appeal:"
-msgstr ""
+msgstr "Bunun bir hata olduğunu düşünüyorsan, itirazda bulunabilirsin:"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:27
 #: fittrackee/emails/templates/user_suspension/body.html:14
 #: fittrackee/emails/templates/user_warning/body.html:48
 #: fittrackee/emails/templates/workout_suspension/body.html:30
 msgid "Appeal"
-msgstr ""
+msgstr "İtiraz"
 
 #: fittrackee/emails/templates/comment_unsuspension/body.html:2
 #: fittrackee/emails/templates/comment_unsuspension/subject.txt:1
 msgid "The suspension on your comment has been lifted"
-msgstr ""
+msgstr "Yorumunun askıya alınması kaldırıldı"
 
 #: fittrackee/emails/templates/comment_unsuspension/body.html:3
 #: fittrackee/emails/templates/comment_unsuspension/body.html:4
 #: fittrackee/emails/templates/comment_unsuspension/body.txt:1
 msgid "The suspension on your comment has been lifted, it is visible again"
-msgstr ""
+msgstr "Yorumunun askıya alınması kaldırıldı, artik görüntülenebilir"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:2
 #: fittrackee/emails/templates/data_export_ready/subject.txt:1
 msgid "Your archive is ready to be downloaded"
-msgstr ""
+msgstr "Arşivin indirilmeye hazır"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:3
 msgid "A download link is available in your account."
-msgstr ""
+msgstr "Hesabında bir indirme bağlantısı bulunmaktadır."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:4
 #: fittrackee/emails/templates/data_export_ready/body.txt:1
 msgid "You have requested an export of your account on FitTrackee."
-msgstr ""
+msgstr "FitTrackee'deki hesabının verilerini dışa aktarmayı talep ettin."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:4
 #: fittrackee/emails/templates/data_export_ready/body.txt:2
 msgid "The archive is now ready to be downloaded from your account."
-msgstr ""
+msgstr "Arşiv artık hesabında indirilmeye hazır."
 
 #: fittrackee/emails/templates/data_export_ready/body.html:11
 #: fittrackee/emails/templates/data_export_ready/body.txt:4
 msgid "Download your archive"
-msgstr ""
+msgstr "Arşivi indir"
 
 #: fittrackee/emails/templates/data_export_ready/body.html:18
 #: fittrackee/emails/templates/data_export_ready/body.txt:5
@@ -245,15 +248,17 @@ msgid ""
 "If you did not request the export, please change your password "
 "immediately or contact your administrator if your account is locked."
 msgstr ""
+"Eğer bu veri aktarımını sen talep etmediysen, lütfen derhal şifreni "
+"değiştir veya hesabın kilitlenmişse yöneticine başvurun."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_current_email/subject.txt:1
 msgid "Email changed"
-msgstr ""
+msgstr "Email değiştirildi"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:3
 msgid "Your email is being updated."
-msgstr ""
+msgstr "Emailin güncellendi."
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:4
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:1
@@ -261,6 +266,8 @@ msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account to:"
 msgstr ""
+"Kısa bir süre önce, FitTrackee hesabının e-posta adresini şu şekilde "
+"değiştirmek istediğini belirtmiştin:"
 
 #: fittrackee/emails/templates/email_update_to_current_email/body.html:18
 #: fittrackee/emails/templates/email_update_to_current_email/body.txt:4

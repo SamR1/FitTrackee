@@ -98,26 +98,26 @@ export const languageLabels: Record<TLanguage, string> = {
   ca: 'Català (58%)', // Catalan
   cs: 'Česky (49%)', // Czech
   // da: 'Dansk', // Danish
-  de: 'Deutsch', // German
+  de: 'Deutsch (99%)', // German
   en: 'English',
   es: 'Español (67%)', // Spanish
   eu: 'Euskara (97%)', // Basque
   fr: 'Français', // French
-  gl: 'Galego', // Galician
-  hr: 'Hrvatski', // Croatian
+  gl: 'Galego (99%)', // Galician
+  hr: 'Hrvatski (99%)', // Croatian
   it: 'Italiano (97%)', // Italian
-  nl: 'Nederlands', // Dutch
+  nl: 'Nederlands (99%)', // Dutch
   nb: 'Norsk bokmål (42%)', // Norwegian Bokmål
-  pl: 'Polski (93%)', // Polish
+  pl: 'Polski (99%)', // Polish
   pt: 'Português (50%)', // Portuguese
   ru: 'Русский (94%)', // Russian
   // sl: 'Slovenščina', // Slovenian
   // sv: 'Svenska', // Swedish
   // fi: 'Suomi', // Finnish
   kab: 'Taqbaylit (5%)', // Kabyle
-  tr: 'Türkçe (1%)', // Turkish
+  tr: 'Türkçe (3%)', // Turkish
   // ta: 'தமிழ்', // Tamil
-  zh_Hans: '中文（简体）', // Chinese (Simplified Han script)
+  zh_Hans: '中文（简体）(99%)', // Chinese (Simplified Han script)
 }
 
 export const availableLanguages = Object.keys(languageLabels).map((l) => {

@@ -110,6 +110,30 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
             error_message="OAuth2 client invalid scopes",
         )
 
+    def test_it_returns_error_when_redirect_uri_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        invalid_uri = self.random_string()
+        metadata: Dict = {
+            **TEST_OAUTH_CLIENT_METADATA,
+            "redirect_uris": [invalid_uri],
+        }
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            data=json.dumps(metadata),
+            content_type="application/json",
+            headers=dict(Authorization=f"Bearer {auth_token}"),
+        )
+
+        self.assert_400(
+            response,
+            error_message="Invalid redirect URI scheme",
+        )
+
     def test_it_creates_oauth_client(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
@@ -370,6 +394,33 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
             client_id=oauth_client.client_id
         ).first()
         assert code is None
+
+    def test_it_returns_error_when_redirect_url_scheme_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        oauth_client = self.create_oauth2_client(user_1)
+        invalid_uri = "invalid://example.com"
+        oauth_client._client_metadata = oauth_client._client_metadata.replace(
+            "https://example.com", invalid_uri
+        )
+
+        response = client.post(
+            self.route,
+            data={
+                "client_id": oauth_client.client_id,
+                "response_type": "code",
+                "confirm": True,
+            },
+            headers=dict(
+                Authorization=f"Bearer {auth_token}",
+                content_type="multipart/form-data",
+            ),
+        )
+
+        self.assert_400(response, "Invalid redirect URI scheme")
 
     def test_it_returns_redirect_url_with_code(
         self, app: Flask, user_1: User
