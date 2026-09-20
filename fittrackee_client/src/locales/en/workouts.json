@@ -17,7 +17,6 @@
   "BACK_TO_WORKOUT": "back to workout",
   "BEST_PACE": "best pace",
   "CADENCE": "cadence",
-  "CALCULATED_DATA": "calculated data",
   "CALORIES": "calories",
   "COMMENTS": {
     "ADD": "add a comment",
@@ -32,7 +31,6 @@
     "SUSPENDED_COMMENT_BY_ADMIN": "The comment has been suspended by an administrator."
   },
   "CREATED_WORKOUTS": "Created workout | Created workouts",
-  "DATA_FROM_FILE": "data from file",
   "DATE": "date",
   "DELETE_WORKOUT": "Delete the workout",
   "DESCENT": "descent",
@@ -174,6 +172,11 @@
   "START": "start",
   "START_AND_FINISH": "Start and finish",
   "START_ELEVATION_AT_ZERO": "start elevation axis at zero",
+  "STATS_FROM_FILE": {
+    "false": "calculated data",
+    "partial": "data partially extracted from file",
+    "true": "data extracted from file"
+  },
   "SUPPORTED_FILE_EXTENSIONS": "supported extensions",
   "SUSPENDED_BY_ADMIN": "The workout has been suspended by an administrator.",
   "TITLE": "title",

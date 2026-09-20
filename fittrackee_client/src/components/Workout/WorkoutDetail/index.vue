@@ -108,6 +108,7 @@
     IWorkoutElevationSourceDataPayload,
     IWorkoutObject,
     IWorkoutSegment,
+    TStatsFromFile,
     TWorkoutModal,
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
@@ -205,16 +206,24 @@
   function getStatsFromFile(
     workout: IWorkout,
     segment: IWorkoutSegment | undefined
-  ): undefined | boolean {
+  ): TStatsFromFile {
+    const isMultiActivities = Object.keys(workout.multi_sports_stats).length > 0
     if (segment) {
-      const isMultiActivities =
-        Object.keys(workout.multi_sports_stats).length > 0
       if (isMultiActivities) {
-        return segment.stats_from_file
+        return segment.stats_from_file ? 'true' : 'false'
       }
       return undefined
     }
-    return workout.stats_from_file
+    if (isMultiActivities) {
+      if (!workout.stats_from_file) {
+        return 'false'
+      }
+      if (workout.segments.every((s) => s.stats_from_file)) {
+        return 'true'
+      }
+      return 'partial'
+    }
+    return workout.stats_from_file ? 'true' : 'false'
   }
   function getWorkoutObject(
     workout: IWorkout,

@@ -17,6 +17,7 @@ import type {
 export type TFileExtension = 'fit' | 'gpx' | 'kml' | 'tcx'
 export type TWorkoutModal = 'none' | 'deleteWorkout' | 'updateElevation'
 export type TCadenceUnit = '' | 'rpm' | 'spm'
+export type TStatsFromFile = undefined | 'false' | 'true' | 'partial'
 
 export interface IWorkoutSegment {
   ascent: number
@@ -214,7 +215,7 @@ export interface IWorkoutObject {
   segmentId: string | null
   segmentNumber: number | null
   source: string | null
-  statsFromFile: boolean | undefined
+  statsFromFile: TStatsFromFile
   suspended: boolean
   title: string
   type: string
