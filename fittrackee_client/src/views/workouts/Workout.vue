@@ -23,7 +23,10 @@
             :isRefreshing="isRefreshing"
           />
           <WorkoutChart
-            v-if="workoutData.workout.with_analysis"
+            v-if="
+              workoutData.workout.with_analysis &&
+              workoutData.chartData.length > 0
+            "
             :workoutData="workoutData"
             :isRefreshing="isRefreshing"
             :authUser="authUser"
