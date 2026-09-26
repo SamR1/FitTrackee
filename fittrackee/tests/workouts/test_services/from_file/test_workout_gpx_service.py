@@ -1265,13 +1265,19 @@ class TestWorkoutGpxServiceProcessFileOnCreationWithFileWithElevation(
         ):
             service.process_workout()
 
+    @pytest.mark.parametrize("input_workout_stats_from_file", [True, False])
     def test_it_creates_workout_and_segment_when_gpx_file_has_one_segment(
         self,
         app: "Flask",
         sport_1_cycling: Sport,
         user_1: "User",
         gpx_file: str,
+        input_workout_stats_from_file: bool,
     ) -> None:
+        # This preference is only used for .fit
+        # Setting it to 'true' should not change the values
+        user_1.workout_stats_from_file = input_workout_stats_from_file
+
         service = self.init_service_with_gpx(user_1, sport_1_cycling, gpx_file)
 
         service.process_workout()

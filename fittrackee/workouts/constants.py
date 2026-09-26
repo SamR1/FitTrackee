@@ -72,7 +72,23 @@ FIT_MATCHING_SPORTS = {
     "running|generic": "Running",
     "swimming|open_water": "Open Water Swimming",
 }
-
+FIT_MATCHING_FIELDS = {
+    "avg_cadence": "ave_cadence",
+    "avg_heart_rate": "ave_hr",
+    "avg_power": "ave_power",
+    "enhanced_avg_speed": "ave_speed",
+    "enhanced_max_speed": "max_speed",
+    "max_cadence": "max_cadence",
+    "max_heart_rate": "max_hr",
+    "max_power": "max_power",
+    "total_ascent": "ascent",
+    "total_descent": "descent",
+    "total_distance": "distance",
+    "total_elapsed_time": "duration",
+    "total_timer_time": "moving",
+    "total_calories": "calories",
+}
+ALL_KEYS = [*FIT_MATCHING_FIELDS.values(), "pauses"]
 
 # for file download
 WORKOUT_FILE_MIMETYPES = {
