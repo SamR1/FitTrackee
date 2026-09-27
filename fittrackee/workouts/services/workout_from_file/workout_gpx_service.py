@@ -586,8 +586,13 @@ class WorkoutGpxService(
                 == ElevationDataSource.FILE
             ):
                 try:
+                    point_time = (
+                        point.time.astimezone(tz=timezone.utc)
+                        if point.time
+                        else None
+                    )
                     previous_value = existing_elevations.at[  # noqa: PD008
-                        f"{point.time}|{point.latitude}|{point.longitude}",
+                        f"{point_time}|{point.latitude}|{point.longitude}",
                         "elevation",
                     ]
                     point.elevation = (
