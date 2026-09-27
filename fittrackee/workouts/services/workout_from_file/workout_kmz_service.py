@@ -11,13 +11,15 @@ if TYPE_CHECKING:
 
 
 class WorkoutKmzService(WorkoutKmlService):
+    file_type: str = "kmz"
+
     @classmethod
     def parse_file(
         cls,
         workout_file: IO[bytes],
         segments_creation_event: str,
         sport: "Sport",
-    ) -> Tuple["gpxpy.gpx.GPX", Dict, List[Dict]]:
+    ) -> Tuple["gpxpy.gpx.GPX", List[Dict]]:
         """
         Only kmz files with Tracks are supported.
         Notes:

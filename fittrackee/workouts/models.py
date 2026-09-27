@@ -1285,6 +1285,9 @@ class WorkoutSegment(BaseModel):
         server_default="false", nullable=False
     )
     calories: Mapped[Optional[int]] = mapped_column(nullable=True)  # kcal
+    segment_stats_from_file: Mapped[bool] = mapped_column(
+        server_default="False", nullable=False
+    )
 
     workout: Mapped["Workout"] = relationship(
         "Workout", lazy="joined", single_parent=True
@@ -1324,12 +1327,15 @@ class WorkoutSegment(BaseModel):
     ) -> Dict:
         """
         Segments are visible when user can see analysis data
+
+        'stats_from_file' is only visible to owner
         """
+        is_owner = user is not None and user.id == self.workout.user_id
         if sport_data_visibility is None:
             sport_data_visibility = get_sport_displayed_data(
                 self.sport or self.workout.sport, user
             )
-        return {
+        segment = {
             "workout_id": encode_uuid(self.workout_uuid),
             "segment_id": self.short_id,
             "sport_id": self.sport_id,
@@ -1372,6 +1378,9 @@ class WorkoutSegment(BaseModel):
             "calories": self.calories if can_see_calories else None,
             "is_transition": self.is_transition,
         }
+        if is_owner:
+            segment["stats_from_file"] = self.segment_stats_from_file
+        return segment
 
 
 class WorkoutHeatmapCell(BaseModel):

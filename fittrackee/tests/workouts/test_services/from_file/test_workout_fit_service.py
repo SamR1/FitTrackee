@@ -83,6 +83,8 @@ class WorkoutFitServiceProcessFileTestCase(WorkoutFileMixin):
         assert object_to_check.max_power == file_data["max_power"]
         if isinstance(object_to_check, Workout):
             assert object_to_check.workout_stats_from_file is True
+        else:
+            assert object_to_check.segment_stats_from_file is True
 
 
 class TestWorkoutFitServiceGetCoordinate(WorkoutFileMixin):
@@ -122,7 +124,7 @@ class TestWorkoutFitServiceParseFile(WorkoutFileMixin):
         """
         .fit file used for the test does not contain any stats
         """
-        gpx, file_stats, sessions_stats = WorkoutFitService.parse_file(
+        gpx, sessions_stats = WorkoutFitService.parse_file(
             self.get_fit_file_content(app, file_name="example.fit"),
             segments_creation_event="none",
             sport=sport_1_cycling,
@@ -133,8 +135,7 @@ class TestWorkoutFitServiceParseFile(WorkoutFileMixin):
         moving_data = gpx.get_moving_data()
         assert moving_data.moving_time == 250.0
         assert round(moving_data.moving_distance, 1) == 318.2
-        assert file_stats == FILE_STATS_WITH_NONE
-        assert sessions_stats == []
+        assert sessions_stats == [FILE_STATS_WITH_NONE]
 
 
 class TestWorkoutFitServiceInstantiationOnCreation(WorkoutFileMixin):
@@ -233,8 +234,11 @@ class TestWorkoutFitServiceInstantiationOnRefresh(WorkoutFileMixin):
         )
         with patch.object(
             WorkoutFitService,
-            "get_file_stats",
-            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+            "get_sessions_stats",
+            return_value=(
+                [FILE_STATS_WITH_DATA],
+                FILE_STATS_WITH_DATA.get("calories"),
+            ),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -284,8 +288,11 @@ class TestWorkoutFitServiceInstantiationOnRefresh(WorkoutFileMixin):
 
         with patch.object(
             WorkoutFitService,
-            "get_file_stats",
-            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+            "get_sessions_stats",
+            return_value=(
+                [FILE_STATS_WITH_DATA],
+                FILE_STATS_WITH_DATA.get("calories"),
+            ),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -326,9 +333,8 @@ class TestWorkoutFitServiceProcessWorkout(
         user_1.workout_stats_from_file = False
         with patch.object(
             WorkoutFitService,
-            "get_file_stats",
+            "get_sessions_stats",
             return_value=(
-                FILE_STATS_WITH_DATA,
                 [
                     {
                         **FILE_STATS_WITH_DATA,
@@ -336,6 +342,7 @@ class TestWorkoutFitServiceProcessWorkout(
                         "is_transition": False,
                     }
                 ],
+                FILE_STATS_WITH_DATA.get("calories"),
             ),
         ):
             service = WorkoutFitService(
@@ -352,8 +359,12 @@ class TestWorkoutFitServiceProcessWorkout(
         assert service.workout_name is None
         workout = self.assert_workout_with_calculated_data()
         assert workout.elevation_data_source == ElevationDataSource.FILE
+        segment = workout.segments[0]
+        assert float(segment.distance) == pytest.approx(0.318, 0.001)  # type: ignore
+        assert segment.duration == timedelta(minutes=4, seconds=10)
+        assert segment.segment_stats_from_file is False
 
-    def test_it_creates_workout_when_stats_are_extracted_from_file(
+    def test_it_creates_workout_when_stats_are_extracted_from_file_for_single_activity_sport(  # noqa
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
     ) -> None:
         user_1.workout_stats_from_file = True
@@ -364,8 +375,11 @@ class TestWorkoutFitServiceProcessWorkout(
         }
         with patch.object(
             WorkoutFitService,
-            "get_file_stats",
-            return_value=(FILE_STATS_WITH_DATA, [segment_file_data]),
+            "get_sessions_stats",
+            return_value=(
+                [segment_file_data],
+                FILE_STATS_WITH_DATA.get("calories"),
+            ),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -382,9 +396,47 @@ class TestWorkoutFitServiceProcessWorkout(
         workout = Workout.query.one()
         self.assert_data_from_file(workout, FILE_STATS_WITH_DATA)
         assert workout.elevation_data_source == ElevationDataSource.FILE
-        segments = workout.segments
-        assert len(segments) == 1
-        self.assert_data_from_file(segments[0], segment_file_data)
+        assert len(workout.segments) == 1
+        segment = workout.segments[0]
+        assert segment.segment_stats_from_file is False
+        assert float(segment.ascent) == 0.0
+        assert float(segment.distance) == pytest.approx(0.318, 0.001)  # type: ignore
+        assert segment.duration == timedelta(minutes=4, seconds=10)
+
+    def test_it_creates_workout_when_stats_are_extracted_from_file_for_multi_activity_sport(  # noqa
+        self, app: "Flask", sport_10_swimrun: "Sport", user_1: "User"
+    ) -> None:
+        user_1.workout_stats_from_file = True
+        segment_file_data = {
+            **FILE_STATS_WITH_DATA,
+            "sport_id": sport_10_swimrun.id,
+            "is_transition": False,
+        }
+        with patch.object(
+            WorkoutFitService,
+            "get_sessions_stats",
+            return_value=(
+                [segment_file_data],
+                FILE_STATS_WITH_DATA.get("calories"),
+            ),
+        ):
+            service = WorkoutFitService(
+                user_1,
+                self.get_fit_file_content(app, file_name="example.fit"),
+                sport_10_swimrun,
+                sport_10_swimrun.stopped_speed_threshold,
+            )
+
+            service.process_workout()
+        db.session.commit()
+
+        assert service.workout_description is None
+        assert service.workout_name is None
+        workout = Workout.query.one()
+        self.assert_data_from_file(workout, FILE_STATS_WITH_DATA)
+        assert workout.elevation_data_source == ElevationDataSource.FILE
+        assert len(workout.segments) == 1
+        self.assert_data_from_file(workout.segments[0], segment_file_data)
 
     def test_it_creates_workout_when_stats_are_none(
         self, app: "Flask", sport_1_cycling: "Sport", user_1: "User"
@@ -392,8 +444,8 @@ class TestWorkoutFitServiceProcessWorkout(
         user_1.workout_stats_from_file = True
         with patch.object(
             WorkoutFitService,
-            "get_file_stats",
-            return_value=(FILE_STATS_WITH_NONE, []),
+            "get_sessions_stats",
+            return_value=([], None),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -430,6 +482,7 @@ class TestWorkoutFitServiceProcessWorkout(
         assert len(segments) == 1
         assert segments[0].sport_id is None
         assert segments[0].is_transition is False
+        assert segments[0].segment_stats_from_file is False
 
 
 @pytest.mark.disable_autouse_update_records_patch
@@ -453,8 +506,11 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
         )
         with patch.object(
             WorkoutFitService,
-            "get_file_stats",
-            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+            "get_sessions_stats",
+            return_value=(
+                [FILE_STATS_WITH_DATA],
+                FILE_STATS_WITH_DATA.get("calories"),
+            ),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -499,8 +555,11 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
         )
         with patch.object(
             WorkoutFitService,
-            "get_file_stats",
-            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+            "get_sessions_stats",
+            return_value=(
+                [FILE_STATS_WITH_DATA],
+                FILE_STATS_WITH_DATA.get("calories"),
+            ),
         ):
             service = WorkoutFitService(
                 user_1,
@@ -617,8 +676,11 @@ class TestWorkoutFitServiceProcessFileOnRefresh(
         # refresh workout
         with patch.object(
             WorkoutFitService,
-            "get_file_stats",
-            return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+            "get_sessions_stats",
+            return_value=(
+                [FILE_STATS_WITH_DATA],
+                FILE_STATS_WITH_DATA.get("calories"),
+            ),
         ):
             service = WorkoutFitService(
                 user_1,

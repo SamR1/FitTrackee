@@ -12,13 +12,15 @@ if TYPE_CHECKING:
 
 
 class WorkoutKmlService(WorkoutGpxService):
+    file_type: str = "kml"
+
     @classmethod
     def parse_file(
         cls,
         workout_file: IO[bytes],
         segments_creation_event: str,
         sport: "Sport",
-    ) -> Tuple["gpxpy.gpx.GPX", Dict, List[Dict]]:
+    ) -> Tuple["gpxpy.gpx.GPX", List[Dict]]:
         """
         Only kml files with Placemark/MultiTrack/Tracks are supported.
         Files with folders or multiple Placemark are no supported.
@@ -120,4 +122,4 @@ class WorkoutKmlService(WorkoutGpxService):
             gpx_track.segments.append(gpx_segment)
         gpx = gpxpy.gpx.GPX()
         gpx.tracks.append(gpx_track)
-        return gpx, {}, []
+        return gpx, []

@@ -436,10 +436,11 @@ Extracting statistics from the file
 -----------------------------------
 .. versionadded:: 1.4.0
 
-In case of ``.fit`` files only, if the `preference <account_and_preferences.html#preferences>`__ "Workout statistics" is set to "From file", the statistics are not calculated by **FitTrackee**, but extracted from the file.
+In case of ``.fit`` files **only**, if the `preference <account_and_preferences.html#preferences>`__ "Workout statistics" is set to "From file", the statistics are not calculated by **FitTrackee**, but extracted from the file (``Session`` data).
 
 .. note::
-    Statistics are always calculated for segments regardless of preferences (except in case of sports that combine multiple disciplines like **SwimRun** and **Triathlon**)
+    | Statistics are always calculated for segments regardless of preferences, except in case of sports that combine multiple disciplines like **SwimRun** and **Triathlon**.
+    | For these sports, if the distance for the last segment is missing (which can happen with some Suunto smartwatches), the statistics are calculated for that segment and "data partially extracted from file" is displayed in the workout details.
 
 In addition, the preferences for the source and processing of elevation data are ignored.
 

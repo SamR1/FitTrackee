@@ -31,6 +31,8 @@ weather_service = WeatherService()
 
 
 class BaseWorkoutWithSegmentsCreationService(ABC):
+    file_type: str = ""
+
     @abstractmethod
     def __init__(
         self,
@@ -68,7 +70,7 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
 
         # The file is converted to GPX format if it is not already in
         # GPX format
-        self.gpx, self.file_stats, self.sessions_stats = self.parse_file(
+        self.gpx, self.sessions_stats = self.parse_file(
             workout_file, auth_user.segments_creation_event, sport
         )
         self.track: "gpxpy.gpx.GPXTrack" = self.gpx.tracks[0]
@@ -106,7 +108,7 @@ class BaseWorkoutWithSegmentsCreationService(ABC):
         workout_file: IO[bytes],
         segments_creation_event: str,
         sport: "Sport",
-    ) -> Tuple["gpxpy.gpx.GPX", Dict, List[Dict]]:
+    ) -> Tuple["gpxpy.gpx.GPX", List[Dict]]:
         pass
 
     def _has_missing_elevation(self) -> bool:

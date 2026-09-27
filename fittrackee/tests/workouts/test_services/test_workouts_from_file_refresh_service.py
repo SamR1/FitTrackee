@@ -773,8 +773,11 @@ class TestWorkoutFromFileRefreshServiceRefresh(
             ),
             patch.object(
                 WorkoutFitService,
-                "get_file_stats",
-                return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+                "get_sessions_stats",
+                return_value=(
+                    [FILE_STATS_WITH_DATA],
+                    FILE_STATS_WITH_DATA.get("calories"),
+                ),
             ),
         ):
             service.refresh()
@@ -807,8 +810,11 @@ class TestWorkoutFromFileRefreshServiceRefresh(
             ),
             patch.object(
                 WorkoutFitService,
-                "get_file_stats",
-                return_value=(FILE_STATS_WITH_DATA, [FILE_STATS_WITH_DATA]),
+                "get_sessions_stats",
+                return_value=(
+                    [FILE_STATS_WITH_DATA],
+                    FILE_STATS_WITH_DATA.get("calories"),
+                ),
             ),
         ):
             service.refresh()

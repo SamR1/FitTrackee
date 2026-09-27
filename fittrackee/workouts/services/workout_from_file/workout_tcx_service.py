@@ -14,6 +14,8 @@ if TYPE_CHECKING:
 
 
 class WorkoutTcxService(WorkoutGpxService):
+    file_type: str = "tcx"
+
     @staticmethod
     def _get_elevation(point: Dict) -> Optional[float]:
         altitude_meters = point.get("AltitudeMeters")
@@ -33,7 +35,7 @@ class WorkoutTcxService(WorkoutGpxService):
         workout_file: IO[bytes],
         segments_creation_event: str,
         sport: "Sport",
-    ) -> Tuple["gpxpy.gpx.GPX", Dict, List[Dict]]:
+    ) -> Tuple["gpxpy.gpx.GPX", List[Dict]]:
         """
         Tcx files contain activities that contain laps containing tracks.
         A gpx file generated from tcx file contains one track containing one
@@ -183,4 +185,4 @@ class WorkoutTcxService(WorkoutGpxService):
         gpx.creator = creator if creator else author
         gpx.nsmap = NSMAP
         gpx.tracks.append(gpx_track)
-        return gpx, {}, []
+        return gpx, []

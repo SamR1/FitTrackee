@@ -31,18 +31,19 @@
           </router-link>
           {{ ' ' }}
           <span v-if="segment.is_transition" class="segment-transition">
-            ({{ $t('workouts.DURATION') }}: {{ segment.duration }})
+            ({{ $t('workouts.DURATION') }}: {{ segment.moving }})
           </span>
           <template v-else>
-            ({{ $t('workouts.DISTANCE') }}:
+            ({{ $t('workouts.DURATION') }}: {{ segment.moving }},
+            {{ $t('workouts.DISTANCE') }}:
             <div class="no-wrap">
               <Distance
                 :distance="segment.distance"
                 unitFrom="km"
                 :useImperialUnits="useImperialUnits"
-              />,
+              />
             </div>
-            {{ $t('workouts.DURATION') }}: {{ segment.duration }})
+            )
           </template>
         </div>
       </li>

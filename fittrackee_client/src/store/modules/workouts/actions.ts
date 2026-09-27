@@ -291,6 +291,12 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
                   )
                 }
               })
+              .catch(() => {
+                context.commit(
+                  WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_GEOJSON,
+                  null
+                )
+              })
           }
           if (!payload.segmentId) {
             context.dispatch(

@@ -108,6 +108,7 @@
     IWorkoutElevationSourceDataPayload,
     IWorkoutObject,
     IWorkoutSegment,
+    TStatsFromFile,
     TWorkoutModal,
   } from '@/types/workouts'
   import { useStore } from '@/use/useStore'
@@ -202,6 +203,28 @@
       nextUrl,
     }
   }
+  function getStatsFromFile(
+    workout: IWorkout,
+    segment: IWorkoutSegment | undefined
+  ): TStatsFromFile {
+    const isMultiActivities = Object.keys(workout.multi_sports_stats).length > 0
+    if (segment) {
+      if (isMultiActivities) {
+        return segment.stats_from_file ? 'true' : 'false'
+      }
+      return undefined
+    }
+    if (isMultiActivities) {
+      if (!workout.stats_from_file) {
+        return 'false'
+      }
+      if (workout.segments.every((s) => s.stats_from_file)) {
+        return 'true'
+      }
+      return 'partial'
+    }
+    return workout.stats_from_file ? 'true' : 'false'
+  }
   function getWorkoutObject(
     workout: IWorkout,
     segment: IWorkoutSegment | undefined
@@ -218,7 +241,6 @@
       ),
       displayOptions.value.dateFormat
     )
-    const isMultiActivities = Object.keys(workout.multi_sports_stats).length > 0
     return {
       analysisVisibility: workout.analysis_visibility,
       ascent: segment ? segment.ascent : workout.ascent,
@@ -255,8 +277,7 @@
       segmentNumber: segment ? segment.segment_number : null,
       sport: getObjectSport(segment || workout),
       source: segment ? null : workout.source || null,
-      statsFromFile:
-        !segment || isMultiActivities ? workout.stats_from_file : false,
+      statsFromFile: getStatsFromFile(workout, segment),
       suspended: workout.suspended === undefined ? false : workout.suspended,
       title: workout.title,
       type: displaySegment.value ? 'SEGMENT' : 'WORKOUT',

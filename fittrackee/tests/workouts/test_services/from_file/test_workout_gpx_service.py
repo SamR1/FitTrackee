@@ -353,6 +353,7 @@ class WorkoutGpxServiceProcessFileTestCase(
             "moving": "0:00:10",
             "pauses": None,
             "segment_id": workout_segments[1].short_id,
+            "stats_from_file": False,
             "sport_id": None,
             "workout_id": workout.short_id,
         }
@@ -1264,13 +1265,19 @@ class TestWorkoutGpxServiceProcessFileOnCreationWithFileWithElevation(
         ):
             service.process_workout()
 
+    @pytest.mark.parametrize("input_workout_stats_from_file", [True, False])
     def test_it_creates_workout_and_segment_when_gpx_file_has_one_segment(
         self,
         app: "Flask",
         sport_1_cycling: Sport,
         user_1: "User",
         gpx_file: str,
+        input_workout_stats_from_file: bool,
     ) -> None:
+        # This preference is only used for .fit
+        # Setting it to 'true' should not change the values
+        user_1.workout_stats_from_file = input_workout_stats_from_file
+
         service = self.init_service_with_gpx(user_1, sport_1_cycling, gpx_file)
 
         service.process_workout()
@@ -3016,6 +3023,61 @@ class TestWorkoutGpxServiceProcessFileOnRefreshWithoutElevationParameters(
         get_smoothed_elevations_from_df_mock.assert_not_called()
         db.session.refresh(workout)
         self.assert_elevation_from_file_with_smoothing()
+
+    def test_it_refreshes_workout_when_file_contains_offset(
+        self,
+        app_with_open_elevation_url: "Flask",
+        sport_1_cycling: Sport,
+        user_1: "User",
+        gpx_file_with_offset: str,
+    ) -> None:
+        # user preferences
+        user_1.elevation_data_source = ElevationDataSource.OPEN_ELEVATION
+        user_1.elevation_processing = ElevationProcessing.FLAT_WINDOW
+        user_1.process_only_missing_elevations = False
+
+        # create workout according to user preferences
+        service = self.init_service_with_gpx(
+            user_1, sport_1_cycling, gpx_file_with_offset
+        )
+        with (
+            patch.object(
+                requests,
+                "post",
+                return_value=self.get_response(OPEN_ELEVATION_RESPONSE),
+            ),
+        ):
+            service.process_workout()
+        db.session.commit()
+        workout = Workout.query.one()
+
+        # refresh workout (no changed expected)
+        service = self.init_service_with_gpx(
+            user_1,
+            sport_1_cycling,
+            gpx_file_with_offset,
+            get_elevation_on_refresh=False,
+            workout=workout,
+        )
+
+        service.process_workout()
+
+        db.session.refresh(workout)
+        assert workout.elevation_data_source == (
+            ElevationDataSource.OPEN_ELEVATION
+        )
+        assert workout.elevation_processing == (
+            ElevationProcessing.FLAT_WINDOW
+        )
+        for obj in [workout, workout.segments[0]]:
+            assert float(obj.ascent) == 0.0  # type: ignore
+            assert float(obj.descent) == 17.0  # type: ignore
+            assert float(obj.distance) == 0.318  # type: ignore
+            assert float(obj.max_speed) == 5.11  # type: ignore
+        assert (
+            workout.segments[0].points[0]
+            == OPEN_ELEVATION_SMOOTHED_FIRST_POINT
+        )
 
     def test_it_refreshes_with_multiple_refresh_and_preferences_changes(
         self,

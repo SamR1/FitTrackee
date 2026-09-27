@@ -1,11 +1,7 @@
 <template>
   <div id="workout-info">
-    <div v-if="workoutObject.originalFile === 'fit'" class="data-origin">
-      {{
-        t(
-          `workouts.${workoutObject.statsFromFile ? 'DATA_FROM_FILE' : 'CALCULATED_DATA'}`
-        )
-      }}
+    <div v-if="workoutObject.statsFromFile !== undefined" class="data-origin">
+      {{ t(`workouts.STATS_FROM_FILE.${workoutObject.statsFromFile}`) }}
     </div>
     <div class="workout-data" v-if="workoutObject.source !== null">
       <i class="fa fa-info-circle" aria-hidden="true" />
@@ -269,6 +265,7 @@
       }
     }
     .data-origin {
+      color: var(--text-info);
       font-style: italic;
       font-size: 0.9em;
     }
