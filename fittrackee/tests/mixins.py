@@ -844,3 +844,11 @@ class TokenMixin:
     @staticmethod
     def decode_user_token(auth_token: str) -> Dict:
         return decode_token(auth_token)
+
+    @staticmethod
+    def decode_password_token(auth_token: str) -> Dict:
+        return jwt.decode(
+            auth_token,
+            current_app.config["SECRET_KEY"],
+            algorithms=["HS256"],
+        )

@@ -339,15 +339,17 @@ class TestDecodePassordTokenToken:
         ):
             decode_password_reset_token(token)
 
-    def test_it_returns_user_id(self, app: Flask) -> None:
+    def test_it_returns_token_payload(self, app: Flask) -> None:
         expected_user_id = 1
-        token = self.generate_token(
-            user_id=expected_user_id, now=datetime.now(timezone.utc)
-        )
+        now = datetime.now(timezone.utc)
+        token = self.generate_token(user_id=expected_user_id, now=now)
 
-        user_id = decode_password_reset_token(token)
+        payload = decode_password_reset_token(token)
 
-        assert user_id == expected_user_id
+        assert set(payload.keys()) == {"exp", "iat", "jti", "sub", "type"}
+        assert payload["iat"] == int(now.timestamp())
+        assert payload["sub"] == f"{expected_user_id}"
+        assert payload["type"] == "password_reset"
 
 
 class TestBlacklistedTokensCleanup:

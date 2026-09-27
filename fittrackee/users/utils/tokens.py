@@ -40,7 +40,7 @@ def get_password_reset_token(
     )
 
 
-def decode_password_reset_token(auth_token: str) -> int:
+def decode_password_reset_token(auth_token: str) -> dict:
     payload = jwt.decode(
         auth_token,
         current_app.config["SECRET_KEY"],
@@ -48,7 +48,7 @@ def decode_password_reset_token(auth_token: str) -> int:
     )
     if payload.get("type") != "password_reset":
         raise InvalidJWTClaim("invalid token, please request a new token")
-    return int(payload["sub"])
+    return payload
 
 
 def clean_blacklisted_tokens(days: int) -> int:

@@ -3206,6 +3206,48 @@ class TestPasswordUpdate(ApiTestCaseMixin, TokenMixin):
         assert data["status"] == "success"
         assert data["message"] == "password updated"
 
+    def test_it_blacklists_reset_token(
+        self,
+        app: Flask,
+        user_1: User,
+        auth_send_email_mock: MagicMock,
+    ) -> None:
+        reset_token = get_password_reset_token(user_1.id)
+        client = app.test_client()
+        now = datetime.now(timezone.utc)
+
+        with travel(now, tick=False):
+            client.post(
+                "/api/auth/password/update",
+                data=json.dumps(
+                    dict(
+                        token=reset_token,
+                        password=self.random_string(),
+                    )
+                ),
+                content_type="application/json",
+            )
+
+        payload = self.decode_password_token(reset_token)
+        token = BlacklistedToken.query.filter_by().one()
+        assert token.jti == payload["jti"]
+        assert token.expired_at == payload["exp"]
+        assert token.blacklisted_on == now
+
+        response = client.post(
+            "/api/auth/password/update",
+            data=json.dumps(
+                dict(
+                    token=reset_token,
+                    password=self.random_string(),
+                )
+            ),
+            content_type="application/json",
+        )
+        self.assert_401(
+            response, "invalid token, please request a new reset token"
+        )
+
     def test_it_updates_password_when_user_is_suspended(
         self,
         app: Flask,
@@ -3291,7 +3333,7 @@ class TestPasswordUpdate(ApiTestCaseMixin, TokenMixin):
         auth_send_email_mock.send.assert_not_called()
 
 
-class TestEmailUpdateWitUnauthenticatedUser(ApiTestCaseMixin):
+class TestEmailUpdateWithUnauthenticatedUser(ApiTestCaseMixin):
     def test_it_returns_error_if_token_is_missing(self, app: Flask) -> None:
         client = app.test_client()
 

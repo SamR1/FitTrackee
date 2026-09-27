@@ -38,7 +38,7 @@ class BaseConfig:
     JWT_COOKIE_SECURE = True
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=15)
     # Password reset
-    PASSWORD_TOKEN_EXPIRATION_SECONDS = 3600
+    PASSWORD_TOKEN_EXPIRATION_SECONDS = 900  # 15 minutes
     UPLOAD_FOLDER = os.path.join(
         os.getenv("UPLOAD_FOLDER", current_app.root_path), "uploads"
     )
