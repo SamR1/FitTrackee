@@ -3,8 +3,7 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING, Any, Dict, List, Optional
 from uuid import UUID, uuid4
 
-from flask import current_app, request
-from flask_jwt_extended import decode_token
+from flask import current_app
 from jsonschema import validate
 from sqlalchemy import and_, func
 from sqlalchemy.dialects import postgresql
@@ -19,7 +18,7 @@ from sqlalchemy.sql import text
 from sqlalchemy.sql.expression import select
 from sqlalchemy.types import Enum
 
-from fittrackee import BaseModel, appLog, bcrypt, db, jwt
+from fittrackee import BaseModel, appLog, bcrypt, db
 from fittrackee.comments.models import Comment
 from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
 from fittrackee.database import TZDateTime
@@ -977,14 +976,6 @@ class User(BaseModel):
         return serialized_user
 
 
-@jwt.user_lookup_loader
-def user_lookup_callback(
-    _jwt_header: Dict, jwt_data: Dict
-) -> Optional["User"]:
-    user_id = int(jwt_data["sub"])
-    return User.query.filter_by(id=user_id).one_or_none()
-
-
 UserSportPreferenceEquipment = db.Table(
     "users_sports_preferences_equipments",
     db.Column(
@@ -1095,27 +1086,17 @@ class BlacklistedToken(BaseModel):
     )
 
     def __init__(
-        self, token: str, blacklisted_on: Optional[datetime] = None
+        self,
+        jti: str,
+        expired_at: int,
+        blacklisted_on: Optional[datetime] = None,
     ) -> None:
-        payload = decode_token(token)
-        self.token = token
-        self.jti = payload.get("jti")
-        self.expired_at = payload["exp"]
+        self.token = jti  # workaround before removing column
+        self.jti = jti
+        self.expired_at = expired_at
         self.blacklisted_on = (
             blacklisted_on if blacklisted_on else datetime.now(timezone.utc)
         )
-
-
-@jwt.token_in_blocklist_loader
-def check_if_token_revoked(jwt_header: Dict, jwt_payload: dict) -> bool:
-    jti = jwt_payload.get("jti")
-    query = db.session.query(BlacklistedToken.id)
-    if jti:
-        return query.filter_by(jti=jti).scalar() is not None
-    auth_token = request.headers.get("Authorization", "").replace(
-        "Bearer ", ""
-    )
-    return query.filter_by(token=auth_token).scalar() is not None
 
 
 class UserTask(BaseModel):

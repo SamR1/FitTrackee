@@ -40,7 +40,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         response = client.get(
             "/api/users/not_existing",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_entity(response, "user")
@@ -55,7 +55,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{user_2.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -81,7 +81,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{user_2.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -108,7 +108,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{user_1_admin.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -129,7 +129,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{inactive_user.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -152,7 +152,7 @@ class TestGetUserAsAdmin(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{user_2.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -188,7 +188,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         response = client.get(
             "/api/users/not_existing",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -206,7 +206,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{inactive_user.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -224,7 +224,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{user_2.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -250,7 +250,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{user_2.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -273,7 +273,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{user_1.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -295,7 +295,7 @@ class TestGetUserAsUser(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{user_2.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -319,7 +319,7 @@ class TestGetUserAsSuspendedUser(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{user_1.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -433,7 +433,7 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -464,7 +464,7 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?with_inactive=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -498,7 +498,7 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?with_hidden=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -532,7 +532,7 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?with_suspended=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -574,7 +574,7 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?with_following=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -605,7 +605,7 @@ class TestGetUsersAsAdmin(ApiTestCaseMixin):
         response = client.get(
             "/api/users?with_inactive=true"
             "&with_hidden=true&with_suspended=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -648,7 +648,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?page=1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -677,7 +677,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -705,7 +705,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -733,7 +733,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?per_page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -761,7 +761,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?page=2&per_page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -785,7 +785,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=username",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -812,7 +812,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=username&order=asc",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -839,7 +839,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=username&order=desc",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -869,7 +869,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=created_at",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -899,7 +899,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=created_at&order=asc",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -929,7 +929,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=created_at&order=desc",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -956,7 +956,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=role",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -983,7 +983,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=role&order=asc",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1010,7 +1010,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=role&order=desc",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1043,7 +1043,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=workouts_count",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1079,7 +1079,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=workouts_count&order=asc",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1113,7 +1113,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         response = client.get(
             "/api/users?order_by=is_active&"
             "with_inactive=true&with_hidden=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1145,7 +1145,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         response = client.get(
             "/api/users?order_by=is_active&order=asc&"
             "with_inactive=true&with_hidden=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1177,7 +1177,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
         response = client.get(
             "/api/users?order_by=is_active&order=desc&"
             "with_inactive=true&with_hidden=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1212,7 +1212,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=suspended_at&with_suspended=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1248,7 +1248,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=suspended_at&order=asc&with_suspended=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1284,7 +1284,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=suspended_at&order=desc&with_suspended=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1320,7 +1320,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=workouts_count&order=desc",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1350,7 +1350,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/users?q={user_2.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1375,7 +1375,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/users?q={user_2.username[1:]}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1393,7 +1393,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/users?q={user_2.username.upper()}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1411,7 +1411,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/users?q={inactive_user.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1436,7 +1436,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/users?q={inactive_user.username}&with_inactive=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1474,7 +1474,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/users?q={input_username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1498,7 +1498,7 @@ class TestGetUsersPaginationAsAdmin(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?order_by=username&order=desc&page=2&per_page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1560,7 +1560,7 @@ class TestGetUsersAsModerator(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/users{input_params}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1599,7 +1599,7 @@ class TestGetUsersAsModerator(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?with_following=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1647,7 +1647,7 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/users{input_params}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1686,7 +1686,7 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users?with_following=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1718,7 +1718,7 @@ class TestGetUsersAsUser(ApiTestCaseMixin):
 
         response = client.get(
             "/api/users",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1755,7 +1755,7 @@ class TestGetUsersAsSuspendedUser(ApiTestCaseMixin):
         response = client.get(
             "/api/users",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1807,7 +1807,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_1.username}",
             content_type="application/json",
             data=json.dumps(dict(role="admin")),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1823,7 +1823,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1839,7 +1839,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(role="")),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid role")
@@ -1856,7 +1856,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(role=input_role)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1878,7 +1878,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(role="owner")),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -1901,7 +1901,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2_moderator.username}",
             content_type="application/json",
             data=json.dumps(dict(role=input_role)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1923,7 +1923,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2_moderator.username}",
             content_type="application/json",
             data=json.dumps(dict(role="owner")),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -1946,7 +1946,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2_admin.username}",
             content_type="application/json",
             data=json.dumps(dict(role=input_role)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1968,7 +1968,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2_admin.username}",
             content_type="application/json",
             data=json.dumps(dict(role="owner")),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -1986,7 +1986,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_1_owner.username}",
             content_type="application/json",
             data=json.dumps(dict(role="admin")),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "user with owner rights can not be modified")
@@ -2006,7 +2006,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(role="moderator")),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2028,7 +2028,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(reset_password=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2053,7 +2053,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
                 f"/api/users/{user_2.username}",
                 content_type="application/json",
                 data=json.dumps(dict(reset_password=True)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -2106,7 +2106,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(reset_password=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2123,7 +2123,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(new_email=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "valid email must be provided")
@@ -2139,7 +2139,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(new_email=user_2.email)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -2161,7 +2161,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(new_email=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         users_send_email_mock.send.assert_not_called()
@@ -2180,7 +2180,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(new_email=new_email)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2200,7 +2200,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(new_email=new_email)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2226,7 +2226,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
                 f"/api/users/{user_2.username}",
                 content_type="application/json",
                 data=json.dumps(dict(new_email=new_email)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -2262,7 +2262,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(new_email=new_email)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2279,7 +2279,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{inactive_user.username}",
             content_type="application/json",
             data=json.dumps(dict(activate=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2302,7 +2302,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_2.username}",
             content_type="application/json",
             data=json.dumps(dict(activate=False)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2324,7 +2324,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
             f"/api/users/{user_1_admin.username}",
             content_type="application/json",
             data=json.dumps(dict(activate=False)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2354,7 +2354,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_1.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2369,7 +2369,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{suspended_user.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2386,15 +2386,18 @@ class TestDeleteUser(
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         response = client.delete(
             f"/api/users/{user_1.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2413,7 +2416,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_1.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2432,7 +2435,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_1.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2456,7 +2459,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_1.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2471,15 +2474,15 @@ class TestDeleteUser(
         client.post(
             "/api/auth/picture",
             data=dict(file=(BytesIO(b"avatar"), "avatar.png")),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         response = client.delete(
             f"/api/users/{user_1.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2497,7 +2500,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_1.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2519,15 +2522,15 @@ class TestDeleteUser(
         client.post(
             "/api/auth/picture",
             data=dict(file=(BytesIO(b"avatar"), "avatar.png")),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         response = client.delete(
             f"/api/users/{user_1.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2546,15 +2549,15 @@ class TestDeleteUser(
         client.post(
             "/api/auth/picture",
             data=dict(file=(BytesIO(b"avatar"), "avatar.png")),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         response = client.delete(
             f"/api/users/{user_1.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2584,15 +2587,15 @@ class TestDeleteUser(
         client.post(
             "/api/auth/picture",
             data=dict(file=(BytesIO(b"avatar"), "avatar.png")),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         response = client.delete(
             f"/api/users/{user_1.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2618,7 +2621,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_2.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2632,7 +2635,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_2.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2646,7 +2649,7 @@ class TestDeleteUser(
 
         response = client.delete(
             "/api/users/not_existing",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_entity(response, "user")
@@ -2661,7 +2664,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_2.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2677,7 +2680,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_1_admin.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2696,7 +2699,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_1_owner.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(
@@ -2713,7 +2716,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_1_admin.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(
@@ -2730,7 +2733,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_1_owner.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2745,7 +2748,7 @@ class TestDeleteUser(
 
         response = client.delete(
             f"/api/users/{user_1_owner.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(
@@ -2765,7 +2768,7 @@ class TestDeleteUser(
         )
         client.delete(
             f"/api/users/{user_2.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         response = client.post(
@@ -2797,7 +2800,7 @@ class TestDeleteUser(
 
         client.delete(
             f"/api/users/{user_2.username}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         response = client.post(
             "/api/auth/register",
@@ -2852,7 +2855,7 @@ class TestBlockUser(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(username=self.random_string()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_entity(response, "user")
@@ -2866,7 +2869,7 @@ class TestBlockUser(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2880,7 +2883,7 @@ class TestBlockUser(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(username=user_2.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2902,7 +2905,7 @@ class TestBlockUser(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(username=user_2.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2917,7 +2920,7 @@ class TestBlockUser(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -2959,7 +2962,7 @@ class TestUnBlockUser(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(username=self.random_string()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_entity(response, "user")
@@ -2973,7 +2976,7 @@ class TestUnBlockUser(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2988,7 +2991,7 @@ class TestUnBlockUser(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(username=user_2.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3005,7 +3008,7 @@ class TestUnBlockUser(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(username=user_2.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3065,7 +3068,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=self.random_string()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_entity(response, "user")
@@ -3079,7 +3082,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_2.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -3096,7 +3099,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3121,7 +3124,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3158,7 +3161,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username) + input_params,
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3200,7 +3203,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username) + "?page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3232,7 +3235,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_2.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3276,7 +3279,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3303,7 +3306,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3331,7 +3334,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3357,7 +3360,7 @@ class TestGetUserSanctions(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3378,7 +3381,7 @@ class TestGetUserLatestWorkouts(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=self.random_string()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_entity(response, "user")
@@ -3392,7 +3395,7 @@ class TestGetUserLatestWorkouts(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_2.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3417,7 +3420,7 @@ class TestGetUserLatestWorkouts(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_2.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3464,7 +3467,7 @@ class TestGetUserLatestWorkouts(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3493,7 +3496,7 @@ class TestGetUserLatestWorkouts(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3522,7 +3525,7 @@ class TestGetUserLatestWorkouts(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3553,7 +3556,7 @@ class TestGetUserLatestWorkouts(ApiTestCaseMixin, ReportMixin, CommentMixin):
 
         response = client.get(
             self.route.format(username=user_1.username),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200

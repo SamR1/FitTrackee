@@ -68,7 +68,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -86,7 +86,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -112,7 +112,7 @@ class TestGetWorkoutAsWorkoutOwner(GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -141,7 +141,7 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -174,7 +174,7 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -204,7 +204,7 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -241,7 +241,7 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -279,7 +279,7 @@ class TestGetWorkoutAsFollower(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -296,7 +296,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -325,7 +325,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -353,7 +353,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -388,7 +388,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -410,7 +410,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -431,7 +431,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -471,7 +471,7 @@ class TestGetWorkoutAsUser(CommentMixin, GetWorkoutTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -588,7 +588,7 @@ class TestGetWorkoutGpx(WorkoutApiTestCaseMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 410
@@ -612,7 +612,7 @@ class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -643,7 +643,7 @@ class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id
                 ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         self.assert_403(response)
@@ -665,7 +665,7 @@ class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -693,7 +693,7 @@ class TestGetWorkoutGeoJsonAsWorkoutOwner(GetWorkoutGeoJSONTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "geojson not found")
@@ -724,7 +724,7 @@ class TestGetWorkoutGeoJsonAsFollower(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -765,7 +765,7 @@ class TestGetWorkoutGeoJsonAsFollower(
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -801,7 +801,7 @@ class TestGetWorkoutGeoJsonAsFollower(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -820,7 +820,7 @@ class TestGetWorkoutGeoJsonAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=random_short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -856,7 +856,7 @@ class TestGetWorkoutGeoJsonAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -885,7 +885,7 @@ class TestGetWorkoutGeoJsonAsUser(
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -917,7 +917,7 @@ class TestGetWorkoutGeoJsonAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1024,7 +1024,7 @@ class TestGetWorkoutSegmentGeoJsonAsWorkoutOwner(
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -1055,7 +1055,7 @@ class TestGetWorkoutSegmentGeoJsonAsWorkoutOwner(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         self.assert_403(response)
@@ -1078,7 +1078,7 @@ class TestGetWorkoutSegmentGeoJsonAsWorkoutOwner(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
                 segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1107,7 +1107,7 @@ class TestGetWorkoutSegmentGeoJsonAsWorkoutOwner(
                 workout_uuid=workout_cycling_user_1.short_id,
                 segment_id=workout_cycling_user_1_segment.short_id,
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "geojson not found")
@@ -1140,7 +1140,7 @@ class TestGetWorkoutSegmentGeoJsonAsFollower(
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1182,7 +1182,7 @@ class TestGetWorkoutSegmentGeoJsonAsFollower(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
                 segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1218,7 +1218,7 @@ class TestGetWorkoutSegmentGeoJsonAsFollower(
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1237,7 +1237,7 @@ class TestGetWorkoutSegmentGeoJsonAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=random_short_id, segment_id=1),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -1275,7 +1275,7 @@ class TestGetWorkoutSegmentGeoJsonAsUser(
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1305,7 +1305,7 @@ class TestGetWorkoutSegmentGeoJsonAsUser(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
                 segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1337,7 +1337,7 @@ class TestGetWorkoutSegmentGeoJsonAsUser(
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1443,7 +1443,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1470,7 +1470,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1496,7 +1496,7 @@ class TestGetWorkoutChartDataAsWorkoutOwner(GetWorkoutChartDataTestCase):
         )
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1527,7 +1527,7 @@ class TestGetWorkoutChartDataAsFollower(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1570,7 +1570,7 @@ class TestGetWorkoutChartDataAsFollower(
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1609,7 +1609,7 @@ class TestGetWorkoutChartDataAsFollower(
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1661,7 +1661,7 @@ class TestGetWorkoutChartDataAsFollower(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1_with_coordinates.short_id
                 ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         get_chart_data_mock.assert_called_once_with(
@@ -1696,7 +1696,7 @@ class TestGetWorkoutChartDataAsFollower(
         )
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1715,7 +1715,7 @@ class TestGetWorkoutChartDataAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=random_short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404_with_message(
@@ -1754,7 +1754,7 @@ class TestGetWorkoutChartDataAsUser(
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1802,7 +1802,7 @@ class TestGetWorkoutChartDataAsUser(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1_with_coordinates.short_id
                 ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         get_chart_data_mock.assert_called_once_with(
@@ -1838,7 +1838,7 @@ class TestGetWorkoutChartDataAsUser(
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1872,7 +1872,7 @@ class TestGetWorkoutChartDataAsUser(
             self.route.format(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1905,7 +1905,7 @@ class TestGetWorkoutChartDataAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2062,7 +2062,7 @@ class TestGetWorkoutSegmentGpx(WorkoutApiTestCaseMixin):
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         assert response.status_code == 410
 
@@ -2086,7 +2086,7 @@ class TestGetWorkoutSegmentGpx(WorkoutApiTestCaseMixin):
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2113,7 +2113,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
 
         response = client.get(
             self.route.format(workout_uuid=workout_short_id, segment_id=1),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -2144,7 +2144,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id, segment_id=1
                 ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -2170,7 +2170,7 @@ class TestGetWorkoutSegmentChartDataAsWorkoutOwner(
             self.route.format(
                 workout_uuid=workout_cycling_user_1.short_id, segment_id=1
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2205,7 +2205,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
                 workout_uuid=workout_cycling_user_1.short_id,
                 segment_id=workout_cycling_user_1_segment.short_id,
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -2253,7 +2253,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
                 segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2293,7 +2293,7 @@ class TestGetWorkoutSegmentChartDataAsFollower(
                 workout_uuid=workout_cycling_user_1.short_id,
                 segment_id=workout_cycling_user_1_segment.short_id,
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2314,7 +2314,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
             self.route.format(
                 workout_uuid=random_short_id, segment_id=self.random_short_id()
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404_with_message(
@@ -2354,7 +2354,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
                 segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -2390,7 +2390,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
                 workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
                 segment_id=workout_cycling_user_1_segment_0_with_coordinates.short_id,
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2427,7 +2427,7 @@ class TestGetWorkoutSegmentChartDataAsUser(
                 workout_uuid=workout_cycling_user_1.short_id,
                 segment_id=workout_cycling_user_1_segment.short_id,
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2574,7 +2574,7 @@ class TestGetWorkoutMap(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"/api/workouts/map/{map_ip}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "Map file does not exist")
@@ -2622,7 +2622,7 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "no original file for workout")
@@ -2641,7 +2641,7 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_500(response, "No segments")
@@ -2667,7 +2667,7 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id
                 ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         mock.assert_called_once_with(
@@ -2699,7 +2699,7 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id
                 ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         mock.assert_called_once_with(workout_cycling_user_1)
@@ -2727,7 +2727,7 @@ class TestDownloadWorkoutGpxAsWorkoutOwner(DownloadWorkoutGpxTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2766,7 +2766,7 @@ class TestDownloadWorkoutGpxAsFollower(DownloadWorkoutGpxTestCase):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -2790,7 +2790,7 @@ class TestDownloadWorkoutGpxAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=random_short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -2814,7 +2814,7 @@ class TestDownloadWorkoutGpxAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -2865,7 +2865,7 @@ class TestDownloadWorkoutOriginalFileAsWorkoutOwner(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "no original file for workout")
@@ -2902,7 +2902,7 @@ class TestDownloadWorkoutOriginalFileAsWorkoutOwner(
                 self.route.format(
                     workout_uuid=workout_cycling_user_1.short_id
                 ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         mock.assert_called_once_with(
@@ -2928,7 +2928,7 @@ class TestDownloadWorkoutOriginalFileAsWorkoutOwner(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2969,7 +2969,7 @@ class TestDownloadWorkoutOriginalFileAsFollower(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -2993,7 +2993,7 @@ class TestDownloadWorkoutOriginalFileAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=random_short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -3017,7 +3017,7 @@ class TestDownloadWorkoutOriginalFileAsUser(
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(

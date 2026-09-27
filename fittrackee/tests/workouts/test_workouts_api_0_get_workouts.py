@@ -37,7 +37,7 @@ class TestGetWorkouts(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -66,7 +66,7 @@ class TestGetWorkouts(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -129,7 +129,7 @@ class TestGetWorkouts(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -172,7 +172,7 @@ class TestGetWorkouts(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -194,7 +194,7 @@ class TestGetWorkouts(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -240,7 +240,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -280,7 +280,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?page=1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -320,7 +320,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -360,7 +360,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?page=3",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -388,7 +388,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?page=A",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -413,7 +413,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?per_page=10",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -450,7 +450,7 @@ class TestGetWorkoutsWithPagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?per_page=3",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -488,7 +488,7 @@ class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -524,7 +524,7 @@ class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?order=asc",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -560,7 +560,7 @@ class TestGetWorkoutsWithOrder(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?order=desc",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -598,7 +598,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?order_by=workout_date",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -634,7 +634,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?order_by=distance",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -668,7 +668,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?order_by=duration",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -714,7 +714,7 @@ class TestGetWorkoutsWithOrderBy(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?order_by=ave_speed",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -748,7 +748,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?from=2018-02-01&to=2018-02-28",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -788,7 +788,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?from=2018-03-01&to=2018-03-30",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -816,7 +816,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?from=2018-04-01",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -853,7 +853,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?to=2017-12-31",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -889,7 +889,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?distance_from=5&distance_to=8.1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -925,7 +925,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?duration_from=00:52&duration_to=01:20",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -965,7 +965,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"/api/workouts?{input_duration}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="invalid duration")
@@ -983,7 +983,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?ave_speed_from=5&ave_speed_to=10",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1019,7 +1019,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?max_speed_from=10&max_speed_to=20",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1053,7 +1053,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?sport_id=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1085,7 +1085,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?title=3 of 7",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1109,7 +1109,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?title=no_such_title",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1138,7 +1138,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"/api/workouts?equipment_id={equipment_bike_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1177,7 +1177,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?equipment_id=none",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1225,7 +1225,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"/api/workouts?notes={notes}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1252,7 +1252,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?notes=",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1286,7 +1286,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"/api/workouts?description={description}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1313,7 +1313,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?description=",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1344,7 +1344,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?workout_visibility=followers_only",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1365,7 +1365,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?workout_visibility=invalid",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid value for visibility")
@@ -1385,7 +1385,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?ave_pace_from=08:00&ave_pace_to=09:00",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1419,7 +1419,7 @@ class TestGetWorkoutsWithFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?max_pace_from=10:00&max_pace_to=11:00",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1454,7 +1454,7 @@ class TestGetWorkoutsWithLocationFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?coordinates=44.564511,6.08716&radius=12",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1478,7 +1478,7 @@ class TestGetWorkoutsWithLocationFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?coordinates=44.564511,6.087168&radius=20",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1507,7 +1507,7 @@ class TestGetWorkoutsWithLocationFilters(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?coordinates=44.564511,6.087168&radius=-1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -1530,7 +1530,7 @@ class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?from=2017-01-01&page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1566,7 +1566,7 @@ class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?from=2017-01-01&page=2&order=asc",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1602,7 +1602,7 @@ class TestGetWorkoutsWithFiltersAndPagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?title=of 7",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1640,7 +1640,7 @@ class TestGetWorkoutsWithEquipments(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"/api/workouts{input_params}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1662,7 +1662,7 @@ class TestGetWorkoutsWithEquipments(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts?return_equipments=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1687,7 +1687,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1728,7 +1728,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1774,7 +1774,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1819,7 +1819,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1874,7 +1874,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1948,7 +1948,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1985,7 +1985,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2017,7 +2017,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2078,7 +2078,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true&per_page=10",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2126,7 +2126,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true&page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2188,7 +2188,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?from=2018-02-01&to=2018-02-28&with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2229,7 +2229,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?distance_from=5&distance_to=8.1&with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2270,7 +2270,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?duration_from=00:52&duration_to=01:20&with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2312,7 +2312,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?ave_speed_from=5&ave_speed_to=10&with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2368,7 +2368,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?max_speed_from=10&max_speed_to=20&with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2412,7 +2412,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?sport_id=2&with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2454,7 +2454,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?title=3 of 7&with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2503,7 +2503,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             f"/api/workouts?equipment_id={equipment_bike_user_1.short_id}&with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2556,7 +2556,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             f"/api/workouts?notes={notes}&with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2608,7 +2608,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             f"/api/workouts?description={description}&with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2657,7 +2657,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?workout_visibility=followers_only&with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2703,7 +2703,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2752,7 +2752,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2807,7 +2807,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true&page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2878,7 +2878,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2940,7 +2940,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2998,7 +2998,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -3050,7 +3050,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -3102,7 +3102,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -3156,7 +3156,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/workouts?with_statistics=true",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -3206,7 +3206,7 @@ class TestGetWorkoutsWithStatistics(WorkoutApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             f"/api/workouts?with_statistics=true&per_page=1&sport_id={sport_2_running.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -3288,7 +3288,7 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts/collection",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -3304,7 +3304,7 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts/collection",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3337,7 +3337,7 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts/collection",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3374,7 +3374,7 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts/collection",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3445,7 +3445,7 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"/api/workouts/collection?sport_id={sport_2_running.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3475,7 +3475,7 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts/collection?duration_from=00h52&duration_to=01:20",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="invalid duration")
@@ -3496,7 +3496,7 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts/collection?coordinates=44.564511,6.087168&radius=-1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -3520,7 +3520,7 @@ class TestGetWorkoutsFeatureCollection(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts/collection?workout_visibility=invalid",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="invalid value for visibility")
@@ -3581,9 +3581,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
             app, suspended_user.email
         )
 
-        response = client.get(
-            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
-        )
+        response = client.get(self.route, headers={"X-CSRF-TOKEN": auth_token})
 
         self.assert_403(response)
 
@@ -3601,9 +3599,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
             app, user_2.email
         )
 
-        response = client.get(
-            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
-        )
+        response = client.get(self.route, headers={"X-CSRF-TOKEN": auth_token})
 
         self.assert_no_features(response)
 
@@ -3619,9 +3615,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
             app, user_1.email
         )
 
-        response = client.get(
-            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
-        )
+        response = client.get(self.route, headers={"X-CSRF-TOKEN": auth_token})
 
         self.assert_no_features(response)
 
@@ -3642,7 +3636,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts/global-map",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3700,7 +3694,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/workouts/global-map",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_no_features(response)
@@ -3729,7 +3723,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
                 f"{self.route}?sport_ids="
                 f"{sport_1_cycling.id},{sport_3_cycling_transport.id}"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3779,7 +3773,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"{self.route}?sport_ids=1,invalid",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="invalid sport_ids")
@@ -3805,7 +3799,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"{self.route}?from=2018-04-01",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3835,7 +3829,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"{self.route}?to=2018-04-01",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3855,7 +3849,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"{self.route}?to=2018-04",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -3882,7 +3876,7 @@ class TestGetWorkoutsForGlobalMap(WorkoutApiTestCaseMixin):
 
         response = client.get(
             self.route,
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200

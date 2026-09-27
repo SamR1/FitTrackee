@@ -36,7 +36,7 @@ class TestDeleteWorkoutWithGpx(
 
         response = client.delete(
             f"/api/workouts/{workout.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -59,7 +59,7 @@ class TestDeleteWorkoutWithGpx(
 
         response = client.delete(
             f"/api/workouts/{workout.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -90,7 +90,7 @@ class TestDeleteWorkoutWithGpx(
 
         response = client.delete(
             f"/api/workouts/{workout.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -144,7 +144,7 @@ class TestDeleteWorkoutWithGpx(
 
         response = client.delete(
             f"/api/workouts/{workout.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == expected_status_code
@@ -181,7 +181,7 @@ class TestDeleteWorkoutWithGpx(
 
         response = client.delete(
             f"/api/workouts/{workout.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == expected_status_code
@@ -231,7 +231,7 @@ class TestDeleteWorkoutWithGpx(
 
         response = client.delete(
             f"/api/workouts/{workout.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -245,7 +245,7 @@ class TestDeleteWorkoutWithGpx(
 
         response = client.delete(
             f"/api/workouts/{self.random_short_id()}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -265,7 +265,7 @@ class TestDeleteWorkoutWithGpx(
 
         response = client.delete(
             f"/api/workouts/{workout_cycling_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -289,7 +289,7 @@ class TestDeleteWorkoutWithGpx(
 
         response = client.delete(
             f"/api/workouts/{workout.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         assert response.status_code == 204
         assert Workout.query.first() is None
@@ -311,7 +311,7 @@ class TestDeleteWorkoutWithGpx(
 
         response = client.delete(
             f"/api/workouts/{workout_cycling_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -349,7 +349,7 @@ class TestDeleteWorkoutWithGpx(
 
         response = client.delete(
             f"/api/workouts/{workout.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -374,7 +374,7 @@ class TestDeleteWorkoutWithoutGpx(
         )
         response = client.delete(
             f"/api/workouts/{workout_cycling_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         assert response.status_code == 204
         assert Workout.query.first() is None
@@ -395,7 +395,7 @@ class TestDeleteWorkoutWithoutGpx(
 
         response = client.delete(
             f"/api/workouts/{workout_cycling_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -419,7 +419,7 @@ class TestDeleteWorkoutWithoutGpx(
 
         response = client.delete(
             f"/api/workouts/{workout_cycling_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -444,7 +444,7 @@ class TestDeleteWorkoutWithoutGpx(
         )
         response = client.delete(
             f"/api/workouts/{workout_cycling_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         assert response.status_code == 204
         assert Workout.query.first() is None
@@ -482,7 +482,7 @@ class TestDeleteWorkoutWithoutGpx(
 
         response = client.delete(
             f"/api/workouts/{workout_cycling_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == expected_status_code
@@ -517,7 +517,7 @@ class TestDeleteWorkoutWithoutGpx(
 
         response = client.delete(
             f"/api/workouts/{workout_cycling_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == expected_status_code
@@ -565,7 +565,7 @@ class TestDeleteWorkoutWithoutGpx(
 
         response = client.delete(
             f"/api/workouts/{workout_cycling_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -597,7 +597,7 @@ class TestDeleteWorkoutWithoutGpx(
 
         response = client.delete(
             f"/api/workouts/{workout_cycling_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204

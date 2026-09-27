@@ -1,8 +1,9 @@
 import logging
 import os
 import re
+from datetime import datetime, timedelta, timezone
 from importlib import import_module, reload
-from typing import TYPE_CHECKING, Any, Dict, Tuple
+from typing import TYPE_CHECKING, Any, Dict, Optional, Tuple
 
 import redis
 from dramatiq.brokers.stub import StubBroker
@@ -11,12 +12,18 @@ from flask import (
     Flask,
     Response,
     render_template,
+    request,
     send_file,
     send_from_directory,
 )
 from flask_babel import Babel
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager
+from flask_jwt_extended import (
+    JWTManager,
+    get_jwt,
+    get_jwt_identity,
+    set_access_cookies,
+)
 from flask_limiter import Limiter
 from flask_limiter.errors import RateLimitExceeded
 from flask_limiter.util import get_remote_address
@@ -209,9 +216,10 @@ def create_app(init_email: bool = True) -> Flask:
     from .media.routes import api_media_blueprint, media_blueprint
     from .oauth2.routes import oauth2_blueprint
     from .reports.reports import reports_blueprint
-    from .responses import InvalidTokenErrorResponse
+    from .responses import InvalidTokenErrorResponse, UnauthorizedErrorResponse
     from .users.auth import auth_blueprint
     from .users.follow_requests import follow_requests_blueprint
+    from .users.models import BlacklistedToken, User
     from .users.notifications import notifications_blueprint
     from .users.queued_tasks import queued_tasks_blueprint
     from .users.users import users_blueprint
@@ -252,10 +260,12 @@ def create_app(init_email: bool = True) -> Flask:
         logging.getLogger("flake8").propagate = False
         appLog.setLevel(logging.DEBUG)
 
-    if app_settings == "fittrackee.config.ProductionConfig":
+    @app.after_request
+    def after_request(response: "Response") -> "Response":
 
-        @app.after_request
-        def add_headers(response: "Response") -> "Response":
+        from fittrackee.users.utils.tokens import get_user_token
+
+        if app_settings == "fittrackee.config.ProductionConfig":
             response.headers["Content-Security-Policy"] = (
                 "font-src 'self'; "
                 "script-src 'self'; "
@@ -265,11 +275,8 @@ def create_app(init_email: bool = True) -> Flask:
             )
             response.headers["X-Frame-Options"] = "DENY"
             response.headers["X-Content-Type-Options"] = "nosniff"
-            return response
-    else:  # dev or tests config
-        # Enable CORS
-        @app.after_request
-        def after_request(response: "Response") -> "Response":
+
+        else:  # dev or tests config (Enable CORS)
             response.headers.add("Access-Control-Allow-Origin", "*")
             response.headers.add(
                 "Access-Control-Allow-Headers", "Content-Type,Authorization"
@@ -278,6 +285,17 @@ def create_app(init_email: bool = True) -> Flask:
                 "Access-Control-Allow-Methods",
                 "GET,PUT,POST,DELETE,PATCH,OPTIONS",
             )
+            response.headers.add("Access-Control-Allow-Credentials", "true")
+        try:
+            exp_timestamp = get_jwt()["exp"]
+            now = datetime.now(timezone.utc)
+            target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+            if target_timestamp > exp_timestamp:
+                auth_user_id = get_jwt_identity()
+                auth_token = get_user_token(int(auth_user_id))
+                set_access_cookies(response, auth_token)
+            return response
+        except (RuntimeError, KeyError):
             return response
 
     @app.errorhandler(429)
@@ -286,6 +304,25 @@ def create_app(init_email: bool = True) -> Flask:
             "status": "error",
             "message": f"rate limit exceeded ({error.description})",
         }, 429
+
+    @jwt.user_lookup_loader
+    def user_lookup_callback(
+        _jwt_header: Dict, jwt_data: Dict
+    ) -> Optional["User"]:
+        user_id = int(jwt_data["sub"])
+        return User.query.filter_by(id=user_id).one_or_none()
+
+    @jwt.token_in_blocklist_loader
+    def check_if_token_revoked(jwt_header: Dict, jwt_payload: dict) -> bool:
+        jti = jwt_payload.get("jti")
+        query = db.session.query(BlacklistedToken.id)
+        if jti:
+            return query.filter_by(jti=jti).scalar() is not None
+        # to remove in a next version (all new tokens contain 'jti' claim)
+        auth_token = request.headers.get("Authorization", "").replace(
+            "Bearer ", ""
+        )
+        return query.filter_by(token=auth_token).scalar() is not None
 
     @jwt.expired_token_loader
     def expired_token_callback(
@@ -298,6 +335,12 @@ def create_app(init_email: bool = True) -> Flask:
         jwt_header: Dict, jwt_payload: Dict
     ) -> InvalidTokenErrorResponse:
         return InvalidTokenErrorResponse()
+
+    @jwt.unauthorized_loader
+    def unauthorized_callback(
+        *args: Tuple, **kwargs: Dict
+    ) -> UnauthorizedErrorResponse:
+        return UnauthorizedErrorResponse("provide a valid auth token")
 
     @app.route("/favicon.ico")
     @limiter.exempt

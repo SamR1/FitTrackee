@@ -139,11 +139,11 @@ class OAuth2Mixin(RandomMixin):
 
 class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
     @staticmethod
-    def get_test_client_and_auth_token(
+    def _get_client_and_login_response(
         app: Flask, user_email: str
-    ) -> Tuple[FlaskClient, str]:
+    ) -> Tuple[FlaskClient, TestResponse]:
         client = app.test_client()
-        resp_login = client.post(
+        login_response = client.post(
             "/api/auth/login",
             data=json.dumps(
                 dict(
@@ -153,8 +153,43 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
             ),
             content_type="application/json",
         )
-        auth_token = json.loads(resp_login.data.decode())["auth_token"]
-        return client, auth_token
+        return client, login_response
+
+    @staticmethod
+    def get_response_tokens(
+        response: TestResponse, tokens_name: List[str]
+    ) -> List[str]:
+        tokens = []
+        for header in response.headers.getlist("Set-Cookie"):
+            for token_name in tokens_name:
+                if header.startswith(token_name):
+                    tokens.append(
+                        header.split(";")[0].replace(f"{token_name}=", "")
+                    )
+        return tokens
+
+    def get_test_client_and_tokens(
+        self, app: Flask, user_email: str
+    ) -> Tuple[FlaskClient, str, str]:
+        client, resp_login = self._get_client_and_login_response(
+            app, user_email
+        )
+
+        access_token_cookie, csrf_access_token = self.get_response_tokens(
+            resp_login, ["access_token_cookie", "csrf_access_token"]
+        )
+
+        return client, access_token_cookie, csrf_access_token
+
+    def get_test_client_and_auth_token(
+        self, app: Flask, user_email: str
+    ) -> Tuple[FlaskClient, str]:
+        """To rename"""
+        client, resp_login = self._get_client_and_login_response(
+            app, user_email
+        )
+        token = self.get_response_tokens(resp_login, ["csrf_access_token"])
+        return client, token[0]
 
     @staticmethod
     def authorize_client(
@@ -175,10 +210,10 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
                 "scope": "read" if not scope else scope,
                 **code_challenge,
             },
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
         data = json.loads(response.data.decode())
         parsed_url = parse_url(data["redirect_url"])
@@ -365,7 +400,7 @@ class ApiTestCaseMixin(OAuth2Mixin, RandomMixin):
         response = client.post(
             url,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404

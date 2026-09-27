@@ -34,7 +34,7 @@ class TestGetQueuedTasksCount(UserTaskMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -52,7 +52,7 @@ class TestGetQueuedTasksCount(UserTaskMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -76,7 +76,7 @@ class TestGetQueuedTasksCount(UserTaskMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -125,7 +125,7 @@ class TestGetQueuedTasksForTaskType(UserTaskMixin, ApiTestCaseMixin):
         response = client.get(
             self.route.format(task_type="user_data_export"),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -140,7 +140,7 @@ class TestGetQueuedTasksForTaskType(UserTaskMixin, ApiTestCaseMixin):
         response = client.get(
             self.route.format(task_type="invalid"),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid task type", "invalid")
@@ -165,7 +165,7 @@ class TestGetQueuedTasksForTaskType(UserTaskMixin, ApiTestCaseMixin):
         response = client.get(
             self.route.format(task_type=input_task_type),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -196,7 +196,7 @@ class TestGetQueuedTasksForTaskType(UserTaskMixin, ApiTestCaseMixin):
         response = client.get(
             self.route.format(task_type="user_data_export"),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -237,7 +237,7 @@ class TestGetQueuedTasksForTaskType(UserTaskMixin, ApiTestCaseMixin):
         response = client.get(
             self.route.format(task_type="workouts_archive_upload"),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -274,7 +274,7 @@ class TestGetQueuedTasksForTaskType(UserTaskMixin, ApiTestCaseMixin):
         response = client.get(
             f"{self.route.format(task_type='workouts_archive_upload')}?page=2",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200

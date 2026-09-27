@@ -52,7 +52,7 @@ class TestGetUserTimeline(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -66,7 +66,7 @@ class TestGetUserTimeline(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_no_workout_returned(response)
@@ -84,7 +84,7 @@ class TestGetUserTimeline(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -136,7 +136,7 @@ class TestGetUserTimelineForAuthUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_workout_returned(response, workout_cycling_user_1)
@@ -156,7 +156,7 @@ class TestGetUserTimelineForAuthUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_workout_returned(response, workout_cycling_user_1)
@@ -175,7 +175,7 @@ class TestGetUserTimelineForAuthUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -202,7 +202,7 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_no_workout_returned(response)
@@ -236,7 +236,7 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_workout_returned(response, workout_cycling_user_2)
@@ -271,7 +271,7 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_no_workout_returned(response)
@@ -294,7 +294,7 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_no_workout_returned(response)
@@ -332,7 +332,7 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_workout_returned(response, workout_cycling_user_1)
@@ -369,7 +369,7 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -409,7 +409,7 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -434,7 +434,7 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -461,7 +461,7 @@ class TestGetUserTimelineForFollowedUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -500,7 +500,7 @@ class TestGetUserTimelineForNotFollowedUserWorkouts(GetUserTimelineTestCase):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_no_workout_returned(response)
@@ -518,7 +518,7 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -543,7 +543,7 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -568,7 +568,7 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -594,7 +594,7 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/timeline?page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -620,7 +620,7 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/timeline?page=3",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -646,7 +646,7 @@ class TestGetUserTimelinePagination(WorkoutApiTestCaseMixin):
 
         response = client.get(
             "/api/timeline",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())

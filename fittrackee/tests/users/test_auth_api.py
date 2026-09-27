@@ -6,6 +6,7 @@ from unittest.mock import ANY, MagicMock, Mock, call, patch
 
 import pytest
 from flask import Flask
+from flask_jwt_extended import decode_token
 from time_machine import travel
 
 from fittrackee import db
@@ -718,7 +719,11 @@ class TestUserLogin(ApiTestCaseMixin):
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["message"] == "successfully logged in"
-        assert data["auth_token"]
+        access_token_cookie, csrf_access_token = self.get_response_tokens(
+            response, ["access_token_cookie", "csrf_access_token"]
+        )
+        assert access_token_cookie is not None
+        assert csrf_access_token is not None
 
 
 class TestUserProfile(ApiTestCaseMixin, TokenMixin):
@@ -745,30 +750,18 @@ class TestUserProfile(ApiTestCaseMixin, TokenMixin):
     def test_it_returns_error_if_token_is_blacklisted(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
+        client, cookie, auth_token = self.get_test_client_and_tokens(
             app, user_1.email
         )
-        db.session.add(BlacklistedToken(token=auth_token))
-        db.session.commit()
-
-        response = client.get(
-            "/api/auth/profile",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+        payload = decode_token(cookie)
+        db.session.add(
+            BlacklistedToken(jti=payload["jti"], expired_at=payload["exp"])
         )
-
-        self.assert_invalid_token(response)
-
-    def test_it_returns_error_if_token_without_jti_is_blacklisted(
-        self, app: Flask, user_1: User
-    ) -> None:
-        client = app.test_client()
-        auth_token = self.generate_user_token_without_jti(app, user_1.id)
-        db.session.add(BlacklistedToken(token=auth_token))
         db.session.commit()
 
         response = client.get(
             "/api/auth/profile",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_invalid_token(response)
@@ -780,7 +773,7 @@ class TestUserProfile(ApiTestCaseMixin, TokenMixin):
 
         response = client.get(
             "/api/auth/profile",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -799,7 +792,7 @@ class TestUserProfile(ApiTestCaseMixin, TokenMixin):
 
         response = client.get(
             "/api/auth/profile",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -834,7 +827,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             "/api/auth/profile/edit",
             content_type="application/json",
             data=json.dumps(dict()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -850,7 +843,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             "/api/auth/profile/edit",
             content_type="application/json",
             data=json.dumps(dict(first_name=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -877,7 +870,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     birth_date=birth_date,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -912,7 +905,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
                     birth_date=birth_date,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -951,7 +944,7 @@ class TestUserProfileUpdate(ApiTestCaseMixin):
             "/api/auth/profile/edit",
             content_type="application/json",
             json=data,
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -984,7 +977,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             "/api/auth/profile/edit/account",
             content_type="application/json",
             data=json.dumps(dict()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1005,7 +998,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="current password is missing")
@@ -1026,7 +1019,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "email is missing")
@@ -1048,7 +1041,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_401(response, error_message="invalid credentials")
@@ -1073,7 +1066,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
     def test_it_does_not_return_error_if_no_new_password_provided(
@@ -1095,7 +1088,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     password="12345678",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1122,7 +1115,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     password="12345678",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         auth_send_email_mock.send.assert_not_called()
@@ -1146,7 +1139,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     password="12345678",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "email: valid email must be provided\n")
@@ -1172,7 +1165,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     password="12345678",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1200,7 +1193,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     password="12345678",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1230,7 +1223,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                         password="12345678",
                     )
                 ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
                 environ_base={"HTTP_USER_AGENT": USER_AGENT},
             )
 
@@ -1290,7 +1283,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=self.random_string(length=3),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "password: 8 characters required")
@@ -1316,7 +1309,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1346,7 +1339,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1376,7 +1369,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=new_password,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1402,7 +1395,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
             environ_base={"HTTP_USER_AGENT": USER_AGENT},
         )
 
@@ -1445,7 +1438,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1476,7 +1469,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         auth_send_email_mock.send.assert_has_calls(
@@ -1519,7 +1512,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
                     new_password=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         auth_send_email_mock.send.assert_not_called()
@@ -1549,7 +1542,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             "/api/auth/profile/edit/preferences",
             content_type="application/json",
             data=json.dumps(dict()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1565,7 +1558,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
             "/api/auth/profile/edit/preferences",
             content_type="application/json",
             data=json.dumps(dict(weekm=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1612,7 +1605,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     media_visibility="followers_only",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1715,7 +1708,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     media_visibility=VisibilityLevel.PRIVATE,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1795,7 +1788,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     media_visibility=input_media_visibility.value,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1844,7 +1837,7 @@ class TestUserPreferencesUpdate(ApiTestCaseMixin):
                     media_visibility=VisibilityLevel.PRIVATE.value,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1882,7 +1875,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(dict()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1898,7 +1891,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(dict(is_active=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1914,7 +1907,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(dict(sport_id=1, is_active=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_entity(response, "sport")
@@ -1930,7 +1923,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
             "/api/auth/profile/edit/sports",
             content_type="application/json",
             data=json.dumps(dict(sport_id=1)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1951,7 +1944,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     color=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid hexadecimal color")
@@ -1975,7 +1968,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     color="#000000",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2004,7 +1997,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     color=input_color,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2033,7 +2026,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     color="#FFF",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2074,7 +2067,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     default_equipment_ids=[equipment_shoes_user_1.short_id],
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2117,7 +2110,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     ],
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2158,7 +2151,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     stopped_speed_threshold=stopped_speed_threshold,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2195,7 +2188,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     default_equipment_ids=[equipment_shoes_user_1.short_id],
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 400
@@ -2227,7 +2220,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     default_equipment_ids=[equipment_bike_user_1.short_id],
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 400
@@ -2263,7 +2256,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     ],
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -2294,7 +2287,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     ],
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2326,7 +2319,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     is_active=False,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2355,7 +2348,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     stopped_speed_threshold=0.5,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2391,7 +2384,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     stopped_speed_threshold=input_stopped_speed_threshold,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -2415,7 +2408,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     pace_speed_display=PaceSpeedDisplay.PACE_AND_SPEED,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2446,7 +2439,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     pace_speed_display=PaceSpeedDisplay.SPEED,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2475,7 +2468,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                     pace_speed_display=PaceSpeedDisplay.PACE_AND_SPEED,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 400
@@ -2507,7 +2500,7 @@ class TestUserSportPreferencesUpdate(ApiTestCaseMixin, EquipmentMixin):
                         stopped_speed_threshold=0.5,
                     )
                 ),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         data = json.loads(response.data.decode())
@@ -2540,7 +2533,7 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
 
         response = client.delete(
             "/api/auth/profile/reset/sports/1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_entity(response, "sport")
@@ -2558,7 +2551,7 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
 
         response = client.delete(
             f"/api/auth/profile/reset/sports/{sport_1_cycling.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2582,7 +2575,7 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
 
         response = client.delete(
             f"/api/auth/profile/reset/sports/{sport_1_cycling.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2596,7 +2589,7 @@ class TestUserSportPreferencesReset(ApiTestCaseMixin):
 
         response = client.delete(
             f"/api/auth/profile/reset/sports/{sport_1_cycling.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2624,10 +2617,10 @@ class TestUserPicture(ApiTestCaseMixin, ImageMixin):
 
         response = client.post(
             "/api/auth/picture",
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         self.assert_400(response, "no file part", "fail")
@@ -2642,10 +2635,10 @@ class TestUserPicture(ApiTestCaseMixin, ImageMixin):
         response = client.post(
             "/api/auth/picture",
             data=dict(file=(BytesIO(b"avatar"), "avatar.bmp")),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         self.assert_400(response, "file extension not allowed", "fail")
@@ -2666,10 +2659,10 @@ class TestUserPicture(ApiTestCaseMixin, ImageMixin):
             data=dict(
                 file=(BytesIO(b"test_file_for_avatar" * 50), "avatar.jpg")
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         data = self.assert_413(
@@ -2690,10 +2683,10 @@ class TestUserPicture(ApiTestCaseMixin, ImageMixin):
             response = client.post(
                 "/api/auth/picture",
                 data=dict(file=(self.get_image_content(app), "avatar.png")),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
         data = json.loads(response.data.decode())
@@ -2713,10 +2706,10 @@ class TestUserPicture(ApiTestCaseMixin, ImageMixin):
         response = client.post(
             "/api/auth/picture",
             data=dict(file=(self.get_image_content(app), "avatar.png")),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         data = json.loads(response.data.decode())
@@ -2747,10 +2740,10 @@ class TestUserDeletePicture(ApiTestCaseMixin, ImageMixin):
         response = client.post(
             "/api/auth/picture",
             data=dict(file=(self.get_image_content(app), "avatar.png")),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         data = json.loads(response.data.decode())
@@ -2759,9 +2752,12 @@ class TestUserDeletePicture(ApiTestCaseMixin, ImageMixin):
         assert response.status_code == 200
         assert user_1.picture is not None
 
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
         response = client.delete(
             "/api/auth/picture",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2776,7 +2772,7 @@ class TestUserDeletePicture(ApiTestCaseMixin, ImageMixin):
 
         response = client.delete(
             "/api/auth/picture",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -2788,14 +2784,13 @@ class TestUserDeletePicture(ApiTestCaseMixin, ImageMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, suspended_user.email
         )
-
         response = client.post(
             "/api/auth/picture",
             data=dict(file=(self.get_image_content(app), "avatar.png")),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         data = json.loads(response.data.decode())
@@ -2804,9 +2799,12 @@ class TestUserDeletePicture(ApiTestCaseMixin, ImageMixin):
         assert response.status_code == 200
         assert suspended_user.picture is not None
 
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, suspended_user.email
+        )
         response = client.delete(
             "/api/auth/picture",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -3397,6 +3395,25 @@ class TestConfirmationAccount(ApiTestCaseMixin):
         assert inactive_user.is_active is True
         assert inactive_user.confirmation_token is None
 
+    def test_it_returns_authentication_tokens_in_headers(
+        self, app: Flask, inactive_user: User
+    ) -> None:
+        token = self.random_string()
+        inactive_user.confirmation_token = token
+        client = app.test_client()
+
+        response = client.post(
+            "/api/auth/account/confirm",
+            data=json.dumps(dict(token=token)),
+            content_type="application/json",
+        )
+
+        access_token_cookie, csrf_access_token = self.get_response_tokens(
+            response, ["access_token_cookie", "csrf_access_token"]
+        )
+        assert access_token_cookie is not None
+        assert csrf_access_token is not None
+
 
 class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
     def test_it_returns_error_if_email_is_missing(self, app: Flask) -> None:
@@ -3541,7 +3558,7 @@ class TestResendAccountConfirmationEmail(ApiTestCaseMixin):
         )
 
 
-class TestUserLogout(ApiTestCaseMixin, TokenMixin):
+class TestUserLogout(ApiTestCaseMixin):
     def test_it_returns_error_when_headers_are_missing(
         self, app: Flask
     ) -> None:
@@ -3570,7 +3587,7 @@ class TestUserLogout(ApiTestCaseMixin, TokenMixin):
         with travel(now + timedelta(minutes=61), tick=False):
             response = client.post(
                 "/api/auth/logout",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
             self.assert_invalid_token(response)
@@ -3582,7 +3599,7 @@ class TestUserLogout(ApiTestCaseMixin, TokenMixin):
 
         response = client.post(
             "/api/auth/logout",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -3599,7 +3616,7 @@ class TestUserLogout(ApiTestCaseMixin, TokenMixin):
 
         response = client.post(
             "/api/auth/logout",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -3610,53 +3627,20 @@ class TestUserLogout(ApiTestCaseMixin, TokenMixin):
     def test_token_is_blacklisted_on_logout(
         self, app: Flask, user_1: User
     ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
+        client, cookie, auth_token = self.get_test_client_and_tokens(
             app, user_1.email
         )
 
         client.post(
             "/api/auth/logout",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
-        payload = self.decode_user_token(auth_token)
-        token = BlacklistedToken.query.filter_by(jti=payload["jti"]).one()
+        payload = decode_token(cookie)
+        token = BlacklistedToken.query.filter_by().one()
         assert token.jti == payload["jti"]
+        assert token.expired_at == payload["exp"]
         assert token.blacklisted_on is not None
-
-    def test_token_without_jti_is_blacklisted_on_logout(
-        self, app: Flask, user_1: User
-    ) -> None:
-        """
-        temporary before all tokens without jti claim are expired
-        """
-        client = app.test_client()
-        auth_token = self.generate_user_token_without_jti(app, user_1.id)
-
-        client.post(
-            "/api/auth/logout",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        token = BlacklistedToken.query.filter_by(token=auth_token).one()
-        assert token.jti is None
-        assert token.blacklisted_on is not None
-
-    def test_it_returns_error_if_token_is_already_blacklisted(
-        self, app: Flask, user_1: User
-    ) -> None:
-        client, auth_token = self.get_test_client_and_auth_token(
-            app, user_1.email
-        )
-        db.session.add(BlacklistedToken(token=auth_token))
-        db.session.commit()
-
-        response = client.post(
-            "/api/auth/logout",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
-        )
-
-        self.assert_invalid_token(response)
 
 
 class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
@@ -3684,7 +3668,7 @@ class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
             "/api/auth/account/privacy-policy",
             content_type="application/json",
             data=json.dumps(dict()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -3704,7 +3688,7 @@ class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
                 "/api/auth/account/privacy-policy",
                 content_type="application/json",
                 data=json.dumps(dict(accepted_policy=True)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -3725,7 +3709,7 @@ class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
                 "/api/auth/account/privacy-policy",
                 content_type="application/json",
                 data=json.dumps(dict(accepted_policy=True)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -3746,7 +3730,7 @@ class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):
             "/api/auth/account/privacy-policy",
             content_type="application/json",
             data=json.dumps(dict(accepted_policy=input_accepted_policy)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 400
@@ -3783,7 +3767,7 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
         response = client.post(
             "/api/auth/account/export/request",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3811,7 +3795,7 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
         response = client.post(
             "/api/auth/account/export/request",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "ongoing request exists")
@@ -3830,7 +3814,7 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
         response = client.post(
             "/api/auth/account/export/request",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "completed request already exists")
@@ -3851,7 +3835,7 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
         response = client.post(
             "/api/auth/account/export/request",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3876,7 +3860,7 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
         client.post(
             "/api/auth/account/export/request",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data_export_request = UserTask.query.filter_by(user_id=user_1.id).one()
@@ -3904,7 +3888,7 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
         client.post(
             "/api/auth/account/export/request",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         export_data_mock.send.assert_not_called()
@@ -3923,7 +3907,7 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
         client.post(
             "/api/auth/account/export/request",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data_export_request = UserTask.query.filter_by(user_id=user_1.id).one()
@@ -3944,7 +3928,7 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
         response = client.post(
             "/api/auth/account/export/request",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3970,7 +3954,7 @@ class TestPostUserTaskRequest(ApiUserTaskRequestMixin):
         client.post(
             "/api/auth/account/export/request",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert UserTask.query.filter_by(user_id=user_1.id).first() is not None
@@ -3991,7 +3975,7 @@ class TestGetUserTaskRequest(ApiUserTaskRequestMixin):
         response = client.get(
             "/api/auth/account/export",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4013,7 +3997,7 @@ class TestGetUserTaskRequest(ApiUserTaskRequestMixin):
         response = client.get(
             "/api/auth/account/export",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4036,7 +4020,7 @@ class TestGetUserTaskRequest(ApiUserTaskRequestMixin):
         response = client.get(
             "/api/auth/account/export",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4061,7 +4045,7 @@ class TestGetUserTaskRequest(ApiUserTaskRequestMixin):
         response = client.get(
             "/api/auth/account/export",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4082,7 +4066,7 @@ class TestDownloadExportDataArchive(UserTaskMixin, ApiTestCaseMixin):
 
         response = client.get(
             f"/api/auth/account/export/{self.random_string()}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "file not found")
@@ -4100,7 +4084,7 @@ class TestDownloadExportDataArchive(UserTaskMixin, ApiTestCaseMixin):
 
         response = client.get(
             f"/api/auth/account/export/{archive_file_name}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "file not found")
@@ -4117,7 +4101,7 @@ class TestDownloadExportDataArchive(UserTaskMixin, ApiTestCaseMixin):
 
         response = client.get(
             f"/api/auth/account/export/{self.random_string()}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "file not found")
@@ -4137,7 +4121,7 @@ class TestDownloadExportDataArchive(UserTaskMixin, ApiTestCaseMixin):
 
             client.get(
                 f"/api/auth/account/export/{archive_file_name}",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         mock.assert_called_once_with(
@@ -4164,7 +4148,7 @@ class TestDownloadExportDataArchive(UserTaskMixin, ApiTestCaseMixin):
 
             client.get(
                 f"/api/auth/account/export/{archive_file_name}",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         mock.assert_called_once_with(
@@ -4198,7 +4182,7 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         response = client.get(
             "/api/auth/blocked-users",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -4216,7 +4200,7 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         response = client.get(
             "/api/auth/blocked-users",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4249,7 +4233,7 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         response = client.get(
             "/api/auth/blocked-users",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4286,7 +4270,7 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         response = client.get(
             "/api/auth/blocked-users?page=1",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4322,7 +4306,7 @@ class TestGetBlockedUsers(ApiTestCaseMixin):
         response = client.get(
             "/api/auth/blocked-users?page=2",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4381,7 +4365,7 @@ class TestGetUserSuspension(UserSuspensionTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -4402,7 +4386,7 @@ class TestGetUserSuspension(UserSuspensionTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4451,7 +4435,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
             self.route,
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -4476,7 +4460,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
             self.route,
             content_type="application/json",
             data=json.dumps(input_data),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "no text provided")
@@ -4498,7 +4482,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
                 self.route,
                 content_type="application/json",
                 data=json.dumps(dict(text=text)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 201
@@ -4532,7 +4516,7 @@ class TestPostUserSuspensionAppeal(UserSuspensionTestCase):
             self.route,
             content_type="application/json",
             data=json.dumps(dict(text=text)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="you can appeal only once")
@@ -4575,7 +4559,7 @@ class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
         response = client.get(
             self.route.format(action_short_id=self.random_short_id()),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -4596,7 +4580,7 @@ class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
         response = client.get(
             self.route.format(action_short_id=action.short_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -4617,7 +4601,7 @@ class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
         response = client.get(
             self.route.format(action_short_id=action.short_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4640,7 +4624,7 @@ class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
         response = client.get(
             self.route.format(action_short_id=action.short_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4662,7 +4646,7 @@ class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
         response = client.get(
             self.route.format(action_short_id=action.short_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4689,7 +4673,7 @@ class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
         response = client.get(
             self.route.format(action_short_id=action.short_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4717,7 +4701,7 @@ class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
         response = client.get(
             self.route.format(action_short_id=action.short_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -4766,7 +4750,7 @@ class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
             self.route.format(action_short_id=self.random_short_id()),
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -4792,7 +4776,7 @@ class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
             self.route.format(action_short_id=action.short_id),
             content_type="application/json",
             data=json.dumps(input_data),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "no text provided")
@@ -4814,7 +4798,7 @@ class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
                 self.route.format(action_short_id=action.short_id),
                 content_type="application/json",
                 data=json.dumps(dict(text=text)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 201
@@ -4848,7 +4832,7 @@ class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
             self.route.format(action_short_id=action.short_id),
             content_type="application/json",
             data=json.dumps(dict(text=text)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="you can appeal only once")
@@ -4877,7 +4861,7 @@ class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
             self.route.format(action_short_id=action.short_id),
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="workout has been deleted")
@@ -4910,7 +4894,7 @@ class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
             self.route.format(action_short_id=action.short_id),
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="comment has been deleted")
@@ -4942,7 +4926,7 @@ class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
             self.route,
             content_type="application/json",
             json={},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -4958,7 +4942,7 @@ class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
             self.route,
             content_type="application/json",
             json={"mention": True},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -4982,7 +4966,7 @@ class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
                 "workout_comment": False,
                 "workout_like": False,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -5006,7 +4990,7 @@ class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
                 "workout_comment": False,
                 "workout_like": False,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -5031,7 +5015,7 @@ class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
                 "workout_comment": False,
                 "workout_like": False,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -5067,7 +5051,7 @@ class TestUserNotificationsPreferencesPost(ApiTestCaseMixin):
             self.route,
             content_type="application/json",
             json=updated_notification_preferences,
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -5120,7 +5104,7 @@ class TestUserMessagesPreferencesPost(ApiTestCaseMixin):
             self.route,
             content_type="application/json",
             json={},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -5139,7 +5123,7 @@ class TestUserMessagesPreferencesPost(ApiTestCaseMixin):
                 "warning_about_large_number_of_workouts_on_map": False,
                 "invalid": True,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -5158,7 +5142,7 @@ class TestUserMessagesPreferencesPost(ApiTestCaseMixin):
             self.route,
             content_type="application/json",
             json=messages_preferences,
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200

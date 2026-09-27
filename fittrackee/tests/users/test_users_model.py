@@ -33,14 +33,12 @@ from fittrackee.users.models import (
     UserTask,
 )
 from fittrackee.users.roles import UserRole
-from fittrackee.users.utils.tokens import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import (
     EquipmentMixin,
     RandomMixin,
     ReportMixin,
-    TokenMixin,
     UserTaskMixin,
     WorkoutMixin,
 )
@@ -877,39 +875,23 @@ class TestUserWorkouts(UserModelAssertMixin):
         )
 
 
-class TestBlacklistedTokenModel(TokenMixin):
-    def test_blacklisted_token_contains_jti(
+class TestBlacklistedTokenModel(RandomMixin):
+    def test_blacklisted_token_model(
         self, app: "Flask", user_1: "User"
     ) -> None:
-        auth_token = get_user_token(user_1.id)
         now = datetime.now(timezone.utc)
-
+        jti = self.random_string()
+        expired_at = self.random_int()
         with travel(now, tick=False):
-            blacklisted_token = BlacklistedToken(token=auth_token)
+            blacklisted_token = BlacklistedToken(
+                jti=jti, expired_at=expired_at
+            )
         db.session.add(blacklisted_token)
         db.session.commit()
 
-        assert blacklisted_token.token == auth_token
-        decoded_token = self.decode_user_token(auth_token)
-        assert blacklisted_token.jti == decoded_token["jti"]
-        assert blacklisted_token.expired_at == decoded_token["exp"]
-        assert blacklisted_token.blacklisted_on == now
-
-    def test_blacklisted_token_without_jti(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        auth_token = self.generate_user_token_without_jti(app, user_1.id)
-        now = datetime.now(timezone.utc)
-
-        with travel(now, tick=False):
-            blacklisted_token = BlacklistedToken(token=auth_token)
-        db.session.add(blacklisted_token)
-        db.session.commit()
-
-        assert blacklisted_token.token == auth_token
-        decoded_token = self.decode_user_token(auth_token)
-        assert blacklisted_token.jti is None
-        assert blacklisted_token.expired_at == decoded_token["exp"]
+        assert blacklisted_token.token == jti  # workaround
+        assert blacklisted_token.jti == jti
+        assert blacklisted_token.expired_at == expired_at
         assert blacklisted_token.blacklisted_on == now
 
 

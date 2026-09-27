@@ -354,14 +354,18 @@ class TestBlacklistedTokensCleanup:
     @staticmethod
     def blacklisted_token(expiration_days: Optional[int] = None) -> str:
         token = get_user_token(user_id=random_int())
-        blacklisted_token = BlacklistedToken(token=token)
+        payload = decode_token(token)
+        blacklisted_token = BlacklistedToken(
+            jti=payload["jti"],
+            expired_at=payload["exp"],
+        )
         if expiration_days is not None:
             blacklisted_token.expired_at = int(time.time()) - (
                 expiration_days * 86400
             )
         db.session.add(blacklisted_token)
         db.session.commit()
-        return token
+        return payload["jti"]
 
     def test_it_returns_0_as_count_when_no_blacklisted_token_deleted(
         self, app: Flask, user_1: User
@@ -373,31 +377,31 @@ class TestBlacklistedTokensCleanup:
     def test_it_does_not_delete_blacklisted_token_when_not_expired(
         self, app: Flask, user_1: User
     ) -> None:
-        token = self.blacklisted_token()
+        jti = self.blacklisted_token()
 
         clean_blacklisted_tokens(days=10)
 
-        existing_token = BlacklistedToken.query.filter_by(token=token).first()
+        existing_token = BlacklistedToken.query.filter_by(jti=jti).first()
         assert existing_token is not None
 
     def test_it_deletes_blacklisted_token_when_expired_more_then_provided_days(
         self, app: Flask, user_1: User
     ) -> None:
-        token = self.blacklisted_token(expiration_days=40)
+        jti = self.blacklisted_token(expiration_days=40)
 
         clean_blacklisted_tokens(days=30)
 
-        existing_token = BlacklistedToken.query.filter_by(token=token).first()
+        existing_token = BlacklistedToken.query.filter_by(jti=jti).first()
         assert existing_token is None
 
     def test_it_does_not_delete_blacklisted_token_when_expired_below_provided_days(  # noqa
         self, app: Flask, user_1: User
     ) -> None:
-        token = self.blacklisted_token(expiration_days=30)
+        jti = self.blacklisted_token(expiration_days=30)
 
         clean_blacklisted_tokens(days=40)
 
-        existing_token = BlacklistedToken.query.filter_by(token=token).first()
+        existing_token = BlacklistedToken.query.filter_by(jti=jti).first()
         assert existing_token is not None
 
     def test_it_returns_deleted_rows_count(

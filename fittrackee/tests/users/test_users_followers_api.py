@@ -51,7 +51,7 @@ class TestFollowersAsSuspendedUser(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{user_2.username}/followers",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -68,7 +68,7 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{random_string()}/followers",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -86,7 +86,7 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_1.username}/followers",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -116,7 +116,7 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_1.username}/followers",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -146,7 +146,7 @@ class TestFollowersAsUser(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_1.username}/followers",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -178,7 +178,7 @@ class TestFollowersAsAdmin(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{random_string()}/followers",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -196,7 +196,7 @@ class TestFollowersAsAdmin(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_1_admin.username}/followers",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -227,7 +227,7 @@ class TestFollowersAsAdmin(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_2.username}/followers",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -262,7 +262,7 @@ class TestFollowersAsAdmin(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_2.username}/followers",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -283,7 +283,7 @@ class TestFollowersPagination(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_2.username}/followers",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -318,7 +318,7 @@ class TestFollowersPagination(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_2.username}/followers",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -353,7 +353,7 @@ class TestFollowersPagination(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_2.username}/followers?page=2",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -396,7 +396,7 @@ class TestFollowingAsSuspendedUser(ApiTestCaseMixin):
         response = client.get(
             f"/api/users/{user_2.username}/following",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -413,7 +413,7 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{random_string()}/following",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -431,7 +431,7 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_1.username}/following",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -461,7 +461,7 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_3.username}/following",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -497,7 +497,7 @@ class TestFollowingAsUser(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_3.username}/following",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -530,7 +530,7 @@ class TestFollowingAsAdmin(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{random_string()}/following",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -548,7 +548,7 @@ class TestFollowingAsAdmin(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_1_admin.username}/following",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -579,7 +579,7 @@ class TestFollowingAsAdmin(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_3.username}/following",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -614,7 +614,7 @@ class TestFollowingAsAdmin(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_3.username}/following",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -635,7 +635,7 @@ class TestFollowingPagination(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_2.username}/following",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -670,7 +670,7 @@ class TestFollowingPagination(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_3.username}/following",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -705,7 +705,7 @@ class TestFollowingPagination(FollowersAsUserTestCase):
         response = client.get(
             f"/api/users/{user_3.username}/following?page=2",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200

@@ -34,7 +34,8 @@ class BaseConfig:
     # First-party app authentication (FitTrackee client)
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", os.getenv("APP_SECRET_KEY"))
     JWT_ERROR_MESSAGE_KEY = "error"
-    JWT_TOKEN_LOCATION = ["headers"]
+    JWT_TOKEN_LOCATION = ["cookies"]
+    JWT_COOKIE_SECURE = True
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=15)
     # Password reset
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 3600
@@ -96,6 +97,7 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
     BCRYPT_LOG_ROUNDS = 4
+    JWT_COOKIE_SECURE = False
 
 
 class TestingConfig(BaseConfig):
@@ -110,6 +112,8 @@ class TestingConfig(BaseConfig):
     )
     SECRET_KEY = uuid4().hex
     JWT_SECRET_KEY = uuid4().hex
+    JWT_COOKIE_SECURE = False
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
     BCRYPT_LOG_ROUNDS = 4
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 60
     UI_URL = "https://example.com"

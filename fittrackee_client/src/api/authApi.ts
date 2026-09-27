@@ -1,12 +1,12 @@
 import axios from 'axios'
 
 import { pendingRequests, removeRequestIfPending } from '@/api/pending'
-import store from '@/store'
-import { AUTH_USER_STORE } from '@/store/constants'
 import { getApiUrl } from '@/utils'
+import { getCookieValue } from '@/utils/cookies'
 
 const authApi = axios.create({
   baseURL: getApiUrl(),
+  withCredentials: true,
 })
 
 authApi.interceptors.request.use(
@@ -15,14 +15,7 @@ authApi.interceptors.request.use(
     config.signal = controller.signal
     const requestKey = removeRequestIfPending(config)
     pendingRequests.set(requestKey, controller)
-
-    const authToken = store.getters[AUTH_USER_STORE.GETTERS.AUTH_TOKEN]
-    if (authToken) {
-      const auth = `Bearer ${authToken}`
-      if (config.headers && config.headers.Authorization !== auth) {
-        config.headers.Authorization = `Bearer ${authToken}`
-      }
-    }
+    config.headers['X-CSRF-TOKEN'] = getCookieValue()
     return config
   },
   (error) => Promise.reject(error)

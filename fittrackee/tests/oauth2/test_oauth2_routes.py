@@ -47,7 +47,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
             self.route,
             data=json.dumps(dict()),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -76,7 +76,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
             self.route,
             data=json.dumps(metadata),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -102,7 +102,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
             self.route,
             data=json.dumps(metadata),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -126,7 +126,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
             self.route,
             data=json.dumps(metadata),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -143,7 +143,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
             self.route,
             data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -161,7 +161,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
             self.route,
             data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -182,7 +182,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
                 self.route,
                 data=json.dumps(TEST_OAUTH_CLIENT_METADATA),
                 content_type="application/json",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         data = json.loads(response.data.decode())
@@ -227,7 +227,7 @@ class TestOAuthClientCreation(ApiTestCaseMixin):
                 {**TEST_OAUTH_CLIENT_METADATA, input_key: self.random_string()}
             ),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         oauth_client = OAuth2Client.query.first()
@@ -271,10 +271,10 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
                 "response_type": "code",
                 "confirm": True,
             },
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
 
         self.assert_403(response)
@@ -289,10 +289,10 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data={"response_type": "code"},
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
 
         self.assert_400(response, error_message="invalid payload")
@@ -308,10 +308,10 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
         response = client.post(
             self.route,
             data={"client_id": oauth_client.client_id},
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
 
         self.assert_400(response, error_message="invalid payload")
@@ -331,10 +331,10 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
                 "response_type": self.random_string(),
                 "confirm": True,
             },
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
 
         self.assert_400(response, error_message="invalid payload")
@@ -357,10 +357,10 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
                 "response_type": "code",
                 **input_confirmation,
             },
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
 
         code = OAuth2AuthorizationCode.query.filter_by(
@@ -384,10 +384,10 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
                 "response_type": "code",
                 **input_confirmation,
             },
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
 
         code = OAuth2AuthorizationCode.query.filter_by(
@@ -414,10 +414,10 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
                 "response_type": "code",
                 "confirm": True,
             },
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
 
         self.assert_400(response, "Invalid redirect URI scheme")
@@ -437,10 +437,10 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
                 "response_type": "code",
                 "confirm": True,
             },
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
 
         code = OAuth2AuthorizationCode.query.filter_by(
@@ -471,10 +471,10 @@ class TestOAuthClientAuthorization(ApiTestCaseMixin):
                 "response_type": "code",
                 **input_confirmation,
             },
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
 
         self.assert_400(
@@ -507,10 +507,10 @@ class TestOAuthClientAuthorizationWithCodeChallenge(ApiTestCaseMixin):
                 "code_challenge": code_challenge,
                 "code_challenge_method": self.random_string(),
             },
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
 
         self.assert_400(response, "Unsupported 'code_challenge_method'")
@@ -534,10 +534,10 @@ class TestOAuthClientAuthorizationWithCodeChallenge(ApiTestCaseMixin):
                 "code_challenge": code_challenge,
                 "code_challenge_method": "S256",
             },
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-                content_type="multipart/form-data",
-            ),
+            headers={
+                "X-CSRF-TOKEN": auth_token,
+                "content_type": "multipart/form-data",
+            },
         )
 
         code = OAuth2AuthorizationCode.query.filter_by(
@@ -973,7 +973,7 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -992,7 +992,7 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1015,7 +1015,7 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1038,7 +1038,7 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         response = client.get(
             f"{self.route}?page=2",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1063,7 +1063,7 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1082,7 +1082,7 @@ class TestOAuthGetClients(ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1116,7 +1116,7 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
         response = client.get(
             self.route.format(client_id=self.random_int()),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "OAuth2 client not found")
@@ -1141,7 +1141,7 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
         response = client.get(
             self.route.format(client_id=client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1185,7 +1185,7 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
         response = client.get(
             self.route.format(client_id=client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1203,7 +1203,7 @@ class TestOAuthGetClientById(ApiTestCaseMixin):
         response = client.get(
             self.route.format(client_id=oauth_client.id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "OAuth2 client not found")
@@ -1234,7 +1234,7 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
         response = client.get(
             self.route.format(client_id=self.random_string()),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "OAuth2 client not found")
@@ -1259,7 +1259,7 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
         response = client.get(
             self.route.format(client_id=client_client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1302,7 +1302,7 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
         response = client.get(
             self.route.format(client_id=client_client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1320,7 +1320,7 @@ class TestOAuthGetClientByClientId(ApiTestCaseMixin):
         response = client.get(
             self.route.format(client_id=oauth_client.client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "OAuth2 client not found")
@@ -1351,7 +1351,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         response = client.delete(
             self.route.format(client_id=self.random_int()),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "OAuth2 client not found")
@@ -1368,7 +1368,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         response = client.delete(
             self.route.format(client_id=client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -1387,7 +1387,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         response = client.delete(
             self.route.format(client_id=client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -1407,7 +1407,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         response = client.delete(
             self.route.format(client_id=client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -1427,7 +1427,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         response = client.delete(
             self.route.format(client_id=client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -1450,7 +1450,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         response = client.delete(
             self.route.format(client_id=client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -1469,7 +1469,7 @@ class TestOAuthDeleteClient(ApiTestCaseMixin):
         response = client.delete(
             self.route.format(client_id=client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "OAuth2 client not found")
@@ -1501,7 +1501,7 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
         response = client.post(
             self.route.format(client_id=self.random_int()),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "OAuth2 client not found")
@@ -1518,7 +1518,7 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
         response = client.post(
             self.route.format(client_id=oauth_client.id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1539,7 +1539,7 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
         response = client.post(
             self.route.format(client_id=oauth_client.id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1561,7 +1561,7 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
         response = client.post(
             self.route.format(client_id=client_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200

@@ -9,9 +9,11 @@ from flask import (
     Blueprint,
     Response,
     current_app,
+    jsonify,
     request,
     send_from_directory,
 )
+from flask_jwt_extended import get_jwt, set_access_cookies, unset_jwt_cookies
 from jsonschema.exceptions import ValidationError
 from sqlalchemy import exc, func
 from sqlalchemy.dialects.postgresql import insert
@@ -238,7 +240,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @auth_blueprint.route("/auth/login", methods=["POST"])
-def login_user() -> Union[Dict, HttpResponse]:
+def login_user() -> Union[Response, HttpResponse]:
     """
     User login.
 
@@ -261,7 +263,6 @@ def login_user() -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
       {
-        "auth_token": "JSON Web Token",
         "message": "successfully logged in",
         "status": "success"
       }
@@ -301,11 +302,11 @@ def login_user() -> Union[Dict, HttpResponse]:
         if user and user.check_password(password):
             # generate auth token
             auth_token = get_user_token(user.id)
-            return {
-                "status": "success",
-                "message": "successfully logged in",
-                "auth_token": auth_token,
-            }
+            response = jsonify(
+                {"status": "success", "message": "successfully logged in"}
+            )
+            set_access_cookies(response, auth_token)
+            return response
         return UnauthorizedErrorResponse("invalid credentials")
     # handler errors
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -2199,7 +2200,7 @@ def update_email() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route("/auth/account/confirm", methods=["POST"])
-def confirm_account() -> Union[Dict, HttpResponse]:
+def confirm_account() -> Union[Response, HttpResponse]:
     """
     Activate user account after registration.
 
@@ -2218,7 +2219,6 @@ def confirm_account() -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
       {
-        "auth_token": "JSON Web Token",
         "message": "account confirmation successful",
         "status": "success"
       }
@@ -2249,11 +2249,10 @@ def confirm_account() -> Union[Dict, HttpResponse]:
         # generate auth token
         auth_token = get_user_token(user.id)
 
-        response = {
-            "status": "success",
-            "message": "account confirmation successful",
-            "auth_token": auth_token,
-        }
+        response = jsonify(
+            {"status": "success", "message": "account confirmation successful"}
+        )
+        set_access_cookies(response, auth_token)
         return response
 
     except (exc.OperationalError, ValueError) as e:
@@ -2321,7 +2320,7 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
 
 @auth_blueprint.route("/auth/logout", methods=["POST"])
 @require_auth(allow_suspended_user=True)
-def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
+def logout_user(auth_user: User) -> Tuple[Response, int]:
     """
     User logout.
     If a valid token is provided, it will be blacklisted.
@@ -2372,19 +2371,26 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
 
     """
     try:
-        auth_token = request.headers.get("Authorization", "").split(" ")[1]
-        db.session.add(BlacklistedToken(token=auth_token))
+        payload = get_jwt()
+        db.session.add(
+            BlacklistedToken(jti=payload["jti"], expired_at=payload["exp"])
+        )
         db.session.commit()
+        status_code = 200
+        response_dict = {
+            "status": "success",
+            "message": "successfully logged out",
+        }
     except Exception:
-        return {
+        status_code = 500
+        response_dict = {
             "status": "error",
             "message": "error on token blacklist",
-        }, 500
+        }
 
-    return {
-        "status": "success",
-        "message": "successfully logged out",
-    }, 200
+    response = jsonify(response_dict)
+    unset_jwt_cookies(response)
+    return response, status_code
 
 
 @auth_blueprint.route("/auth/account/privacy-policy", methods=["POST"])

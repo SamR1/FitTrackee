@@ -54,9 +54,8 @@ export const handleError = (
   const errorInfo: IApiErrorMessage | null =
     error?.response && error.response.data ? error.response.data : null
 
-  // if stored token is blacklisted, disconnect user
+  // if token is blacklisted, disconnect user
   if (error?.response?.status === 401 && errorInfo?.error === 'invalid_token') {
-    localStorage.removeItem('authToken')
     context.dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     return
   }

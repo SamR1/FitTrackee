@@ -40,7 +40,7 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
         ):
             client.post(
                 f"/api/workouts/{workout_cycling_user_1.short_id}/refresh",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         gpx_service_init_mock.assert_called_once_with(
@@ -58,7 +58,7 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
 
         response = client.post(
             f"/api/workouts/{self.random_short_id()}/refresh",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -92,7 +92,7 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
 
         response = client.post(
             f"/api/workouts/{workout_cycling_user_1.short_id}/refresh",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -129,7 +129,7 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
 
         response = client.post(
             f"/api/workouts/{workout_cycling_user_1.short_id}/refresh",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == expected_status_code
@@ -148,7 +148,7 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
 
         response = client.post(
             f"/api/workouts/{workout_cycling_user_1.short_id}/refresh",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -166,7 +166,7 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
 
         response = client.post(
             f"/api/workouts/{workout_cycling_user_1.short_id}/refresh",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_500(response, "workout without original file")
@@ -188,7 +188,7 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
         with patch("builtins.open", open_mock):
             response = client.post(
                 f"/api/workouts/{workout_cycling_user_1.short_id}/refresh",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         db.session.refresh(workout_cycling_user_1)

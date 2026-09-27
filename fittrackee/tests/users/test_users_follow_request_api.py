@@ -34,7 +34,7 @@ class TestGetFollowRequest(ApiTestCaseMixin):
         response = client.get(
             "/api/follow-requests",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         self.assert_403(response)
 
@@ -48,7 +48,7 @@ class TestGetFollowRequest(ApiTestCaseMixin):
         response = client.get(
             "/api/follow-requests",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -74,7 +74,7 @@ class TestGetFollowRequest(ApiTestCaseMixin):
         response = client.get(
             "/api/follow-requests",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -112,7 +112,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         response = client.get(
             "/api/follow-requests",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -142,7 +142,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         response = client.get(
             "/api/follow-requests?page=2",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -173,7 +173,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         response = client.get(
             "/api/follow-requests?per_page=10",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -203,7 +203,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         response = client.get(
             "/api/follow-requests?order=desc",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -227,7 +227,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         response = client.get(
             "/api/follow-requests?per_page=1",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -257,7 +257,7 @@ class TestGetFollowRequestPagination(ApiTestCaseMixin):
         response = client.get(
             "/api/follow-requests?page=2&per_page=1&order=desc",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -298,7 +298,7 @@ class FollowRequestTestCase(ApiTestCaseMixin):
         response = client.post(
             url,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 400
@@ -319,7 +319,7 @@ class FollowRequestTestCase(ApiTestCaseMixin):
         response = client.post(
             url,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -358,7 +358,7 @@ class TestAcceptFollowRequest(FollowRequestTestCase):
         response = client.post(
             f"/api/follow-requests/{user_1.username}/accept",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         self.assert_403(response)
 
@@ -462,7 +462,7 @@ class TestRejectFollowRequest(FollowRequestTestCase):
         response = client.post(
             f"/api/follow-requests/{user_1.username}/reject",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         self.assert_403(response)
 
