@@ -47,6 +47,11 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.users_service import UserManagerService
+from fittrackee.users.utils.tokens import (
+    decode_password_reset_token,
+    get_password_reset_token,
+    get_user_token,
+)
 from fittrackee.utils import clean_input, decode_short_id
 from fittrackee.visibility_levels import (
     VisibilityLevel,
@@ -56,7 +61,11 @@ from fittrackee.workouts.models import Sport
 
 from ..constants import IMAGE_MIMETYPES, PaceSpeedDisplay
 from ..workouts.constants import PACE_SPORTS
-from .exceptions import UserControlsException, UserCreationException
+from .exceptions import (
+    InvalidJWTClaim,
+    UserControlsException,
+    UserCreationException,
+)
 from .models import (
     MAX_BIO_LIMIT,
     MAX_USER_INPUT,
@@ -73,7 +82,6 @@ from .tasks import export_data
 from .timezones import TIMEZONES, get_timezone
 from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
-from .utils.tokens import decode_user_token
 
 auth_blueprint = Blueprint("auth", __name__)
 
@@ -292,7 +300,7 @@ def login_user() -> Union[Dict, HttpResponse]:
         ).first()
         if user and user.check_password(password):
             # generate auth token
-            auth_token = user.encode_auth_token(user.id)
+            auth_token = get_user_token(user.id)
             return {
                 "status": "success",
                 "message": "successfully logged in",
@@ -2018,7 +2026,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
 
     user = User.query.filter(User.email == email).first()
     if user:
-        password_reset_token = user.encode_password_reset_token(user.id)
+        password_reset_token = get_password_reset_token(user.id)
         fittrackee_url = current_app.config["UI_URL"]
         user_language = get_language(user.language)
         email_data = {
@@ -2093,8 +2101,8 @@ def update_password() -> Union[Dict, HttpResponse]:
     token = post_data.get("token")
 
     try:
-        user_id = decode_user_token(token)
-    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+        user_id = decode_password_reset_token(token)
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, InvalidJWTClaim):
         return UnauthorizedErrorResponse()
 
     message = check_password(password)
@@ -2239,7 +2247,7 @@ def confirm_account() -> Union[Dict, HttpResponse]:
         db.session.commit()
 
         # generate auth token
-        auth_token = user.encode_auth_token(user.id)
+        auth_token = get_user_token(user.id)
 
         response = {
             "status": "success",
@@ -2363,8 +2371,8 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :statuscode 500: ``error on token blacklist``
 
     """
-    auth_token = request.headers.get("Authorization", "").split(" ")[1]
     try:
+        auth_token = request.headers.get("Authorization", "").split(" ")[1]
         db.session.add(BlacklistedToken(token=auth_token))
         db.session.commit()
     except Exception:

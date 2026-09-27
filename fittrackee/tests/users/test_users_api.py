@@ -2046,7 +2046,7 @@ class TestUpdateUser(ReportMixin, ApiTestCaseMixin):
         )
 
         with patch(
-            "fittrackee.users.users.User.encode_password_reset_token",
+            "fittrackee.users.auth.get_user_token",
             return_value="xxx",
         ):
             response = client.patch(

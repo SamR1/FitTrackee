@@ -5,6 +5,8 @@ from authlib.integrations.flask_oauth2 import ResourceProtector
 from authlib.oauth2 import OAuth2Error
 from authlib.oauth2.rfc6749.errors import MissingAuthorizationError
 from flask import current_app, request
+from flask_jwt_extended import get_current_user, verify_jwt_in_request
+from jwt import DecodeError
 from werkzeug.exceptions import RequestEntityTooLarge
 
 from fittrackee.responses import (
@@ -12,7 +14,6 @@ from fittrackee.responses import (
     PayloadTooLargeErrorResponse,
     UnauthorizedErrorResponse,
 )
-from fittrackee.users.models import User
 
 if TYPE_CHECKING:
     from flask import Request
@@ -53,10 +54,11 @@ class CustomResourceProtector(ResourceProtector):
                 if auth_header:
                     # First-party application (Fittrackee front-end)
                     # in this case, scopes will be ignored
-                    auth_token = auth_header.split(" ")[1]
-                    resp = User.decode_auth_token(auth_token)
-                    if isinstance(resp, int):
-                        auth_user = User.query.filter_by(id=resp).first()
+                    try:
+                        verify_jwt_in_request(optional=True)
+                        auth_user = get_current_user()
+                    except DecodeError:
+                        auth_user = None
 
                     # Third-party applications
                     if not auth_user and scopes:

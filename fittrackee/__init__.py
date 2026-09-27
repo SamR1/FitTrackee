@@ -16,6 +16,7 @@ from flask import (
 )
 from flask_babel import Babel
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import JWTManager
 from flask_limiter import Limiter
 from flask_limiter.errors import RateLimitExceeded
 from flask_limiter.util import get_remote_address
@@ -79,6 +80,7 @@ else:
 
 babel = Babel()
 bcrypt = Bcrypt()
+jwt = JWTManager()
 migrate = Migrate()
 email_service = EmailService()
 redis_client = redis.from_url(REDIS_URL)
@@ -137,6 +139,7 @@ def create_app(init_email: bool = True) -> Flask:
     babel.init_app(app)
     db.init_app(app)
     bcrypt.init_app(app)
+    jwt.init_app(app)
     migrate.init_app(app, db)
     limiter.init_app(app)
 
@@ -206,6 +209,7 @@ def create_app(init_email: bool = True) -> Flask:
     from .media.routes import api_media_blueprint, media_blueprint
     from .oauth2.routes import oauth2_blueprint
     from .reports.reports import reports_blueprint
+    from .responses import InvalidTokenErrorResponse
     from .users.auth import auth_blueprint
     from .users.follow_requests import follow_requests_blueprint
     from .users.notifications import notifications_blueprint
@@ -282,6 +286,18 @@ def create_app(init_email: bool = True) -> Flask:
             "status": "error",
             "message": f"rate limit exceeded ({error.description})",
         }, 429
+
+    @jwt.expired_token_loader
+    def expired_token_callback(
+        jwt_header: Dict, jwt_payload: Dict
+    ) -> InvalidTokenErrorResponse:
+        return InvalidTokenErrorResponse()
+
+    @jwt.revoked_token_loader
+    def revoked_token_callback(
+        jwt_header: Dict, jwt_payload: Dict
+    ) -> InvalidTokenErrorResponse:
+        return InvalidTokenErrorResponse()
 
     @app.route("/favicon.ico")
     @limiter.exempt

@@ -4,7 +4,6 @@ from io import BytesIO
 from typing import Dict, Optional, Union
 from unittest.mock import ANY, MagicMock, Mock, call, patch
 
-import jwt
 import pytest
 from flask import Flask
 from time_machine import travel
@@ -24,7 +23,10 @@ from fittrackee.users.models import (
 )
 from fittrackee.users.roles import UserRole
 from fittrackee.users.timezones import TIMEZONES
-from fittrackee.users.utils.tokens import get_user_token
+from fittrackee.users.utils.tokens import (
+    get_password_reset_token,
+    get_user_token,
+)
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Sport, Workout
 
@@ -760,7 +762,7 @@ class TestUserProfile(ApiTestCaseMixin, TokenMixin):
         self, app: Flask, user_1: User
     ) -> None:
         client = app.test_client()
-        auth_token = self.generate_token_without_jti(app, user_1.id)
+        auth_token = self.generate_user_token_without_jti(app, user_1.id)
         db.session.add(BlacklistedToken(token=auth_token))
         db.session.commit()
 
@@ -3037,7 +3039,7 @@ class TestPasswordResetRequest(ApiTestCaseMixin):
         auth_send_email_mock.assert_not_called()
 
 
-class TestPasswordUpdate(ApiTestCaseMixin):
+class TestPasswordUpdate(ApiTestCaseMixin, TokenMixin):
     def test_it_returns_error_if_payload_is_empty(self, app: Flask) -> None:
         client = app.test_client()
 
@@ -3079,8 +3081,10 @@ class TestPasswordUpdate(ApiTestCaseMixin):
 
         self.assert_400(response)
 
-    def test_it_returns_error_if_token_is_invalid(self, app: Flask) -> None:
-        token = get_user_token(1)
+    def test_it_returns_error_if_token_type_is_missing(
+        self, app: Flask, user_1: User
+    ) -> None:
+        token = self.generate_password_token_without_type(app, user_1.id)
         client = app.test_client()
 
         response = client.post(
@@ -3088,7 +3092,26 @@ class TestPasswordUpdate(ApiTestCaseMixin):
             data=json.dumps(
                 dict(
                     token=token,
-                    password=self.random_string(),
+                    password="new password",
+                )
+            ),
+            content_type="application/json",
+        )
+
+        self.assert_401(response, "invalid token, please request a new token")
+
+    def test_it_returns_error_if_token_type_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        auth_token = get_user_token(user_1.id)
+        client = app.test_client()
+
+        response = client.post(
+            "/api/auth/password/update",
+            data=json.dumps(
+                dict(
+                    token=auth_token,
+                    password="new password",
                 )
             ),
             content_type="application/json",
@@ -3100,7 +3123,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         self, app: Flask, user_1: User
     ) -> None:
         now = datetime.now(timezone.utc)
-        token = get_user_token(user_1.id, password_reset=True)
+        token = get_password_reset_token(user_1.id)
         client = app.test_client()
 
         with travel(now + timedelta(seconds=61), tick=False):
@@ -3122,7 +3145,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
     def test_it_returns_error_if_password_is_invalid(
         self, app: Flask, user_1: User
     ) -> None:
-        token = get_user_token(user_1.id, password_reset=True)
+        token = get_password_reset_token(user_1.id)
         client = app.test_client()
 
         response = client.post(
@@ -3144,7 +3167,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         user_1: User,
         auth_send_email_mock: MagicMock,
     ) -> None:
-        token = get_user_token(user_1.id, password_reset=True)
+        token = get_password_reset_token(user_1.id)
         client = app.test_client()
 
         client.post(
@@ -3166,7 +3189,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         user_1: User,
         auth_send_email_mock: MagicMock,
     ) -> None:
-        token = get_user_token(user_1.id, password_reset=True)
+        token = get_password_reset_token(user_1.id)
         client = app.test_client()
 
         response = client.post(
@@ -3191,7 +3214,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         suspended_user: User,
         auth_send_email_mock: MagicMock,
     ) -> None:
-        token = get_user_token(suspended_user.id, password_reset=True)
+        token = get_password_reset_token(suspended_user.id)
         client = app.test_client()
 
         response = client.post(
@@ -3216,7 +3239,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         user_1: User,
         auth_send_email_mock: MagicMock,
     ) -> None:
-        token = get_user_token(user_1.id, password_reset=True)
+        token = get_password_reset_token(user_1.id)
         client = app.test_client()
 
         response = client.post(
@@ -3252,7 +3275,7 @@ class TestPasswordUpdate(ApiTestCaseMixin):
         user_1: User,
         auth_send_email_mock: MagicMock,
     ) -> None:
-        token = get_user_token(user_1.id, password_reset=True)
+        token = get_password_reset_token(user_1.id)
         client = app_wo_email_activation.test_client()
 
         client.post(
@@ -3544,13 +3567,13 @@ class TestUserLogout(ApiTestCaseMixin, TokenMixin):
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
-        with travel(now + timedelta(seconds=61), tick=False):
+        with travel(now + timedelta(minutes=61), tick=False):
             response = client.post(
                 "/api/auth/logout",
                 headers=dict(Authorization=f"Bearer {auth_token}"),
             )
 
-            self.assert_401(response)
+            self.assert_invalid_token(response)
 
     def test_user_can_logout(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -3596,12 +3619,8 @@ class TestUserLogout(ApiTestCaseMixin, TokenMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        payload = jwt.decode(
-            auth_token,
-            app.config["SECRET_KEY"],
-            algorithms=["HS256"],
-        )
-        token = BlacklistedToken.query.filter_by(token=auth_token).one()
+        payload = self.decode_user_token(auth_token)
+        token = BlacklistedToken.query.filter_by(jti=payload["jti"]).one()
         assert token.jti == payload["jti"]
         assert token.blacklisted_on is not None
 
@@ -3612,7 +3631,7 @@ class TestUserLogout(ApiTestCaseMixin, TokenMixin):
         temporary before all tokens without jti claim are expired
         """
         client = app.test_client()
-        auth_token = self.generate_token_without_jti(app, user_1.id)
+        auth_token = self.generate_user_token_without_jti(app, user_1.id)
 
         client.post(
             "/api/auth/logout",
@@ -3637,7 +3656,7 @@ class TestUserLogout(ApiTestCaseMixin, TokenMixin):
             headers=dict(Authorization=f"Bearer {auth_token}"),
         )
 
-        self.assert_401(response)
+        self.assert_invalid_token(response)
 
 
 class TestUserPrivacyPolicyUpdate(ApiTestCaseMixin):

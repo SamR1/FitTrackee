@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 from typing import Type, Union
 from uuid import uuid4
 
@@ -29,8 +30,13 @@ class BaseConfig:
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     BCRYPT_LOG_ROUNDS = 13
-    TOKEN_EXPIRATION_DAYS = 5
-    TOKEN_EXPIRATION_SECONDS = 0
+    SECRET_KEY = os.getenv("APP_SECRET_KEY")
+    # First-party app authentication (FitTrackee client)
+    JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", os.getenv("APP_SECRET_KEY"))
+    JWT_ERROR_MESSAGE_KEY = "error"
+    JWT_TOKEN_LOCATION = ["headers"]
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=15)
+    # Password reset
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 3600
     UPLOAD_FOLDER = os.path.join(
         os.getenv("UPLOAD_FOLDER", current_app.root_path), "uploads"
@@ -89,7 +95,6 @@ class BaseConfig:
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
-    SECRET_KEY = os.getenv("APP_SECRET_KEY")
     BCRYPT_LOG_ROUNDS = 4
 
 
@@ -104,9 +109,8 @@ class TestingConfig(BaseConfig):
         "uploads" + XDIST_WORKER,
     )
     SECRET_KEY = uuid4().hex
+    JWT_SECRET_KEY = uuid4().hex
     BCRYPT_LOG_ROUNDS = 4
-    TOKEN_EXPIRATION_DAYS = 0
-    TOKEN_EXPIRATION_SECONDS = 60
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 60
     UI_URL = "https://example.com"
     SENDER_EMAIL = "fittrackee@example.com"
@@ -118,11 +122,9 @@ class TestingConfig(BaseConfig):
 
 class End2EndTestingConfig(TestingConfig):
     UI_URL = "http://0.0.0.0:5000"
-    TOKEN_EXPIRATION_SECONDS = 300
     PASSWORD_TOKEN_EXPIRATION_SECONDS = 300
 
 
 class ProductionConfig(BaseConfig):
     DEBUG = False
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL")
-    SECRET_KEY = os.getenv("APP_SECRET_KEY")

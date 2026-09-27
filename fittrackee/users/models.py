@@ -1,10 +1,10 @@
 import os
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 from uuid import UUID, uuid4
 
-import jwt
-from flask import current_app
+from flask import current_app, request
+from flask_jwt_extended import decode_token
 from jsonschema import validate
 from sqlalchemy import and_, func
 from sqlalchemy.dialects import postgresql
@@ -19,7 +19,7 @@ from sqlalchemy.sql import text
 from sqlalchemy.sql.expression import select
 from sqlalchemy.types import Enum
 
-from fittrackee import BaseModel, appLog, bcrypt, db
+from fittrackee import BaseModel, appLog, bcrypt, db, jwt
 from fittrackee.comments.models import Comment
 from fittrackee.constants import ElevationDataSource, PaceSpeedDisplay
 from fittrackee.database import TZDateTime
@@ -51,7 +51,6 @@ from .roles import (
     has_moderator_rights,
     is_auth_user,
 )
-from .utils.tokens import decode_user_token, get_user_token
 
 if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
@@ -485,42 +484,6 @@ class User(BaseModel):
         self.created_at = (
             datetime.now(timezone.utc) if created_at is None else created_at
         )
-
-    @staticmethod
-    def encode_auth_token(user_id: int) -> str:
-        """
-        Generates the auth token
-        :param user_id: -
-        :return: JWToken
-        """
-        return get_user_token(user_id)
-
-    @staticmethod
-    def encode_password_reset_token(user_id: int) -> str:
-        """
-        Generates the auth token
-        :param user_id: -
-        :return: JWToken
-        """
-        return get_user_token(user_id, password_reset=True)
-
-    @staticmethod
-    def decode_auth_token(auth_token: str) -> Union[int, str]:
-        """
-        Decodes the auth token
-        :param auth_token: -
-        :return: integer|string
-        """
-        try:
-            resp = decode_user_token(auth_token)
-            is_blacklisted = BlacklistedToken.check(auth_token)
-            if is_blacklisted:
-                return "blacklisted token, please log in again"
-            return resp
-        except jwt.ExpiredSignatureError:
-            return "signature expired, please log in again"
-        except jwt.InvalidTokenError:
-            return "invalid token, please log in again"
 
     def check_password(self, password: str) -> bool:
         return bcrypt.check_password_hash(self.password, password)
@@ -1014,6 +977,14 @@ class User(BaseModel):
         return serialized_user
 
 
+@jwt.user_lookup_loader
+def user_lookup_callback(
+    _jwt_header: Dict, jwt_data: Dict
+) -> Optional["User"]:
+    user_id = int(jwt_data["sub"])
+    return User.query.filter_by(id=user_id).one_or_none()
+
+
 UserSportPreferenceEquipment = db.Table(
     "users_sports_preferences_equipments",
     db.Column(
@@ -1123,31 +1094,28 @@ class BlacklistedToken(BaseModel):
         TZDateTime, nullable=False
     )
 
-    @staticmethod
-    def _get_exp_and_jti(token: str) -> Tuple[int, Optional[str]]:
-        payload = jwt.decode(
-            token,
-            current_app.config["SECRET_KEY"],
-            algorithms=["HS256"],
-        )
-        return payload["exp"], payload.get("jti")
-
     def __init__(
         self, token: str, blacklisted_on: Optional[datetime] = None
     ) -> None:
+        payload = decode_token(token)
         self.token = token
-        self.expired_at, self.jti = self._get_exp_and_jti(token)
+        self.jti = payload.get("jti")
+        self.expired_at = payload["exp"]
         self.blacklisted_on = (
             blacklisted_on if blacklisted_on else datetime.now(timezone.utc)
         )
 
-    @classmethod
-    def check(cls, auth_token: str) -> bool:
-        _, jti = cls._get_exp_and_jti(auth_token)
-        if jti:
-            return cls.query.filter_by(jti=str(jti)).first() is not None
-        # token generated without JTI claim
-        return cls.query.filter_by(token=str(auth_token)).first() is not None
+
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(jwt_header: Dict, jwt_payload: dict) -> bool:
+    jti = jwt_payload.get("jti")
+    query = db.session.query(BlacklistedToken.id)
+    if jti:
+        return query.filter_by(jti=jti).scalar() is not None
+    auth_token = request.headers.get("Authorization", "").replace(
+        "Bearer ", ""
+    )
+    return query.filter_by(token=auth_token).scalar() is not None
 
 
 class UserTask(BaseModel):

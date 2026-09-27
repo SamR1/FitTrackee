@@ -14,6 +14,7 @@ from uuid import uuid4
 import jwt
 from flask import Flask, current_app
 from flask.testing import FlaskClient
+from flask_jwt_extended import decode_token
 from geoalchemy2.shape import to_shape
 from shapely import to_geojson
 from shapely.geometry.multilinestring import MultiLineString
@@ -777,19 +778,34 @@ class MediaMixin:
 
 class TokenMixin:
     @staticmethod
-    def generate_token_without_jti(app: "Flask", user_id: int) -> str:
+    def _encode_token_payload(payload: Dict, key: str) -> str:
+        return jwt.encode(payload, key, algorithm="HS256")
+
+    def generate_user_token_without_jti(
+        self, app: "Flask", user_id: int
+    ) -> str:
         now = datetime.now(timezone.utc)
         payload = {
             "exp": now + timedelta(hours=1),
             "iat": now,
             "sub": str(user_id),
         }
-        return jwt.encode(payload, app.config["SECRET_KEY"], algorithm="HS256")
+        return self._encode_token_payload(
+            payload, app.config["JWT_SECRET_KEY"]
+        )
+
+    def generate_password_token_without_type(
+        self, app: "Flask", user_id: int
+    ) -> str:
+        now = datetime.now(timezone.utc)
+        payload = {
+            "exp": now + timedelta(hours=1),
+            "iat": now,
+            "jti": str(uuid4()),
+            "sub": str(user_id),
+        }
+        return self._encode_token_payload(payload, app.config["SECRET_KEY"])
 
     @staticmethod
-    def decode_token(app: "Flask", auth_token: str) -> Dict:
-        return jwt.decode(
-            auth_token,
-            app.config["SECRET_KEY"],
-            algorithms=["HS256"],
-        )
+    def decode_user_token(auth_token: str) -> Dict:
+        return decode_token(auth_token)

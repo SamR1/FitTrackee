@@ -130,6 +130,21 @@ class UnauthorizedErrorResponse(GenericErrorResponse):
         super().__init__(status_code=401, message=message)
 
 
+class InvalidTokenErrorResponse(HttpResponse):
+    def __init__(self) -> None:
+        response = {
+            "error": "invalid_token",
+            "error_description": (
+                "The access token provided is expired, revoked, malformed, "
+                "or invalid for other reasons."
+            ),
+        }
+        super().__init__(
+            response=response,
+            status_code=401,
+        )
+
+
 class ForbiddenErrorResponse(GenericErrorResponse):
     def __init__(self, message: Optional[str] = None) -> None:
         message = "you do not have permissions" if message is None else message

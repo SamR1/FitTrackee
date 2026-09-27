@@ -4,7 +4,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, Set
 
-import jwt
 import pytest
 from flask import Flask
 from jsonschema import ValidationError
@@ -34,6 +33,7 @@ from fittrackee.users.models import (
     UserTask,
 )
 from fittrackee.users.roles import UserRole
+from fittrackee.users.utils.tokens import get_user_token
 from fittrackee.workouts.models import Sport, Workout
 
 from ..mixins import (
@@ -881,7 +881,7 @@ class TestBlacklistedTokenModel(TokenMixin):
     def test_blacklisted_token_contains_jti(
         self, app: "Flask", user_1: "User"
     ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
+        auth_token = get_user_token(user_1.id)
         now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
@@ -890,7 +890,7 @@ class TestBlacklistedTokenModel(TokenMixin):
         db.session.commit()
 
         assert blacklisted_token.token == auth_token
-        decoded_token = self.decode_token(app, auth_token)
+        decoded_token = self.decode_user_token(auth_token)
         assert blacklisted_token.jti == decoded_token["jti"]
         assert blacklisted_token.expired_at == decoded_token["exp"]
         assert blacklisted_token.blacklisted_on == now
@@ -898,7 +898,7 @@ class TestBlacklistedTokenModel(TokenMixin):
     def test_blacklisted_token_without_jti(
         self, app: "Flask", user_1: "User"
     ) -> None:
-        auth_token = self.generate_token_without_jti(app, user_1.id)
+        auth_token = self.generate_user_token_without_jti(app, user_1.id)
         now = datetime.now(timezone.utc)
 
         with travel(now, tick=False):
@@ -907,105 +907,10 @@ class TestBlacklistedTokenModel(TokenMixin):
         db.session.commit()
 
         assert blacklisted_token.token == auth_token
-        decoded_token = self.decode_token(app, auth_token)
+        decoded_token = self.decode_user_token(auth_token)
         assert blacklisted_token.jti is None
         assert blacklisted_token.expired_at == decoded_token["exp"]
         assert blacklisted_token.blacklisted_on == now
-
-    def test_check_returns_false_when_token_is_not_blacklisted(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-
-        assert BlacklistedToken.check(auth_token) is False
-
-    def test_check_returns_true_when_token_is_not_blacklisted(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        blacklisted_token = BlacklistedToken(token=auth_token)
-        db.session.add(blacklisted_token)
-        db.session.commit()
-
-        assert BlacklistedToken.check(auth_token) is True
-
-    def test_check_returns_true_when_token_without_jti_is_not_blacklisted(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        auth_token = self.generate_token_without_jti(app, user_1.id)
-        blacklisted_token = BlacklistedToken(token=auth_token)
-        db.session.add(blacklisted_token)
-        db.session.commit()
-
-        assert BlacklistedToken.check(auth_token) is True
-
-    def test_check_returns_true_when_token_with_same_jti_is_blacklisted(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        payload = self.decode_token(app, auth_token)
-        blacklisted_token = BlacklistedToken(token=auth_token)
-        db.session.add(blacklisted_token)
-        db.session.commit()
-        now = datetime.now(timezone.utc)
-        new_token = jwt.encode(
-            {
-                "exp": now + timedelta(hours=1),
-                "iat": now,
-                "jti": payload["jti"],
-                "sub": str(user_1.id),
-            },
-            app.config["SECRET_KEY"],
-            algorithm="HS256",
-        )
-
-        assert BlacklistedToken.check(new_token) is True
-
-
-class TestUserModelToken(RandomMixin):
-    def test_encode_auth_token(self, app: Flask, user_1: User) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        assert isinstance(auth_token, str)
-
-    def test_encode_password_token(self, app: Flask, user_1: User) -> None:
-        password_token = user_1.encode_password_reset_token(user_1.id)
-        assert isinstance(password_token, str)
-
-    def test_decode_auth_token(self, app: Flask, user_1: User) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        assert isinstance(auth_token, str)
-        assert User.decode_auth_token(auth_token) == user_1.id
-
-    def test_it_returns_error_when_token_is_invalid(
-        self, app: Flask, user_1: User
-    ) -> None:
-        assert (
-            User.decode_auth_token(self.random_string())
-            == "invalid token, please log in again"
-        )
-
-    def test_it_returns_error_when_token_is_expired(
-        self, app: Flask, user_1: User
-    ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        now = datetime.now(timezone.utc)
-        with travel(now + timedelta(seconds=61), tick=False):
-            assert (
-                User.decode_auth_token(auth_token)
-                == "signature expired, please log in again"
-            )
-
-    def test_it_returns_error_when_token_is_blacklisted(
-        self, app: Flask, user_1: User
-    ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        db.session.add(BlacklistedToken(token=auth_token))
-        db.session.commit()
-
-        assert (
-            User.decode_auth_token(auth_token)
-            == "blacklisted token, please log in again"
-        )
 
 
 class TestUserSportPreferenceModel(EquipmentMixin):
