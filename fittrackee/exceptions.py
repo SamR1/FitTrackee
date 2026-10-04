@@ -21,3 +21,10 @@ class EmailConfigException(Exception):
 
 class FileException(Exception):
     pass
+
+
+class ImageMaxPixelsException(Exception):
+    def __init__(self, max_size: int, file_size: int) -> None:
+        super().__init__("image max pixels limit exceeded")
+        self.max_size = max_size
+        self.file_size = file_size

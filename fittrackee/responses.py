@@ -110,6 +110,17 @@ class EquipmentInvalidPayloadErrorResponse(HttpResponse):
         super().__init__(response=response, status_code=400)
 
 
+class ImagePixelsExceededInvalidPayloadErrorResponse(HttpResponse):
+    def __init__(self, max_size: int, file_size: int) -> None:
+        response = {
+            "status": "error",
+            "max_pixels": max_size,
+            "file_pixels": file_size,
+            "message": "image pixels size exceeds max pixels limit",
+        }
+        super().__init__(response=response, status_code=400)
+
+
 class MiscEquipmentInvalidPayloadErrorResponse(HttpResponse):
     def __init__(self, sport_ids: List[int], message: str) -> None:
         response = {

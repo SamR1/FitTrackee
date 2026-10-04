@@ -157,6 +157,36 @@ class TestMediaApiPost(ApiTestCaseMixin):
         )
         assert "data" not in data
 
+    def test_it_returns_error_if_image_pixels_size_exceeds_pixels_limit(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        file_path = os.path.join(
+            app.root_path, "tests/files/image_with_gps_exif.jpg"
+        )
+        max_image_pixels = 10
+
+        with (
+            open(file_path, "rb") as image_file,
+            patch("fittrackee.files.MAX_IMAGE_PIXELS", max_image_pixels),
+        ):
+            response = client.post(
+                "/api/auth/picture",
+                data=dict(file=(BytesIO(image_file.read()), "image.jpg")),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
+            )
+
+        data = self.assert_400(
+            response, "image pixels size exceeds max pixels limit", "error"
+        )
+        assert data["max_pixels"] == max_image_pixels
+        assert data["file_pixels"] == 64
+
     def test_it_returns_400_if_file_content_is_invalid(
         self, app: "Flask", user_1: "User"
     ) -> None:

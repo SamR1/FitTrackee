@@ -2644,11 +2644,7 @@ class TestUserPicture(ApiTestCaseMixin, ImageMixin):
         self.assert_400(response, "file extension not allowed", "fail")
 
     def test_it_returns_error_if_image_size_exceeds_file_limit(
-        self,
-        app_with_max_image_size: Flask,
-        user_1: User,
-        sport_1_cycling: Sport,
-        gpx_file: str,
+        self, app_with_max_image_size: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
             app_with_max_image_size, user_1.email
@@ -2670,6 +2666,36 @@ class TestUserPicture(ApiTestCaseMixin, ImageMixin):
             "Error during picture upload, file size (1.2KB) exceeds 1.0KB.",
         )
         assert "data" not in data
+
+    def test_it_returns_error_if_image_pixels_size_exceeds_pixels_limit(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        max_image_pixels = 10
+
+        with (
+            patch(
+                "fittrackee.users.auth.generate_filename",
+                return_value="avatar.png",
+            ),
+            patch("fittrackee.files.MAX_IMAGE_PIXELS", max_image_pixels),
+        ):
+            response = client.post(
+                "/api/auth/picture",
+                data=dict(file=(self.get_image_content(app), "avatar.png")),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
+            )
+
+        data = self.assert_400(
+            response, "image pixels size exceeds max pixels limit", "error"
+        )
+        assert data["max_pixels"] == max_image_pixels
+        assert data["file_pixels"] == 64
 
     def test_it_updates_user_picture(self, app: Flask, user_1: User) -> None:
         client, auth_token = self.get_test_client_and_auth_token(

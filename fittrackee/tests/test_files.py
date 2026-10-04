@@ -1,13 +1,14 @@
 import os
 from io import BytesIO
 from typing import TYPE_CHECKING
+from unittest.mock import patch
 
 import pytest
 from PIL import Image, ImageChops
 from werkzeug.datastructures import FileStorage
 
 from fittrackee.constants import IMAGE_MIMETYPES
-from fittrackee.exceptions import FileException
+from fittrackee.exceptions import FileException, ImageMaxPixelsException
 from fittrackee.files import (
     check_file,
     get_file_extension,
@@ -188,6 +189,24 @@ class TestGetImageWithoutExif(ImageMixin):
             ),
             new_image,
         ).getbbox()
+
+    def test_it_returns_error_when_file_exceeds_limit(
+        self, app: "Flask"
+    ) -> None:
+        image_file_name = "image_without_exif.png"
+        image = Image.open(
+            os.path.join(app.root_path, "tests/files", image_file_name)
+        )
+        max_image_pixels = 50
+
+        with (
+            patch("fittrackee.files.MAX_IMAGE_PIXELS", max_image_pixels),
+            pytest.raises(
+                ImageMaxPixelsException,
+                match="image max pixels limit exceeded",
+            ),
+        ):
+            get_image_without_exif(image)
 
 
 class TestGetImageFromFileStorageWithoutExif(ImageMixin):

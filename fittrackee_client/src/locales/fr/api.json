@@ -2,6 +2,7 @@
   "ERROR": {
     "<time> is missing in gpx file": "Elément <time> manquant dans le fichier .gpx.",
     "Error when updating elevation data source": "Erreur lors de la mise à jour de la source de données d'altitude",
+    "IMAGE_PIXELS_SIZE_ERROR": "La taille de l'image ({filePixels} pixels) dépasse la limite maximale ({maxPixels} pixels).",
     "INVALID_REDIRECT_URI_SCHEME": "Protocole de l'URL de redirection invalide",
     "Network Error": "Erreur réseau.",
     "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",

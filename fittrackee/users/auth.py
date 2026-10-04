@@ -27,7 +27,7 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.utils import handle_pieces_of_equipment
-from fittrackee.exceptions import FileException
+from fittrackee.exceptions import FileException, ImageMaxPixelsException
 from fittrackee.files import (
     check_file,
     generate_filename,
@@ -41,6 +41,7 @@ from fittrackee.responses import (
     EquipmentInvalidPayloadErrorResponse,
     ForbiddenErrorResponse,
     HttpResponse,
+    ImagePixelsExceededInvalidPayloadErrorResponse,
     InvalidPayloadErrorResponse,
     NotFoundErrorResponse,
     PayloadTooLargeErrorResponse,
@@ -1904,7 +1905,12 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     except FileException as e:
         return InvalidPayloadErrorResponse(str(e))
     filename = generate_filename(extension)
-    image = get_image_from_file_storage_without_exif(file)
+    try:
+        image = get_image_from_file_storage_without_exif(file)
+    except ImageMaxPixelsException as e:
+        return ImagePixelsExceededInvalidPayloadErrorResponse(
+            max_size=e.max_size, file_size=e.file_size
+        )
     dirpath = os.path.join(
         current_app.config["UPLOAD_FOLDER"], "pictures", str(auth_user.id)
     )

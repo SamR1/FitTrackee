@@ -18,6 +18,7 @@ import type { IStatisticsState } from '@/store/modules/statistics/types'
 import type { IUsersState } from '@/store/modules/users/types'
 import type { IWorkoutsState } from '@/store/modules/workouts/types'
 import type { IApiErrorMessage } from '@/types/api'
+import type { IImagePixelsSizeError } from '@/types/api'
 import type {
   IEquipment,
   IEquipmentError,
@@ -81,6 +82,14 @@ export const handleError = (
   const miscEquipmentError = getMiscEquipmentError(error, context)
   if (miscEquipmentError) {
     context.commit(ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES, miscEquipmentError)
+    return
+  }
+  const imagePixelsSizeError = getImagePixelsSizeError(error)
+  if (imagePixelsSizeError) {
+    context.commit(
+      ROOT_STORE.MUTATIONS.SET_ERROR_MESSAGES,
+      imagePixelsSizeError
+    )
     return
   }
 
@@ -166,6 +175,26 @@ const getMiscEquipmentError = (
       return {
         sportLabels: sportLabels,
         message: data.message,
+      }
+    }
+  }
+  return null
+}
+
+const getImagePixelsSizeError = (
+  error: AxiosError | null
+): IImagePixelsSizeError | null => {
+  if (error?.response?.data) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    const data: { file_pixels: number; max_pixels: number } = {
+      ...error.response.data,
+    }
+    if (data.file_pixels && data.max_pixels) {
+      return {
+        file_pixels: data.file_pixels,
+        max_pixels: data.max_pixels,
+        message: 'IMAGE_PIXELS_SIZE_ERROR',
       }
     }
   }
