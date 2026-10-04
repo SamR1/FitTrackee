@@ -365,8 +365,10 @@ def create_app(init_email: bool = True) -> Flask:
         else:
             return render_template("index.html")
 
-    # to get headers, especially 'X-Forwarded-Proto' for scheme needed by
-    # Authlib, when the application is running behind a proxy server
+    # to get headers when the application is running behind a proxy server,
+    # especially:
+    # - 'X-Forwarded-Proto' for scheme needed by Authlib
+    # - 'X-Forwarded-For' for Flask-Limiter if enabled
     app.wsgi_app = ProxyFix(app.wsgi_app)  # type: ignore
 
     return app

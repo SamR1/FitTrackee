@@ -9,6 +9,9 @@ API rate limits
 .. note::
     | If no Redis instance is available for rate limits, FitTrackee can still start.
 
+.. warning::
+    | **Flask-Limiter** relies on IP resolved from ``X-Forwarded-For`` header. API rate limits should be enabled only if a trusted upstream reverse proxy is set.
+
 | All endpoints are subject to rate limits, except endpoints serving assets.
 | Limits are configured by setting the environment variable ``API_RATE_LIMITS``, for example ``300 per 5 minutes`` (see `Flask-Limiter documentation for notation <https://flask-limiter.readthedocs.io/en/stable/configuration.html#rate-limit-string-notation>`_).
 | Multiple rate limits must be separated by a comma, for instance:
