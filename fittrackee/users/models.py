@@ -887,7 +887,20 @@ class User(BaseModel):
             "location": self.location,
         }
 
-        if role is not None:
+        if is_auth_user(role) or has_admin_rights(role):
+            serialized_user["email_to_confirm"] = self.email_to_confirm
+
+        if current_user and has_moderator_rights(UserRole(current_user.role)):
+            reports_count = self.all_reports_count
+            serialized_user["created_reports_count"] = reports_count[
+                "created_reports_count"
+            ]
+            serialized_user["reported_count"] = reports_count["reported_count"]
+            serialized_user["sanctions_count"] = reports_count[
+                "sanctions_count"
+            ]
+
+        if is_auth_user(role):
             total: Tuple = (0, "0:00:00", 0)
             if self.workouts_count > 0:  # type: ignore
                 total = tuple(
@@ -911,20 +924,6 @@ class User(BaseModel):
             serialized_user["total_distance"] = float(total[0])
             serialized_user["total_duration"] = str(total[1])
 
-        if is_auth_user(role) or has_admin_rights(role):
-            serialized_user["email_to_confirm"] = self.email_to_confirm
-
-        if current_user and has_moderator_rights(UserRole(current_user.role)):
-            reports_count = self.all_reports_count
-            serialized_user["created_reports_count"] = reports_count[
-                "created_reports_count"
-            ]
-            serialized_user["reported_count"] = reports_count["reported_count"]
-            serialized_user["sanctions_count"] = reports_count[
-                "sanctions_count"
-            ]
-
-        if is_auth_user(role):
             accepted_privacy_policy = None
             if self.accepted_policy_date:
                 accepted_privacy_policy = (
@@ -934,33 +933,21 @@ class User(BaseModel):
             serialized_user = {
                 **serialized_user,
                 "accepted_privacy_policy": accepted_privacy_policy,
+                "analysis_visibility": self.analysis_visibility.value,
+                "calories_visibility": self.calories_visibility.value,
                 "date_format": self.date_format,
                 "display_ascent": self.display_ascent,
-                "imperial_units": self.imperial_units,
-                "language": self.language,
-                "start_elevation_at_zero": self.start_elevation_at_zero,
-                "timezone": self.timezone,
-                "use_dark_mode": self.use_dark_mode,
-                "use_raw_gpx_speed": self.use_raw_gpx_speed,
-                "weekm": self.weekm,
-                "map_visibility": self.map_visibility.value,
-                "analysis_visibility": self.analysis_visibility.value,
-                "workouts_visibility": self.workouts_visibility.value,
-                "hr_visibility": self.hr_visibility.value,
-                "segments_creation_event": self.segments_creation_event,
-                "manually_approves_followers": (
-                    self.manually_approves_followers
-                ),
                 "hide_profile_in_users_directory": (
                     self.hide_profile_in_users_directory
                 ),
-                "sanctions_count": self.sanctions_count,
-                "notification_preferences": (
-                    self.notification_preferences
-                    if self.notification_preferences
-                    else {}
+                "hr_visibility": self.hr_visibility.value,
+                "imperial_units": self.imperial_units,
+                "language": self.language,
+                "manually_approves_followers": (
+                    self.manually_approves_followers
                 ),
-                "split_workout_charts": self.split_workout_charts,
+                "map_visibility": self.map_visibility.value,
+                "media_visibility": self.media_visibility.value,
                 "messages_preferences": (
                     self.messages_preferences
                     if self.messages_preferences
@@ -969,8 +956,20 @@ class User(BaseModel):
                 "missing_elevations_processing": (
                     self.calculated_missing_elevations_processing
                 ),
-                "calories_visibility": self.calories_visibility.value,
-                "media_visibility": self.media_visibility.value,
+                "notification_preferences": (
+                    self.notification_preferences
+                    if self.notification_preferences
+                    else {}
+                ),
+                "sanctions_count": self.sanctions_count,
+                "segments_creation_event": self.segments_creation_event,
+                "split_workout_charts": self.split_workout_charts,
+                "start_elevation_at_zero": self.start_elevation_at_zero,
+                "timezone": self.timezone,
+                "use_dark_mode": self.use_dark_mode,
+                "use_raw_gpx_speed": self.use_raw_gpx_speed,
+                "weekm": self.weekm,
+                "workouts_visibility": self.workouts_visibility.value,
             }
 
         return serialized_user

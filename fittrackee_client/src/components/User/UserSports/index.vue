@@ -1,7 +1,7 @@
 <template>
   <div id="users-sports">
     <router-view
-      :authUser="user"
+      :authUser="authUser"
       :isEdition="isEdition"
       :translatedSports="translatedSports"
     >
@@ -21,11 +21,11 @@
   import { translateSports } from '@/utils/sports'
 
   interface Props {
-    user: IAuthUserProfile
+    authUser: IAuthUserProfile
     isEdition: boolean
   }
   const props = defineProps<Props>()
-  const { user, isEdition } = toRefs(props)
+  const { authUser, isEdition } = toRefs(props)
 
   const store = useStore()
   const { t } = useI18n()
@@ -33,7 +33,7 @@
   const { sports } = useSports()
 
   const translatedSports: ComputedRef<ITranslatedSport[]> = computed(() =>
-    translateSports(sports.value, t, 'is_active', user.value.sports_list)
+    translateSports(sports.value, t, 'is_active', authUser.value.sports_list)
   )
 
   onUnmounted(() => {

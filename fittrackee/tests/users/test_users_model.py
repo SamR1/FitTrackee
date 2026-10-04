@@ -145,14 +145,13 @@ class UserModelAssertMixin:
         assert serialized_user["picture"] is False
 
     @staticmethod
-    def assert_workouts_keys_are_present(serialized_user: Dict) -> None:
-        assert "nb_sports" in serialized_user
-        assert "nb_workouts" in serialized_user
-        assert "records" in serialized_user
-        assert "sports_list" in serialized_user
-        assert "total_ascent" in serialized_user
-        assert "total_distance" in serialized_user
-        assert "total_duration" in serialized_user
+    def assert_workouts_keys_are_not_present(serialized_user: Dict) -> None:
+        assert "nb_sports" not in serialized_user
+        assert "records" not in serialized_user
+        assert "sports_list" not in serialized_user
+        assert "total_ascent" not in serialized_user
+        assert "total_distance" not in serialized_user
+        assert "total_duration" not in serialized_user
 
 
 class TestUserSerializeAsAuthUser(UserModelAssertMixin):
@@ -241,10 +240,28 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
 
         assert serialized_user["messages_preferences"] == {}
 
-    def test_it_returns_workouts_infos(self, app: Flask, user_1: User) -> None:
+    @pytest.mark.disable_autouse_update_records_patch
+    def test_it_returns_workouts_infos(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-        self.assert_workouts_keys_are_present(serialized_user)
+        assert serialized_user["nb_sports"] == 1
+        assert serialized_user["nb_workouts"] == 1
+        assert len(serialized_user["records"]) == 4
+        assert serialized_user["sports_list"] == [sport_1_cycling.id]
+        assert serialized_user["total_ascent"] == 0.0
+        assert (
+            serialized_user["total_distance"]
+            == workout_cycling_user_1.distance
+        )
+        assert serialized_user["total_duration"] == str(
+            workout_cycling_user_1.moving
+        )
 
     def test_it_returns_none_when_user_did_not_accept_default_privacy_policy(
         self, app: Flask, user_1: User
@@ -415,14 +432,15 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "missing_elevations_processing" not in serialized_user
         assert "calories_visibility" not in serialized_user
 
-    def test_it_returns_workouts_infos(
+    def test_it_returns_only_workouts_count_from_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         serialized_user = user_2.serialize(
             current_user=user_1_admin, light=False
         )
 
-        self.assert_workouts_keys_are_present(serialized_user)
+        assert serialized_user["nb_workouts"] == 0
+        self.assert_workouts_keys_are_not_present(serialized_user)
 
     def test_it_does_not_return_accepted_privacy_policy_date(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -508,14 +526,15 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "missing_elevations_processing" not in serialized_user
         assert "calories_visibility" not in serialized_user
 
-    def test_it_returns_workouts_infos(
+    def test_it_returns_only_workouts_count_from_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
     ) -> None:
         serialized_user = user_2.serialize(
             current_user=user_1_moderator, light=False
         )
 
-        self.assert_workouts_keys_are_present(serialized_user)
+        assert serialized_user["nb_workouts"] == 0
+        self.assert_workouts_keys_are_not_present(serialized_user)
 
     def test_it_does_not_return_accepted_privacy_policy_date(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -594,12 +613,13 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "missing_elevations_processing" not in serialized_user
         assert "calories_visibility" not in serialized_user
 
-    def test_it_returns_workouts_infos(
+    def test_it_returns_only_workouts_count_from_workouts_infos(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         serialized_user = user_2.serialize(current_user=user_1, light=False)
 
-        self.assert_workouts_keys_are_present(serialized_user)
+        assert serialized_user["nb_workouts"] == 0
+        self.assert_workouts_keys_are_not_present(serialized_user)
 
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1: User, user_2: User
