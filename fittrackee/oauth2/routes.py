@@ -1,7 +1,9 @@
 from typing import Dict, Optional, Tuple, Union
 
 from authlib.oauth2 import OAuth2Error
+from authlib.oauth2.rfc6749.errors import InvalidGrantError
 from flask import Blueprint, Response, request
+from sqlalchemy import exc
 
 from fittrackee import db
 from fittrackee.responses import (
@@ -490,7 +492,10 @@ def revoke_client_tokens(
         - ``invalid token, please log in again``
     :statuscode 404: ``OAuth2 client not found``
     """
-    client = OAuth2Client.query.filter_by(id=client_id).first()
+    client = OAuth2Client.query.filter_by(
+        id=client_id,
+        user_id=auth_user.id,
+    ).first()
 
     if not client:
         return NotFoundErrorResponse("OAuth2 client not found")
@@ -626,13 +631,19 @@ def issue_token() -> Response:
     :form string  refresh_token: refresh token (for token refresh)
 
     :statuscode 200: ``success``
-    :statuscode 400: errors returned by Authlib library
+    :statuscode 400:
+        - errors returned by Authlib library
+        - ``invalid_grant``
     :statuscode 401:
         - ``provide a valid auth token``
         - ``signature expired, please log in again``
         - ``invalid token, please log in again``
     """
-    return authorization_server.create_token_response()
+    try:
+        response = authorization_server.create_token_response()
+    except (exc.IntegrityError, exc.OperationalError, InvalidGrantError):
+        return InvalidPayloadErrorResponse(message="invalid_grant")
+    return response
 
 
 @oauth2_blueprint.route("/oauth/revoke", methods=["POST"])

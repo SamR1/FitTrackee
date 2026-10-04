@@ -1566,3 +1566,22 @@ class TestOAuthRevokeClientToken(ApiTestCaseMixin):
 
         assert response.status_code == 200
         assert not another_client_token.is_revoked()
+
+    def test_it_does_not_revoke_another_user_token(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        oauth_client = self.create_oauth2_client(user_1)
+        oauth_client_token = self.create_oauth2_token(oauth_client)
+        client_id = oauth_client.id
+
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+        response = client.post(
+            self.route.format(client_id=client_id),
+            content_type="application/json",
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        self.assert_404_with_message(response, "OAuth2 client not found")
+        assert not oauth_client_token.is_revoked()
