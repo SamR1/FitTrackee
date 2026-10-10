@@ -2,6 +2,7 @@
   "ERROR": {
     "<time> is missing in gpx file": "<time> 元素在 .gpx 文件中缺失。",
     "Error when updating elevation data source": "更新高程数据源时出错",
+    "INVALID_REDIRECT_URI_SCHEME": "无效的重定向URL协议",
     "Network Error": "网络错误。",
     "UNKNOWN": "错误。请重试或联系管理员。",
     "a maximum of 5 pieces of Misc equipment can be added": "最多可添加5件\"杂项\"装备。",
