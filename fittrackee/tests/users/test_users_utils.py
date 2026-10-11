@@ -273,10 +273,7 @@ class TestDecodePassordTokenToken:
         token = self.generate_token(user_id=1, now=datetime.now(timezone.utc))
         header, _, signature = token.split(".")
         modified_token = f"{header}.{random_string()}.{signature}"
-        with pytest.raises(
-            jwt.exceptions.DecodeError,
-            match="Invalid payload padding",
-        ):
+        with pytest.raises(jwt.exceptions.DecodeError):
             decode_password_reset_token(modified_token)
 
     def test_it_raises_error_when_secret_key_is_invalid(

@@ -24,6 +24,7 @@ import type {
   IMiscEquipmentError,
 } from '@/types/equipments'
 import type { ISport } from '@/types/sports.ts'
+import { removeCookies } from '@/utils/cookies.ts'
 
 export const handleError = (
   context:
@@ -41,15 +42,20 @@ export const handleError = (
   msg = 'UNKNOWN'
 ): void => {
   // if request is cancelled, no error to display
-  if (error && error.message === 'canceled') {
+  if (error?.message === 'canceled') {
     return
   }
 
-  const errorInfo: IApiErrorMessage | null =
-    error?.response && error.response.data ? error.response.data : null
+  const errorInfo: IApiErrorMessage | null = error?.response?.data
+    ? error.response.data
+    : null
 
   // if token is blacklisted, disconnect user
-  if (error?.response?.status === 401 && errorInfo?.error === 'invalid_token') {
+  if (
+    error?.response?.status === 401 &&
+    errorInfo?.message === 'provide a valid auth token'
+  ) {
+    removeCookies()
     context.dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     return
   }
