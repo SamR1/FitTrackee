@@ -38,7 +38,7 @@ from fittrackee.emails.emails import EmailService
 from fittrackee.exceptions import EmailConfigException
 from fittrackee.request import CustomRequest
 
-VERSION = __version__ = "1.3.5"
+VERSION = __version__ = "1.3.6"
 DEFAULT_PRIVACY_POLICY_DATA = "2026-10-11 13:30:00"
 REDIS_URL = os.getenv("REDIS_URL", "redis://")
 API_RATE_LIMITS = os.environ.get("API_RATE_LIMITS")
