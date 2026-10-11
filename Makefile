@@ -41,6 +41,7 @@ clean-install: clean
 	rm -fr $(VENV)
 	rm -rf *.egg-info
 	rm -rf dist/
+	rm -rf docs/
 	rm -rf .staticmap_cache
 
 codespell:
@@ -184,10 +185,10 @@ init-db:
 install: install-client install-python
 
 install-client:
-	cd fittrackee_client && $(NPM) ci --ignore-scripts --omit=dev $(NPM_ARGS)
+	cd fittrackee_client && $(NPM) ci --ignore-scripts --allow-git root --omit=dev $(NPM_ARGS)
 
 install-client-dev:
-	cd fittrackee_client && $(NPM) ci --ignore-scripts $(NPM_ARGS)
+	cd fittrackee_client && $(NPM) ci --ignore-scripts --allow-git root $(NPM_ARGS)
 
 install-dev: install-client-dev install-python-dev
 

@@ -307,10 +307,10 @@ class TestPostWorkoutWithGpx(
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         self.assert_403(response)
@@ -336,10 +336,10 @@ class TestPostWorkoutWithGpx(
                     file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                     data='{"sport_id": 1}',
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
         self.assert_400(
@@ -366,10 +366,10 @@ class TestPostWorkoutWithGpx(
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         assert response.status_code == 201
@@ -396,10 +396,10 @@ class TestPostWorkoutWithGpx(
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{{"sport_id": 1, "notes": "test "workout""}}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         self.assert_400(response)
@@ -421,10 +421,10 @@ class TestPostWorkoutWithGpx(
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{{"sport_id": 1, "description": "test "workout""}}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         self.assert_400(response)
@@ -446,10 +446,10 @@ class TestPostWorkoutWithGpx(
                 file=(BytesIO(str.encode(gpx_file_wo_track)), "example.gpx"),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         data = self.assert_500(response, "no tracks in gpx file")
@@ -475,10 +475,10 @@ class TestPostWorkoutWithGpx(
                 ),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         data = self.assert_500(response, "error when parsing gpx file")
@@ -504,10 +504,10 @@ class TestPostWorkoutWithGpx(
                 ),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         data = self.assert_500(response, "<time> is missing in gpx file")
@@ -530,10 +530,10 @@ class TestPostWorkoutWithGpx(
                 file=(BytesIO(str.encode(gpx_file)), "example.png"),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         self.assert_400(response, "file extension not allowed", "fail")
@@ -554,10 +554,10 @@ class TestPostWorkoutWithGpx(
             data=dict(
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"), data="{}"
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         self.assert_400(response)
@@ -579,10 +579,10 @@ class TestPostWorkoutWithGpx(
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{"sport_id": 2}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         self.assert_400(response, "Sport id: 2 does not exist", "invalid")
@@ -597,10 +597,10 @@ class TestPostWorkoutWithGpx(
         response = client.post(
             "/api/workouts",
             data=dict(data="{}"),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         self.assert_400(response, "no file part", "fail")
@@ -622,10 +622,10 @@ class TestPostWorkoutWithGpx(
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         data = self.assert_413(
@@ -662,10 +662,10 @@ class TestPostWorkoutWithGpx(
                     )
                 ),
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         data = json.loads(response.data.decode())
@@ -708,10 +708,10 @@ class TestPostWorkoutWithGpx(
                     )
                 ),
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         self.assert_400(
@@ -753,10 +753,10 @@ class TestPostWorkoutWithKml(WorkoutApiTestCaseMixin):
                 ),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         assert response.status_code == 201
@@ -799,10 +799,10 @@ class TestPostWorkoutWithKmz(WorkoutApiTestCaseMixin):
                 data=dict(
                     file=(kmz_file, "example.kmz"), data='{"sport_id": 1}'
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
         assert response.status_code == 201
@@ -851,10 +851,10 @@ class TestPostWorkoutWithTcx(WorkoutApiTestCaseMixin):
                 ),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         assert response.status_code == 201
@@ -899,10 +899,10 @@ class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin, WorkoutFileMixin):
                 ),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         assert response.status_code == 201
@@ -945,10 +945,10 @@ class TestPostWorkoutWithFit(WorkoutApiTestCaseMixin, WorkoutFileMixin):
                 ),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         assert response.status_code == 201
@@ -1003,7 +1003,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     distance=10,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -1030,7 +1030,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     distance=10,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1055,7 +1055,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                 "ascent": 120,
                 "descent": 80,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         self.assert_400(
             response,
@@ -1084,7 +1084,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     title=title,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1142,7 +1142,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
             "/api/workouts/no_gpx",
             content_type="application/json",
             data=json.dumps(input_data),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1166,7 +1166,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     "ascent": 100,
                 }
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid ascent or descent", "invalid")
@@ -1202,7 +1202,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     **input_data,
                 }
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid ascent or descent", "invalid")
@@ -1225,7 +1225,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     distance=10,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_500(
@@ -1255,7 +1255,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     distance=input_distance,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1283,7 +1283,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     distance=10,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1308,7 +1308,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     notes=notes,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1337,7 +1337,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     description=description,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1369,7 +1369,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     equipment_bike_user_1.short_id,
                 ],
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1411,7 +1411,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     equipment_bike_user_1.short_id,
                 ],
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -1450,7 +1450,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     equipment_bike_user_1.short_id,
                 ],
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 400
@@ -1484,7 +1484,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                 "distance": 10,
                 "equipment_ids": [equipment_bike_user_1.short_id],
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 400
@@ -1520,7 +1520,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     equipment_another_shoes_user_1.short_id,
                 ],
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -1551,7 +1551,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     calories=input_calories,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1582,7 +1582,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     workout_visibility=VisibilityLevel.PUBLIC,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1632,7 +1632,7 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
                     ],
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -1671,10 +1671,10 @@ class TestPostWorkoutWithZipArchive(
                 data=dict(
                     file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
             assert response.status_code == 201
@@ -1740,10 +1740,10 @@ class TestPostWorkoutWithZipArchive(
                     file=(zip_file, "gpx_test_incorrect.zip"),
                     data='{"sport_id": 1}',
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
             assert response.status_code == 400
@@ -1772,10 +1772,10 @@ class TestPostWorkoutWithZipArchive(
                     file=(zip_file, "gpx_test_incorrect.zip"),
                     data='{"sport_id": 1}',
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
             assert response.status_code == 400
@@ -1820,10 +1820,10 @@ class TestPostWorkoutWithZipArchive(
                         file=(zip_file, "gpx_test_incorrect.zip"),
                         data='{"sport_id": 1}',
                     ),
-                    headers=dict(
-                        content_type="multipart/form-data",
-                        Authorization=f"Bearer {auth_token}",
-                    ),
+                    headers={
+                        "content_type": "multipart/form-data",
+                        "X-CSRF-TOKEN": auth_token,
+                    },
                 )
 
             assert response.status_code == 400
@@ -1857,10 +1857,10 @@ class TestPostWorkoutWithZipArchive(
                 data=dict(
                     file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
             assert response.status_code == 200
@@ -1897,10 +1897,10 @@ class TestPostWorkoutWithZipArchive(
                 data=dict(
                     file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
             self.assert_400(response, "ongoing upload task exists", "invalid")
@@ -1925,10 +1925,10 @@ class TestPostWorkoutWithZipArchive(
                 data=dict(
                     file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
             self.assert_400(
@@ -1957,10 +1957,10 @@ class TestPostWorkoutWithZipArchive(
                 data=dict(
                     file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
             data = self.assert_413(
@@ -1993,10 +1993,10 @@ class TestPostWorkoutWithZipArchive(
                         f' ["{equipment_bike_user_1.short_id}"]}}'
                     ),
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
         data = json.loads(response.data.decode())
@@ -2041,10 +2041,10 @@ class TestPostWorkoutWithZipArchive(
                 data=dict(
                     file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
         data = json.loads(response.data.decode())
@@ -2081,10 +2081,10 @@ class TestPostWorkoutWithZipArchive(
                         )
                     ),
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
         self.assert_400(
@@ -2106,10 +2106,10 @@ class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
 
         data = json.loads(response.data.decode())
@@ -2129,7 +2129,7 @@ class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"/api/workouts/{workout_short_id}/geojson",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2140,7 +2140,7 @@ class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"/api/workouts/{workout_short_id}/geojson/segment/{segment_short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         data = json.loads(response.data.decode())
 
@@ -2151,7 +2151,7 @@ class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
 
         response = client.get(
             f"/api/workouts/map/{map_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         assert response.status_code == 200
 
@@ -2192,16 +2192,16 @@ class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
         data = json.loads(response.data.decode())
         workout_short_id = data["data"]["workouts"][0]["id"]
         response = client.get(
             f"/api/workouts/{workout_short_id}/chart_data",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2239,16 +2239,16 @@ class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
                 ),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
         data = json.loads(response.data.decode())
         workout_short_id = data["data"]["workouts"][0]["id"]
         response = client.get(
             f"/api/workouts/{workout_short_id}/chart_data",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2285,10 +2285,10 @@ class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
         data = json.loads(response.data.decode())
         workout_short_id = data["data"]["workouts"][0]["id"]
@@ -2297,7 +2297,7 @@ class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
         ]
         response = client.get(
             f"/api/workouts/{workout_short_id}/chart_data/segment/{segment_short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2333,20 +2333,20 @@ class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
         data = json.loads(response.data.decode())
         workout_short_id = data["data"]["workouts"][0]["id"]
-        client, auth_token = self.get_test_client_and_auth_token(
+        client, new_auth_token = self.get_test_client_and_auth_token(
             app, user_2.email
         )
 
         response = client.get(
             f"/api/workouts/{workout_short_id}/chart_data",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": new_auth_token},
         )
 
         self.assert_404(response)
@@ -2368,16 +2368,16 @@ class TestPostAndGetWorkoutWithFile(WorkoutApiTestCaseMixin):
                 file=(BytesIO(str.encode(gpx_file)), "example.gpx"),
                 data='{"sport_id": 1}',
             ),
-            headers=dict(
-                content_type="multipart/form-data",
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={
+                "content_type": "multipart/form-data",
+                "X-CSRF-TOKEN": auth_token,
+            },
         )
         data = json.loads(response.data.decode())
         workout_short_id = data["data"]["workouts"][0]["id"]
         response = client.get(
             f"/api/workouts/{workout_short_id}/chart_data/segment/999999",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404_with_message(
@@ -2405,13 +2405,13 @@ class TestPostAndGetWorkoutWithoutFile(WorkoutApiTestCaseMixin):
                     distance=10,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         data = json.loads(response.data.decode())
         workout_short_id = data["data"]["workouts"][0]["id"]
         response = client.get(
             f"/api/workouts/{workout_short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2439,13 +2439,13 @@ class TestPostAndGetWorkoutWithoutFile(WorkoutApiTestCaseMixin):
                     notes="new test with notes",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         data = json.loads(response.data.decode())
         workout_short_id = data["data"]["workouts"][0]["id"]
         response = client.get(
             f"/api/workouts/{workout_short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2475,13 +2475,13 @@ class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
                     distance=10,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         data = json.loads(response.data.decode())
         workout_short_id = data["data"]["workouts"][0]["id"]
         response = client.get(
             f"/api/workouts/{workout_short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2515,11 +2515,11 @@ class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
                     distance=10,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         response = client.get(
             "/api/workouts?from=2018-01-01&to=2018-01-31",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2557,7 +2557,7 @@ class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
                     distance=10,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         client.post(
             "/api/workouts/no_gpx",
@@ -2570,7 +2570,7 @@ class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
                     distance=10,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         workout_cycling_user_1.workout_date = datetime(
@@ -2589,11 +2589,11 @@ class TestPostAndGetWorkoutUsingTimezones(WorkoutApiTestCaseMixin):
                     distance=10,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         response = client.get(
             "/api/workouts?from=2018-01-01&to=2018-01-31",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         data = json.loads(response.data.decode())
 
@@ -2647,7 +2647,7 @@ class TestPostWorkoutSuspensionAppeal(WorkoutApiTestCaseMixin, ReportMixin):
             f"/api/workouts/{workout_short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -2670,7 +2670,7 @@ class TestPostWorkoutSuspensionAppeal(WorkoutApiTestCaseMixin, ReportMixin):
             f"/api/workouts/{workout_cycling_user_2.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2690,7 +2690,7 @@ class TestPostWorkoutSuspensionAppeal(WorkoutApiTestCaseMixin, ReportMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="workout is not suspended")
@@ -2712,7 +2712,7 @@ class TestPostWorkoutSuspensionAppeal(WorkoutApiTestCaseMixin, ReportMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="workout has no suspension")
@@ -2742,7 +2742,7 @@ class TestPostWorkoutSuspensionAppeal(WorkoutApiTestCaseMixin, ReportMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(input_data),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "no text provided")
@@ -2771,7 +2771,7 @@ class TestPostWorkoutSuspensionAppeal(WorkoutApiTestCaseMixin, ReportMixin):
                 f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
                 content_type="application/json",
                 data=json.dumps(dict(text=text)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 201
@@ -2811,7 +2811,7 @@ class TestPostWorkoutSuspensionAppeal(WorkoutApiTestCaseMixin, ReportMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="you can appeal only once")

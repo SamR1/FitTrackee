@@ -52,7 +52,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=self.random_short_id()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -71,7 +71,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=self.random_short_id()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -98,7 +98,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -124,7 +124,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -155,7 +155,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -183,7 +183,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -221,7 +221,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -262,7 +262,7 @@ class TestCommentLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -328,7 +328,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin):
                 workout_uuid=self.random_short_id(),
                 comment_uuid=self.random_short_id(),
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -347,7 +347,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=self.random_short_id()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -374,7 +374,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -400,7 +400,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -433,7 +433,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -474,7 +474,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -513,7 +513,7 @@ class TestCommentUndoLikePost(CommentMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -555,7 +555,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(comment_uuid=self.random_short_id()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -574,7 +574,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(comment_uuid=self.random_short_id()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -601,7 +601,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -627,7 +627,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -653,7 +653,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -698,7 +698,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(comment_uuid=comment.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -746,7 +746,7 @@ class TestCommentLikesGet(CommentMixin, ApiTestCaseMixin):
 
         response = client.get(
             f"{self.route.format(comment_uuid=comment.short_id)}?page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200

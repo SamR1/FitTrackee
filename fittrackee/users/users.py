@@ -20,6 +20,7 @@ from fittrackee.responses import (
     UserNotFoundErrorResponse,
     handle_error_and_return_response,
 )
+from fittrackee.users.utils.tokens import get_password_reset_token
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import Record, Workout, WorkoutSegment
 
@@ -644,9 +645,7 @@ def update_user(auth_user: User, user_name: str) -> Union[Dict, HttpResponse]:
                     },
                     template="password_change",
                 )
-                password_reset_token = user.encode_password_reset_token(
-                    user.id
-                )
+                password_reset_token = get_password_reset_token(user.id)
                 send_email.send(
                     user_data,
                     email_data={

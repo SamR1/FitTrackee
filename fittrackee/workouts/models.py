@@ -1281,7 +1281,7 @@ class Record(BaseModel):
             return float(self._value / 1000)
 
     @value.setter  # type: ignore
-    def value(self, val: Union[datetime, float]) -> None:
+    def value(self, val: Union[timedelta, float]) -> None:
         self._value = convert_value_to_integer(self.record_type, val)
 
     def serialize(self) -> Dict:

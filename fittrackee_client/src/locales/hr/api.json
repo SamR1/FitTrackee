@@ -2,6 +2,7 @@
   "ERROR": {
     "<time> is missing in gpx file": "Element <time> nedostaje u .gpx datoteci.",
     "Error when updating elevation data source": "Pogreška prilikom ažuriranja izvora podataka o elevaciji",
+    "INVALID_REDIRECT_URI_SCHEME": "Nevažeća shema URL-a za preusmjeravanje",
     "Network Error": "Mrežna pogreška.",
     "UNKNOWN": "Greška. Pokušajte ponovno ili kontaktirajte administratora.",
     "a maximum of 5 pieces of Misc equipment can be added": "Moguće je dodati najviše 5 komada 'Razne' opreme.",

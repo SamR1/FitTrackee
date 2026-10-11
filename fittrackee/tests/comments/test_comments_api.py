@@ -63,9 +63,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -91,9 +89,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
                     text=self.random_domain(),
                 )
             ),
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -115,9 +111,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -152,9 +146,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -185,9 +177,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
                     text_visibility=VisibilityLevel.PUBLIC,
                 )
             ),
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -219,9 +209,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
                     text_visibility=self.random_string(),
                 )
             ),
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_500(response, "Error during comment save.", "fail")
@@ -252,9 +240,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -289,9 +275,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
                     text_visibility=VisibilityLevel.PUBLIC,
                 )
             ),
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -328,7 +312,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -355,9 +339,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -389,7 +371,7 @@ class TestPostWorkoutComment(CommentMixin, ApiTestCaseMixin):
                     text_visibility=VisibilityLevel.PUBLIC,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         new_comment = Comment.query.filter_by(
@@ -433,9 +415,7 @@ class TestGetWorkoutCommentAsUser(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{workout_comment_short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -470,9 +450,7 @@ class TestGetWorkoutCommentAsUser(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -502,9 +480,7 @@ class TestGetWorkoutCommentAsUser(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -535,9 +511,7 @@ class TestGetWorkoutCommentAsUser(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -568,9 +542,7 @@ class TestGetWorkoutCommentAsUser(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -602,9 +574,7 @@ class TestGetWorkoutCommentAsUser(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -636,9 +606,7 @@ class TestGetWorkoutCommentAsUser(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -670,9 +638,7 @@ class TestGetWorkoutCommentAsUser(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -701,9 +667,7 @@ class TestGetWorkoutCommentAsUser(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -739,9 +703,7 @@ class TestGetWorkoutCommentAsFollower(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -778,9 +740,7 @@ class TestGetWorkoutCommentAsFollower(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -814,9 +774,7 @@ class TestGetWorkoutCommentAsFollower(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -849,9 +807,7 @@ class TestGetWorkoutCommentAsFollower(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -893,9 +849,7 @@ class TestGetWorkoutCommentAsOwner(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -928,9 +882,7 @@ class TestGetWorkoutCommentAsOwner(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -960,9 +912,7 @@ class TestGetWorkoutCommentAsOwner(CommentMixin, ApiTestCaseMixin):
         response = client.get(
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1101,9 +1051,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1135,9 +1083,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_comments_response(response, expected_comments=[])
@@ -1169,9 +1115,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_comments_response(response, expected_comments=[])
@@ -1198,9 +1142,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_comments_response(
@@ -1231,9 +1173,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_comments_response(response, expected_comments=[])
@@ -1262,9 +1202,7 @@ class TestGetWorkoutCommentsAsUser(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1309,9 +1247,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_comments_response(response, expected_comments=[])
@@ -1345,9 +1281,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_comments_response(
@@ -1381,9 +1315,7 @@ class TestGetWorkoutCommentsAsFollower(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1422,9 +1354,7 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_comments_response(
@@ -1457,9 +1387,7 @@ class TestGetWorkoutCommentsAsOwner(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1549,9 +1477,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1579,9 +1505,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
             content_type="application/json",
-            headers=dict(
-                Authorization=f"Bearer {auth_token}",
-            ),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1673,7 +1597,7 @@ class TestGetWorkoutComments(GetWorkoutCommentsTestCase):
 
         response = client.get(
             f"/api/workouts/{workout_cycling_user_2.short_id}/comments",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1720,7 +1644,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, CommentMixin):
 
         response = client.delete(
             f"/api/comments/{comment_short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1756,7 +1680,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, CommentMixin):
 
         response = client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1784,7 +1708,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, CommentMixin):
 
         response = client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1810,7 +1734,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, CommentMixin):
 
         response = client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1834,7 +1758,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, CommentMixin):
 
         response = client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -1863,7 +1787,7 @@ class TestDeleteWorkoutComment(ApiTestCaseMixin, CommentMixin):
 
         client.delete(
             f"/api/comments/{comment.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert Mention.query.filter_by(comment_id=comment_id).all() == []
@@ -1931,7 +1855,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, CommentMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1974,7 +1898,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, CommentMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -2009,7 +1933,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, CommentMixin):
                     text_visibility=VisibilityLevel.FOLLOWERS,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2035,7 +1959,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, CommentMixin):
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps({}),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -2063,7 +1987,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, CommentMixin):
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2090,7 +2014,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, CommentMixin):
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=updated_text)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2120,7 +2044,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, CommentMixin):
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=updated_text)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert comment.text == " Hello"
@@ -2149,7 +2073,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, CommentMixin):
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         new_comment = Comment.query.filter_by(
@@ -2181,7 +2105,7 @@ class TestPatchWorkoutComment(ApiTestCaseMixin, CommentMixin):
             f"/api/comments/{comment.short_id}",
             content_type="application/json",
             data=json.dumps(dict(text=f"@{user_3.username}")),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         new_comment = Comment.query.filter_by(
@@ -2246,7 +2170,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             f"/api/comments/{comment_short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -2276,7 +2200,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             f"/api/comments/{comment.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2303,7 +2227,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             f"/api/comments/{comment.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -2334,7 +2258,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             f"/api/comments/{comment.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -2370,7 +2294,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             f"/api/comments/{comment.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(input_data),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "no text provided")
@@ -2405,7 +2329,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
                 f"/api/comments/{comment.short_id}/suspension/appeal",
                 content_type="application/json",
                 data=json.dumps(dict(text=text)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 201
@@ -2451,7 +2375,7 @@ class TestPostWorkoutCommentSuspensionAppeal(
             f"/api/comments/{comment.short_id}/suspension/appeal",
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, error_message="you can appeal only once")

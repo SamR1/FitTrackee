@@ -2,8 +2,6 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional, Tuple
 
-from sqlalchemy import asc, desc
-
 from fittrackee.users.models import User
 from fittrackee.workouts.models import Workout
 
@@ -58,9 +56,9 @@ class AbstractWorkoutsRefreshService(ABC):
         workouts_to_refresh = (
             workouts_to_refresh_query.filter(*filters)
             .order_by(
-                asc(Workout.workout_date)
+                Workout.workout_date.asc()
                 if self.order == "asc"
-                else desc(Workout.workout_date)
+                else Workout.workout_date.desc()
             )
             .paginate(page=self.page, per_page=self.per_page, error_out=False)
             .items

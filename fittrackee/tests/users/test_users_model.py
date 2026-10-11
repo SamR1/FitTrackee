@@ -4,7 +4,6 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Dict, Set
 
-import jwt
 import pytest
 from flask import Flask
 from jsonschema import ValidationError
@@ -40,7 +39,6 @@ from ..mixins import (
     EquipmentMixin,
     RandomMixin,
     ReportMixin,
-    TokenMixin,
     UserTaskMixin,
     WorkoutMixin,
 )
@@ -147,14 +145,13 @@ class UserModelAssertMixin:
         assert serialized_user["picture"] is False
 
     @staticmethod
-    def assert_workouts_keys_are_present(serialized_user: Dict) -> None:
-        assert "nb_sports" in serialized_user
-        assert "nb_workouts" in serialized_user
-        assert "records" in serialized_user
-        assert "sports_list" in serialized_user
-        assert "total_ascent" in serialized_user
-        assert "total_distance" in serialized_user
-        assert "total_duration" in serialized_user
+    def assert_workouts_keys_are_not_present(serialized_user: Dict) -> None:
+        assert "nb_sports" not in serialized_user
+        assert "records" not in serialized_user
+        assert "sports_list" not in serialized_user
+        assert "total_ascent" not in serialized_user
+        assert "total_distance" not in serialized_user
+        assert "total_duration" not in serialized_user
 
 
 class TestUserSerializeAsAuthUser(UserModelAssertMixin):
@@ -243,10 +240,28 @@ class TestUserSerializeAsAuthUser(UserModelAssertMixin):
 
         assert serialized_user["messages_preferences"] == {}
 
-    def test_it_returns_workouts_infos(self, app: Flask, user_1: User) -> None:
+    @pytest.mark.disable_autouse_update_records_patch
+    def test_it_returns_workouts_infos(
+        self,
+        app: Flask,
+        user_1: User,
+        sport_1_cycling: "Sport",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
         serialized_user = user_1.serialize(current_user=user_1, light=False)
 
-        self.assert_workouts_keys_are_present(serialized_user)
+        assert serialized_user["nb_sports"] == 1
+        assert serialized_user["nb_workouts"] == 1
+        assert len(serialized_user["records"]) == 4
+        assert serialized_user["sports_list"] == [sport_1_cycling.id]
+        assert serialized_user["total_ascent"] == 0.0
+        assert (
+            serialized_user["total_distance"]
+            == workout_cycling_user_1.distance
+        )
+        assert serialized_user["total_duration"] == str(
+            workout_cycling_user_1.moving
+        )
 
     def test_it_returns_none_when_user_did_not_accept_default_privacy_policy(
         self, app: Flask, user_1: User
@@ -417,14 +432,15 @@ class TestUserSerializeAsAdmin(UserModelAssertMixin, ReportMixin):
         assert "missing_elevations_processing" not in serialized_user
         assert "calories_visibility" not in serialized_user
 
-    def test_it_returns_workouts_infos(
+    def test_it_returns_only_workouts_count_from_workouts_infos(
         self, app: Flask, user_1_admin: User, user_2: User
     ) -> None:
         serialized_user = user_2.serialize(
             current_user=user_1_admin, light=False
         )
 
-        self.assert_workouts_keys_are_present(serialized_user)
+        assert serialized_user["nb_workouts"] == 0
+        self.assert_workouts_keys_are_not_present(serialized_user)
 
     def test_it_does_not_return_accepted_privacy_policy_date(
         self, app: Flask, user_1_admin: User, user_2: User
@@ -510,14 +526,15 @@ class TestUserSerializeAsModerator(UserModelAssertMixin, ReportMixin):
         assert "missing_elevations_processing" not in serialized_user
         assert "calories_visibility" not in serialized_user
 
-    def test_it_returns_workouts_infos(
+    def test_it_returns_only_workouts_count_from_workouts_infos(
         self, app: Flask, user_1_moderator: User, user_2: User
     ) -> None:
         serialized_user = user_2.serialize(
             current_user=user_1_moderator, light=False
         )
 
-        self.assert_workouts_keys_are_present(serialized_user)
+        assert serialized_user["nb_workouts"] == 0
+        self.assert_workouts_keys_are_not_present(serialized_user)
 
     def test_it_does_not_return_accepted_privacy_policy_date(
         self, app: Flask, user_1_moderator: User, user_2: User
@@ -596,12 +613,13 @@ class TestUserSerializeAsUser(UserModelAssertMixin):
         assert "missing_elevations_processing" not in serialized_user
         assert "calories_visibility" not in serialized_user
 
-    def test_it_returns_workouts_infos(
+    def test_it_returns_only_workouts_count_from_workouts_infos(
         self, app: Flask, user_1: User, user_2: User
     ) -> None:
         serialized_user = user_2.serialize(current_user=user_1, light=False)
 
-        self.assert_workouts_keys_are_present(serialized_user)
+        assert serialized_user["nb_workouts"] == 0
+        self.assert_workouts_keys_are_not_present(serialized_user)
 
     def test_it_does_not_return_confirmation_token(
         self, app: Flask, user_1: User, user_2: User
@@ -877,135 +895,24 @@ class TestUserWorkouts(UserModelAssertMixin):
         )
 
 
-class TestBlacklistedTokenModel(TokenMixin):
-    def test_blacklisted_token_contains_jti(
+class TestBlacklistedTokenModel(RandomMixin):
+    def test_blacklisted_token_model(
         self, app: "Flask", user_1: "User"
     ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
         now = datetime.now(timezone.utc)
-
+        jti = self.random_string()
+        expired_at = self.random_int()
         with travel(now, tick=False):
-            blacklisted_token = BlacklistedToken(token=auth_token)
-        db.session.add(blacklisted_token)
-        db.session.commit()
-
-        assert blacklisted_token.token == auth_token
-        decoded_token = self.decode_token(app, auth_token)
-        assert blacklisted_token.jti == decoded_token["jti"]
-        assert blacklisted_token.expired_at == decoded_token["exp"]
-        assert blacklisted_token.blacklisted_on == now
-
-    def test_blacklisted_token_without_jti(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        auth_token = self.generate_token_without_jti(app, user_1.id)
-        now = datetime.now(timezone.utc)
-
-        with travel(now, tick=False):
-            blacklisted_token = BlacklistedToken(token=auth_token)
-        db.session.add(blacklisted_token)
-        db.session.commit()
-
-        assert blacklisted_token.token == auth_token
-        decoded_token = self.decode_token(app, auth_token)
-        assert blacklisted_token.jti is None
-        assert blacklisted_token.expired_at == decoded_token["exp"]
-        assert blacklisted_token.blacklisted_on == now
-
-    def test_check_returns_false_when_token_is_not_blacklisted(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-
-        assert BlacklistedToken.check(auth_token) is False
-
-    def test_check_returns_true_when_token_is_not_blacklisted(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        blacklisted_token = BlacklistedToken(token=auth_token)
-        db.session.add(blacklisted_token)
-        db.session.commit()
-
-        assert BlacklistedToken.check(auth_token) is True
-
-    def test_check_returns_true_when_token_without_jti_is_not_blacklisted(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        auth_token = self.generate_token_without_jti(app, user_1.id)
-        blacklisted_token = BlacklistedToken(token=auth_token)
-        db.session.add(blacklisted_token)
-        db.session.commit()
-
-        assert BlacklistedToken.check(auth_token) is True
-
-    def test_check_returns_true_when_token_with_same_jti_is_blacklisted(
-        self, app: "Flask", user_1: "User"
-    ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        payload = self.decode_token(app, auth_token)
-        blacklisted_token = BlacklistedToken(token=auth_token)
-        db.session.add(blacklisted_token)
-        db.session.commit()
-        now = datetime.now(timezone.utc)
-        new_token = jwt.encode(
-            {
-                "exp": now + timedelta(hours=1),
-                "iat": now,
-                "jti": payload["jti"],
-                "sub": str(user_1.id),
-            },
-            app.config["SECRET_KEY"],
-            algorithm="HS256",
-        )
-
-        assert BlacklistedToken.check(new_token) is True
-
-
-class TestUserModelToken(RandomMixin):
-    def test_encode_auth_token(self, app: Flask, user_1: User) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        assert isinstance(auth_token, str)
-
-    def test_encode_password_token(self, app: Flask, user_1: User) -> None:
-        password_token = user_1.encode_password_reset_token(user_1.id)
-        assert isinstance(password_token, str)
-
-    def test_decode_auth_token(self, app: Flask, user_1: User) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        assert isinstance(auth_token, str)
-        assert User.decode_auth_token(auth_token) == user_1.id
-
-    def test_it_returns_error_when_token_is_invalid(
-        self, app: Flask, user_1: User
-    ) -> None:
-        assert (
-            User.decode_auth_token(self.random_string())
-            == "invalid token, please log in again"
-        )
-
-    def test_it_returns_error_when_token_is_expired(
-        self, app: Flask, user_1: User
-    ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        now = datetime.now(timezone.utc)
-        with travel(now + timedelta(seconds=61), tick=False):
-            assert (
-                User.decode_auth_token(auth_token)
-                == "signature expired, please log in again"
+            blacklisted_token = BlacklistedToken(
+                jti=jti, expired_at=expired_at
             )
-
-    def test_it_returns_error_when_token_is_blacklisted(
-        self, app: Flask, user_1: User
-    ) -> None:
-        auth_token = user_1.encode_auth_token(user_1.id)
-        db.session.add(BlacklistedToken(token=auth_token))
+        db.session.add(blacklisted_token)
         db.session.commit()
 
-        assert (
-            User.decode_auth_token(auth_token)
-            == "blacklisted token, please log in again"
-        )
+        assert blacklisted_token.token == jti  # workaround
+        assert blacklisted_token.jti == jti
+        assert blacklisted_token.expired_at == expired_at
+        assert blacklisted_token.blacklisted_on == now
 
 
 class TestUserSportPreferenceModel(EquipmentMixin):

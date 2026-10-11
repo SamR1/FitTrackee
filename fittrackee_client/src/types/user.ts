@@ -16,10 +16,7 @@ export type TUserRole = 'user' | 'moderator' | 'admin' | 'owner'
 export type TVisibilityLevels = 'private' | 'followers_only' | 'public'
 export type TSegmentsCreationEvent = 'all' | 'none' | 'only_manual'
 export type TElevationDataSource =
-  | 'file'
-  | 'open_elevation'
-  | 'open_elevation_smooth'
-  | 'valhalla'
+  'file' | 'open_elevation' | 'open_elevation_smooth' | 'valhalla'
 
 export interface IUserLightProfile {
   blocked: boolean
@@ -46,15 +43,9 @@ export interface IUserProfile extends IUserLightProfile {
   first_name: string | null
   last_name: string | null
   location: string | null
-  nb_sports?: number
   profile_link?: string
-  records: IRecord[]
   reported_count?: number
   sanctions_count?: number
-  sports_list: number[]
-  total_ascent: number
-  total_distance: number
-  total_duration: string
 }
 
 export interface IAuthUserProfile extends IUserProfile {
@@ -81,6 +72,7 @@ export interface IAuthUserProfile extends IUserProfile {
   split_workout_charts: boolean
   start_elevation_at_zero: boolean
   timezone: string
+  total_ascent: number
   total_distance: number
   total_duration: string
   use_dark_mode: boolean | null
@@ -256,11 +248,7 @@ export interface IArchiveUploadTaskError {
   files: Record<string, string>
 }
 export type IArchiveUploadTaskStatus =
-  | 'aborted'
-  | 'errored'
-  | 'in_progress'
-  | 'queued'
-  | 'successful'
+  'aborted' | 'errored' | 'in_progress' | 'queued' | 'successful'
 
 export interface IArchiveUploadTask {
   created_at: string

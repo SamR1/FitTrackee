@@ -35,7 +35,6 @@
   import { toRefs } from 'vue'
 
   import type { IWorkout } from '@/types/workouts'
-  import { getApiUrl } from '@/utils'
 
   interface Props {
     workout: IWorkout
@@ -46,7 +45,7 @@
   })
   const { displayHover } = toRefs(props)
 
-  const imageUrl = `${getApiUrl()}workouts/map/${props.workout.map}`
+  const imageUrl = `/api/workouts/map/${props.workout.map}`
 </script>
 
 <style lang="scss">

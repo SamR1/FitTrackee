@@ -37,6 +37,14 @@
     <div v-else-if="typeof message === 'string'">
       {{ $t(message).replace('api.ERROR.', '') }}
     </div>
+    <div v-else-if="'file_pixels' in message">
+      {{
+        $t('api.ERROR.IMAGE_PIXELS_SIZE_ERROR', {
+          maxPixels: message.max_pixels,
+          filePixels: message.file_pixels,
+        })
+      }}
+    </div>
     <div v-else-if="'equipmentId' in message">
       {{
         $t(`equipments.ERRORS.${message.status}`, {
@@ -61,6 +69,7 @@
 <script setup lang="ts">
   import { toRefs } from 'vue'
 
+  import type { IImagePixelsSizeError } from '@/types/api'
   import type { IEquipmentError, IMiscEquipmentError } from '@/types/equipments'
   import type { IWorkoutFilesError } from '@/types/workouts'
 
@@ -71,6 +80,7 @@
       | IEquipmentError
       | IWorkoutFilesError
       | IMiscEquipmentError
+      | IImagePixelsSizeError
     noMargin?: boolean
   }
   const props = withDefaults(defineProps<Props>(), { noMargin: false })

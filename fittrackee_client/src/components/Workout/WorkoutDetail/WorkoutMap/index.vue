@@ -66,7 +66,7 @@
               />
             </LControl>
             <LTileLayer
-              :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png`"
+              :url="'/api/workouts/map_tile/{s}/{z}/{x}/{y}.png'"
               :attribution="appConfig.map_attribution"
               :bounds="bounds"
               :maxZoom="19"
@@ -162,7 +162,6 @@
   } from '@/types/map'
   import type { IMediaAttachment, IWorkoutData } from '@/types/workouts'
   import { useStore } from '@/use/useStore.ts'
-  import { getApiUrl } from '@/utils'
 
   interface Props {
     workoutData: IWorkoutData

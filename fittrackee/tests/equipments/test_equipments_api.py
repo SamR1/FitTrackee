@@ -48,7 +48,7 @@ class TestGetEquipments(ApiTestCaseMixin):
 
         response = client.get(
             "/api/equipments",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -69,7 +69,7 @@ class TestGetEquipments(ApiTestCaseMixin):
 
         response = client.get(
             "/api/equipments",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -97,7 +97,7 @@ class TestGetEquipments(ApiTestCaseMixin):
 
         response = client.get(
             "/api/equipments",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -127,7 +127,7 @@ class TestGetEquipments(ApiTestCaseMixin):
 
         response = client.get(
             "/api/equipments",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -149,7 +149,7 @@ class TestGetEquipments(ApiTestCaseMixin):
 
         response = client.get(
             "/api/equipments",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -171,7 +171,7 @@ class TestGetEquipments(ApiTestCaseMixin):
 
         response = client.get(
             "/api/equipments",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -217,7 +217,7 @@ class TestGetEquipment(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -241,7 +241,7 @@ class TestGetEquipment(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -263,7 +263,7 @@ class TestGetEquipment(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/equipments/{self.random_short_id()}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -283,7 +283,7 @@ class TestGetEquipment(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -301,7 +301,7 @@ class TestGetEquipment(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -352,7 +352,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "equipment_type_id": equipment_type_1_shoe.id,
                 "label": "Test shoes",
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -381,7 +381,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "equipment_type_id": self.random_int(),
                 "label": self.random_string(),
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid equipment type id")
@@ -402,7 +402,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "equipment_type_id": equipment_type_1_shoe_inactive.id,
                 "label": self.random_string(),
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "equipment type is inactive")
@@ -426,7 +426,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "equipment_type_id": equipment_type_1_shoe.id,
                 "label": label,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -456,7 +456,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "equipment_type_id": equipment_type_1_shoe.id,
                 "label": label,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "label exceeds 50 characters")
@@ -479,7 +479,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "equipment_type_id": equipment_type_1_shoe.id,
                 "label": self.random_string(),
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "description exceeds 2000 characters")
@@ -506,7 +506,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.post(
             "/api/equipments",
             json=data,
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -533,7 +533,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "equipment_type_id": self.random_int(),
                 "label": self.random_short_id(),
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid equipment type")
@@ -555,7 +555,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "equipment_type_id": equipment_shoes_user_1.equipment_type_id,
                 "label": equipment_shoes_user_1.label,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -581,7 +581,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "equipment_type_id": equipment_shoes_user_1.equipment_type_id,
                 "label": equipment_shoes_user_1.label,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -614,7 +614,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                     sport_3_cycling_transport.id,
                 ],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, f"sport (id {sport_id}) does not exist")
@@ -642,7 +642,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                     sport_3_cycling_transport.id,
                 ],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -719,7 +719,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                     sport_3_cycling_transport.id,
                 ],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -805,7 +805,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                     sport_3_cycling_transport.id,
                 ],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -909,7 +909,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                     sport_2_running.id,
                 ],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -947,7 +947,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                     sport_3_cycling_transport.id,
                 ],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -992,7 +992,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "equipment_type_id": equipment_type_1_shoe.id,
                 "default_for_sport_ids": [sport_2_running.id],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1050,7 +1050,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "label": "Another shoes",
                 "default_for_sport_ids": [sport_2_running.id],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1100,7 +1100,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                     sport_2_running.id,
                 ],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -1126,7 +1126,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "label": "Test shoes",
                 "visibility": "invalid",
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid visibility")
@@ -1148,7 +1148,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "label": "Test shoes",
                 "visibility": VisibilityLevel.PUBLIC.value,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1178,7 +1178,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "label": equipment_label,
                 "default_for_sport_ids": [sport_5_outdoor_tennis.id],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1217,7 +1217,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "label": equipment_label,
                 "default_for_sport_ids": [sport_7_kayaking.id],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -1254,7 +1254,7 @@ class TestPostEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "label": equipment_label,
                 "default_for_sport_ids": [sport_1_cycling.id],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -1309,7 +1309,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{self.random_short_id()}",
             json={"is_active": False},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -1329,7 +1329,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
             json={"label": "new label"},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -1345,7 +1345,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
             json={},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "no request data was supplied")
@@ -1360,7 +1360,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
             json={self.random_short_id(): self.random_short_id()},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "no valid parameters supplied")
@@ -1389,7 +1389,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={input_values[0]: input_values[1]},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         equipment = response.json["data"]["equipments"][0]  # type: ignore
@@ -1397,7 +1397,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.get(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         equipment = response.json["data"]["equipments"][0]  # type: ignore
@@ -1422,7 +1422,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "label": label,
                 "description": new_description,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         equipment = response.json["data"]["equipments"][0]  # type: ignore
@@ -1451,7 +1451,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
             json={
                 "label": label,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "label exceeds 50 characters")
@@ -1472,7 +1472,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
             json={
                 "description": self.random_string(DESCRIPTION_MAX_LENGTH + 1),
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "description exceeds 2000 characters")
@@ -1491,7 +1491,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
             json={"label": equipment_bike_user_1_inactive.label},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -1513,7 +1513,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
             json={"visibility": "invalid"},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid visibility")
@@ -1533,7 +1533,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={"equipment_type_id": equipment_type_1_shoe.id},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         equipment = response.json["data"]["equipments"][0]  # type: ignore
@@ -1541,7 +1541,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.get(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         equipment = response.json["data"]["equipments"][0]  # type: ignore
@@ -1560,7 +1560,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={"equipment_type_id": self.random_int()},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid equipment type id")
@@ -1580,7 +1580,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={"equipment_type_id": equipment_type_1_shoe_inactive.id},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "equipment type is inactive")
@@ -1605,7 +1605,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "equipment_type_id": equipment_type_2_bike.id,
                 "label": new_label,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         equipment = response.json["data"]["equipments"][0]  # type: ignore
@@ -1640,7 +1640,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_from_bike_to_kayak_user_1.short_id}",
             json={"equipment_type_id": equipment_type_3_kayak.id},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1689,7 +1689,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_from_bike_to_shoes_user_1.short_id}",
             json={"equipment_type_id": equipment_type_1_shoe.id},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1761,7 +1761,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_from_shoes_to_bike_user_1.short_id}",
             json={"equipment_type_id": equipment_type_2_bike.id},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1825,7 +1825,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_from_bike_to_misc_user_1.short_id}",
             json={"equipment_type_id": equipment_type_6_misc.id},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1896,7 +1896,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={"equipment_type_id": equipment_type_6_misc.id},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -1920,7 +1920,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
             json={"default_for_sport_ids": [sport_2_running.id]},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1967,7 +1967,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                     sport_2_running.id,
                 ]
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -2001,7 +2001,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                     sport_3_cycling_transport.id,
                 ],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2069,7 +2069,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                     sport_2_running.id,
                 ],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2119,7 +2119,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
             json={
                 "default_for_sport_ids": [sport_1_cycling.id],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2180,7 +2180,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
             json={
                 "default_for_sport_ids": [sport_1_cycling.id],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2246,7 +2246,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                     sport_2_running.id,
                 ],
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -2275,7 +2275,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={"default_for_sport_ids": []},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2317,7 +2317,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
             json={"label": new_label},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2364,7 +2364,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_from_bike_to_misc_user_1.short_id}",
             json={"equipment_type_id": equipment_type_6_misc.id},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2410,7 +2410,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_from_misc_to_bike_user_1.short_id}",
             json={"equipment_type_id": equipment_type_2_bike.id},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2457,7 +2457,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.patch(
             f"/api/equipments/{equipment_from_misc_to_racket_user_1.short_id}",
             json={"equipment_type_id": equipment_type_4_racket.id},
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2507,7 +2507,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "default_for_sport_ids": [sport_1_cycling.id],
                 "equipment_type_id": equipment_type_2_bike.id,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2569,7 +2569,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "default_for_sport_ids": [sport_1_cycling.id],
                 "equipment_type_id": equipment_type_6_misc.id,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2621,7 +2621,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "default_for_sport_ids": [sport_1_cycling.id],
                 "equipment_type_id": equipment_type_2_bike.id,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2677,7 +2677,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "default_for_sport_ids": [sport_1_cycling.id],
                 "equipment_type_id": equipment_type_6_misc.id,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2730,7 +2730,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "default_for_sport_ids": [sport_1_cycling.id],
                 "equipment_type_id": equipment_type_4_racket.id,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2781,7 +2781,7 @@ class TestPatchEquipment(ApiTestCaseMixin, EquipmentMixin):
                 "default_for_sport_ids": [sport_1_cycling.id],
                 "equipment_type_id": equipment_type_2_bike.id,
             },
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2854,7 +2854,7 @@ class TestRefreshEquipment(ApiTestCaseMixin):
 
         response = client.post(
             f"/api/equipments/{self.random_short_id()}/refresh",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -2873,7 +2873,7 @@ class TestRefreshEquipment(ApiTestCaseMixin):
 
         response = client.post(
             f"/api/equipments/{equipment_shoes_user_2.short_id}/refresh",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -2906,7 +2906,7 @@ class TestRefreshEquipment(ApiTestCaseMixin):
 
         response = client.post(
             f"/api/equipments/{equipment_bike_user_1.short_id}/refresh",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2965,7 +2965,7 @@ class TestRefreshEquipment(ApiTestCaseMixin):
 
         response = client.post(
             f"/api/equipments/{equipment_bike_user_1.short_id}/refresh",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3027,7 +3027,7 @@ class TestDeleteEquipment(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.delete(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -3044,7 +3044,7 @@ class TestDeleteEquipment(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.delete(
             f"/api/equipments/{self.random_short_id()}",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -3068,7 +3068,7 @@ class TestDeleteEquipment(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.delete(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -3086,7 +3086,7 @@ class TestDeleteEquipment(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.delete(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = response.json
@@ -3117,7 +3117,7 @@ class TestDeleteEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.delete(
             f"/api/equipments/{equipment_shoes_user_1.short_id}",
             query_string="force",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -3153,7 +3153,7 @@ class TestDeleteEquipment(ApiTestCaseMixin, EquipmentMixin):
         response = client.delete(
             f"/api/equipments/{equipment_bike_user_1.short_id}",
             query_string="force",
-            headers={"Authorization": f"Bearer {auth_token}"},
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204

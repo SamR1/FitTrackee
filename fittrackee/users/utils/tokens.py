@@ -1,37 +1,37 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional
 from uuid import uuid4
 
 import jwt
 from flask import current_app
+from flask_jwt_extended import create_access_token
 
 from fittrackee.utils import clean
 
+from ..exceptions import InvalidJWTClaim
 
-def get_user_token(
-    user_id: int, password_reset: Optional[bool] = False
+
+def get_user_token(user_id: int) -> str:
+    token = create_access_token(
+        identity=str(user_id), additional_claims={"type": "auth"}
+    )
+    return token
+
+
+def get_password_reset_token(
+    user_id: int, type_claim: str = "password_reset"
 ) -> str:
-    """
-    Return authentication token for a given user.
-    Token expiration time depends on token type (authentication or password
-    reset)
-    """
-    expiration_days: float = (
-        0.0 if password_reset else current_app.config["TOKEN_EXPIRATION_DAYS"]
-    )
-    expiration_seconds: float = (
-        current_app.config["PASSWORD_TOKEN_EXPIRATION_SECONDS"]
-        if password_reset
-        else current_app.config["TOKEN_EXPIRATION_SECONDS"]
-    )
     now = datetime.now(timezone.utc)
     payload = {
         "exp": (
-            now + timedelta(days=expiration_days, seconds=expiration_seconds)
+            now
+            + timedelta(
+                seconds=current_app.config["PASSWORD_TOKEN_EXPIRATION_SECONDS"]
+            )
         ),
         "iat": now,
         "jti": str(uuid4()),
         "sub": str(user_id),
+        "type": type_claim,
     }
     return jwt.encode(
         payload,
@@ -40,16 +40,15 @@ def get_user_token(
     )
 
 
-def decode_user_token(auth_token: str) -> int:
-    """
-    Return user id from token
-    """
+def decode_password_reset_token(auth_token: str) -> dict:
     payload = jwt.decode(
         auth_token,
         current_app.config["SECRET_KEY"],
         algorithms=["HS256"],
     )
-    return int(payload["sub"])
+    if payload.get("type") != "password_reset":
+        raise InvalidJWTClaim("invalid token, please request a new token")
+    return payload
 
 
 def clean_blacklisted_tokens(days: int) -> int:

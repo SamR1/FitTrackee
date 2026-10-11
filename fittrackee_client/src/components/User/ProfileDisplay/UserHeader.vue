@@ -67,7 +67,6 @@
   import useApp from '@/composables/useApp'
   import useAuthUser from '@/composables/useAuthUser'
   import type { IUserProfile } from '@/types/user'
-  import { getApiUrl } from '@/utils'
   import { formatDate } from '@/utils/dates'
 
   interface Props {
@@ -109,8 +108,7 @@
   )
 
   function getuserWorkoutAtomFeedURL() {
-    const apiUrl = getApiUrl().replace('/api/', '')
-    const feedUrl = `${apiUrl}/users/${user.value.username}/workouts.atom`
+    const feedUrl = `/users/${user.value.username}/workouts.atom`
     const lang = appLanguage.value === 'en' ? '' : `?lang=${appLanguage.value}`
     const imperialUnits = displayOptions.value.useImperialUnits
       ? `${lang ? '&' : '?'}imperial_units=true`

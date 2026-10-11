@@ -92,8 +92,7 @@
           // children are only links or buttons
           ;(
             pane.children[tabbableElementIndex] as
-              | HTMLButtonElement
-              | HTMLLinkElement
+              HTMLButtonElement | HTMLLinkElement
           ).focus()
         }
       }

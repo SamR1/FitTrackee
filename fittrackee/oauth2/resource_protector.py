@@ -5,6 +5,8 @@ from authlib.integrations.flask_oauth2 import ResourceProtector
 from authlib.oauth2 import OAuth2Error
 from authlib.oauth2.rfc6749.errors import MissingAuthorizationError
 from flask import current_app, request
+from flask_jwt_extended import get_current_user, verify_jwt_in_request
+from jwt import DecodeError
 from werkzeug.exceptions import RequestEntityTooLarge
 
 from fittrackee.responses import (
@@ -12,7 +14,6 @@ from fittrackee.responses import (
     PayloadTooLargeErrorResponse,
     UnauthorizedErrorResponse,
 )
-from fittrackee.users.models import User
 
 if TYPE_CHECKING:
     from flask import Request
@@ -34,7 +35,6 @@ class CustomResourceProtector(ResourceProtector):
     def __call__(
         self,
         scopes: Union[str, List, None] = None,
-        optional: bool = False,
         *,
         role: Union["UserRole", None] = None,
         optional_auth_user: bool = False,
@@ -45,21 +45,22 @@ class CustomResourceProtector(ResourceProtector):
             def decorated(*args: Any, **kwargs: Any) -> Callable:
                 auth_user = None
                 auth_header = request.headers.get("Authorization")
-                if not optional_auth_user and not auth_header:
-                    return UnauthorizedErrorResponse(
-                        "provide a valid auth token"
-                    )
 
-                if auth_header:
-                    # First-party application (Fittrackee front-end)
-                    # in this case, scopes will be ignored
-                    auth_token = auth_header.split(" ")[1]
-                    resp = User.decode_auth_token(auth_token)
-                    if isinstance(resp, int):
-                        auth_user = User.query.filter_by(id=resp).first()
+                # First-party application (FitTrackee front-end)
+                # - JWT is stored in cookies
+                # - scopes will be ignored
+                if not auth_header:
+                    try:
+                        verify_jwt_in_request(optional=optional_auth_user)
+                        auth_user = get_current_user()
+                    except DecodeError:
+                        pass
 
-                    # Third-party applications
-                    if not auth_user and scopes:
+                # Third-party applications (OAuth2)
+                # - JWT is in headers
+                # - scopes are checked
+                if not auth_user and auth_header:
+                    if scopes:
                         current_token = None
                         try:
                             current_token = self.acquire_token(scopes)
@@ -76,11 +77,8 @@ class CustomResourceProtector(ResourceProtector):
                                     "MAX_CONTENT_LENGTH"
                                 ],
                             )
-                        auth_user = (
-                            None
-                            if current_token is None
-                            else current_token.user
-                        )
+                        if current_token:
+                            auth_user = current_token.user
 
                 if (not optional_auth_user and not auth_user) or (
                     auth_user and not auth_user.is_active
