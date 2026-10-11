@@ -6,6 +6,8 @@ import { defineConfig } from 'vite'
 
 const zxcvbnRe = /@zxcvbn-ts\/language-(\w+-?\w+?)\//
 
+const apiTarget = process.env.VITE_APP_API_URL || 'http://localhost:5000'
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
@@ -19,6 +21,16 @@ export default defineConfig({
   server: {
     host: true,
     port: 3000,
+    proxy: {
+      '/api': {
+        target: apiTarget,
+        changeOrigin: true,
+      },
+      '^/users/.*/workouts.atom': {
+        target: apiTarget,
+        changeOrigin: true,
+      },
+    },
   },
   build: {
     outDir: path.resolve(__dirname, '../fittrackee/dist'),

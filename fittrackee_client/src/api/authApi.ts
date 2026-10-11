@@ -1,11 +1,10 @@
 import axios from 'axios'
 
 import { pendingRequests, removeRequestIfPending } from '@/api/pending'
-import { getApiUrl } from '@/utils'
 import { getCookieValue } from '@/utils/cookies'
 
 const authApi = axios.create({
-  baseURL: getApiUrl(),
+  baseURL: '/api/',
   withCredentials: true,
 })
 

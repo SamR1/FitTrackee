@@ -64,10 +64,8 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER](
     context: ActionContext<IAuthUserState, IRootState>
   ): void {
-    if (
-      getCookieValue() &&
-      !context.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
-    ) {
+    const cookie = getCookieValue()
+    if (cookie && !context.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]) {
       context
         .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {
           updateUI: true,
@@ -80,10 +78,7 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         )
     }
     // after logout in another tab
-    if (
-      !getCookieValue() &&
-      context.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
-    ) {
+    if (!cookie && context.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]) {
       removeAuthUserData(context)
     }
   },

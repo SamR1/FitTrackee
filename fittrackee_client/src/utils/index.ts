@@ -25,12 +25,6 @@ import type {
 } from '@/types/equipments'
 import type { ISport } from '@/types/sports.ts'
 
-export const getApiUrl = (): string => {
-  return import.meta.env.PROD
-    ? '/api/'
-    : `${import.meta.env.VITE_APP_API_URL}/api/`
-}
-
 export const handleError = (
   context:
     | ActionContext<IRootState, IRootState>
