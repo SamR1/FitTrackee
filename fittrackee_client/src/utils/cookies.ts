@@ -20,7 +20,5 @@ export const removeCookies = (): undefined => {
   if (typeof document === 'undefined') {
     return
   }
-  ;['access_token_cookie', 'csrf_access_token'].forEach((cookie) => {
-    document.cookie = `${cookie}=;expires=Thu, 01 Jan 1970 00:00:00 GMT`
-  })
+  document.cookie = 'csrf_access_token=;expires=Thu, 01 Jan 1970 00:00:00 GMT'
 }
