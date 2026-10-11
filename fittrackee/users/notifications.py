@@ -1,7 +1,7 @@
 from typing import Dict, Union
 
 from flask import Blueprint, request
-from sqlalchemy import and_, asc, desc, exc, or_
+from sqlalchemy import and_, exc, or_
 
 from fittrackee import db
 from fittrackee.comments.models import Comment
@@ -181,9 +181,9 @@ def get_auth_user_notifications(auth_user: User) -> Dict:
         )
         .filter(*filters)
         .order_by(
-            asc(Notification.created_at)
+            Notification.created_at.asc()
             if order == "asc"
-            else desc(Notification.created_at)
+            else Notification.created_at.desc()
         )
         .paginate(
             page=page, per_page=DEFAULT_NOTIFICATION_PER_PAGE, error_out=False

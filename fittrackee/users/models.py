@@ -1,9 +1,8 @@
 import os
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 from uuid import UUID, uuid4
 
-import jwt
 from flask import current_app
 from jsonschema import validate
 from sqlalchemy import and_, func
@@ -55,7 +54,6 @@ from .roles import (
     has_moderator_rights,
     is_auth_user,
 )
-from .utils.tokens import decode_user_token, get_user_token
 
 if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
@@ -506,42 +504,6 @@ class User(BaseModel):
             datetime.now(timezone.utc) if created_at is None else created_at
         )
 
-    @staticmethod
-    def encode_auth_token(user_id: int) -> str:
-        """
-        Generates the auth token
-        :param user_id: -
-        :return: JWToken
-        """
-        return get_user_token(user_id)
-
-    @staticmethod
-    def encode_password_reset_token(user_id: int) -> str:
-        """
-        Generates the auth token
-        :param user_id: -
-        :return: JWToken
-        """
-        return get_user_token(user_id, password_reset=True)
-
-    @staticmethod
-    def decode_auth_token(auth_token: str) -> Union[int, str]:
-        """
-        Decodes the auth token
-        :param auth_token: -
-        :return: integer|string
-        """
-        try:
-            resp = decode_user_token(auth_token)
-            is_blacklisted = BlacklistedToken.check(auth_token)
-            if is_blacklisted:
-                return "blacklisted token, please log in again"
-            return resp
-        except jwt.ExpiredSignatureError:
-            return "signature expired, please log in again"
-        except jwt.InvalidTokenError:
-            return "invalid token, please log in again"
-
     def check_password(self, password: str) -> bool:
         return bcrypt.check_password_hash(self.password, password)
 
@@ -569,7 +531,7 @@ class User(BaseModel):
     @workouts_count.expression  # type: ignore
     def workouts_count(self) -> int:
         return (
-            select(func.count(Workout.id))
+            select(func.count(Workout.id))  # type: ignore
             .where(Workout.user_id == self.id)
             .label("workouts_count")
         )
@@ -965,8 +927,21 @@ class User(BaseModel):
             "location": self.location,
         }
 
-        if role is not None:
-            total = (0, "0:00:00", 0)
+        if is_auth_user(role) or has_admin_rights(role):
+            serialized_user["email_to_confirm"] = self.email_to_confirm
+
+        if current_user and has_moderator_rights(UserRole(current_user.role)):
+            reports_count = self.all_reports_count
+            serialized_user["created_reports_count"] = reports_count[
+                "created_reports_count"
+            ]
+            serialized_user["reported_count"] = reports_count["reported_count"]
+            serialized_user["sanctions_count"] = reports_count[
+                "sanctions_count"
+            ]
+
+        if is_auth_user(role):
+            total: Tuple = (0, "0:00:00", 0)
             if self.workouts_count > 0:  # type: ignore
                 total = tuple(
                     db.session.query(
@@ -989,20 +964,6 @@ class User(BaseModel):
             serialized_user["total_distance"] = float(total[0])
             serialized_user["total_duration"] = str(total[1])
 
-        if is_auth_user(role) or has_admin_rights(role):
-            serialized_user["email_to_confirm"] = self.email_to_confirm
-
-        if current_user and has_moderator_rights(UserRole(current_user.role)):
-            reports_count = self.all_reports_count
-            serialized_user["created_reports_count"] = reports_count[
-                "created_reports_count"
-            ]
-            serialized_user["reported_count"] = reports_count["reported_count"]
-            serialized_user["sanctions_count"] = reports_count[
-                "sanctions_count"
-            ]
-
-        if is_auth_user(role):
             accepted_privacy_policy = None
             if self.accepted_policy_date:
                 accepted_privacy_policy = (
@@ -1012,49 +973,47 @@ class User(BaseModel):
             serialized_user = {
                 **serialized_user,
                 "accepted_privacy_policy": accepted_privacy_policy,
-                "date_format": self.date_format,
-                "display_ascent": self.display_ascent,
-                "imperial_units": self.imperial_units,
-                "language": self.language,
-                "start_elevation_at_zero": self.start_elevation_at_zero,
-                "timezone": self.timezone,
-                "use_dark_mode": self.use_dark_mode,
-                "use_raw_gpx_speed": self.use_raw_gpx_speed,
-                "weekm": self.weekm,
-                "map_visibility": self.map_visibility.value,
                 "analysis_visibility": self.analysis_visibility.value,
-                "workouts_visibility": self.workouts_visibility.value,
-                "hr_visibility": self.hr_visibility.value,
-                "segments_creation_event": self.segments_creation_event,
-                "manually_approves_followers": (
-                    self.manually_approves_followers
-                ),
+                "calories_visibility": self.calories_visibility.value,
+                "date_format": self.date_format,
+                "default_tile_provider": self.default_tile_provider,
+                "display_ascent": self.display_ascent,
+                "elevation_data_source": self.calculated_elevation_data_source,
+                "elevation_processing": self.calculated_elevation_processing,
                 "hide_profile_in_users_directory": (
                     self.hide_profile_in_users_directory
                 ),
-                "sanctions_count": self.sanctions_count,
-                "notification_preferences": (
-                    self.notification_preferences
-                    if self.notification_preferences
-                    else {}
+                "hr_visibility": self.hr_visibility.value,
+                "imperial_units": self.imperial_units,
+                "language": self.language,
+                "manually_approves_followers": (
+                    self.manually_approves_followers
                 ),
-                "split_workout_charts": self.split_workout_charts,
+                "map_visibility": self.map_visibility.value,
+                "media_visibility": self.media_visibility.value,
                 "messages_preferences": (
                     self.messages_preferences
                     if self.messages_preferences
                     else {}
                 ),
-                "calories_visibility": self.calories_visibility.value,
-                "media_visibility": self.media_visibility.value,
-                "workout_stats_from_file": self.workout_stats_from_file,
-                "elevation_data_source": (
-                    self.calculated_elevation_data_source
+                "notification_preferences": (
+                    self.notification_preferences
+                    if self.notification_preferences
+                    else {}
                 ),
-                "elevation_processing": self.calculated_elevation_processing,
                 "process_only_missing_elevations": (
                     self.calculated_process_only_missing_elevations
                 ),
-                "default_tile_provider": self.default_tile_provider,
+                "sanctions_count": self.sanctions_count,
+                "segments_creation_event": self.segments_creation_event,
+                "split_workout_charts": self.split_workout_charts,
+                "start_elevation_at_zero": self.start_elevation_at_zero,
+                "timezone": self.timezone,
+                "use_dark_mode": self.use_dark_mode,
+                "use_raw_gpx_speed": self.use_raw_gpx_speed,
+                "weekm": self.weekm,
+                "workout_stats_from_file": self.workout_stats_from_file,
+                "workouts_visibility": self.workouts_visibility.value,
             }
 
         return serialized_user
@@ -1193,31 +1152,18 @@ class BlacklistedToken(BaseModel):
         TZDateTime, nullable=False
     )
 
-    @staticmethod
-    def _get_exp_and_jti(token: str) -> Tuple[int, Optional[str]]:
-        payload = jwt.decode(
-            token,
-            current_app.config["SECRET_KEY"],
-            algorithms=["HS256"],
-        )
-        return payload["exp"], payload.get("jti")
-
     def __init__(
-        self, token: str, blacklisted_on: Optional[datetime] = None
+        self,
+        jti: str,
+        expired_at: int,
+        blacklisted_on: Optional[datetime] = None,
     ) -> None:
-        self.token = token
-        self.expired_at, self.jti = self._get_exp_and_jti(token)
+        self.token = jti  # workaround before removing column
+        self.jti = jti
+        self.expired_at = expired_at
         self.blacklisted_on = (
             blacklisted_on if blacklisted_on else datetime.now(timezone.utc)
         )
-
-    @classmethod
-    def check(cls, auth_token: str) -> bool:
-        _, jti = cls._get_exp_and_jti(auth_token)
-        if jti:
-            return cls.query.filter_by(jti=str(jti)).first() is not None
-        # token generated without JTI claim
-        return cls.query.filter_by(token=str(auth_token)).first() is not None
 
 
 class UserTask(BaseModel):

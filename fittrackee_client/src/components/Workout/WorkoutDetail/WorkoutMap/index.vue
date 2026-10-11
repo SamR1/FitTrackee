@@ -72,7 +72,7 @@
               v-for="provider in availableTileProviders"
               :key="provider.id"
               :name="provider.name"
-              :url="`${getApiUrl()}workouts/map_tile/{s}/{z}/{x}/{y}.png?tile_provider=${provider.id}`"
+              :url="`/api/workouts/map_tile/{s}/{z}/{x}/{y}.png?tile_provider=${provider.id}`"
               :visible="provider.id === defaultTileProvider.id"
               :attribution="provider.attribution"
               :bounds="bounds"
@@ -173,7 +173,6 @@
   import type { ITileProvider } from '@/types/tileProviders.ts'
   import type { IMediaAttachment, IWorkoutData } from '@/types/workouts'
   import { useStore } from '@/use/useStore.ts'
-  import { getApiUrl } from '@/utils'
 
   interface Props {
     workoutData: IWorkoutData

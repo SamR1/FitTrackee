@@ -55,7 +55,7 @@ class TestGetSports(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.get(
             f"/api/sports{input_check_workouts}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -82,7 +82,7 @@ class TestGetSports(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.get(
             "/api/sports",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -109,7 +109,7 @@ class TestGetSports(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.get(
             "/api/sports",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -141,7 +141,7 @@ class TestGetSports(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.get(
             f"/api/sports{input_check_workouts}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -175,7 +175,7 @@ class TestGetSports(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.get(
             "/api/sports",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -212,7 +212,7 @@ class TestGetSports(ApiTestCaseMixin, EquipmentMixin):
 
         response = client.get(
             "/api/sports",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -251,7 +251,7 @@ class TestGetSport(ApiTestCaseMixin):
 
         response = client.get(
             "/api/sports/1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -271,7 +271,7 @@ class TestGetSport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/sports/{sport_1_cycling.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -291,7 +291,7 @@ class TestGetSport(ApiTestCaseMixin):
 
         response = client.get(
             "/api/sports/1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -313,7 +313,7 @@ class TestGetSport(ApiTestCaseMixin):
 
         response = client.get(
             "/api/sports/1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -328,7 +328,7 @@ class TestGetSport(ApiTestCaseMixin):
 
         response = client.get(
             "/api/sports/1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -348,7 +348,7 @@ class TestGetSport(ApiTestCaseMixin):
 
         response = client.get(
             "/api/sports/1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -384,7 +384,7 @@ class TestUpdateSport(ApiTestCaseMixin):
             "/api/sports/1",
             content_type="application/json",
             data=json.dumps(dict(is_active=False)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -406,7 +406,7 @@ class TestUpdateSport(ApiTestCaseMixin):
             "/api/sports/1",
             content_type="application/json",
             data=json.dumps(dict(is_active=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -431,7 +431,7 @@ class TestUpdateSport(ApiTestCaseMixin):
             "/api/sports/1",
             content_type="application/json",
             data=json.dumps(dict(is_active=False)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -457,7 +457,7 @@ class TestUpdateSport(ApiTestCaseMixin):
             "/api/sports/1",
             content_type="application/json",
             data=json.dumps(dict(is_active=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -482,7 +482,7 @@ class TestUpdateSport(ApiTestCaseMixin):
             "/api/sports/1",
             content_type="application/json",
             data=json.dumps(dict(is_active=False)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -508,7 +508,7 @@ class TestUpdateSport(ApiTestCaseMixin):
             "/api/sports/1",
             content_type="application/json",
             data=json.dumps(dict(is_active=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -529,7 +529,7 @@ class TestUpdateSport(ApiTestCaseMixin):
             "/api/sports/1",
             content_type="application/json",
             data=json.dumps(dict(is_active=False)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -545,7 +545,7 @@ class TestUpdateSport(ApiTestCaseMixin):
             "/api/sports/1",
             content_type="application/json",
             data=json.dumps(dict()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -561,7 +561,7 @@ class TestUpdateSport(ApiTestCaseMixin):
             "/api/sports/1",
             content_type="application/json",
             data=json.dumps(dict(is_active=False)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)

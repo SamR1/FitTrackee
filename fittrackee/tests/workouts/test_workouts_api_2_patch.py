@@ -69,7 +69,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             data=json.dumps(dict(sport_id=2, title="Workout test")),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -84,7 +84,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
             f"/api/workouts/{self.random_short_id()}",
             content_type="application/json",
             json={"sport_id": 2, "title": "Workout test"},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -124,7 +124,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json={"sport_id": 2, "title": "Workout test"},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == expected_status_code
@@ -169,7 +169,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
                     title="Workout test",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == expected_status_code
@@ -189,7 +189,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json={},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -209,7 +209,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json={"sport_id": 2},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "sport id 2 not found", "invalid")
@@ -235,7 +235,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json={input_attribute: content},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -260,7 +260,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json={"equipment_ids": [equipment_bike_user_1.short_id]},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -290,7 +290,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
             f"/api/workouts/{workout_running_user_1.short_id}",
             content_type="application/json",
             json={"equipment_ids": [equipment_another_shoes_user_1.short_id]},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -339,7 +339,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
                     equipment_bike_user_1.short_id,
                 ]
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -365,7 +365,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
             f"/api/workouts/{workout.short_id}",
             content_type="application/json",
             json={"equipment_ids": equipment_bike_user_1.short_id},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -390,7 +390,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
             f"/api/workouts/{workout.short_id}",
             content_type="application/json",
             data=json.dumps(dict(media_attachment_ids=[media.short_id])),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -429,7 +429,7 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
                     ],
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -467,7 +467,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout.short_id}",
             content_type="application/json",
             json={"distance": 10},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -495,7 +495,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
                 f"/api/workouts/{workout.short_id}",
                 content_type="application/json",
                 json={"title": "Workout test"},
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         refresh_mock.assert_not_called()
@@ -573,7 +573,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout.short_id}",
             content_type="application/json",
             json={"sport_id": sport_5_outdoor_tennis.id},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         db.session.refresh(workout)
@@ -662,7 +662,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json={"workout_visibility": input_workout_visibility.value},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -701,7 +701,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json={"analysis_visibility": input_analysis_visibility.value},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -745,7 +745,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json={"map_visibility": input_map_visibility.value},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -787,7 +787,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout.short_id}",
             content_type="application/json",
             json=params,
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -825,7 +825,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
                 "elevation_data_source": input_elevation_data_source,
                 "elevation_processing": ElevationProcessing.NONE,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -853,7 +853,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
                 "elevation_data_source": ElevationDataSource.OPEN_ELEVATION,
                 "elevation_processing": "invalid",
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -887,7 +887,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
                     "elevation_data_source": "valhalla",
                     "elevation_processing": "none",
                 },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         get_elevations_mock.assert_called_once()
@@ -924,7 +924,7 @@ class TestEditWorkoutWithFile(WorkoutApiTestCaseMixin):
                     "elevation_data_source": "file",
                     "elevation_processing": "none",
                 },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         get_elevations_mock.assert_not_called()
@@ -963,7 +963,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
                     "distance": 8,
                     "title": "Workout test",
                 },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         data = json.loads(response.data.decode())
@@ -1045,7 +1045,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_short_id}",
             content_type="application/json",
             json={"ascent": ascent, "descent": descent},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1101,7 +1101,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_short_id}",
             content_type="application/json",
             json={"ascent": None, "descent": None},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1131,7 +1131,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_short_id}",
             content_type="application/json",
             json={"calories": calories},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1157,7 +1157,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_short_id}",
             content_type="application/json",
             json={"calories": None},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1181,7 +1181,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             data=json.dumps(dict()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1202,7 +1202,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json=data,
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -1226,7 +1226,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json={"workout_date": "15/2018"},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_500(response)
@@ -1245,7 +1245,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json={"ascent": None, "descent": 100},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid ascent or descent", "invalid")
@@ -1267,7 +1267,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
                 "analysis_visibility": VisibilityLevel.FOLLOWERS,
                 "map_visibility": VisibilityLevel.FOLLOWERS,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -1296,7 +1296,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
             data=json.dumps(
                 dict(workout_visibility=VisibilityLevel.FOLLOWERS)
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1331,7 +1331,7 @@ class TestEditWorkoutWithoutFile(WorkoutApiTestCaseMixin):
             f"/api/workouts/{workout_cycling_user_1.short_id}",
             content_type="application/json",
             json={"elevation_data_source": "file"},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(

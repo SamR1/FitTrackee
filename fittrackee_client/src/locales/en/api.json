@@ -2,6 +2,7 @@
   "ERROR": {
     "<time> is missing in gpx file": "<time> element is missing in .gpx file.",
     "Error when updating elevation data source": "Error when updating elevation data source",
+    "IMAGE_PIXELS_SIZE_ERROR": "Image size ({filePixels} pixels) exceeds the max limit ({maxPixels} pixels).",
     "INVALID_REDIRECT_URI_SCHEME": "Invalid redirect URL scheme",
     "Network Error": "Network Error.",
     "UNKNOWN": "Error. Please try again or contact the administrator.",
@@ -39,6 +40,7 @@
     "invalid credentials": "Invalid credentials.",
     "invalid payload": "Provided data are invalid.",
     "invalid token, please log in again": "Invalid token, please log in again.",
+    "invalid token, please request a new reset token": "Invalid token, please request a new password reset.",
     "invalid token, please request a new token": "Invalid token, please log in again.",
     "max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously": "Max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously.",
     "new email must be different than current email": "The new email must be different than current email.",

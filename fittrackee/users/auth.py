@@ -9,9 +9,11 @@ from flask import (
     Blueprint,
     Response,
     current_app,
+    jsonify,
     request,
     send_from_directory,
 )
+from flask_jwt_extended import get_jwt, set_access_cookies, unset_jwt_cookies
 from jsonschema.exceptions import ValidationError
 from sqlalchemy import exc, func
 from sqlalchemy.dialects.postgresql import insert
@@ -25,7 +27,7 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.utils import handle_pieces_of_equipment
-from fittrackee.exceptions import FileException
+from fittrackee.exceptions import FileException, ImageMaxPixelsException
 from fittrackee.files import (
     check_file,
     generate_filename,
@@ -39,6 +41,7 @@ from fittrackee.responses import (
     EquipmentInvalidPayloadErrorResponse,
     ForbiddenErrorResponse,
     HttpResponse,
+    ImagePixelsExceededInvalidPayloadErrorResponse,
     InvalidPayloadErrorResponse,
     NotFoundErrorResponse,
     PayloadTooLargeErrorResponse,
@@ -47,6 +50,11 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.users.users_service import UserManagerService
+from fittrackee.users.utils.tokens import (
+    decode_password_reset_token,
+    get_password_reset_token,
+    get_user_token,
+)
 from fittrackee.utils import clean_input, decode_short_id
 from fittrackee.visibility_levels import (
     VisibilityLevel,
@@ -59,7 +67,11 @@ from ..constants import (
     PaceSpeedDisplay,
 )
 from ..workouts.constants import PACE_SPORTS
-from .exceptions import UserControlsException, UserCreationException
+from .exceptions import (
+    InvalidJWTClaim,
+    UserControlsException,
+    UserCreationException,
+)
 from .models import (
     MAX_BIO_LIMIT,
     MAX_USER_INPUT,
@@ -76,7 +88,6 @@ from .tasks import export_data
 from .timezones import TIMEZONES, get_timezone
 from .utils.controls import check_password, is_valid_email
 from .utils.language import get_language
-from .utils.tokens import decode_user_token
 
 auth_blueprint = Blueprint("auth", __name__)
 
@@ -237,7 +248,7 @@ def register_user() -> Union[Tuple[Dict, int], HttpResponse]:
 
 
 @auth_blueprint.route("/auth/login", methods=["POST"])
-def login_user() -> Union[Dict, HttpResponse]:
+def login_user() -> Union[Response, HttpResponse]:
     """
     User login.
 
@@ -260,7 +271,6 @@ def login_user() -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
       {
-        "auth_token": "JSON Web Token",
         "message": "successfully logged in",
         "status": "success"
       }
@@ -299,12 +309,12 @@ def login_user() -> Union[Dict, HttpResponse]:
         ).first()
         if user and user.check_password(password):
             # generate auth token
-            auth_token = user.encode_auth_token(user.id)
-            return {
-                "status": "success",
-                "message": "successfully logged in",
-                "auth_token": auth_token,
-            }
+            auth_token = get_user_token(user.id)
+            response = jsonify(
+                {"status": "success", "message": "successfully logged in"}
+            )
+            set_access_cookies(response, auth_token)
+            return response
         return UnauthorizedErrorResponse("invalid credentials")
     # handler errors
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
@@ -2001,7 +2011,12 @@ def edit_picture(auth_user: User) -> Union[Dict, HttpResponse]:
     except FileException as e:
         return InvalidPayloadErrorResponse(str(e))
     filename = generate_filename(extension)
-    image = get_image_from_file_storage_without_exif(file)
+    try:
+        image = get_image_from_file_storage_without_exif(file)
+    except ImageMaxPixelsException as e:
+        return ImagePixelsExceededInvalidPayloadErrorResponse(
+            max_size=e.max_size, file_size=e.file_size
+        )
     dirpath = os.path.join(
         current_app.config["UPLOAD_FOLDER"], "pictures", str(auth_user.id)
     )
@@ -2124,7 +2139,7 @@ def request_password_reset() -> Union[Dict, HttpResponse]:
 
     user = User.query.filter(User.email == email).first()
     if user:
-        password_reset_token = user.encode_password_reset_token(user.id)
+        password_reset_token = get_password_reset_token(user.id)
         fittrackee_url = current_app.config["UI_URL"]
         user_language = get_language(user.language)
         email_data = {
@@ -2195,19 +2210,31 @@ def update_password() -> Union[Dict, HttpResponse]:
         or post_data.get("token") is None
     ):
         return InvalidPayloadErrorResponse()
-    password = post_data.get("password")
-    token = post_data.get("token")
 
+    reset_token = post_data.get("token")
     try:
-        user_id = decode_user_token(token)
-    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError):
+        payload = decode_password_reset_token(reset_token)
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, InvalidJWTClaim):
         return UnauthorizedErrorResponse()
+    if (
+        BlacklistedToken.query.filter_by(jti=payload["jti"]).first()
+        is not None
+    ):
+        return UnauthorizedErrorResponse(
+            "invalid token, please request a new reset token"
+        )
 
+    password = post_data.get("password")
     message = check_password(password)
     if message != "":
         return InvalidPayloadErrorResponse(message)
 
-    user = User.query.filter(User.id == user_id).first()
+    db.session.add(
+        BlacklistedToken(jti=payload["jti"], expired_at=payload["exp"])
+    )
+    db.session.commit()
+
+    user = User.query.filter(User.id == int(payload["sub"])).first()
     if not user:
         return UnauthorizedErrorResponse()
     try:
@@ -2297,7 +2324,7 @@ def update_email() -> Union[Dict, HttpResponse]:
 
 
 @auth_blueprint.route("/auth/account/confirm", methods=["POST"])
-def confirm_account() -> Union[Dict, HttpResponse]:
+def confirm_account() -> Union[Response, HttpResponse]:
     """
     Activate user account after registration.
 
@@ -2316,7 +2343,6 @@ def confirm_account() -> Union[Dict, HttpResponse]:
       Content-Type: application/json
 
       {
-        "auth_token": "JSON Web Token",
         "message": "account confirmation successful",
         "status": "success"
       }
@@ -2345,13 +2371,12 @@ def confirm_account() -> Union[Dict, HttpResponse]:
         db.session.commit()
 
         # generate auth token
-        auth_token = user.encode_auth_token(user.id)
+        auth_token = get_user_token(user.id)
 
-        response = {
-            "status": "success",
-            "message": "account confirmation successful",
-            "auth_token": auth_token,
-        }
+        response = jsonify(
+            {"status": "success", "message": "account confirmation successful"}
+        )
+        set_access_cookies(response, auth_token)
         return response
 
     except (exc.OperationalError, ValueError) as e:
@@ -2419,7 +2444,7 @@ def resend_account_confirmation_email() -> Union[Dict, HttpResponse]:
 
 @auth_blueprint.route("/auth/logout", methods=["POST"])
 @require_auth(allow_suspended_user=True)
-def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
+def logout_user(auth_user: User) -> Tuple[Response, int]:
     """
     User logout.
     If a valid token is provided, it will be blacklisted.
@@ -2469,20 +2494,27 @@ def logout_user(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
     :statuscode 500: ``error on token blacklist``
 
     """
-    auth_token = request.headers.get("Authorization", "").split(" ")[1]
     try:
-        db.session.add(BlacklistedToken(token=auth_token))
+        payload = get_jwt()
+        db.session.add(
+            BlacklistedToken(jti=payload["jti"], expired_at=payload["exp"])
+        )
         db.session.commit()
+        status_code = 200
+        response_dict = {
+            "status": "success",
+            "message": "successfully logged out",
+        }
     except Exception:
-        return {
+        status_code = 500
+        response_dict = {
             "status": "error",
             "message": "error on token blacklist",
-        }, 500
+        }
 
-    return {
-        "status": "success",
-        "message": "successfully logged out",
-    }, 200
+    response = jsonify(response_dict)
+    unset_jwt_cookies(response)
+    return response, status_code
 
 
 @auth_blueprint.route("/auth/account/privacy-policy", methods=["POST"])

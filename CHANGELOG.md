@@ -1,5 +1,69 @@
 # Change log
 
+## Version 1.3.6 (2026/10/11)
+
+This version contains JWT handling rewrite and several security fixes ([GHSA-r64h-qmpx-3m36](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-r64h-qmpx-3m36), [GHSA-rg49-m6q7-w94p](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-rg49-m6q7-w94p) and [GHSA-7949-4q4c-mp6h](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-7949-4q4c-mp6h)), thanks to [@SounLabs](https://github.com/SounLabs) and [@0xnh4tty](https://github.com/0xnh4tty) for the reports.
+
+It also introduces a new environment variable `JWT_SECRET_KEY`, see [documentation](https://docs.fittrackee.org/en/installation/environments_variables.html#envvar-JWT_SECRET_KEY), 
+
+**Notes**:
+- After the update, all logged-in users will be logged out.
+- A message will appear on the Dashboard indicating that the privacy policy has been updated.
+
+### Security
+
+* [PR#1235](https://codeberg.org/FitTrackee/FitTrackee/pulls/1235) - JWT handling rewrite
+  * fix reset password reset by adding missing `type` claim 
+  * fix OAuth2 client token revocation and lifecycle
+* [01aab15](https://codeberg.org/FitTrackee/FitTrackee/commit/01aab1593330c8b73a091baf69906d7f5a079cda) - check image pixels size
+* [030f21e](https://codeberg.org/FitTrackee/FitTrackee/commit/030f21ecc0cb4492d5c0eb58e5c39e7c887adc25) - return personal records and totals only for authenticated user
+
+### Enhancement
+
+* [PR#1235](https://codeberg.org/FitTrackee/FitTrackee/pulls/1235) - JWT handling rewrite
+  * move JWT to cookie and shorten JWT lifespan
+  * update privacy policy
+
+### Translations
+
+* [PR#1226](https://codeberg.org/FitTrackee/FitTrackee/pulls/1226) - Translations update from Hosted Weblate (Galician and German)
+* [PR#1227](https://codeberg.org/FitTrackee/FitTrackee/pulls/1227) - Translations update from Hosted Weblate (Croatian)
+* [PR#1234](https://codeberg.org/FitTrackee/FitTrackee/pulls/1234) - Translations update from Hosted Weblate (Chinese (Simplified Han script))
+
+Translation status for languages available on the interface:
+- Basque: 96%
+- Bulgarian: 50%
+- Catalan: 57%
+- Chinese (Simplified): 99%
+- Croatian: 99%
+- Czech: 48%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 99%
+- German: 99%
+- Italian: 97%
+- Kabyle: 5%
+- Norwegian Bokmål: 42%
+- Polish: 99%
+- Portuguese: 50%
+- Russian: 94%
+- Spanish: 66%
+- Turkish: 3%
+
+### Documentation
+
+* [52ae261](https://codeberg.org/FitTrackee/FitTrackee/commit/52ae261d22b189d4108196ef108ec1533fe7be8a) - update X-Forwarded-For in nginx example & API rate limits docs
+* [18a9071](https://codeberg.org/FitTrackee/FitTrackee/commit/18a90716272f9306d862cdab9417af1280e168f1) - fix http2 directive in nginx example
+
+
+Thanks to the contributors:
+- [@flytothehighest](https://github.com/flytothehighest)
+- [@ghose](https://codeberg.org/ghose)
+- [@iggydev](https://github.com/iggydev)
+- [@PeterPwr](https://codeberg.org/PeterPwr)
+
+
 ## Version 1.3.5 (2026/09/09)
 
 This version contains a security fix ([GHSA-p67x-83gj-56rg](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-p67x-83gj-56rg)).  

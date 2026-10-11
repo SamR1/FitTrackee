@@ -1,10 +1,9 @@
 import axios from 'axios'
 
 import { pendingRequests, removeRequestIfPending } from '@/api/pending'
-import { getApiUrl } from '@/utils'
 
 const api = axios.create({
-  baseURL: getApiUrl(),
+  baseURL: '/api/',
 })
 
 api.interceptors.request.use(

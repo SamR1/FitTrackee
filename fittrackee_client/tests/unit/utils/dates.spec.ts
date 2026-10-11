@@ -329,7 +329,7 @@ describe('formatDate (w/ all options)', () => {
   testsParamsEn.map((testParams) => {
     it(testParams.description, () => {
       vi.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
-        (locales, options) => {
+        function (locales, options) {
           return new DateTimeFormat('en-US', options)
         }
       )
@@ -368,7 +368,7 @@ describe('formatDate (w/ all options)', () => {
   testsParamsFr.map((testParams) => {
     it(testParams.description, () => {
       vi.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
-        (locales, options) => {
+        function (locales, options) {
           return new DateTimeFormat('fr-FR', options)
         }
       )

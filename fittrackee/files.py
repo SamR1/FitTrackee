@@ -1,13 +1,14 @@
 import os
-from typing import IO, TYPE_CHECKING, Dict, Union
+from typing import IO, TYPE_CHECKING, Dict, Union, cast
 from uuid import uuid4
 
 import magic
 from flask import current_app
 from PIL import Image
+from PIL.Image import MAX_IMAGE_PIXELS
 from werkzeug.utils import secure_filename
 
-from .exceptions import FileException
+from .exceptions import FileException, ImageMaxPixelsException
 
 if TYPE_CHECKING:
     from werkzeug.datastructures import FileStorage
@@ -112,7 +113,15 @@ def generate_filename(extension: str) -> str:
     return f"{uuid4().hex}.{extension}"
 
 
+def check_image_size(size: tuple[int, int]) -> None:
+    pixels = max(1, size[0]) * max(1, size[1])
+    max_size = cast("int", MAX_IMAGE_PIXELS)
+    if pixels > max_size:
+        raise ImageMaxPixelsException(file_size=pixels, max_size=max_size)
+
+
 def get_image_without_exif(image: "Image.Image") -> "Image.Image":
+    check_image_size(image.size)
     image_without_exif = Image.new(image.mode, image.size)
     image_without_exif.putdata(image.get_flattened_data())
     return image_without_exif

@@ -3686,11 +3686,10 @@ describe('formatDateLabel', () => {
   it(`returns date label for statistics for date '${inputDate}', duration 'day, userDateFormat 'browser_settings'`, () => {
     const DateTimeFormat = Intl.DateTimeFormat
     vi.spyOn(global.Intl, 'DateTimeFormat').mockImplementation(
-      (locales, options) => {
+      function (locales, options) {
         return new DateTimeFormat('de', options)
       }
     )
-
     expect(
       formatDateLabel(inputDate, 'day', 'browser_settings', 'MM/dd/yyyy')
     ).toStrictEqual('19.3.2025')

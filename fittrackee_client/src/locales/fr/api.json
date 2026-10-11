@@ -2,6 +2,7 @@
   "ERROR": {
     "<time> is missing in gpx file": "Elément <time> manquant dans le fichier .gpx.",
     "Error when updating elevation data source": "Erreur lors de la mise à jour de la source de données d'altitude",
+    "IMAGE_PIXELS_SIZE_ERROR": "La taille de l'image ({filePixels} pixels) dépasse la limite maximale ({maxPixels} pixels).",
     "INVALID_REDIRECT_URI_SCHEME": "Protocole de l'URL de redirection invalide",
     "Network Error": "Erreur réseau.",
     "UNKNOWN": "Erreur. Veuillez réessayer ou contacter l'administrateur.",
@@ -39,6 +40,7 @@
     "invalid credentials": "Identifiants invalides.",
     "invalid payload": "Données fournies incorrectes.",
     "invalid token, please log in again": "Jeton de connexion invalide, merci de vous reconnecter.",
+    "invalid token, please request a new reset token": "Jeton invalide, veuillez demander une nouvelle initialisation de mot de passe",
     "invalid token, please request a new token": "Jeton de connexion invalide, veuillez demander un nouveau jeton.",
     "max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously": "Le nombre max. de fichiers dans une archive doit être supérieur ou égal au nombre max. de fichiers à traiter en synchrone.",
     "new email must be different than current email": "La nouvelle adresse électronique doit être différente de l'adresse actuelle.",

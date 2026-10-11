@@ -14,6 +14,10 @@ class InvalidEmailException(Exception):
     pass
 
 
+class InvalidJWTClaim(Exception):
+    pass
+
+
 class InvalidNotificationTypeException(Exception):
     pass
 

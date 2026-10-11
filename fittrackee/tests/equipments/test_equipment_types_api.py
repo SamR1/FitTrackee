@@ -38,7 +38,7 @@ class TestGetEquipmentTypes(ApiTestCaseMixin):
 
         response = client.get(
             "/api/equipment-types",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -66,7 +66,7 @@ class TestGetEquipmentTypes(ApiTestCaseMixin):
 
         response = client.get(
             "/api/equipment-types",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -98,7 +98,7 @@ class TestGetEquipmentTypes(ApiTestCaseMixin):
 
         response = client.get(
             "/api/equipment-types",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -152,7 +152,7 @@ class TestGetEquipmentType(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/equipment-types/{equipment_type_1_shoe.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -176,7 +176,7 @@ class TestGetEquipmentType(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/equipment-types/{self.random_int()}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -195,7 +195,7 @@ class TestGetEquipmentType(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/equipment-types/{equipment_type_1_shoe_inactive.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = self.assert_404(response)
@@ -213,7 +213,7 @@ class TestGetEquipmentType(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/equipment-types/{equipment_type_1_shoe_inactive.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -267,7 +267,7 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
             f"/api/equipment-types/{equipment_type_1_shoe.id}",
             content_type="application/json",
             json={"is_active": False},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -286,7 +286,7 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
             f"/api/equipment-types/{equipment_type_1_shoe.id}",
             content_type="application/json",
             json={},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -304,7 +304,7 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
             f"/api/equipment-types/{self.random_int()}",
             content_type="application/json",
             json={"is_active": False},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -327,7 +327,7 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
             f"/api/equipment-types/{equipment_type_1_shoe.id}",
             content_type="application/json",
             json={"is_active": expected_active_status},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -357,7 +357,7 @@ class TestUpdateEquipmentTypes(ApiTestCaseMixin):
             f"/api/equipment-types/{equipment_type_1_shoe.id}",
             content_type="application/json",
             json={"is_active": expected_active_status},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())

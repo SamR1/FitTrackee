@@ -34,3 +34,9 @@ export interface IApiErrorMessage {
 export interface IPagePayload {
   page: number
 }
+
+export interface IImagePixelsSizeError {
+  message: string
+  file_pixels: number
+  max_pixels: number
+}

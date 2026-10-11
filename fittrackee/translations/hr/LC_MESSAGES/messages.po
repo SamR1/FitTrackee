@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-08-12 15:41+0200\n"
+"POT-Creation-Date: 2026-10-12 00:02+0200\n"
 "PO-Revision-Date: 2026-03-18 07:33+0000\n"
 "Last-Translator: iggydev <igor@kraljic.info>\n"
 "Language: hr\n"
@@ -86,7 +86,7 @@ msgstr "Ako ovu izradu računa niste inicirali vi, zanemarite ovu e-poruku."
 #: fittrackee/emails/templates/comment_suspension/body.html:37
 #: fittrackee/emails/templates/data_export_ready/body.html:22
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:22
-#: fittrackee/emails/templates/password_reset_request/body.html:24
+#: fittrackee/emails/templates/password_reset_request/body.html:25
 #: fittrackee/emails/templates/user_suspension/body.html:24
 #: fittrackee/emails/templates/user_warning/body.html:58
 #: fittrackee/emails/templates/workout_suspension/body.html:40
@@ -367,12 +367,16 @@ msgstr ""
 "Ova poveznica za poništavanje lozinke vrijedi samo do "
 "%(expiration_delay)s."
 
-#: fittrackee/emails/templates/password_reset_request/body.html:13
+#: fittrackee/emails/templates/password_reset_request/body.html:6
+msgid "It can only be used once."
+msgstr ""
+
+#: fittrackee/emails/templates/password_reset_request/body.html:14
 #: fittrackee/emails/templates/password_reset_request/body.txt:4
 msgid "Reset your password"
 msgstr "Ponovno postavite lozinku"
 
-#: fittrackee/emails/templates/password_reset_request/body.html:20
+#: fittrackee/emails/templates/password_reset_request/body.html:21
 #: fittrackee/emails/templates/password_reset_request/body.txt:7
 msgid "If you did not request a password reset, please ignore this email."
 msgstr "Ako niste zatražili ponovno postavljanje lozinke, zanemarite ovu e-poruku."

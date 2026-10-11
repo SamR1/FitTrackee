@@ -44,9 +44,7 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, UserTaskMixin):
             app, user_1.email
         )
 
-        response = client.get(
-            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
-        )
+        response = client.get(self.route, headers={"X-CSRF-TOKEN": auth_token})
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
@@ -74,9 +72,7 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, UserTaskMixin):
             app, user_1.email
         )
 
-        response = client.get(
-            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
-        )
+        response = client.get(self.route, headers={"X-CSRF-TOKEN": auth_token})
 
         assert response.status_code == 200
         data = json.loads(response.data.decode())
@@ -116,7 +112,7 @@ class TestWorkoutsTasksGetTasks(ApiTestCaseMixin, UserTaskMixin):
 
         response = client.get(
             f"{self.route}?page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -174,7 +170,7 @@ class TestWorkoutsTasksGetTask(UserTaskMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(task_id=self.random_short_id()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "no task found")
@@ -192,7 +188,7 @@ class TestWorkoutsTasksGetTask(UserTaskMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(task_id=workouts_upload_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "no task found")
@@ -209,7 +205,7 @@ class TestWorkoutsTasksGetTask(UserTaskMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(task_id=export_data_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "no task found")
@@ -226,7 +222,7 @@ class TestWorkoutsTasksGetTask(UserTaskMixin, ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(task_id=workouts_upload_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -275,7 +271,7 @@ class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, UserTaskMixin):
 
         response = client.delete(
             self.route.format(task_id=self.random_short_id()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "no task found")
@@ -293,7 +289,7 @@ class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, UserTaskMixin):
 
         response = client.delete(
             self.route.format(task_id=workouts_upload_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "no task found")
@@ -310,7 +306,7 @@ class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, UserTaskMixin):
 
         response = client.delete(
             self.route.format(task_id=export_data_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "no task found")
@@ -339,7 +335,7 @@ class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, UserTaskMixin):
 
         response = client.delete(
             self.route.format(task_id=workouts_upload_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204
@@ -365,7 +361,7 @@ class TestWorkoutsTasksDeleteTask(ApiTestCaseMixin, UserTaskMixin):
 
         response = client.delete(
             self.route.format(task_id=workouts_upload_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -412,7 +408,7 @@ class TestWorkoutsTasksAbortTask(UserTaskMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(task_id=self.random_short_id()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "no task found")
@@ -432,7 +428,7 @@ class TestWorkoutsTasksAbortTask(UserTaskMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(task_id=workouts_upload_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "no task found")
@@ -449,7 +445,7 @@ class TestWorkoutsTasksAbortTask(UserTaskMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(task_id=export_data_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "no task found")
@@ -478,7 +474,7 @@ class TestWorkoutsTasksAbortTask(UserTaskMixin, ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(task_id=export_data_task.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -500,7 +496,7 @@ class TestWorkoutsTasksAbortTask(UserTaskMixin, ApiTestCaseMixin):
         with patch("fittrackee.workouts.workouts.abort") as abort_mock:
             client.post(
                 self.route.format(task_id=workouts_upload_task.short_id),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         abort_mock.assert_called_once_with(
@@ -524,7 +520,7 @@ class TestWorkoutsTasksAbortTask(UserTaskMixin, ApiTestCaseMixin):
         ):
             response = client.post(
                 self.route.format(task_id=workouts_upload_task.short_id),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         self.assert_500(response, "error when aborting task")
@@ -544,7 +540,7 @@ class TestWorkoutsTasksAbortTask(UserTaskMixin, ApiTestCaseMixin):
         with patch("fittrackee.workouts.workouts.abort"):
             response = client.post(
                 self.route.format(task_id=workouts_upload_task.short_id),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -569,7 +565,7 @@ class TestWorkoutsTasksAbortTask(UserTaskMixin, ApiTestCaseMixin):
         with patch("fittrackee.workouts.workouts.abort") as abort_mock:
             response = client.post(
                 self.route.format(task_id=workouts_upload_task.short_id),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         abort_mock.assert_not_called()

@@ -7,7 +7,7 @@ import type {
 } from '@/types/user'
 
 export const authUserState: IAuthUserState = {
-  authToken: null,
+  isAuthenticated: false,
   authUserProfile: <IAuthUserProfile>{},
   isSuccess: false,
   isRegistrationSuccess: false,

@@ -52,7 +52,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -74,7 +74,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -90,7 +90,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=self.random_short_id()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -112,7 +112,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -132,7 +132,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -163,7 +163,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -202,7 +202,7 @@ class TestWorkoutLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -277,7 +277,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -293,7 +293,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=self.random_short_id()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -315,7 +315,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -335,7 +335,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -357,7 +357,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -393,7 +393,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -427,7 +427,7 @@ class TestWorkoutUndoLikePost(ApiTestCaseMixin):
 
         response = client.post(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -481,7 +481,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -497,7 +497,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(workout_uuid=self.random_short_id()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -519,7 +519,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -539,7 +539,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -560,7 +560,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404(response)
@@ -587,7 +587,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_2.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -627,7 +627,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin):
 
         response = client.get(
             self.route.format(workout_uuid=workout_cycling_user_1.short_id),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -671,7 +671,7 @@ class TestWorkoutLikesGet(ApiTestCaseMixin):
 
         response = client.get(
             f"{self.route.format(workout_uuid=workout_uuid)}?page=2",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200

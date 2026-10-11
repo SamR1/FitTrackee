@@ -15,15 +15,11 @@ import type {
 } from '@/types/user'
 
 export const mutations: MutationTree<IAuthUserState> & TAuthUserMutations = {
-  [AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN](state: IAuthUserState) {
-    state.authToken = null
-    state.authUserProfile = <IAuthUserProfile>{}
-  },
-  [AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN](
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_AUTHENTICATED](
     state: IAuthUserState,
-    authToken: string
+    isAuthenticated: boolean
   ) {
-    state.authToken = authToken
+    state.isAuthenticated = isAuthenticated
   },
   [AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE](
     state: IAuthUserState,

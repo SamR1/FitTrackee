@@ -43,15 +43,16 @@ import type {
   IGetUserProfilePayload,
 } from '@/types/user'
 import { handleError } from '@/utils'
+import { getCookieValue, removeCookies } from '@/utils/cookies.ts'
 
 const removeAuthUserData = (
   context: ActionContext<IAuthUserState, IRootState>
 ) => {
-  localStorage.removeItem('authToken')
+  removeCookies()
+  context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_IS_AUTHENTICATED, false)
   context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   context.commit(STATS_STORE.MUTATIONS.EMPTY_USER_STATS)
   context.commit(STATS_STORE.MUTATIONS.EMPTY_USER_SPORT_STATS)
-  context.commit(AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN)
   context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_FOLLOW_REQUESTS, [])
   context.commit(USERS_STORE.MUTATIONS.UPDATE_USERS, [])
   context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUTS)
@@ -64,23 +65,21 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
   [AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER](
     context: ActionContext<IAuthUserState, IRootState>
   ): void {
-    if (
-      window.localStorage.authToken &&
-      !context.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
-    ) {
-      context.commit(
-        AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN,
-        window.localStorage.authToken
-      )
-      context.dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {
-        updateUI: true,
-      })
+    const cookie = getCookieValue()
+    if (cookie && !context.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]) {
+      context
+        .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {
+          updateUI: true,
+        })
+        .then(() =>
+          context.commit(
+            AUTH_USER_STORE.MUTATIONS.UPDATE_IS_AUTHENTICATED,
+            true
+          )
+        )
     }
     // after logout in another tab
-    if (
-      !window.localStorage.authToken &&
-      context.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]
-    ) {
+    if (!cookie && context.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED]) {
       removeAuthUserData(context)
     }
   },
@@ -95,7 +94,6 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
         if (res.data.status === 'success') {
           const token = res.data.auth_token
           window.localStorage.setItem('authToken', token)
-          context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
           context
             .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {})
             .then(() => router.push('/'))
@@ -270,9 +268,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       .then((res) => {
         if (res.data.status === 'success') {
           if (data.actionType === 'login') {
-            const token = res.data.auth_token
-            window.localStorage.setItem('authToken', token)
-            context.commit(AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN, token)
+            context.commit(
+              AUTH_USER_STORE.MUTATIONS.UPDATE_IS_AUTHENTICATED,
+              true
+            )
             context
               .dispatch(AUTH_USER_STORE.ACTIONS.GET_USER_PROFILE, {
                 updateUI: true,

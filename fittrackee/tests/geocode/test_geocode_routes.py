@@ -41,9 +41,7 @@ class GeocodeTestCase(ApiTestCaseMixin, ResponseMockMixin):
             app, suspended_user.email
         )
 
-        response = client.get(
-            self.route, headers=dict(Authorization=f"Bearer {auth_token}")
-        )
+        response = client.get(self.route, headers={"X-CSRF-TOKEN": auth_token})
 
         self.assert_403(response)
 
@@ -78,7 +76,7 @@ class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
         ) as nominatim_service_mock:
             response = client.get(
                 self.route,
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         nominatim_service_mock.assert_not_called()
@@ -101,7 +99,7 @@ class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
         with patch.object(requests, "get", side_effect=HTTPError()):
             response = client.get(
                 f"{self.route}?city=Paris",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         self.assert_500(
@@ -125,7 +123,7 @@ class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
         ) as nominatim_service_mock:
             client.get(
                 f"{self.route}?city={city}&language={language}",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         nominatim_service_mock.assert_called_once_with(city.lower(), language)
@@ -157,7 +155,7 @@ class TestGeocodeGetCoordinatesFromLocation(GeocodeTestCase):
         ) as nominatim_service_mock:
             response = client.get(
                 f"{self.route}?city={city}",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         nominatim_service_mock.assert_called_once_with(city.lower(), None)
@@ -185,7 +183,7 @@ class TestGeocodeGetLocationFromId(GeocodeTestCase):
         ) as nominatim_service_mock:
             response = client.get(
                 self.route,
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         nominatim_service_mock.assert_not_called()
@@ -208,7 +206,7 @@ class TestGeocodeGetLocationFromId(GeocodeTestCase):
         with patch.object(requests, "get", side_effect=HTTPError()):
             response = client.get(
                 f"{self.route}?osm_id=r71525",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         self.assert_500(response, "error when getting location from OSM id")
@@ -231,7 +229,7 @@ class TestGeocodeGetLocationFromId(GeocodeTestCase):
         ) as nominatim_service_mock:
             client.get(
                 f"{self.route}?osm_id={osm_id}&language={language}",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         nominatim_service_mock.assert_called_once_with(
@@ -263,7 +261,7 @@ class TestGeocodeGetLocationFromId(GeocodeTestCase):
         ) as nominatim_service_mock:
             response = client.get(
                 f"{self.route}?osm_id={osm_id}",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         nominatim_service_mock.assert_called_once_with(osm_id.lower(), None)
