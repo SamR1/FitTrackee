@@ -1126,6 +1126,26 @@ bcrypt = ">=3.1.1"
 Flask = "*"
 
 [[package]]
+name = "flask-jwt-extended"
+version = "4.7.4"
+description = "Extended JWT integration with Flask"
+optional = false
+python-versions = "<4,>=3.10"
+groups = ["main"]
+files = [
+    {file = "flask_jwt_extended-4.7.4-py2.py3-none-any.whl", hash = "sha256:daad1981117f4972d63c363d013f290de307aad781a935921b603b714817393c"},
+    {file = "flask_jwt_extended-4.7.4.tar.gz", hash = "sha256:78fd0f460317facf3a0084a6457ffaf2f1dda9eefbd576f94cea35b0eadd5531"},
+]
+
+[package.dependencies]
+Flask = ">=2.0,<4.0"
+PyJWT = ">=2.11.0,<3.0"
+Werkzeug = ">=0.14"
+
+[package.extras]
+asymmetric-crypto = ["cryptography (>=3.3.1)"]
+
+[[package]]
 name = "flask-limiter"
 version = "4.1.1"
 description = "Rate limiting for flask applications"
@@ -4416,4 +4436,4 @@ test = ["pytest", "pytest-cov"]
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "f71f0de544658efde61bcdf6ec67c01eaea01881dc4b723ec28ba2ef09fdfc27"
+content-hash = "b112963ccb4301df027c94f090cca4d301f9653c1a1a9e5db491db2dd4de35cf"

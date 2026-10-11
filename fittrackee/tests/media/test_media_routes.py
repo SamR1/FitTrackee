@@ -89,7 +89,7 @@ class TestMediaApiPost(ApiTestCaseMixin):
             self.route,
             headers={
                 "content_type": "multipart/form-data",
-                "Authorization": f"Bearer {auth_token}",
+                "X-CSRF-TOKEN": auth_token,
             },
         )
 
@@ -106,7 +106,7 @@ class TestMediaApiPost(ApiTestCaseMixin):
             self.route,
             headers={
                 "content_type": "multipart/form-data",
-                "Authorization": f"Bearer {auth_token}",
+                "X-CSRF-TOKEN": auth_token,
             },
         )
 
@@ -124,7 +124,7 @@ class TestMediaApiPost(ApiTestCaseMixin):
             data=dict(file=(BytesIO(b"avatar"), "img.bmp")),
             headers={
                 "content_type": "multipart/form-data",
-                "Authorization": f"Bearer {auth_token}",
+                "X-CSRF-TOKEN": auth_token,
             },
         )
 
@@ -147,7 +147,7 @@ class TestMediaApiPost(ApiTestCaseMixin):
                 data=dict(file=(BytesIO(image_file.read()), "image.jpg")),
                 headers={
                     "content_type": "multipart/form-data",
-                    "Authorization": f"Bearer {auth_token}",
+                    "X-CSRF-TOKEN": auth_token,
                 },
             )
 
@@ -169,7 +169,7 @@ class TestMediaApiPost(ApiTestCaseMixin):
             data=dict(file=(BytesIO(b"invalid_content"), "img.jpg")),
             headers={
                 "content_type": "multipart/form-data",
-                "Authorization": f"Bearer {auth_token}",
+                "X-CSRF-TOKEN": auth_token,
             },
         )
 
@@ -191,10 +191,10 @@ class TestMediaApiPost(ApiTestCaseMixin):
             response = client.post(
                 self.route,
                 data=dict(file=(BytesIO(image_file.read()), "avatar.png")),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
         assert response.status_code == 201
@@ -241,9 +241,7 @@ class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
         response = client.patch(
             self.route.format(media_short_id=self.random_short_id()),
             json={"description": "new description"},
-            headers={
-                "Authorization": f"Bearer {auth_token}",
-            },
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -258,9 +256,7 @@ class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
         response = client.patch(
             self.route.format(media_short_id=self.random_short_id()),
             json={"description": "new description"},
-            headers={
-                "Authorization": f"Bearer {auth_token}",
-            },
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "media not found")
@@ -276,9 +272,7 @@ class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
         response = client.patch(
             self.route.format(media_short_id=media.short_id),
             json={"description": "new description"},
-            headers={
-                "Authorization": f"Bearer {auth_token}",
-            },
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         self.assert_403(response)
 
@@ -293,9 +287,7 @@ class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
         response = client.patch(
             self.route.format(media_short_id=media.short_id),
             json={},
-            headers={
-                "Authorization": f"Bearer {auth_token}",
-            },
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid payload")
@@ -314,9 +306,7 @@ class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
         response = client.patch(
             self.route.format(media_short_id=media.short_id),
             json={"description": new_description},
-            headers={
-                "Authorization": f"Bearer {auth_token}",
-            },
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -338,9 +328,7 @@ class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
         response = client.patch(
             self.route.format(media_short_id=media.short_id),
             json={"description": ""},
-            headers={
-                "Authorization": f"Bearer {auth_token}",
-            },
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -361,9 +349,7 @@ class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
         response = client.patch(
             self.route.format(media_short_id=media.short_id),
             json={"description": new_description},
-            headers={
-                "Authorization": f"Bearer {auth_token}",
-            },
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -409,9 +395,7 @@ class TestMediaApiDelete(ApiTestCaseMixin, MediaMixin):
 
         response = client.delete(
             self.route.format(media_short_id=self.random_short_id()),
-            headers={
-                "Authorization": f"Bearer {auth_token}",
-            },
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -425,9 +409,7 @@ class TestMediaApiDelete(ApiTestCaseMixin, MediaMixin):
 
         response = client.delete(
             self.route.format(media_short_id=self.random_short_id()),
-            headers={
-                "Authorization": f"Bearer {auth_token}",
-            },
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "media not found")
@@ -442,9 +424,7 @@ class TestMediaApiDelete(ApiTestCaseMixin, MediaMixin):
 
         response = client.delete(
             self.route.format(media_short_id=media.short_id),
-            headers={
-                "Authorization": f"Bearer {auth_token}",
-            },
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         self.assert_403(response)
 
@@ -460,9 +440,7 @@ class TestMediaApiDelete(ApiTestCaseMixin, MediaMixin):
 
         response = client.delete(
             self.route.format(media_short_id=media_user_1.short_id),
-            headers={
-                "Authorization": f"Bearer {auth_token}",
-            },
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 204

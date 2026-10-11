@@ -38,7 +38,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -53,7 +53,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -92,7 +92,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -139,7 +139,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             f"{self.route}?status=unread",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -185,7 +185,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             f"{self.route}?status=read",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -227,7 +227,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             f"{self.route}?page=2",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -274,7 +274,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             f"{self.route}?order=asc",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -326,7 +326,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             f"{self.route}?type=follow_request",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -370,7 +370,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -410,7 +410,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -447,7 +447,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -486,7 +486,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -523,7 +523,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -570,7 +570,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -614,7 +614,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -653,7 +653,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -684,7 +684,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -716,7 +716,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -753,7 +753,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -793,7 +793,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -831,7 +831,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -871,7 +871,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -911,7 +911,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -941,7 +941,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -980,7 +980,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1018,7 +1018,7 @@ class TestUserNotifications(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1081,7 +1081,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
             self.route.format(notification_id=self.random_short_id()),
             content_type="application/json",
             data=json.dumps(dict(read_status=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1098,7 +1098,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
             self.route.format(notification_id=notification_id),
             content_type="application/json",
             data=json.dumps(dict(read_status=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1121,7 +1121,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
             self.route.format(notification_id=notification.short_id),
             content_type="application/json",
             data=json.dumps(dict(read_status=True)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1153,7 +1153,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
             self.route.format(notification_id=notification.short_id),
             content_type="application/json",
             data=json.dumps(dict(read_status=input_read_status)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1184,7 +1184,7 @@ class TestUserNotificationPatch(ApiTestCaseMixin):
             self.route.format(notification_id=notification.short_id),
             content_type="application/json",
             data=json.dumps(dict(read_status=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_500(response)
@@ -1224,7 +1224,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1239,7 +1239,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1261,7 +1261,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1284,7 +1284,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1310,7 +1310,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1334,7 +1334,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1365,7 +1365,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1397,7 +1397,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1428,7 +1428,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1461,7 +1461,7 @@ class TestUserNotificationsStatus(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1526,7 +1526,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
         response = client.post(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         self.assert_403(response)
 
@@ -1540,7 +1540,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
         response = client.post(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1577,7 +1577,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
         response = client.post(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1617,7 +1617,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
             self.route,
             content_type="application/json",
             data=json.dumps(dict(type="workout_like")),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1653,7 +1653,7 @@ class TestUserNotificationsMarkAllAsRead(ApiTestCaseMixin):
             self.route,
             content_type="application/json",
             data=json.dumps(dict(type=input_type)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1699,7 +1699,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1714,7 +1714,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1765,7 +1765,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             f"{self.route}{input_params}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1814,7 +1814,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             f"{self.route}?status=unread",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1861,7 +1861,7 @@ class TestUserNotificationTypes(CommentMixin, ReportMixin, ApiTestCaseMixin):
         response = client.get(
             f"{self.route}?status=read",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200

@@ -42,7 +42,7 @@ class TestGetConfig(ApiTestCaseMixin):
 
         response = client.get(
             "/api/config",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -60,7 +60,7 @@ class TestGetConfig(ApiTestCaseMixin):
 
         response = client.get(
             "/api/config",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -78,7 +78,7 @@ class TestGetConfig(ApiTestCaseMixin):
         response = client.get(
             "/api/config",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_500(response, "error on getting configuration")
@@ -93,7 +93,7 @@ class TestGetConfig(ApiTestCaseMixin):
         response = client.get(
             "/api/config",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_500(response, "error on getting configuration")
@@ -110,7 +110,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "/api/config",
             content_type="application/json",
             data=json.dumps(dict(file_limit_import=100, max_users=10)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         data = json.loads(response.data.decode())
 
@@ -147,7 +147,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     stats_workouts_limit=5000,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -188,7 +188,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     file_limit_import=5,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         file_path = os.path.join(
@@ -205,10 +205,10 @@ class TestUpdateConfig(ApiTestCaseMixin):
                 data=dict(
                     file=(zip_file, "gpx_test.zip"), data='{"sport_id": 1}'
                 ),
-                headers=dict(
-                    content_type="multipart/form-data",
-                    Authorization=f"Bearer {auth_token}",
-                ),
+                headers={
+                    "content_type": "multipart/form-data",
+                    "X-CSRF-TOKEN": auth_token,
+                },
             )
 
             assert response.status_code == 201
@@ -226,7 +226,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "/api/config",
             content_type="application/json",
             data=json.dumps(dict(file_limit_import=100, max_users=10)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -242,7 +242,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "/api/config",
             content_type="application/json",
             data=json.dumps(dict()),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -258,7 +258,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "/api/config",
             content_type="application/json",
             data=json.dumps(dict(file_limit_import=100, max_users=10)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_500(response, "error when updating configuration")
@@ -285,7 +285,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "/api/config",
             content_type="application/json",
             json={input_param: 2147483648},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -308,7 +308,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                 "max_single_file_size": 2147483648,
                 "max_zip_file_size": 2147483648,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -335,7 +335,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     max_users=PSQL_INTEGER_LIMIT,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -361,7 +361,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     max_zip_file_size=0,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -383,7 +383,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     max_single_file_size=0,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -405,7 +405,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     file_limit_import=0,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -427,7 +427,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     file_sync_limit_import=0,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -449,7 +449,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             data=json.dumps(
                 dict(file_sync_limit_import=20, file_limit_import=10)
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -473,7 +473,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     max_image_size=0,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "max size of images must be greater than 0")
@@ -489,7 +489,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "/api/config",
             content_type="application/json",
             json={"max_users": -1},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -507,7 +507,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "/api/config",
             content_type="application/json",
             json={"stats_workouts_limit": -1},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -533,7 +533,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     admin_contact=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -564,7 +564,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                     admin_contact=input_email,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -586,7 +586,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "/api/config",
             content_type="application/json",
             data=json.dumps(dict(about=about)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -608,7 +608,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "/api/config",
             content_type="application/json",
             data=json.dumps(dict(about="")),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -632,7 +632,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
                 "/api/config",
                 content_type="application/json",
                 data=json.dumps(dict(privacy_policy=privacy_policy)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -662,7 +662,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             "/api/config",
             content_type="application/json",
             data=json.dumps(dict(privacy_policy=input_privacy_policy)),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -687,7 +687,7 @@ class TestUpdateConfig(ApiTestCaseMixin):
             json={
                 "global_map_workouts_limit": MAX_GLOBAL_MAP_WORKOUTS + 1,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(

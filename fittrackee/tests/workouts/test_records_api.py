@@ -46,7 +46,7 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/records",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -67,7 +67,7 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/records",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -104,7 +104,7 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/records",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -144,7 +144,7 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/records",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -166,7 +166,7 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/records",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -192,7 +192,7 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/records",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -223,12 +223,12 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
                     title="Workout test",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         response = client.get(
             "/api/records",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -263,7 +263,7 @@ class TestGetRecords(ApiTestCaseMixin, WorkoutMixin):
 
         response = client.get(
             "/api/records",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())

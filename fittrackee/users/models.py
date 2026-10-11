@@ -1,9 +1,8 @@
 import os
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 from uuid import UUID, uuid4
 
-import jwt
 from flask import current_app
 from jsonschema import validate
 from sqlalchemy import and_, func
@@ -51,7 +50,6 @@ from .roles import (
     has_moderator_rights,
     is_auth_user,
 )
-from .utils.tokens import decode_user_token, get_user_token
 
 if TYPE_CHECKING:
     from fittrackee.equipments.models import Equipment
@@ -485,42 +483,6 @@ class User(BaseModel):
         self.created_at = (
             datetime.now(timezone.utc) if created_at is None else created_at
         )
-
-    @staticmethod
-    def encode_auth_token(user_id: int) -> str:
-        """
-        Generates the auth token
-        :param user_id: -
-        :return: JWToken
-        """
-        return get_user_token(user_id)
-
-    @staticmethod
-    def encode_password_reset_token(user_id: int) -> str:
-        """
-        Generates the auth token
-        :param user_id: -
-        :return: JWToken
-        """
-        return get_user_token(user_id, password_reset=True)
-
-    @staticmethod
-    def decode_auth_token(auth_token: str) -> Union[int, str]:
-        """
-        Decodes the auth token
-        :param auth_token: -
-        :return: integer|string
-        """
-        try:
-            resp = decode_user_token(auth_token)
-            is_blacklisted = BlacklistedToken.check(auth_token)
-            if is_blacklisted:
-                return "blacklisted token, please log in again"
-            return resp
-        except jwt.ExpiredSignatureError:
-            return "signature expired, please log in again"
-        except jwt.InvalidTokenError:
-            return "invalid token, please log in again"
 
     def check_password(self, password: str) -> bool:
         return bcrypt.check_password_hash(self.password, password)
@@ -1123,31 +1085,18 @@ class BlacklistedToken(BaseModel):
         TZDateTime, nullable=False
     )
 
-    @staticmethod
-    def _get_exp_and_jti(token: str) -> Tuple[int, Optional[str]]:
-        payload = jwt.decode(
-            token,
-            current_app.config["SECRET_KEY"],
-            algorithms=["HS256"],
-        )
-        return payload["exp"], payload.get("jti")
-
     def __init__(
-        self, token: str, blacklisted_on: Optional[datetime] = None
+        self,
+        jti: str,
+        expired_at: int,
+        blacklisted_on: Optional[datetime] = None,
     ) -> None:
-        self.token = token
-        self.expired_at, self.jti = self._get_exp_and_jti(token)
+        self.token = jti  # workaround before removing column
+        self.jti = jti
+        self.expired_at = expired_at
         self.blacklisted_on = (
             blacklisted_on if blacklisted_on else datetime.now(timezone.utc)
         )
-
-    @classmethod
-    def check(cls, auth_token: str) -> bool:
-        _, jti = cls._get_exp_and_jti(auth_token)
-        if jti:
-            return cls.query.filter_by(jti=str(jti)).first() is not None
-        # token generated without JTI claim
-        return cls.query.filter_by(token=str(auth_token)).first() is not None
 
 
 class UserTask(BaseModel):

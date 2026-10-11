@@ -873,7 +873,7 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to) => {
   if ('title' in to.meta) {
     const title = typeof to.meta.title === 'string' ? to.meta.title : ''
     const translatedTitle = title
@@ -890,7 +890,7 @@ router.beforeEach((to, from, next) => {
     .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
     .then(() => {
       if (to.meta.withoutChecks) {
-        return next()
+        return
       }
 
       if (
@@ -899,7 +899,7 @@ router.beforeEach((to, from, next) => {
         !to.path.startsWith('/profile') &&
         !to.meta.allowedToSuspendedUser
       ) {
-        return next('/profile')
+        return '/profile'
       }
 
       if (
@@ -914,25 +914,23 @@ router.beforeEach((to, from, next) => {
         store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         to.meta.withoutAuth
       ) {
-        return next('/')
+        return '/'
       }
 
       if (
         !store.getters[AUTH_USER_STORE.GETTERS.IS_AUTHENTICATED] &&
         !to.meta.withoutAuth
       ) {
-        const path =
-          to.path === '/'
-            ? { path: '/login' }
-            : { path: '/login', query: { from: to.fullPath } }
-        next(path)
+        return to.path === '/'
+          ? { path: '/login' }
+          : { path: '/login', query: { from: to.fullPath } }
       } else {
-        next()
+        return
       }
     })
     .catch((error) => {
       console.error(error)
-      next()
+      return
     })
 })
 

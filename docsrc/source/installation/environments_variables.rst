@@ -153,6 +153,19 @@ deployment method.
     | To disable logging to file, set ``GUNICORN_LOG`` to ``-``, see `Gunicorn documentation <https://gunicorn.org/reference/settings/#errorlog>`__.
 
 
+.. envvar:: JWT_SECRET_KEY
+
+    .. versionadded:: 1.3.6
+
+    | Secret key used to encode and decode JWTs (if you want to use a dedicated key for user authentication tokens).
+    | If this value is not set, ``APP_SECRET_KEY`` is used instead.
+
+    .. warning::
+        | Use a strong secret key.
+        | A warning is displayed in logs when the key is too short.
+
+    :default: ``APP_SECRET_KEY`` value
+
 .. envvar:: HOST
 
     **FitTrackee** host.

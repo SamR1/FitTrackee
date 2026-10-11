@@ -35,7 +35,7 @@ import type {
 } from '@/types/user'
 
 export interface IAuthUserState {
-  authToken: string | null
+  isAuthenticated: boolean
   authUserProfile: IAuthUserProfile
   isRegistrationSuccess: boolean
   isSuccess: boolean
@@ -230,8 +230,6 @@ export interface IAuthUserGetters {
     state: IAuthUserState
   ): IPagination
 
-  [AUTH_USER_STORE.GETTERS.AUTH_TOKEN](state: IAuthUserState): string | null
-
   [AUTH_USER_STORE.GETTERS.AUTH_USER_PROFILE](
     state: IAuthUserState
   ): IAuthUserProfile
@@ -282,14 +280,13 @@ export interface IAuthUserGetters {
 }
 
 export type TAuthUserMutations<S = IAuthUserState> = {
-  [AUTH_USER_STORE.MUTATIONS.CLEAR_AUTH_USER_TOKEN](state: S): void
   [AUTH_USER_STORE.MUTATIONS.SET_EXPORT_REQUEST](
     state: S,
     exportRequest: IExportRequest | null
   ): void
-  [AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_TOKEN](
+  [AUTH_USER_STORE.MUTATIONS.UPDATE_IS_AUTHENTICATED](
     state: S,
-    authToken: string
+    isAuthenticated: boolean
   ): void
   [AUTH_USER_STORE.MUTATIONS.UPDATE_AUTH_USER_PROFILE](
     state: S,

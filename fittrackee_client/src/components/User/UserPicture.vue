@@ -16,7 +16,6 @@
   import { computed, toRefs } from 'vue'
 
   import type { IUserLightProfile, IUserProfile } from '@/types/user'
-  import { getApiUrl } from '@/utils'
 
   interface Props {
     user: IUserProfile | IUserLightProfile
@@ -26,7 +25,7 @@
 
   const authUserPictureUrl = computed(() =>
     user.value.picture
-      ? `${getApiUrl()}users/${user.value.username}/picture?${Date.now()}`
+      ? `/api/users/${user.value.username}/picture?${Date.now()}`
       : ''
   )
 </script>

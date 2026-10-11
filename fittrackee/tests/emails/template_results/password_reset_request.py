@@ -76,6 +76,7 @@ expected_en_html_body = """  <body>
                         <h1>Hi test,</h1>
                         <p>You recently requested to reset your password for your FitTrackee account. Use the button below to reset it.
                           <strong>This password reset link is only valid for 3 seconds.</strong>
+                          <strong>It can only be used once.</strong>
                         </p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
@@ -150,6 +151,7 @@ expected_en_html_body_without_security = """  <body>
                         <h1>Hi test,</h1>
                         <p>You recently requested to reset your password for your FitTrackee account. Use the button below to reset it.
                           <strong>This password reset link is only valid for 3 seconds.</strong>
+                          <strong>It can only be used once.</strong>
                         </p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
@@ -223,6 +225,7 @@ expected_fr_html_body = """  <body>
                         <h1>Bonjour test,</h1>
                         <p>Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee. Cliquez sur le bouton pour le réinitialiser.
                           <strong>Ce lien n'est valide que pendant 3 secondes.</strong>
+                          <strong>Il ne peut être utilisé qu'une seule fois.</strong>
                         </p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>
@@ -298,6 +301,7 @@ expected_fr_html_body_without_security = """  <body>
                         <h1>Bonjour test,</h1>
                         <p>Vous avez récemment demandé la réinitialisation du mot de passe de votre compte sur FitTrackee. Cliquez sur le bouton pour le réinitialiser.
                           <strong>Ce lien n'est valide que pendant 3 secondes.</strong>
+                          <strong>Il ne peut être utilisé qu'une seule fois.</strong>
                         </p>
                         <table class="body-action" align="center" width="100%" cellpadding="0" cellspacing="0" role="presentation">
                           <tr>

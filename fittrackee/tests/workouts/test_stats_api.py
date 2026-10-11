@@ -52,7 +52,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_2.username}/by_time",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -66,7 +66,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{suspended_user.username}/by_time",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -80,7 +80,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -97,7 +97,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             "/api/stats/1000/by_time",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_entity(response, "user")
@@ -120,7 +120,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1.username}/by_time"
                 f'?from="2018-04-01&to=2018-04-30'
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_500(response)
@@ -143,7 +143,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1.username}/by_time"
                 f"?from=2018-04-01&to=2018-04-30&time=hour"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid time period", "fail")
@@ -166,7 +166,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1.username}/by_time?from=2018-04-01"
                 f"&to=2018-04-30&type={self.random_string()}"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid stats type", "fail")
@@ -190,7 +190,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time{input_type}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -256,7 +256,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1_paris.username}/by_time",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -299,7 +299,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1_full.username}/by_time",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -346,7 +346,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1.username}/by_time"
                 f"?from=2018-04-01&to=2018-04-30"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -389,7 +389,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         response = client.get(
             f"/api/stats/{user_1_paris.username}/by_time?"
             f"from=2018-04-01&to=2018-04-30",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -432,7 +432,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         response = client.get(
             f"/api/stats/{user_1_full.username}/by_time?"
             f"from=2018-04-01&to=2018-04-30",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -466,7 +466,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time?time=year",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -521,7 +521,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1.username}/by_time"
                 f"?from=2018-04-01&to=2018-04-30&time=year"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -566,7 +566,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1_paris.username}/by_time"
                 f"?from=2018-04-01&to=2018-04-30&time=year"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -611,7 +611,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1_full.username}/by_time"
                 f"?from=2018-04-01&to=2018-04-30&time=year"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -645,7 +645,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time?time=month",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -737,7 +737,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1_paris.username}/by_time?time=month",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -819,7 +819,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1_full.username}/by_time?time=month",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -906,7 +906,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1.username}/by_time"
                 f"?from=2018-04-01&to=2018-04-30&time=month"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -951,7 +951,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1_paris.username}/by_time"
                 f"?from=2018-04-01&to=2018-04-30&time=month"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -996,7 +996,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1_full.username}/by_time"
                 f"?from=2018-04-01&to=2018-04-30&time=month"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1031,7 +1031,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time?time=week",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1136,7 +1136,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1.username}/by_time"
                 f"?from=2018-04-01&to=2018-04-30&time=week"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1179,7 +1179,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         response = client.get(
             f"/api/stats/{user_1_paris.username}/by_time"
             f"?from=2018-04-01&to=2018-04-30&time=week",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1222,7 +1222,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         response = client.get(
             f"/api/stats/{user_1_full.username}/by_time"
             f"?from=2018-04-01&to=2018-04-30&time=week",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1257,7 +1257,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time?time=weekm",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1374,7 +1374,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1.username}/by_time"
                 f"?from=2018-04-01&to=2018-04-30&time=weekm"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1424,7 +1424,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1_paris.username}/by_time"
                 f"?from=2017-03-27&to=2017-04-02&time=weekm"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1436,7 +1436,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1_paris.username}/by_time"
                 f"?from=2017-04-03&to=2017-04-09&time=weekm"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1469,7 +1469,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time?time=day",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1595,7 +1595,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time?time=day",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1672,7 +1672,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
                 f"/api/stats/{user_1.username}/by_time"
                 f"?from=2018-01-01&to=2018-01-07&time=day"
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1707,7 +1707,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         response = client.get(
             f"/api/stats/{user_1_paris.username}/by_time"
             f"?from=2018-01-01&to=2018-01-07&time=day",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1742,7 +1742,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
         response = client.get(
             f"/api/stats/{user_1_full.username}/by_time"
             f"?from=2018-01-01&to=2018-01-07&time=day",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1767,7 +1767,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time?type=average",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1821,7 +1821,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time?type=average",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1877,7 +1877,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time?type=average",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -1930,7 +1930,7 @@ class TestGetStatsByTime(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_time?time=year&type=average",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2001,7 +2001,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_2.username}/by_sport",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2015,7 +2015,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{suspended_user.username}/by_sport",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2037,7 +2037,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2094,7 +2094,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2151,7 +2151,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2210,7 +2210,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2264,7 +2264,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2320,7 +2320,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2370,7 +2370,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2394,7 +2394,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport?sport_id={sport_1_cycling.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2434,7 +2434,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport?sport_id={sport_1_cycling.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2471,7 +2471,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport?sport_id={sport_5_outdoor_tennis.id}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2507,7 +2507,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport?sport_id=1",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2531,7 +2531,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f"/api/stats/{user_1.username}/by_sport?sport_id=999",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_entity(response, "sport")
@@ -2551,7 +2551,7 @@ class TestGetStatsBySport(ApiTestCaseMixin):
 
         response = client.get(
             f'/api/stats/{user_1.username}/by_sport?sport_id="999',
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_500(response)
@@ -2590,7 +2590,7 @@ class TestGetAllStats(ApiTestCaseMixin):
 
         response = client.get(
             "/api/stats/all",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2604,7 +2604,7 @@ class TestGetAllStats(ApiTestCaseMixin):
 
         response = client.get(
             "/api/stats/all",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2624,7 +2624,7 @@ class TestGetAllStats(ApiTestCaseMixin):
 
         response = client.get(
             "/api/stats/all",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2653,7 +2653,7 @@ class TestGetAllStats(ApiTestCaseMixin):
 
         response = client.get(
             "/api/stats/all",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         data = json.loads(response.data.decode())
@@ -2677,7 +2677,7 @@ class TestGetAllStats(ApiTestCaseMixin):
 
         response = client.get(
             "/api/stats/all",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2706,7 +2706,7 @@ class TestGetAllStats(ApiTestCaseMixin):
 
         response = client.get(
             "/api/stats/all",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)

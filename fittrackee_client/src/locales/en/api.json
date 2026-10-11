@@ -37,6 +37,7 @@
     "invalid credentials": "Invalid credentials.",
     "invalid payload": "Provided data are invalid.",
     "invalid token, please log in again": "Invalid token, please log in again.",
+    "invalid token, please request a new reset token": "Invalid token, please request a new password reset.",
     "invalid token, please request a new token": "Invalid token, please log in again.",
     "max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously": "Max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously.",
     "new email must be different than current email": "The new email must be different than current email.",

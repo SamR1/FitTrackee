@@ -32,7 +32,7 @@ class TestFollow(ApiTestCaseMixin):
         response = client.post(
             f"/api/users/{user_1.username}/follow",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         self.assert_403(response)
 
@@ -46,7 +46,7 @@ class TestFollow(ApiTestCaseMixin):
         response = client.post(
             f"/api/users/{random_string()}/follow",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -72,7 +72,7 @@ class TestFollow(ApiTestCaseMixin):
         response = client.post(
             f"/api/users/{user_2.username}/follow",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 403
@@ -94,7 +94,7 @@ class TestFollow(ApiTestCaseMixin):
         response = client.post(
             f"/api/users/{user_2.username}/follow",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 400
@@ -112,7 +112,7 @@ class TestFollow(ApiTestCaseMixin):
         response = client.post(
             f"/api/users/{user_2.username}/follow",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -137,7 +137,7 @@ class TestFollow(ApiTestCaseMixin):
         response = client.post(
             f"/api/users/{user_2.username}/follow",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -184,7 +184,7 @@ class TestUnfollow(ApiTestCaseMixin):
         response = client.post(
             f"/api/users/{user_1.username}/unfollow",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
         self.assert_403(response)
 
@@ -198,7 +198,7 @@ class TestUnfollow(ApiTestCaseMixin):
         response = client.post(
             f"/api/users/{random_string()}/unfollow",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -216,7 +216,7 @@ class TestUnfollow(ApiTestCaseMixin):
         response = client.post(
             f"/api/users/{user_2.username}/unfollow",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 404
@@ -238,7 +238,7 @@ class TestUnfollow(ApiTestCaseMixin):
         response = client.post(
             f"/api/users/{user_2.username}/unfollow",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -264,7 +264,7 @@ class TestUnfollow(ApiTestCaseMixin):
         response = client.post(
             f"/api/users/{user_2.username}/unfollow",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(response, "relationship does not exist")

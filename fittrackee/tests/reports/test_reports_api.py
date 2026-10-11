@@ -89,7 +89,7 @@ class TestPostReport(ReportTestCase):
                     object_id=self.random_short_id(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -111,7 +111,7 @@ class TestPostReport(ReportTestCase):
                     object_type=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -132,7 +132,7 @@ class TestPostReport(ReportTestCase):
                     object_type="comment",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -153,7 +153,7 @@ class TestPostReport(ReportTestCase):
                     object_type="comment",
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -192,7 +192,7 @@ class TestPostCommentReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -228,7 +228,7 @@ class TestPostCommentReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "users can not report their own comments")
@@ -262,7 +262,7 @@ class TestPostCommentReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "comment already suspended")
@@ -297,7 +297,7 @@ class TestPostCommentReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "a report already exists")
@@ -331,7 +331,7 @@ class TestPostCommentReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -378,7 +378,7 @@ class TestPostCommentReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -429,7 +429,7 @@ class TestPostCommentReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -470,7 +470,7 @@ class TestPostWorkoutReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -499,7 +499,7 @@ class TestPostWorkoutReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "users can not report their own workouts")
@@ -535,7 +535,7 @@ class TestPostWorkoutReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "workout already suspended")
@@ -567,7 +567,7 @@ class TestPostWorkoutReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "a report already exists")
@@ -596,7 +596,7 @@ class TestPostWorkoutReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -638,7 +638,7 @@ class TestPostWorkoutReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -687,7 +687,7 @@ class TestPostWorkoutReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -728,7 +728,7 @@ class TestPostUserReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -753,7 +753,7 @@ class TestPostUserReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "users can not report their own profile")
@@ -783,7 +783,7 @@ class TestPostUserReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "user already suspended")
@@ -810,7 +810,7 @@ class TestPostUserReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "a report already exists")
@@ -836,7 +836,7 @@ class TestPostUserReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -879,7 +879,7 @@ class TestPostUserReport(ReportTestCase):
                     object_type=self.object_type,
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 201
@@ -910,7 +910,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -945,7 +945,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -989,7 +989,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1033,7 +1033,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?object_type={input_object_type}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1079,7 +1079,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?object_type={input_object_type}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1110,7 +1110,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1150,7 +1150,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?resolved=false",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1193,7 +1193,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?resolved=true",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1239,7 +1239,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?{input_params}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1283,7 +1283,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?order_by=created_at&order=asc",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1336,7 +1336,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?{input_params}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1381,7 +1381,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?order_by={input_order_by}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid 'order_by'")
@@ -1410,7 +1410,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?order_by=updated_at&order=asc",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1455,7 +1455,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?page=1",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1497,7 +1497,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?page=2",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1535,7 +1535,7 @@ class TestGetReportsAsModerator(ReportTestCase):
         response = client.get(
             f"{self.route}?reporter={user_3.username}",
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1574,7 +1574,7 @@ class TestGetReportsAsAdmin(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1621,7 +1621,7 @@ class TestGetReportsAsUser(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1668,7 +1668,7 @@ class TestGetReportAsModerator(GetReportTestCase):
         response = client.get(
             self.route.format(report_id=report_id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1688,7 +1688,7 @@ class TestGetReportAsModerator(GetReportTestCase):
         response = client.get(
             self.route.format(report_id=report.id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1709,7 +1709,7 @@ class TestGetReportAsModerator(GetReportTestCase):
         response = client.get(
             self.route.format(report_id=report.id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1732,7 +1732,7 @@ class TestGetReportAsAdmin(GetReportTestCase):
         response = client.get(
             self.route.format(report_id=report.id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -1755,7 +1755,7 @@ class TestGetReportAsUser(GetReportTestCase):
         response = client.get(
             self.route.format(report_id=report.id),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1826,7 +1826,7 @@ class TestPatchReport(ReportTestCase):
                     comment=self.random_string(),
                 )
             ),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -1843,7 +1843,7 @@ class TestPatchReport(ReportTestCase):
             self.route.format(report_id=report_id),
             content_type="application/json",
             data=json.dumps(dict(comment=self.random_string())),
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -1862,7 +1862,7 @@ class TestPatchReport(ReportTestCase):
             self.route.format(report_id=report.id),
             content_type="application/json",
             data="{}",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -1882,7 +1882,7 @@ class TestPatchReport(ReportTestCase):
                 self.route.format(report_id=report.id),
                 content_type="application/json",
                 data=json.dumps(dict(comment=comment)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -1916,7 +1916,7 @@ class TestPatchReport(ReportTestCase):
                 self.route.format(report_id=report.id),
                 content_type="application/json",
                 data=json.dumps(dict(comment=comment, resolved=True)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -1951,7 +1951,7 @@ class TestPatchReport(ReportTestCase):
                 self.route.format(report_id=report.id),
                 content_type="application/json",
                 data=json.dumps(dict(comment=comment, resolved=False)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -1990,7 +1990,7 @@ class TestPatchReport(ReportTestCase):
                 self.route.format(report_id=report.id),
                 content_type="application/json",
                 data=json.dumps(dict(comment=comment)),
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -2046,7 +2046,7 @@ class TestPostReportAction(ReportTestCase):
                 "action_type": "user_suspension",
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -2066,7 +2066,7 @@ class TestPostReportAction(ReportTestCase):
                 "action_type": "user_suspension",
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -2087,7 +2087,7 @@ class TestPostReportAction(ReportTestCase):
             json={
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -2107,7 +2107,7 @@ class TestPostReportAction(ReportTestCase):
                 "action_type": self.random_string(),
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid 'action_type'")
@@ -2132,7 +2132,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "action_type": "user_warning_lifting",
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid 'action_type'")
@@ -2153,7 +2153,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
             self.route.format(report_id=report.id),
             content_type="application/json",
             json={"action_type": "user_suspension"},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "'username' is missing")
@@ -2173,7 +2173,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "action_type": "user_suspension",
                 "username": self.random_string(),
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid 'username'")
@@ -2193,7 +2193,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
             self.route.format(report_id=report.id),
             content_type="application/json",
             json={"action_type": "user_suspension", "username": username},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid 'username'")
@@ -2215,7 +2215,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                     "action_type": "user_suspension",
                     "username": user_2.username,
                 },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -2241,7 +2241,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "action_type": "user_suspension",
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "user account already suspended")
@@ -2268,7 +2268,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "action_type": "user_warning",
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "user already warned")
@@ -2290,7 +2290,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "action_type": "user_unsuspension",
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2323,7 +2323,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "action_type": input_action_type,
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2359,7 +2359,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "username": user_2.username,
                 "reason": self.random_string(),
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2392,7 +2392,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "username": user_2.username,
                 "reason": self.random_string(),
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         response = client.post(
@@ -2431,7 +2431,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "action_type": "user_suspension",
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2461,7 +2461,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "action_type": "user_unsuspension",
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2489,7 +2489,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "action_type": "user_warning",
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2517,7 +2517,7 @@ class TestPostReportActionForUserAction(ReportTestCase):
                 "action_type": "user_suspension",
                 "username": user_2.username,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2548,7 +2548,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             self.route.format(report_id=report.id),
             content_type="application/json",
             json={"action_type": "workout_suspension"},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "'workout_id' is missing")
@@ -2577,7 +2577,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
                 "action_type": "workout_suspension",
                 "workout_id": self.random_short_id(),
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid 'workout_id'")
@@ -2606,7 +2606,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
             self.route.format(report_id=report.id),
             content_type="application/json",
             json={"action_type": "workout_suspension", "workout_id": short_id},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid 'workout_id'")
@@ -2637,7 +2637,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
                     "action_type": "workout_suspension",
                     "workout_id": workout_cycling_user_2.short_id,
                 },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -2674,7 +2674,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
                 "action_type": "workout_suspension",
                 "workout_id": workout_cycling_user_2.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(
@@ -2707,7 +2707,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
                 "action_type": "workout_unsuspension",
                 "workout_id": workout_cycling_user_2.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2742,7 +2742,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
                 "action_type": "workout_suspension",
                 "workout_id": workout_cycling_user_2.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2777,7 +2777,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
                 "action_type": "workout_suspension",
                 "workout_id": workout_cycling_user_2.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2813,7 +2813,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
                 "action_type": "workout_suspension",
                 "workout_id": workout_cycling_user_2.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2848,7 +2848,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
                 "action_type": "workout_unsuspension",
                 "workout_id": workout_cycling_user_2.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2881,7 +2881,7 @@ class TestPostReportActionForWorkoutAction(ReportTestCase):
                 "action_type": "workout_suspension",
                 "workout_id": workout_cycling_user_2.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -2913,7 +2913,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
             self.route.format(report_id=report.id),
             content_type="application/json",
             json={"action_type": "comment_suspension"},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "'comment_id' is missing")
@@ -2943,7 +2943,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
                 "action_type": "comment_suspension",
                 "comment_id": self.random_short_id(),
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid 'comment_id'")
@@ -2973,7 +2973,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
             self.route.format(report_id=report.id),
             content_type="application/json",
             json={"action_type": "comment_suspension", "comment_id": short_id},
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "invalid 'comment_id'")
@@ -3005,7 +3005,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
                     "action_type": "comment_suspension",
                     "comment_id": comment.short_id,
                 },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -3040,7 +3040,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
                     "action_type": "comment_suspension",
                     "comment_id": comment.short_id,
                 },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         self.assert_400(
@@ -3074,7 +3074,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
                 "action_type": "comment_unsuspension",
                 "comment_id": comment.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3107,7 +3107,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
                 "action_type": "comment_suspension",
                 "comment_id": comment.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3145,7 +3145,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
                     "action_type": "comment_suspension",
                     "comment_id": comment.short_id,
                 },
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -3186,7 +3186,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
                 "action_type": "comment_suspension",
                 "comment_id": comment.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3226,7 +3226,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
                 "action_type": "comment_unsuspension",
                 "comment_id": comment.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3264,7 +3264,7 @@ class TestPostReportActionForCommentAction(ReportTestCase):
                 "action_type": "comment_suspension",
                 "comment_id": comment.short_id,
             },
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3301,7 +3301,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal_id),
             data=json.dumps(dict(approved=False)),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -3318,7 +3318,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal_id),
             data=json.dumps(dict(approved=False)),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_404_with_message(
@@ -3348,7 +3348,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response)
@@ -3370,7 +3370,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "user account has already been reactivated")
@@ -3401,7 +3401,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3435,7 +3435,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         reports_send_email_mock.send.assert_called_with(
@@ -3464,7 +3464,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         reports_send_email_mock.send.assert_called_with(
@@ -3500,7 +3500,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3534,7 +3534,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         reports_send_email_mock.send.assert_called_with(
@@ -3563,7 +3563,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         reports_send_email_mock.send.assert_called_with(
@@ -3607,7 +3607,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             data=json.dumps(input_data),
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3649,7 +3649,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         reports_send_email_mock.send.assert_called_with(
@@ -3686,7 +3686,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         reports_send_email_mock.send.assert_called_with(
@@ -3724,7 +3724,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "comment already reactivated")
@@ -3762,7 +3762,7 @@ class TestProcessReportActionAppeal(
                 self.route.format(appeal_id=appeal.short_id),
                 data=json.dumps(input_data),
                 content_type="application/json",
-                headers=dict(Authorization=f"Bearer {auth_token}"),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -3798,7 +3798,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         reports_send_email_mock.send.assert_called_with(
@@ -3829,7 +3829,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": False, "reason": "not ok"},
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         reports_send_email_mock.send.assert_called_with(
@@ -3861,7 +3861,7 @@ class TestProcessReportActionAppeal(
             self.route.format(appeal_id=appeal.short_id),
             json={"approved": True, "reason": "ok"},
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_400(response, "workout already reactivated")
@@ -3901,7 +3901,7 @@ class TestGetReportsUnresolved(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         self.assert_403(response)
@@ -3916,7 +3916,7 @@ class TestGetReportsUnresolved(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3944,7 +3944,7 @@ class TestGetReportsUnresolved(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200
@@ -3973,7 +3973,7 @@ class TestGetReportsUnresolved(ReportTestCase):
         response = client.get(
             self.route,
             content_type="application/json",
-            headers=dict(Authorization=f"Bearer {auth_token}"),
+            headers={"X-CSRF-TOKEN": auth_token},
         )
 
         assert response.status_code == 200

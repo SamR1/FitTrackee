@@ -10,9 +10,11 @@ import pytest
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 from flask import Flask
+from flask_jwt_extended import decode_token
 from time_machine import travel
 
 from fittrackee import db
+from fittrackee.users.exceptions import InvalidJWTClaim
 from fittrackee.users.models import BlacklistedToken, User
 from fittrackee.users.utils.controls import (
     check_password,
@@ -22,7 +24,8 @@ from fittrackee.users.utils.controls import (
 )
 from fittrackee.users.utils.tokens import (
     clean_blacklisted_tokens,
-    decode_user_token,
+    decode_password_reset_token,
+    get_password_reset_token,
     get_user_token,
 )
 
@@ -184,62 +187,55 @@ class TestRegisterControls:
 
 
 class TestGetUserToken:
+    def test_token_contains_user_id(self, app: Flask) -> None:
+        user_id = 1
+        token = get_user_token(user_id=user_id)
+
+        decoded_token = decode_token(token)
+        assert decoded_token["sub"] == str(user_id)
+
+    def test_token_contains_auth_type(self, app: Flask) -> None:
+        user_id = 1
+        token = get_user_token(user_id=user_id)
+
+        decoded_token = decode_token(token)
+        assert decoded_token["type"] == "auth"
+
+
+class TestGetPasswordResetToken:
     @staticmethod
-    def decode_token(app: Flask, token: str) -> Dict:
-        return jwt.decode(
-            token,
+    def decode_reset_token(app: "Flask", auth_token: str) -> Dict:
+        payload = jwt.decode(
+            auth_token,
             app.config["SECRET_KEY"],
             algorithms=["HS256"],
         )
+        return payload
 
-    def test_token_is_encoded_with_hs256(self, app: Flask) -> None:
-        token = get_user_token(user_id=1)
-
-        decoded_token = self.decode_token(app, token)
-        assert list(decoded_token.keys()) == ["exp", "iat", "jti", "sub"]
-
-    @pytest.mark.parametrize("input_password_reset", [True, False])
-    def test_token_contains_user_id(
-        self, app: Flask, input_password_reset: bool
-    ) -> None:
+    def test_token_contains_user_id(self, app: Flask) -> None:
         user_id = 1
-        token = get_user_token(
-            user_id=user_id, password_reset=input_password_reset
-        )
+        token = get_password_reset_token(user_id=user_id)
 
-        decoded_token = self.decode_token(app, token)
+        decoded_token = self.decode_reset_token(app, token)
         assert decoded_token["sub"] == str(user_id)
 
-    @pytest.mark.parametrize("input_password_reset", [True, False])
-    def test_token_contains_timestamp_of_when_it_is_issued(
-        self, app: Flask, input_password_reset: bool
-    ) -> None:
+    def test_token_contains_password_reset_type(self, app: Flask) -> None:
         user_id = 1
-        iat = datetime.now(timezone.utc)
-        with travel(iat, tick=False):
-            token = get_user_token(
-                user_id=user_id, password_reset=input_password_reset
-            )
+        token = get_password_reset_token(user_id=user_id)
 
-            decoded_token = self.decode_token(app, token)
-            assert decoded_token["iat"] == timegm(iat.utctimetuple())
+        decoded_token = self.decode_reset_token(app, token)
+        assert decoded_token["type"] == "password_reset"
 
-    def test_token_contains_timestamp_of_when_it_expired(
+    def test_token_contains_timestamp_of_when_it_is_issued(
         self, app: Flask
     ) -> None:
         user_id = 1
         iat = datetime.now(timezone.utc)
-        expiration = timedelta(
-            days=app.config["TOKEN_EXPIRATION_DAYS"],
-            seconds=app.config["TOKEN_EXPIRATION_SECONDS"],
-        )
         with travel(iat, tick=False):
-            token = get_user_token(user_id=user_id)
+            token = get_password_reset_token(user_id=user_id)
 
-            decoded_token = self.decode_token(app, token)
-            assert decoded_token["exp"] == timegm(
-                (iat + expiration).utctimetuple()
-            )
+        decoded_token = self.decode_reset_token(app, token)
+        assert decoded_token["iat"] == timegm(iat.utctimetuple())
 
     def test_password_token_contains_timestamp_of_when_it_expired(
         self, app: Flask
@@ -247,28 +243,29 @@ class TestGetUserToken:
         user_id = 1
         iat = datetime.now(timezone.utc)
         expiration = timedelta(
-            days=0.0,
             seconds=app.config["PASSWORD_TOKEN_EXPIRATION_SECONDS"],
         )
         with travel(iat, tick=False):
-            token = get_user_token(user_id=user_id, password_reset=True)
+            token = get_password_reset_token(user_id=user_id)
 
-            decoded_token = self.decode_token(app, token)
-            assert decoded_token["exp"] == timegm(
-                (iat + expiration).utctimetuple()
-            )
+        decoded_token = self.decode_reset_token(app, token)
+        assert decoded_token["exp"] == timegm(
+            (iat + expiration).utctimetuple()
+        )
 
 
-class TestDecodeUserToken:
+class TestDecodePassordTokenToken:
     @staticmethod
-    def generate_token(user_id: int, now: datetime) -> str:
+    def generate_token(
+        user_id: int, now: datetime, type_claim: str = "password_reset"
+    ) -> str:
         with travel(now, tick=False):
-            token = get_user_token(user_id)
+            token = get_password_reset_token(user_id, type_claim)
         return token
 
     def test_it_raises_error_when_token_is_invalid(self, app: Flask) -> None:
         with pytest.raises(jwt.exceptions.DecodeError):
-            decode_user_token(random_string())
+            decode_password_reset_token(random_string())
 
     def test_it_raises_error_when_token_body_is_invalid(
         self, app: Flask
@@ -276,11 +273,8 @@ class TestDecodeUserToken:
         token = self.generate_token(user_id=1, now=datetime.now(timezone.utc))
         header, _, signature = token.split(".")
         modified_token = f"{header}.{random_string()}.{signature}"
-        with pytest.raises(
-            jwt.exceptions.DecodeError,
-            match="Invalid payload padding",
-        ):
-            decode_user_token(modified_token)
+        with pytest.raises(jwt.exceptions.DecodeError):
+            decode_password_reset_token(modified_token)
 
     def test_it_raises_error_when_secret_key_is_invalid(
         self, app: Flask
@@ -300,7 +294,7 @@ class TestDecodeUserToken:
             jwt.exceptions.InvalidSignatureError,
             match="Signature verification failed",
         ):
-            decode_user_token(token)
+            decode_password_reset_token(token)
 
     def test_it_raises_error_when_algorithm_is_not_hs256(
         self, app: Flask
@@ -323,7 +317,19 @@ class TestDecodeUserToken:
             algorithm="RS256",
         )
         with pytest.raises(jwt.exceptions.InvalidAlgorithmError):
-            decode_user_token(token)
+            decode_password_reset_token(token)
+
+    def test_it_raises_error_when_type_is_not_password_reset(
+        self, app: Flask
+    ) -> None:
+        token = self.generate_token(
+            user_id=1, now=datetime.now(timezone.utc), type_claim="invalid"
+        )
+        with pytest.raises(
+            InvalidJWTClaim,
+            match="invalid token, please request a new token",
+        ):
+            decode_password_reset_token(token)
 
     def test_it_raises_error_when_token_is_expired(self, app: Flask) -> None:
         now = datetime.now(timezone.utc) - timedelta(minutes=10)
@@ -331,31 +337,37 @@ class TestDecodeUserToken:
         with pytest.raises(
             jwt.exceptions.ExpiredSignatureError, match="Signature has expired"
         ):
-            decode_user_token(token)
+            decode_password_reset_token(token)
 
-    def test_it_returns_user_id(self, app: Flask) -> None:
+    def test_it_returns_token_payload(self, app: Flask) -> None:
         expected_user_id = 1
-        token = self.generate_token(
-            user_id=expected_user_id, now=datetime.now(timezone.utc)
-        )
+        now = datetime.now(timezone.utc)
+        token = self.generate_token(user_id=expected_user_id, now=now)
 
-        user_id = decode_user_token(token)
+        payload = decode_password_reset_token(token)
 
-        assert user_id == expected_user_id
+        assert set(payload.keys()) == {"exp", "iat", "jti", "sub", "type"}
+        assert payload["iat"] == int(now.timestamp())
+        assert payload["sub"] == f"{expected_user_id}"
+        assert payload["type"] == "password_reset"
 
 
 class TestBlacklistedTokensCleanup:
     @staticmethod
     def blacklisted_token(expiration_days: Optional[int] = None) -> str:
         token = get_user_token(user_id=random_int())
-        blacklisted_token = BlacklistedToken(token=token)
+        payload = decode_token(token)
+        blacklisted_token = BlacklistedToken(
+            jti=payload["jti"],
+            expired_at=payload["exp"],
+        )
         if expiration_days is not None:
             blacklisted_token.expired_at = int(time.time()) - (
                 expiration_days * 86400
             )
         db.session.add(blacklisted_token)
         db.session.commit()
-        return token
+        return payload["jti"]
 
     def test_it_returns_0_as_count_when_no_blacklisted_token_deleted(
         self, app: Flask, user_1: User
@@ -367,31 +379,31 @@ class TestBlacklistedTokensCleanup:
     def test_it_does_not_delete_blacklisted_token_when_not_expired(
         self, app: Flask, user_1: User
     ) -> None:
-        token = self.blacklisted_token()
+        jti = self.blacklisted_token()
 
         clean_blacklisted_tokens(days=10)
 
-        existing_token = BlacklistedToken.query.filter_by(token=token).first()
+        existing_token = BlacklistedToken.query.filter_by(jti=jti).first()
         assert existing_token is not None
 
     def test_it_deletes_blacklisted_token_when_expired_more_then_provided_days(
         self, app: Flask, user_1: User
     ) -> None:
-        token = self.blacklisted_token(expiration_days=40)
+        jti = self.blacklisted_token(expiration_days=40)
 
         clean_blacklisted_tokens(days=30)
 
-        existing_token = BlacklistedToken.query.filter_by(token=token).first()
+        existing_token = BlacklistedToken.query.filter_by(jti=jti).first()
         assert existing_token is None
 
     def test_it_does_not_delete_blacklisted_token_when_expired_below_provided_days(  # noqa
         self, app: Flask, user_1: User
     ) -> None:
-        token = self.blacklisted_token(expiration_days=30)
+        jti = self.blacklisted_token(expiration_days=30)
 
         clean_blacklisted_tokens(days=40)
 
-        existing_token = BlacklistedToken.query.filter_by(token=token).first()
+        existing_token = BlacklistedToken.query.filter_by(jti=jti).first()
         assert existing_token is not None
 
     def test_it_returns_deleted_rows_count(
@@ -401,8 +413,6 @@ class TestBlacklistedTokensCleanup:
         for _ in range(3):
             self.blacklisted_token(expiration_days=30)
 
-        count = clean_blacklisted_tokens(
-            days=app.config["TOKEN_EXPIRATION_DAYS"]
-        )
+        count = clean_blacklisted_tokens(days=5)
 
         assert count == 3

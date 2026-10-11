@@ -5,6 +5,7 @@ Registration & authentication
 .. versionchanged:: 0.6.9 create user account with language detected from browser
 .. versionchanged:: 0.9.4 create user account with time zone detected from browser
 .. versionchanged:: 0.7.13 added privacy policy
+.. versionchanged:: 1.3.6 updated privacy policy and authentication update
 
 If registration is enabled, users can register by providing:
 
@@ -31,3 +32,6 @@ The user account is created with language if supported and time zone detected fr
   In case email sending is not configured, a `command line <../cli.html#ftcli-users-update>`__ allows to activate users account.
 
 After account activation, users can log in with email and password.
+
+.. warning::
+  Cookies must be enabled for **FitTrackee** in the browser settings. Please refer to the browser documentation (for example to add an exception if necessary).
