@@ -277,8 +277,8 @@ class TestDecodeUserToken:
         header, _, signature = token.split(".")
         modified_token = f"{header}.{random_string()}.{signature}"
         with pytest.raises(
-            jwt.exceptions.InvalidSignatureError,
-            match="Signature verification failed",
+            jwt.exceptions.DecodeError,
+            match="Invalid payload padding",
         ):
             decode_user_token(modified_token)
 
