@@ -1,6 +1,6 @@
 import os
 from datetime import datetime, timezone
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 from uuid import UUID, uuid4
 
 from flask import current_app
@@ -511,7 +511,7 @@ class User(BaseModel):
     @workouts_count.expression  # type: ignore
     def workouts_count(self) -> int:
         return (
-            select(func.count(Workout.id))
+            select(func.count(Workout.id))  # type: ignore
             .where(Workout.user_id == self.id)
             .label("workouts_count")
         )
@@ -888,7 +888,7 @@ class User(BaseModel):
         }
 
         if role is not None:
-            total = (0, "0:00:00", 0)
+            total: Tuple = (0, "0:00:00", 0)
             if self.workouts_count > 0:  # type: ignore
                 total = tuple(
                     db.session.query(

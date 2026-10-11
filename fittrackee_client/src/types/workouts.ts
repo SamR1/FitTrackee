@@ -292,12 +292,7 @@ export interface IWorkoutData {
 }
 
 export type TWorkoutDatasetKeys =
-  | 'speed'
-  | 'elevation'
-  | 'hr'
-  | 'cadence'
-  | 'power'
-  | 'pace'
+  'speed' | 'elevation' | 'hr' | 'cadence' | 'power' | 'pace'
 
 export type TWorkoutDatasets = {
   [key in TWorkoutDatasetKeys]: IChartDataset

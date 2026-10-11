@@ -16,10 +16,7 @@ export type TUserRole = 'user' | 'moderator' | 'admin' | 'owner'
 export type TVisibilityLevels = 'private' | 'followers_only' | 'public'
 export type TSegmentsCreationEvent = 'all' | 'none' | 'only_manual'
 export type TElevationDataSource =
-  | 'file'
-  | 'open_elevation'
-  | 'open_elevation_smooth'
-  | 'valhalla'
+  'file' | 'open_elevation' | 'open_elevation_smooth' | 'valhalla'
 
 export interface IUserLightProfile {
   blocked: boolean
@@ -256,11 +253,7 @@ export interface IArchiveUploadTaskError {
   files: Record<string, string>
 }
 export type IArchiveUploadTaskStatus =
-  | 'aborted'
-  | 'errored'
-  | 'in_progress'
-  | 'queued'
-  | 'successful'
+  'aborted' | 'errored' | 'in_progress' | 'queued' | 'successful'
 
 export interface IArchiveUploadTask {
   created_at: string

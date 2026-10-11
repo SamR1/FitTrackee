@@ -7,7 +7,7 @@ ENV PATH=/usr/src/app/fittrackee_client/node_modules/.bin:$PATH
 COPY fittrackee_client/package.json /usr/src/app/fittrackee_client/package.json
 COPY fittrackee_client/package-lock.json /usr/src/app/fittrackee_client/package-lock.json
 RUN apk add --no-cache git
-RUN npm ci --ignore-scripts --silent --network-timeout 300000 && \
+RUN npm ci --ignore-scripts --allow-git root --silent --network-timeout 300000 && \
 	npm cache clean --force
 
 COPY fittrackee_client/. /usr/src/app/fittrackee_client

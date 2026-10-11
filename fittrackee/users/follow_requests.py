@@ -1,7 +1,7 @@
 from typing import Dict, Union
 
 from flask import Blueprint, request
-from sqlalchemy import asc, desc, func
+from sqlalchemy import func
 
 from fittrackee import appLog
 from fittrackee.oauth2.server import require_auth
@@ -117,9 +117,9 @@ def get_follow_requests(auth_user: User) -> Dict:
             updated_at=None,
         )
         .order_by(
-            asc(FollowRequest.created_at)
+            FollowRequest.created_at.asc()
             if order == "asc"
-            else desc(FollowRequest.created_at)
+            else FollowRequest.created_at.desc()
         )
         .paginate(page=page, per_page=per_page, error_out=False)
     )

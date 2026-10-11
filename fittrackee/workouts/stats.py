@@ -315,7 +315,7 @@ def get_workouts_by_time(
             workouts_query = workouts_query.join(
                 last_workout_ids, Workout.id == last_workout_ids.c.id
             )
-        results = workouts_query.all()
+        results: List = workouts_query.all()
 
         sports = Sport.query.filter().all()
         sports_displayed_data = get_sports_displayed_data(sports, auth_user)
