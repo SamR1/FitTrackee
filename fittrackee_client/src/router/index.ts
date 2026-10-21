@@ -885,6 +885,7 @@ router.beforeEach((to, from, next) => {
       title ? ` - ${capitalize(translatedTitle)}` : ''
     }`
   }
+
   store.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
   store
     .dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)
@@ -922,8 +923,8 @@ router.beforeEach((to, from, next) => {
         !to.meta.withoutAuth
       ) {
         return to.path === '/'
-          ? { path: '/login' }
-          : { path: '/login', query: { from: to.fullPath } }
+          ? next({ path: '/login' })
+          : next({ path: '/login', query: { from: to.fullPath } })
       } else {
         return next()
       }
