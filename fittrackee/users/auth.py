@@ -27,7 +27,11 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.utils import handle_pieces_of_equipment
-from fittrackee.exceptions import FileException, ImageMaxPixelsException
+from fittrackee.exceptions import (
+    FileException,
+    ImageMaxPixelsException,
+    InvalidShortIdException,
+)
 from fittrackee.files import (
     check_file,
     generate_filename,
@@ -91,6 +95,7 @@ auth_blueprint = Blueprint("auth", __name__)
 HEX_COLOR_REGEX = regex = "^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$"
 NOT_FOUND_MESSAGE = "the requested URL was not found on the server"
 BLOCKED_USERS_PER_PAGE = 5
+SANCTION_NOT_FOUND_ERROR = "no sanction found"
 
 
 def send_account_confirmation_email(user: User) -> None:
@@ -2987,12 +2992,15 @@ def get_user_sanction(
         - ``invalid token, please log in again``
     :statuscode 404: ``no sanction found``
     """
-    sanction = ReportAction.query.filter_by(
-        uuid=decode_short_id(action_short_id), user_id=auth_user.id
-    ).first()
+    try:
+        sanction = ReportAction.query.filter_by(
+            uuid=decode_short_id(action_short_id), user_id=auth_user.id
+        ).first()
+    except InvalidShortIdException:
+        return NotFoundErrorResponse(SANCTION_NOT_FOUND_ERROR)
 
     if not sanction:
-        return NotFoundErrorResponse("no sanction found")
+        return NotFoundErrorResponse(SANCTION_NOT_FOUND_ERROR)
 
     return {
         "status": "success",
@@ -3049,12 +3057,15 @@ def appeal_user_sanction(
     :statuscode 404: ``no sanction found``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
-    sanction = ReportAction.query.filter_by(
-        uuid=decode_short_id(action_short_id), user_id=auth_user.id
-    ).first()
+    try:
+        sanction = ReportAction.query.filter_by(
+            uuid=decode_short_id(action_short_id), user_id=auth_user.id
+        ).first()
+    except InvalidShortIdException:
+        return NotFoundErrorResponse(SANCTION_NOT_FOUND_ERROR)
 
     if not sanction:
-        return NotFoundErrorResponse("no sanction found")
+        return NotFoundErrorResponse(SANCTION_NOT_FOUND_ERROR)
 
     if sanction.report.object_type == "comment" and not sanction.comment_id:
         return InvalidPayloadErrorResponse("comment has been deleted")

@@ -1,6 +1,7 @@
 from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable, Optional
 
+from fittrackee.exceptions import InvalidShortIdException
 from fittrackee.responses import (
     DataNotFoundErrorResponse,
     ForbiddenErrorResponse,
@@ -22,7 +23,7 @@ def check_workout(only_owner: bool = True, as_data: bool = True) -> Callable:
             workout_short_id = kwargs["workout_short_id"]
             try:
                 workout = get_workout(workout_short_id, auth_user)
-            except WorkoutForbiddenException:
+            except (WorkoutForbiddenException, InvalidShortIdException):
                 return (
                     DataNotFoundErrorResponse("workouts")
                     if as_data

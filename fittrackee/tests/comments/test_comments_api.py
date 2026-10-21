@@ -423,6 +423,30 @@ class TestGetWorkoutCommentAsUser(CommentMixin, ApiTestCaseMixin):
             f"workout comment not found (id: {workout_comment_short_id})",
         )
 
+    def test_it_returns_404_when_workout_comment_short_id_is_invalid(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        sport_1_cycling: Sport,
+        workout_cycling_user_2: Workout,
+    ) -> None:
+        workout_cycling_user_2.workout_visibility = VisibilityLevel.PUBLIC
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            "/api/comments/invalid",
+            content_type="application/json",
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        self.assert_404_with_message(
+            response,
+            "workout comment not found (id: invalid)",
+        )
+
     @pytest.mark.parametrize(
         "input_text_visibility",
         [VisibilityLevel.FOLLOWERS, VisibilityLevel.PRIVATE],

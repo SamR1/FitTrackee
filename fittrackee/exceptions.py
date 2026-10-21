@@ -28,3 +28,7 @@ class ImageMaxPixelsException(Exception):
         super().__init__("image max pixels limit exceeded")
         self.max_size = max_size
         self.file_size = file_size
+
+
+class InvalidShortIdException(Exception):
+    pass

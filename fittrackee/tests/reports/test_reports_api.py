@@ -200,6 +200,32 @@ class TestPostCommentReport(ReportTestCase):
             f"comment not found (id: {comment_id})",
         )
 
+    def test_it_returns_404_when_comment_id_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        comment_id = "invalid"
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=self.random_string(),
+                    object_id=comment_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"comment not found (id: {comment_id})",
+        )
+
     def test_it_returns_400_when_user_is_comment_author(
         self,
         app: Flask,
@@ -456,6 +482,32 @@ class TestPostWorkoutReport(ReportTestCase):
         self, app: Flask, user_1: User
     ) -> None:
         workout_id = self.random_short_id()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route,
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    note=self.random_string(),
+                    object_id=workout_id,
+                    object_type=self.object_type,
+                )
+            ),
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        self.assert_404_with_message(
+            response,
+            f"workout not found (id: {workout_id})",
+        )
+
+    def test_it_returns_404_when_workout_id_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        workout_id = "invalid"
         client, auth_token = self.get_test_client_and_auth_token(
             app, user_1.email
         )
