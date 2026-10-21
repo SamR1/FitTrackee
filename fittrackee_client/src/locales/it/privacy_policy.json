@@ -8,6 +8,10 @@
       "CONTENT": "Se decidiamo di modificare la nostra politica sulla privacy, pubblicheremo tali modifiche su questa pagina.\nQuesto documento è sotto licenza [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/) . Originariamente adattato dalla politica sulla privacy di [Discourse](https://github.com/discourse/discourse).",
       "TITLE": "Modifiche alla nostra Politica sulla Privacy"
     },
+    "COOKIES": {
+      "CONTENT": "Sì. I cookie sono dei piccoli file che un sito o il suo service provider trasferisce sull'hard disk del tuo computer attraverso il web browser (se lo permetti).\nUsiamo solo i cookie che sono necessari a FitTrackee per funzionare correttamente (login).\n**Se diabiliti completamente i cookie, FitTrackee non funzionerà correttamente (es. non potrai fare login).**",
+      "TITLE": "Usiamo i cookie?"
+    },
     "DATA_COLLECTED": {
       "CONTENT": "Vengono raccolte le seguenti informazioni:\n- Informazioni sull'account (nome utente, indirizzo e-mail e password). È inoltre possibile inserire informazioni aggiuntive sul profilo come nome, cognome, data di nascita, posizione, biografia e caricare un'immagine del profilo.\n- File [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format). Questi file contengono dati relativi alle tue attività (coordinate geografiche, data, distanza, durata, velocità massima e media, altitudine, titolo, descrizione, frequenza cardiaca…). Se non desideri esporre alcuni dati, puliscili prima di caricarli o aggiungi allenamenti senza file GPX.\n- Dati degli allenamenti (sport, titolo, descrizione, data, durata, distanza, dislivello in salita, dislivello in discesa, note).\n- Followers and following users.\n- Comments and likes.\n- Informazioni tecniche (nome del browser e sistema operativo).",
       "TITLE": "Quali informazioni raccogliamo?"

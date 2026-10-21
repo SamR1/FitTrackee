@@ -2,6 +2,8 @@
   "ERROR": {
     "<time> is missing in gpx file": "Manca l'elemento <time> nel file .gpx.",
     "Error when updating elevation data source": "Errore nell'aggiornamento della fonte dati del dislivello",
+    "IMAGE_PIXELS_SIZE_ERROR": "La dimensioen dell'immagine ({filePixels} pixel) supera il limite massimo ({maxPixels} pixel).",
+    "INVALID_REDIRECT_URI_SCHEME": "Schema dell'URL di redirecr non valido",
     "Network Error": "Errore di rete.",
     "UNKNOWN": "Errore. Per favore riprova o contatta l'amminstratore.",
     "a maximum of 5 pieces of Misc equipment can be added": "Si possono aggiungere al massimo 5 strumenti 'Varii'.",
@@ -36,6 +38,7 @@
     "invalid credentials": "Credenziali errate.",
     "invalid payload": "I dati inseriti non sono validi.",
     "invalid token, please log in again": "Token scaduto, per favore ripeti il log in.",
+    "invalid token, please request a new reset token": "Token non valido, per favore richiedi il reset della password.",
     "invalid token, please request a new token": "Token scaduto, per favore ripeti il log in.",
     "max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously": "Il numero massimo di file in un archivio zip dev'essere maggiore o uguale al numero massimo di file in un archivio zip processato in maniera sincrona.",
     "new email must be different than current email": "La nuova email dev'essere diversa dalla vecchia mail.",

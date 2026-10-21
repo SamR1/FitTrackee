@@ -15,6 +15,7 @@
       "follow:read_DESCRIPTION": "assegna diritti di lettura agli endpoint relativi alle richieste di follow e ai follower.",
       "follow:write_DESCRIPTION": "assegna accesso in scrittura agli endpoint relativi alle richieste di follow e ai follower.",
       "geocode:read_DESCRIPTION": "assegna diritti di lettura agli endpoint relativi al geocoding.",
+      "media:write_DESCRIPTION": "assegna accesso in scrittura agli endpoint <code>media</code>.",
       "notifications:read_DESCRIPTION": "assegna diritti di lettura agli endpoint sulle <code>notifiche</code>.",
       "notifications:write_DESCRIPTION": "assegna i diritti di scrittura all'endpoint <code>notifications</code>.",
       "profile:read_DESCRIPTION": "da permessi di lettura a <code>auth</code> endpoints.",

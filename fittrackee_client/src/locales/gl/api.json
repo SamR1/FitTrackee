@@ -2,6 +2,7 @@
   "ERROR": {
     "<time> is missing in gpx file": "falta o elemento <time> no ficheiro .gpx.",
     "Error when updating elevation data source": "Erro ao actualizar a orixe dos datos de elevación",
+    "IMAGE_PIXELS_SIZE_ERROR": "O tamaño da imaxe ({filePixels} píxeles) supera o límite de ({maxPixels} píxeles).",
     "INVALID_REDIRECT_URI_SCHEME": "Esquema de redirección URL non válido",
     "Network Error": "Erro na rede.",
     "UNKNOWN": "Erro. Inténtao outra vez ou contacta coa administración.",
@@ -37,6 +38,7 @@
     "invalid credentials": "Credenciais incorrectas.",
     "invalid payload": "Os datos proporcionados non son válidos.",
     "invalid token, please log in again": "Token non válido, accede outra vez.",
+    "invalid token, please request a new reset token": "Token non válido, por favor solicita un novo restablecemento do contrasinal.",
     "invalid token, please request a new token": "Token non válido, accede outra vez.",
     "max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously": "O número máximo de ficheiros nun arquivo zip ten que ser igual ou superior ao número máximo de ficheiros nun zip procesado de xeito síncrono.",
     "new email must be different than current email": "O novo enderezo ten que ser diferente ao actual.",

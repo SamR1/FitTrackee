@@ -9,6 +9,7 @@
   "CANCEL": "Annulla",
   "CANCEL_FOLLOW_REQUEST": "Annulla richiesta di follow",
   "CLEAR_FILTER": "Resetta filtri",
+  "CLOSE": "Chiudi",
   "DELETE": "Elimina",
   "DELETE_MY_ACCOUNT": "Elimina il mio account",
   "DISABLE": "Disattiva",
@@ -18,6 +19,7 @@
   "FOLLOW": "Segui",
   "HIDE": "Nascondi",
   "LOGIN": "Log in",
+  "PREVIEW": "Anteprima",
   "READ_MORE": "Leggi di più",
   "REFRESH": "Aggiorna",
   "REFRESH_TOTALS": "Aggiorna i totali",
@@ -25,9 +27,11 @@
   "REJECT": "Rifiuta",
   "REQUEST_DATA_EXPORT": "Richiedi un export dei dati",
   "RESET": "Reset",
+  "SAVE": "Salva",
   "SEARCH": "Cerca",
   "SEE_DETAIL": "Vedi i dettagli",
   "SUBMIT": "Invia",
   "UNBLOCK": "Sblocca",
-  "UNFOLLOW": "Smetti di seguire"
+  "UNFOLLOW": "Smetti di seguire",
+  "WRITE": "Scrivi"
 }
