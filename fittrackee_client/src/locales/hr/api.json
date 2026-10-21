@@ -2,6 +2,7 @@
   "ERROR": {
     "<time> is missing in gpx file": "Element <time> nedostaje u .gpx datoteci.",
     "Error when updating elevation data source": "Pogreška prilikom ažuriranja izvora podataka o elevaciji",
+    "IMAGE_PIXELS_SIZE_ERROR": "Veličina slike ({filePixels} pixels) prelazi maksimalni limit od ({maxPixels} pixela).",
     "INVALID_REDIRECT_URI_SCHEME": "Nevažeća shema URL-a za preusmjeravanje",
     "Network Error": "Mrežna pogreška.",
     "UNKNOWN": "Greška. Pokušajte ponovno ili kontaktirajte administratora.",
@@ -37,6 +38,7 @@
     "invalid credentials": "Nevažeće vjerodajnice.",
     "invalid payload": "Navedeni podaci nisu valjani.",
     "invalid token, please log in again": "Nevažeći token, molimo prijavite se ponovo.",
+    "invalid token, please request a new reset token": "Nevažeći token, zatražite ponovno postavljanje lozinke.",
     "invalid token, please request a new token": "Nevažeći token, molimo prijavite se ponovo.",
     "max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously": "Maksimalni broj datoteka u zip arhivi mora biti jednak ili veći od maksimalnog broja datoteka u zip arhivi koja se obrađuje sinkrono.",
     "new email must be different than current email": "Nova adresa e-pošte mora se razlikovati od trenutne adrese.",

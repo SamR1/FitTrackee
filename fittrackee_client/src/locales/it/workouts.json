@@ -36,6 +36,7 @@
   "DESCENT": "discesa",
   "DESCRIPTION": "descrizione",
   "DESCRIPTION_FIELD_HELP": "se disponibile, la discrizione rimpiazza quella nel file.",
+  "DISPLAY_DESCRIPTION": "mostra descrizione",
   "DISPLAY_FILTERS": "mostra filtri",
   "DISPLAY_MORE_FILTERS": "mostra più filtri",
   "DISPLAY_MULTIPLE_CHARTS": "mostra grafici multipli",
@@ -62,6 +63,7 @@
   "FROM": "da",
   "GLOBAL_MAP": "Mappa globale",
   "HEART_RATE": "frequenza cardiaca",
+  "HIDE_DESCRIPTION": "nascondi descrizione",
   "HIDE_FILTERS": "nascondi filtri",
   "HIDE_MAP": "nascondi la mappa",
   "HIDE_WORKOUTS": "nascondi i workout",
@@ -86,6 +88,7 @@
   "MAX_SIZE": "dimensione massima",
   "MAX_SPEED": "velocità massima",
   "MAX_SYNC_FILES_IN_ZIP": "massimo numero di file per l'upload sincrono",
+  "MEDIA_INFORMATION": "non è possibile aggiungere foto quando si fa l'upload di un archivio .zip.",
   "MIN_ALTITUDE": "altitudine minima",
   "MULTISELECT": {
     "deselectLabel": "Premere invio per eliminare",
@@ -93,6 +96,7 @@
     "selectedLabel": "Selezionato"
   },
   "MY_WORKOUTS": "I miei workout",
+  "NEXT_PHOTO": "Prossima foto",
   "NEXT_SEGMENT": "Nessun segmento successivo",
   "NEXT_WORKOUT": "Prossimo workout",
   "NOMINATIM_ADDRESS_TYPE": {
@@ -128,7 +132,10 @@
   "ON_MAP": "sulla mappa",
   "PACE": "ritmo",
   "PAUSES": "pause",
+  "PHOTOS_COUNT_EXCEEDED": "Non è possibile aggiungere più di 20 foto ad un workout.",
+  "PICTURE_DELETION_CONFIRMATION": "Sei sicuro che vuoi cancellare questa immagine?",
   "POWER": "potenza",
+  "PREVIOUS_PHOTO": "Foto precedente",
   "PREVIOUS_SEGMENT": "Segmento precedente",
   "PREVIOUS_WORKOUT": "Workout precedente",
   "PRIVATE_NOTES": "Note private",

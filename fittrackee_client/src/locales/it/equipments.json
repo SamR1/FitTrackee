@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "Attrezzatura '{equipmentLabel}' inattiva.",
     "invalid": "Attrezzatura '{equipmentLabel}' non valida per questo sport.",
+    "limit_exceeded": "Questo equipaggiamento supera il limite massimo di 5 strumenti per gli sport {sportLabels}. | Questo equipaggiamento supera il limite massimo di 5 strumenti per i seguenti sport: {sportLabels}..",
     "not_found": "Attrezzatura non trovata."
   },
   "NEW_EQUIPMENT": "Nuova attrezzatura",
