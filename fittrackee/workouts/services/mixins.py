@@ -44,7 +44,8 @@ class WorkoutMediaAttachmentsMixin:
         workout_id: int,
     ) -> None:
         if not media_attachment_ids:
-            Media.query.filter_by(workout_id=workout_id).delete()
+            for media in Media.query.filter_by(workout_id=workout_id).all():
+                db.session.delete(media)  # to delete media files
             return
 
         update_data = []
