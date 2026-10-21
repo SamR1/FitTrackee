@@ -78,6 +78,7 @@ from .services import (
     WorkoutsFromFileCreationService,
     WorkoutUpdateService,
 )
+from .services.workout_creation_service import WorkoutData
 from .services.workout_from_file.workout_gpx_service import remove_microseconds
 from .services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
@@ -2636,6 +2637,12 @@ def post_workout_no_gpx(
         or not workout_data.get("workout_date")
     ):
         return InvalidPayloadErrorResponse()
+
+    invalid_keys = set(workout_data.keys()) - set(WorkoutData.__annotations__)
+    if invalid_keys:
+        return InvalidPayloadErrorResponse(
+            f"invalid keys in payload: {', '.join(sorted(invalid_keys))}"
+        )
 
     error_response = check_media_attachments(workout_data)
     if error_response:

@@ -1147,6 +1147,31 @@ class TestPostWorkoutWithoutFile(WorkoutApiTestCaseMixin, MediaMixin):
 
         self.assert_400(response)
 
+    def test_it_returns_error_when_payload_contains_invalid_key(
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts/no_gpx",
+            content_type="application/json",
+            json={
+                "sport_id": 1,
+                "duration": 3600,
+                "workout_date": "2018-05-15 14:05",
+                "distance": 10,
+                "invalid_key_1": "some value",
+                "invalid_key_2": "another value",
+            },
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        self.assert_400(
+            response, "invalid keys in payload: invalid_key_1, invalid_key_2"
+        )
+
     def test_it_returns_400_when_ascent_or_descent_are_provided_together(
         self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
     ) -> None:
