@@ -4635,6 +4635,24 @@ class TestGetUserSanction(UserSuspensionTestCase, CommentMixin):
             "no sanction found",
         )
 
+    def test_it_returns_404_when_sanction_id_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.get(
+            self.route.format(action_short_id="invalid"),
+            content_type="application/json",
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        self.assert_404_with_message(
+            response,
+            "no sanction found",
+        )
+
     def test_it_returns_404_when_sanction_is_for_another_user(
         self, app: Flask, user_1_admin: User, user_2: User, user_3: User
     ) -> None:
@@ -4807,7 +4825,7 @@ class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
 
         self.assert_401(response)
 
-    def test_it_returns_404_when_when_no_sanction(
+    def test_it_returns_404_when_sanction_not_found(
         self, app: Flask, user_1: User
     ) -> None:
         client, auth_token = self.get_test_client_and_auth_token(
@@ -4816,6 +4834,25 @@ class TestPostUserSanctionAppeal(CommentMixin, UserSuspensionTestCase):
 
         response = client.post(
             self.route.format(action_short_id=self.random_short_id()),
+            content_type="application/json",
+            data=json.dumps(dict(text=self.random_string())),
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        self.assert_404_with_message(
+            response,
+            "no sanction found",
+        )
+
+    def test_it_returns_404_when_sanction_id_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            self.route.format(action_short_id="invalid"),
             content_type="application/json",
             data=json.dumps(dict(text=self.random_string())),
             headers={"X-CSRF-TOKEN": auth_token},

@@ -5,6 +5,7 @@ from sqlalchemy import and_, exc, or_
 
 from fittrackee import db
 from fittrackee.comments.models import Comment
+from fittrackee.exceptions import InvalidShortIdException
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -271,9 +272,15 @@ def update_user_notifications(
     :statuscode 500:
         - ``error, please try again or contact the administrator``
     """
-    notification = Notification.query.filter_by(
-        uuid=decode_short_id(notification_id), to_user_id=auth_user.id
-    ).first()
+    try:
+        notification = Notification.query.filter_by(
+            uuid=decode_short_id(notification_id), to_user_id=auth_user.id
+        ).first()
+    except InvalidShortIdException:
+        return NotFoundErrorResponse(
+            message=f"notification not found (id: {notification_id})"
+        )
+
     if not notification:
         return NotFoundErrorResponse(
             message=f"notification not found (id: {notification_id})"

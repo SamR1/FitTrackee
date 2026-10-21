@@ -5,6 +5,7 @@ from flask import Blueprint, current_app, request, send_from_directory
 from werkzeug.exceptions import RequestEntityTooLarge
 
 from fittrackee import appLog, db, limiter
+from fittrackee.exceptions import InvalidShortIdException
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -200,7 +201,12 @@ def update_media_description(
     if not data or "description" not in data:
         return InvalidPayloadErrorResponse()
 
-    media = Media.query.filter_by(uuid=decode_short_id(media_short_id)).first()
+    try:
+        media = Media.query.filter_by(
+            uuid=decode_short_id(media_short_id)
+        ).first()
+    except InvalidShortIdException:
+        return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
     if not media:
         return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
 
@@ -257,7 +263,12 @@ def delete_media(
     :statuscode 404: ``media not found``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
-    media = Media.query.filter_by(uuid=decode_short_id(media_short_id)).first()
+    try:
+        media = Media.query.filter_by(
+            uuid=decode_short_id(media_short_id)
+        ).first()
+    except InvalidShortIdException:
+        return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
     if not media:
         return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
     if media.user_id != auth_user.id:

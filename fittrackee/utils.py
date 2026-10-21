@@ -10,6 +10,8 @@ from sqlalchemy.sql import text
 
 from fittrackee import db
 
+from .exceptions import InvalidShortIdException
+
 
 def clean(sql: str, days: int) -> int:
     limit = int(time.time()) - (days * 86400)
@@ -29,7 +31,11 @@ def decode_short_id(short_id: str) -> UUID:
     """
     Return UUID from a short id string
     """
-    return shortuuid.decode(short_id)
+    try:
+        uuid = shortuuid.decode(short_id)
+    except ValueError as e:
+        raise InvalidShortIdException() from e
+    return uuid
 
 
 def clean_input(input_text: str, for_markdown_renderer: bool = False) -> str:

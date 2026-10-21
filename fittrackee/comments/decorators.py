@@ -1,6 +1,7 @@
 from functools import wraps
 from typing import TYPE_CHECKING, Any, Callable, Optional
 
+from fittrackee.exceptions import InvalidShortIdException
 from fittrackee.responses import ForbiddenErrorResponse, NotFoundErrorResponse
 
 from .exceptions import CommentForbiddenException
@@ -21,7 +22,7 @@ def check_workout_comment(only_owner: bool = True) -> Callable:
 
             try:
                 comment = get_comment(comment_short_id, auth_user)
-            except CommentForbiddenException:
+            except (CommentForbiddenException, InvalidShortIdException):
                 return NotFoundErrorResponse(
                     f"workout comment not found (id: {comment_short_id})"
                 )

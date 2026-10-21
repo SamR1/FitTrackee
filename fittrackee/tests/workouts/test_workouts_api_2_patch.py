@@ -90,6 +90,22 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
         data = self.assert_404(response)
         assert len(data["data"]["workouts"]) == 0
 
+    def test_it_returns_404_when_workout_id_is_invalid(
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        response = client.patch(
+            "/api/workouts/invalid",
+            content_type="application/json",
+            json={"sport_id": 2, "title": "Workout test"},
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        data = self.assert_404(response)
+        assert len(data["data"]["workouts"]) == 0
+
     @pytest.mark.parametrize(
         "input_desc,input_workout_visibility,expected_status_code",
         [

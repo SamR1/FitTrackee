@@ -25,7 +25,7 @@ from fittrackee.equipments.exceptions import (
     InvalidEquipmentsException,
 )
 from fittrackee.equipments.models import Equipment, WorkoutEquipment
-from fittrackee.exceptions import FileException
+from fittrackee.exceptions import FileException, InvalidShortIdException
 from fittrackee.files import check_file
 from fittrackee.media.models import Media
 from fittrackee.oauth2.server import require_auth
@@ -78,6 +78,7 @@ from .services import (
     WorkoutsFromFileCreationService,
     WorkoutUpdateService,
 )
+from .services.workout_creation_service import WorkoutData
 from .services.workout_from_file.workout_gpx_service import remove_microseconds
 from .services.workouts_from_file_refresh_service import (
     WorkoutFromFileRefreshService,
@@ -135,6 +136,7 @@ NO_STATISTICS = {
 DEFAULT_TASKS_PER_PAGE = 5
 ERROR_MESSAGE_ON_REFRESH = "Error when refreshing workout"
 MAX_MEDIA_ATTACHMENTS = 20
+TASK_NOT_FOUND_ERROR = "no task found"
 
 
 def get_tile_response_headers(headers: Mapping[str, str]) -> Dict[str, str]:
@@ -288,7 +290,13 @@ def get_statistics(
 def download_workout_file(
     workout_short_id: str, auth_user_id: int, as_gpx: bool = False
 ) -> Union[HttpResponse, Response]:
-    workout_uuid = decode_short_id(workout_short_id)
+    try:
+        workout_uuid = decode_short_id(workout_short_id)
+    except InvalidShortIdException:
+        return DataNotFoundErrorResponse(
+            data_type="workout",
+            message=f"workout not found (id: {workout_short_id})",
+        )
     workout = Workout.query.filter_by(
         uuid=workout_uuid, user_id=auth_user_id
     ).first()
@@ -853,6 +861,8 @@ def get_workouts(auth_user: User) -> Union[Dict, HttpResponse]:
                 "total": workouts_pagination.total,
             },
         }
+    except InvalidShortIdException:
+        return InvalidPayloadErrorResponse("equipment not found")
     except (
         InvalidDurationException,
         InvalidRadiusException,
@@ -1512,7 +1522,11 @@ def get_workout_data(
         data_type=data_type,
         message=f"workout not found (id: {workout_short_id})",
     )
-    workout_uuid = decode_short_id(workout_short_id)
+
+    try:
+        workout_uuid = decode_short_id(workout_short_id)
+    except InvalidShortIdException:
+        return not_found_response
     workout = Workout.query.filter_by(uuid=workout_uuid).first()
     if not workout:
         return not_found_response
@@ -1543,19 +1557,25 @@ def get_workout_data(
                 "calculated_map_visibility",
                 user=auth_user,
             )
-            data: "Dict" = {
-                "chart_data": get_chart_data(
-                    workout,
-                    user=auth_user,
-                    can_see_map_data=can_see_map_data,
-                    can_see_heart_rate=can_see_heart_rate,
-                    segment_short_id=segment_short_id,
-                )
-            }
+            try:
+                data: "Dict" = {
+                    "chart_data": get_chart_data(
+                        workout,
+                        user=auth_user,
+                        can_see_map_data=can_see_map_data,
+                        can_see_heart_rate=can_see_heart_rate,
+                        segment_short_id=segment_short_id,
+                    )
+                }
+            except InvalidShortIdException:
+                return NotFoundErrorResponse("workout segment not found")
         else:  # data_type == "geojson"
-            geojson = get_geojson_from_segments(
-                workout, segment_short_id=segment_short_id
-            )
+            try:
+                geojson = get_geojson_from_segments(
+                    workout, segment_short_id=segment_short_id
+                )
+            except InvalidShortIdException:
+                return NotFoundErrorResponse("geojson not found")
             # Handle error differently when using workout segment uuid
             if not geojson:
                 return NotFoundErrorResponse("geojson not found")
@@ -2637,6 +2657,12 @@ def post_workout_no_gpx(
     ):
         return InvalidPayloadErrorResponse()
 
+    invalid_keys = set(workout_data.keys()) - set(WorkoutData.__annotations__)
+    if invalid_keys:
+        return InvalidPayloadErrorResponse(
+            f"invalid keys in payload: {', '.join(sorted(invalid_keys))}"
+        )
+
     error_response = check_media_attachments(workout_data)
     if error_response:
         return error_response
@@ -3585,12 +3611,15 @@ def get_workouts_upload_task(
     :statuscode 404:
         - ``no task found``
     """
-    task = UserTask.query.filter_by(
-        user_id=auth_user.id, uuid=decode_short_id(task_short_id)
-    ).first()
+    try:
+        task = UserTask.query.filter_by(
+            user_id=auth_user.id, uuid=decode_short_id(task_short_id)
+        ).first()
+    except InvalidShortIdException:
+        return NotFoundErrorResponse(TASK_NOT_FOUND_ERROR)
 
     if not task or task.task_type != "workouts_archive_upload":
-        return NotFoundErrorResponse("no task found")
+        return NotFoundErrorResponse(TASK_NOT_FOUND_ERROR)
 
     return {
         "status": "success",
@@ -3651,12 +3680,15 @@ def abort_workouts_upload_task(
     :statuscode 500:
         - ``error when aborting task``
     """
-    task = UserTask.query.filter_by(
-        user_id=auth_user.id, uuid=decode_short_id(task_short_id)
-    ).first()
+    try:
+        task = UserTask.query.filter_by(
+            user_id=auth_user.id, uuid=decode_short_id(task_short_id)
+        ).first()
+    except InvalidShortIdException:
+        return NotFoundErrorResponse(TASK_NOT_FOUND_ERROR)
 
     if not task or task.task_type != "workouts_archive_upload":
-        return NotFoundErrorResponse("no task found")
+        return NotFoundErrorResponse(TASK_NOT_FOUND_ERROR)
 
     if task.status not in [
         "in_progress",
@@ -3718,12 +3750,15 @@ def delete_workouts_upload_task(
         - ``no task found``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
-    task = UserTask.query.filter_by(
-        user_id=auth_user.id, uuid=decode_short_id(task_short_id)
-    ).first()
+    try:
+        task = UserTask.query.filter_by(
+            user_id=auth_user.id, uuid=decode_short_id(task_short_id)
+        ).first()
+    except InvalidShortIdException:
+        return NotFoundErrorResponse(TASK_NOT_FOUND_ERROR)
 
     if not task or task.task_type != "workouts_archive_upload":
-        return NotFoundErrorResponse("no task found")
+        return NotFoundErrorResponse(TASK_NOT_FOUND_ERROR)
 
     if task.status in ["in_progress", "queued"]:
         return InvalidPayloadErrorResponse(

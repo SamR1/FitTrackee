@@ -491,6 +491,18 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
         data = self.assert_404(response)
         assert len(data["data"]["workouts"]) == 0
 
+    def test_it_returns_404_when_workout_id_is_invalid(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid="invalid"),
+        )
+
+        data = self.assert_404(response)
+        assert len(data["data"]["workouts"]) == 0
+
     def test_it_returns_404_when_workout_is_suspended(
         self,
         app: Flask,
@@ -941,6 +953,21 @@ class TestGetWorkoutGeoJsonAsUnauthenticatedUser(
         )
         assert data["data"]["geojson"] is None
 
+    def test_it_returns_404_when_workout_id_is_invalid(
+        self, app: Flask
+    ) -> None:
+        random_short_id = "invalid"
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid=random_short_id),
+        )
+
+        data = self.assert_404_with_message(
+            response, f"workout not found (id: {random_short_id})"
+        )
+        assert data["data"]["geojson"] is None
+
     @pytest.mark.parametrize(
         "input_desc,input_map_visibility",
         [
@@ -1360,6 +1387,27 @@ class TestGetWorkoutSegmentGeoJsonAsUnauthenticatedUser(
             response, f"workout not found (id: {random_short_id})"
         )
         assert data["data"]["geojson"] is None
+
+    def test_it_returns_404_if_segment_id_is_invalid(
+        self,
+        app: Flask,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1_with_coordinates,
+            map_visibility=VisibilityLevel.PUBLIC,
+        )
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
+                segment_id="invalid",
+            ),
+        )
+
+        self.assert_404_with_message(response, "geojson not found")
 
     @pytest.mark.parametrize(
         "input_desc,input_map_visibility",
@@ -1929,6 +1977,21 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         )
         assert data["data"]["chart_data"] == ""
 
+    def test_it_returns_404_when_workout_id_is_invalid(
+        self, app: Flask
+    ) -> None:
+        random_short_id = "invalid"
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid=random_short_id),
+        )
+
+        data = self.assert_404_with_message(
+            response, f"workout not found (id: {random_short_id})"
+        )
+        assert data["data"]["chart_data"] == ""
+
     @pytest.mark.parametrize(
         "input_desc,input_analysis_visibility",
         [
@@ -2452,6 +2515,28 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
             response, f"workout not found (id: {random_short_id})"
         )
         assert data["data"]["chart_data"] == ""
+
+    def test_it_returns_404_if_segment_id_is_invalid(
+        self,
+        app: Flask,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1,
+            analysis_visibility=VisibilityLevel.PUBLIC,
+            map_visibility=VisibilityLevel.PUBLIC,
+        )
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id,
+                segment_id="invalid",
+            ),
+        )
+
+        self.assert_404_with_message(response, "workout segment not found")
 
     @pytest.mark.parametrize(
         "input_desc,input_analysis_visibility",
