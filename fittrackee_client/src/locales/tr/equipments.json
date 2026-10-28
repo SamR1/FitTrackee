@@ -1,3 +1,19 @@
 {
-  "50_CHARACTERS_MAX": "En fazla 50 karakter"
+  "50_CHARACTERS_MAX": "En fazla 50 karakter",
+  "ADD_A_NEW_EQUIPMENT": "Yeni ekipman ekle",
+  "ALL_WORKOUTS_ASSOCIATIONS_REMOVED": "Tüm antrenman ilişkilendirmeleri kaldırılacak.",
+  "DEFAULT_FOR_SPORTS": "Sporlar için varsayılan",
+  "EDIT_EQUIPMENTS": "Ekipmanları düzenle",
+  "EQUIPMENT": "ekipman|ekipmanlar",
+  "EQUIPMENT_TYPE": "ekipman türü|ekipman türleri",
+  "ERRORS": {
+    "inactive": "'{equipmentLabel}' ekipmanı etkin değil.",
+    "invalid": "'{equipmentLabel}' ekipmanı bu spor için geçersiz.",
+    "limit_exceeded": "Bu ekipman, {sportLabels} sporu için en fazla 5 öğe sınırını aşıyor. | Bu ekipman, şu sporlar için en fazla 5 öğe sınırını aşıyor: {sportLabels}.",
+    "not_found": "Ekipman bulunamadı."
+  },
+  "NEW_EQUIPMENT": "Yeni ekipman",
+  "NO_EQUIPMENT": "Hiç ekipman bulunamadı.",
+  "NO_EQUIPMENTS": "Ekipman yok",
+  "WITHOUT_EQUIPMENTS": "ekipmansız"
 }
