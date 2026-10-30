@@ -941,7 +941,7 @@ description = "Python @deprecated decorator to deprecate old python classes, fun
 optional = false
 python-versions = ">=3.12"
 groups = ["main"]
-markers = "python_version >= \"3.14\""
+markers = "python_version == \"3.14\""
 files = [
     {file = "deprecated-3.0.0-py3-none-any.whl", hash = "sha256:58204cf4a7f6270d547af5c278ee7a6bb56045a4b3d8441a1cd11660f41b7939"},
     {file = "deprecated-3.0.0.tar.gz", hash = "sha256:16850204d3a1e6bb0acd06bff48d96e8b0a0d25d1c52f71705405a0f4894192d"},
@@ -2274,10 +2274,7 @@ ast-serialize = ">=0.11.2,<1.0.0"
 librt = {version = ">=0.16.0", markers = "platform_python_implementation != \"PyPy\""}
 mypy_extensions = ">=1.0.0"
 pathspec = ">=1.0.0"
-typing_extensions = [
-    {version = ">=4.6.0", markers = "python_version < \"3.15\""},
-    {version = ">=4.14.0", markers = "python_version >= \"3.15\""},
-]
+typing_extensions = {version = ">=4.6.0", markers = "python_version < \"3.15\""}
 
 [package.extras]
 dmypy = ["psutil (>=4.0)"]
@@ -3642,7 +3639,7 @@ description = "A modern CSS selector implementation for Beautiful Soup."
 optional = false
 python-versions = ">=3.11.5"
 groups = ["dev"]
-markers = "python_version >= \"3.14\""
+markers = "python_version == \"3.14\""
 files = [
     {file = "soupsieve-3.0.4-py3-none-any.whl", hash = "sha256:8412826614f9c632227067d0985aeb9f584bd15efc852955430e097a9fe7afbf"},
     {file = "soupsieve-3.0.4.tar.gz", hash = "sha256:924fab84ae21604c19e175e1f39815eb6fa83ba23836e09e9de180925e5bc4c0"},
@@ -4453,5 +4450,5 @@ test = ["pytest", "pytest-cov"]
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.11"
-content-hash = "2ef5c5e17074c487aaac2ceae77940378ee0bfcc185ca14f0245a8e3bca2e159"
+python-versions = ">= 3.11, < 3.15"
+content-hash = "9b97adbc326d8a6b53e0b4b45db345fa60d043db6fbdfdb9b488732bec7b2ebb"
