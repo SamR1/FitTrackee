@@ -8,16 +8,18 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-09-27 18:20+0200\n"
-"PO-Revision-Date: 2026-08-29 11:52+0000\n"
-"Last-Translator: Ege Günes <senugege@gmail.com>\n"
+"PO-Revision-Date: 2026-10-28 20:51+0000\n"
+"Last-Translator: Muhammet Savaş <msavas2544@users.noreply.hosted.weblate.org>"
+"\n"
 "Language: tr\n"
-"Language-Team: Turkish <https://hosted.weblate.org/projects/fittrackee"
-"/fittrackee-api-emails/tr/>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/tr/>\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+"X-Generator: Weblate 2026.11.dev0\n"
 
 #: fittrackee/emails/templates/layout.html:232
 #: fittrackee/emails/templates/layout.txt:1
@@ -42,7 +44,7 @@ msgstr ""
 #: fittrackee/emails/templates/layout.html:238
 #: fittrackee/emails/templates/layout.txt:5
 msgid "Thanks,"
-msgstr "Teșekkürler,"
+msgstr "Teşekkürler,"
 
 #: fittrackee/emails/templates/layout.html:239
 #: fittrackee/emails/templates/layout.txt:6
@@ -61,11 +63,11 @@ msgstr "Bu linki kullanarak hesabınızı onaylayın."
 #: fittrackee/emails/templates/account_confirmation/body.html:4
 #: fittrackee/emails/templates/account_confirmation/body.txt:1
 msgid "You have created an account on FitTrackee."
-msgstr "FitTrackee'de hesap olușturdun."
+msgstr "FitTrackee'de hesap oluşturdun."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:4
 msgid "Use the button below to confirm your address email."
-msgstr "Așağıdaki tuşa tıklayarak hesabınızın email adresini onaylayın."
+msgstr "Aşağıdaki düğmeye tıklayarak e-posta adresini onayla."
 
 #: fittrackee/emails/templates/account_confirmation/body.html:11
 #: fittrackee/emails/templates/account_confirmation/body.txt:4
@@ -107,22 +109,22 @@ msgstr "Kullanıcı %(username)s için uyarı kaldırıldı"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:3
 msgid "Your appeal has been rejected"
-msgstr ""
+msgstr "İtirazın reddedildi"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on your account suspension has been rejected"
-msgstr ""
+msgstr "Hesabının askıya alınmasına yaptığın itiraz reddedildi"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on your warning has been rejected"
-msgstr ""
+msgstr "Uyarına yaptığın itiraz reddedildi"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:4
 #: fittrackee/emails/templates/appeal_rejected/body.txt:1
 msgid "Your appeal on the following content suspension has been rejected"
-msgstr ""
+msgstr "Aşağıdaki içeriğin askıya alınmasına yaptığın itiraz reddedildi"
 
 #: fittrackee/emails/templates/appeal_rejected/body.html:6
 #: fittrackee/emails/templates/appeal_rejected/body.txt:3
@@ -159,7 +161,7 @@ msgstr "Link:"
 
 #: fittrackee/emails/templates/appeal_rejected/subject.txt:1
 msgid "Appeal rejected"
-msgstr ""
+msgstr "İtiraz reddedildi"
 
 #: fittrackee/emails/templates/comment_suspension/body.html:2
 #: fittrackee/emails/templates/comment_suspension/subject.txt:1
@@ -275,15 +277,17 @@ msgid ""
 "If this email change wasn't initiated by you, please change your password"
 " immediately or contact your administrator if your account is locked."
 msgstr ""
+"Bu e-posta değişikliğini sen başlatmadıysan, lütfen hemen şifreni değiştir "
+"veya hesabın kilitlendiyse yöneticine başvur."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:2
 #: fittrackee/emails/templates/email_update_to_new_email/subject.txt:1
 msgid "Confirm email change"
-msgstr ""
+msgstr "E-posta değişikliğini onayla"
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:3
 msgid "Use this link to confirm email change."
-msgstr ""
+msgstr "E-posta değişikliğini onaylamak için bu bağlantıyı kullan."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:4
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:1
@@ -291,33 +295,36 @@ msgid ""
 "You recently requested to change your email address for your FitTrackee "
 "account."
 msgstr ""
+"Kısa süre önce FitTrackee hesabının e-posta adresini değiştirmek istedin."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:4
 msgid "Use the button below to confirm this address."
-msgstr ""
+msgstr "Bu adresi onaylamak için aşağıdaki düğmeyi kullan."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.html:18
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:7
 msgid "If this email change wasn't initiated by you, please ignore this email."
 msgstr ""
+"Bu e-posta değişikliğini sen başlatmadıysan, lütfen bu e-postayı dikkate "
+"alma."
 
 #: fittrackee/emails/templates/email_update_to_new_email/body.txt:2
 msgid "Use the link below to confirm this address."
-msgstr ""
+msgstr "Bu adresi onaylamak için aşağıdaki bağlantıyı kullan."
 
 #: fittrackee/emails/templates/password_change/body.html:2
 #: fittrackee/emails/templates/password_change/subject.txt:1
 msgid "Password changed"
-msgstr ""
+msgstr "Şifre değiştirildi"
 
 #: fittrackee/emails/templates/password_change/body.html:3
 msgid "Your password has been changed."
-msgstr ""
+msgstr "Şifren değiştirildi."
 
 #: fittrackee/emails/templates/password_change/body.html:4
 #: fittrackee/emails/templates/password_change/body.txt:1
 msgid "The password for your FitTrackee account has been changed."
-msgstr ""
+msgstr "FitTrackee hesabının şifresi değiştirildi."
 
 #: fittrackee/emails/templates/password_change/body.html:5
 #: fittrackee/emails/templates/password_change/body.txt:4
@@ -326,11 +333,13 @@ msgid ""
 "password immediately or contact your administrator if your account is "
 "locked."
 msgstr ""
+"Bu şifre değişikliğini sen başlatmadıysan, lütfen hemen şifreni değiştir "
+"veya hesabın kilitlendiyse yöneticine başvur."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:2
 #: fittrackee/emails/templates/password_reset_request/subject.txt:1
 msgid "Password reset request"
-msgstr ""
+msgstr "Şifre sıfırlama talebi"
 
 #: fittrackee/emails/templates/password_reset_request/body.html:3
 #, python-format
@@ -338,39 +347,42 @@ msgid ""
 "Use this link to reset your password. The link is only valid for "
 "%(expiration_delay)s."
 msgstr ""
+"Şifreni sıfırlamak için bu bağlantıyı kullan. Bağlantı yalnızca %"
+"(expiration_delay)s geçerlidir."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:4
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
 msgid "You recently requested to reset your password for your FitTrackee account."
-msgstr ""
+msgstr "Kısa süre önce FitTrackee hesabının şifresini sıfırlamak istedin."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:4
 msgid "Use the button below to reset it."
-msgstr ""
+msgstr "Sıfırlamak için aşağıdaki düğmeyi kullan."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:5
 #: fittrackee/emails/templates/password_reset_request/body.txt:2
 #, python-format
 msgid "This password reset link is only valid for %(expiration_delay)s."
-msgstr ""
+msgstr "Bu şifre sıfırlama bağlantısı yalnızca %(expiration_delay)s geçerlidir."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:6
 msgid "It can only be used once."
-msgstr ""
+msgstr "Yalnızca bir kez kullanılabilir."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:14
 #: fittrackee/emails/templates/password_reset_request/body.txt:4
 msgid "Reset your password"
-msgstr ""
+msgstr "Şifreni sıfırla"
 
 #: fittrackee/emails/templates/password_reset_request/body.html:21
 #: fittrackee/emails/templates/password_reset_request/body.txt:7
 msgid "If you did not request a password reset, please ignore this email."
 msgstr ""
+"Şifre sıfırlama talebinde bulunmadıysan, lütfen bu e-postayı dikkate alma."
 
 #: fittrackee/emails/templates/password_reset_request/body.txt:1
 msgid "Use the link below to reset it."
-msgstr ""
+msgstr "Sıfırlamak için aşağıdaki bağlantıyı kullan."
 
 #: fittrackee/emails/templates/user_suspension/body.html:2
 #: fittrackee/emails/templates/user_suspension/body.html:3
@@ -378,7 +390,7 @@ msgstr ""
 #: fittrackee/emails/templates/user_suspension/body.txt:1
 #: fittrackee/emails/templates/user_suspension/subject.txt:1
 msgid "Your account has been suspended"
-msgstr ""
+msgstr "Hesabın askıya alındı"
 
 #: fittrackee/emails/templates/user_suspension/body.html:3
 #: fittrackee/emails/templates/user_suspension/body.html:5
@@ -386,7 +398,7 @@ msgstr ""
 msgid ""
 "You can no longer use your account and your profile is no longer "
 "accessible"
-msgstr ""
+msgstr "Artık hesabını kullanamazsın ve profiline erişilemez"
 
 #: fittrackee/emails/templates/user_suspension/body.html:5
 #: fittrackee/emails/templates/user_suspension/body.txt:2
@@ -394,6 +406,8 @@ msgid ""
 "You can still log in to request an export of your data or delete your "
 "account"
 msgstr ""
+"Verilerinin dışa aktarımını istemek veya hesabını silmek için yine de giriş "
+"yapabilirsin"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:2
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
@@ -401,209 +415,209 @@ msgstr ""
 #: fittrackee/emails/templates/user_unsuspension/body.txt:1
 #: fittrackee/emails/templates/user_unsuspension/subject.txt:1
 msgid "Your account has been reactivated"
-msgstr ""
+msgstr "Hesabın yeniden etkinleştirildi"
 
 #: fittrackee/emails/templates/user_unsuspension/body.html:3
 #: fittrackee/emails/templates/user_unsuspension/body.html:4
 #: fittrackee/emails/templates/user_unsuspension/body.txt:2
 msgid "You can now use all the features on FitTrackee"
-msgstr ""
+msgstr "Artık FitTrackee'nin tüm özelliklerini kullanabilirsin"
 
 #: fittrackee/emails/templates/user_warning/body.html:2
 #: fittrackee/emails/templates/user_warning/subject.txt:1
 #, python-format
 msgid "Warning for %(username)s"
-msgstr ""
+msgstr "%(username)s için uyarı"
 
 #: fittrackee/emails/templates/user_warning/body.html:3
 #: fittrackee/emails/templates/user_warning/body.html:4
 #: fittrackee/emails/templates/user_warning/body.txt:1
 msgid "You received a warning"
-msgstr ""
+msgstr "Bir uyarı aldın"
 
 #: fittrackee/emails/templates/user_warning_lifting/body.html:3
 #: fittrackee/emails/templates/user_warning_lifting/body.html:4
 #: fittrackee/emails/templates/user_warning_lifting/body.txt:1
 msgid "Your warning has been lifted"
-msgstr ""
+msgstr "Uyarın kaldırıldı"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:2
 #: fittrackee/emails/templates/workout_suspension/subject.txt:1
 msgid "Your workout has been suspended"
-msgstr ""
+msgstr "Antrenmanın askıya alındı"
 
 #: fittrackee/emails/templates/workout_suspension/body.html:3
 #: fittrackee/emails/templates/workout_suspension/body.html:4
 #: fittrackee/emails/templates/workout_suspension/body.txt:1
 msgid "Your workout has been suspended, it is no longer visible"
-msgstr ""
+msgstr "Antrenmanın askıya alındı, artık görüntülenemez"
 
 #: fittrackee/emails/templates/workout_unsuspension/body.html:2
 #: fittrackee/emails/templates/workout_unsuspension/subject.txt:1
 msgid "The suspension on your workout has been lifted"
-msgstr ""
+msgstr "Antrenmanının askıya alınması kaldırıldı"
 
 #: fittrackee/emails/templates/workout_unsuspension/body.html:3
 #: fittrackee/emails/templates/workout_unsuspension/body.html:4
 #: fittrackee/emails/templates/workout_unsuspension/body.txt:1
 msgid "The suspension on your workout has been lifted, it is visible again"
-msgstr ""
+msgstr "Antrenmanının askıya alınması kaldırıldı, yeniden görüntülenebilir"
 
 #: fittrackee/feeds/feeds/constants.py:5
 msgid "Canoeing"
-msgstr ""
+msgstr "Kano"
 
 #: fittrackee/feeds/feeds/constants.py:6
 msgid "Canoeing (Whitewater)"
-msgstr ""
+msgstr "Kano (Akarsu)"
 
 #: fittrackee/feeds/feeds/constants.py:7
 msgid "Cycling (Sport)"
-msgstr ""
+msgstr "Bisiklet (Spor)"
 
 #: fittrackee/feeds/feeds/constants.py:8
 msgid "Cycling (Transport)"
-msgstr ""
+msgstr "Bisiklet (Ulaşım)"
 
 #: fittrackee/feeds/feeds/constants.py:9
 msgid "Cycling (Trekking)"
-msgstr ""
+msgstr "Bisiklet (Trekking)"
 
 #: fittrackee/feeds/feeds/constants.py:10
 msgid "Cycling (Virtual)"
-msgstr ""
+msgstr "Bisiklet (Sanal)"
 
 #: fittrackee/feeds/feeds/constants.py:11
 msgid "Halfbike"
-msgstr ""
+msgstr "Halfbike"
 
 #: fittrackee/feeds/feeds/constants.py:12
 msgid "Hiking"
-msgstr ""
+msgstr "Doğa yürüyüşü"
 
 #: fittrackee/feeds/feeds/constants.py:13
 msgid "Kayaking"
-msgstr ""
+msgstr "Kayak (tekne)"
 
 #: fittrackee/feeds/feeds/constants.py:14
 msgid "Ice Skating"
-msgstr ""
+msgstr "Buz pateni"
 
 #: fittrackee/feeds/feeds/constants.py:15
 msgid "Inline Skating"
-msgstr ""
+msgstr "Sıralı paten"
 
 #: fittrackee/feeds/feeds/constants.py:16
 msgid "Kayaking (Whitewater)"
-msgstr ""
+msgstr "Kayak (tekne, akarsu)"
 
 #: fittrackee/feeds/feeds/constants.py:17
 msgid "Mountain Biking"
-msgstr ""
+msgstr "Dağ bisikleti"
 
 #: fittrackee/feeds/feeds/constants.py:18
 msgid "Mountain Biking (Electric)"
-msgstr ""
+msgstr "Dağ bisikleti (Elektrikli)"
 
 #: fittrackee/feeds/feeds/constants.py:19
 msgid "Mountaineering"
-msgstr ""
+msgstr "Dağcılık"
 
 #: fittrackee/feeds/feeds/constants.py:20
 msgid "Open Water Swimming"
-msgstr ""
+msgstr "Açık su yüzme"
 
 #: fittrackee/feeds/feeds/constants.py:21
 msgid "Padel (Outdoor)"
-msgstr ""
+msgstr "Padel (Açık hava)"
 
 #: fittrackee/feeds/feeds/constants.py:22
 msgid "Paragliding"
-msgstr ""
+msgstr "Yamaç paraşütü"
 
 #: fittrackee/feeds/feeds/constants.py:23
 msgid "Rowing"
-msgstr ""
+msgstr "Kürek çekme"
 
 #: fittrackee/feeds/feeds/constants.py:24
 msgid "Running"
-msgstr ""
+msgstr "Koşu"
 
 #: fittrackee/feeds/feeds/constants.py:25
 msgid "Skiing (Alpine)"
-msgstr ""
+msgstr "Kayak (Alp disiplini)"
 
 #: fittrackee/feeds/feeds/constants.py:26
 msgid "Skiing (Cross Country)"
-msgstr ""
+msgstr "Kayak (Kros)"
 
 #: fittrackee/feeds/feeds/constants.py:27
 msgid "Snowshoes"
-msgstr ""
+msgstr "Kar ayakkabısı"
 
 #: fittrackee/feeds/feeds/constants.py:28
 msgid "Standup Paddleboarding"
-msgstr ""
+msgstr "Ayakta kürek sörfü (SUP)"
 
 #: fittrackee/feeds/feeds/constants.py:29
 msgid "Swimrun"
-msgstr ""
+msgstr "Swimrun"
 
 #: fittrackee/feeds/feeds/constants.py:30
 msgid "Tennis (Outdoor)"
-msgstr ""
+msgstr "Tenis (Açık hava)"
 
 #: fittrackee/feeds/feeds/constants.py:31
 msgid "Trail"
-msgstr ""
+msgstr "Patika koşusu"
 
 #: fittrackee/feeds/feeds/constants.py:32
 msgid "Walking"
-msgstr ""
+msgstr "Yürüyüş"
 
 #: fittrackee/feeds/feeds/constants.py:33
 msgid "Windsurfing"
-msgstr ""
+msgstr "Rüzgâr sörfü"
 
 #: fittrackee/feeds/feeds/workouts_feed_service.py:71
 #, python-format
 msgid "Latest public workouts on FitTrackee from %(username)s"
 msgstr ""
+"%(username)s kullanıcısının FitTrackee'deki son herkese açık antrenmanları"
 
 #: fittrackee/feeds/feeds/workouts_feed_service.py:80
 #, python-format
 msgid "%(username)s's workouts feed"
-msgstr ""
+msgstr "%(username)s kullanıcısının antrenman akışı"
 
 #: fittrackee/feeds/templates/workout/body.html:1
 msgid "Workout map"
-msgstr ""
+msgstr "Antrenman haritası"
 
 #: fittrackee/feeds/templates/workout/body.html:2
 msgid "Duration"
-msgstr ""
+msgstr "Süre"
 
 #: fittrackee/feeds/templates/workout/body.html:3
 msgid "Distance"
-msgstr ""
+msgstr "Mesafe"
 
 #: fittrackee/feeds/templates/workout/body.html:3
 msgid "Min. altitude"
-msgstr ""
+msgstr "Min. irtifa"
 
 #: fittrackee/feeds/templates/workout/body.html:3
 msgid "Max. altitude"
-msgstr ""
+msgstr "Maks. irtifa"
 
 #: fittrackee/feeds/templates/workout/body.html:3
 msgid "Ascent"
-msgstr ""
+msgstr "Tırmanış"
 
 #: fittrackee/feeds/templates/workout/body.html:3
 msgid "Descent"
-msgstr ""
+msgstr "İniş"
 
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
-msgstr ""
-
+msgstr "Açıklama"

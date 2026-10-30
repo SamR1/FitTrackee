@@ -1,1 +1,25 @@
-{}
+{
+  "AVERAGE": "Ortalama",
+  "DATES": "Tarihler",
+  "STATISTICS": "İstatistikler",
+  "STATISTICS_CHARTS": {
+    "day": "Günlük istatistikler",
+    "month": "Aylık istatistikler",
+    "week": "Haftalık istatistikler",
+    "year": "Yıllık istatistikler"
+  },
+  "STATISTICS_ON_ALL_WORKOUTS": "Tüm antrenmanların istatistikleri:",
+  "STATISTICS_ON_LAST_WORKOUTS": "Son {count} antrenmanın istatistikleri:",
+  "STATISTICS_TYPE": "İstatistik türü",
+  "STATISTICS_TYPES": {
+    "by_sport": "spora göre",
+    "by_time": "zaman aralığına göre"
+  },
+  "TIME_FRAMES": {
+    "day": "gün",
+    "month": "ay",
+    "week": "hafta",
+    "year": "yıl"
+  },
+  "WORKOUTS_AVERAGE": "ortalama antrenman sayısı"
+}
