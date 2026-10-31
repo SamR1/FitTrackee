@@ -1,6 +1,8 @@
+import type { AxiosError } from 'axios'
 import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
+import router from '@/router'
 import { NOTIFICATIONS_STORE, ROOT_STORE } from '@/store/constants'
 import type {
   INotificationsActions,
@@ -28,7 +30,13 @@ export const actions: ActionTree<INotificationsState, IRootState> &
           )
         }
       })
-      .catch((error) => handleError(context, error))
+      .catch((error: AxiosError) => {
+        if (error.response?.status === 401) {
+          router.push('/')
+        } else {
+          handleError(context, error)
+        }
+      })
   },
   [NOTIFICATIONS_STORE.ACTIONS.GET_NOTIFICATION_TYPES](
     context: ActionContext<INotificationsState, IRootState>,
