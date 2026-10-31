@@ -69,7 +69,7 @@ from fittrackee.workouts.models import Sport
 from ..constants import IMAGE_MIMETYPES, PaceSpeedDisplay
 from ..workouts.constants import PACE_SPORTS
 from .exceptions import (
-    InvalidJWTClaim,
+    InvalidJWT,
     UserControlsException,
     UserCreationException,
 )
@@ -2113,7 +2113,7 @@ def update_password() -> Union[Dict, HttpResponse]:
     reset_token = post_data.get("token")
     try:
         payload = decode_password_reset_token(reset_token)
-    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, InvalidJWTClaim):
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, InvalidJWT):
         return UnauthorizedErrorResponse()
     if (
         BlacklistedToken.query.filter_by(jti=payload["jti"]).first()

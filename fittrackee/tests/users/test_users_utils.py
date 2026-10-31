@@ -14,7 +14,7 @@ from flask_jwt_extended import decode_token
 from time_machine import travel
 
 from fittrackee import db
-from fittrackee.users.exceptions import InvalidJWTClaim
+from fittrackee.users.exceptions import InvalidJWT
 from fittrackee.users.models import BlacklistedToken, User
 from fittrackee.users.utils.controls import (
     check_password,
@@ -23,12 +23,14 @@ from fittrackee.users.utils.controls import (
     register_controls,
 )
 from fittrackee.users.utils.tokens import (
+    check_auth_token,
     clean_blacklisted_tokens,
     decode_password_reset_token,
     get_password_reset_token,
     get_user_token,
 )
 
+from ..mixins import ApiTestCaseMixin
 from ..utils import random_int, random_string
 
 
@@ -202,6 +204,41 @@ class TestGetUserToken:
         assert decoded_token["type"] == "auth"
 
 
+class TestCheckAuthToken(ApiTestCaseMixin):
+    def test_it_raises_error_when_token_type_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        app.config["JWT_SECRET_KEY"] = app.config["SECRET_KEY"]
+        token = get_password_reset_token(user_1.id)
+
+        with (
+            app.test_request_context(
+                headers={"Cookie": f"access_token_cookie={token}"}
+            ),
+            pytest.raises(InvalidJWT),
+        ):
+            check_auth_token(optional_auth_user=False)
+
+    def test_it_returns_user_when_auth_token_is_valid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        _, auth_token, _ = self.get_test_client_and_tokens(app, user_1.email)
+        with app.test_request_context(
+            headers={"Cookie": f"access_token_cookie={auth_token}"}
+        ):
+            auth_user = check_auth_token(optional_auth_user=False)
+
+        assert auth_user == user_1
+
+    def test_it_returns_none_when_optional_auth_user_is_true(
+        self, app: Flask, user_1: User
+    ) -> None:
+        with app.test_request_context():
+            auth_user = check_auth_token(optional_auth_user=True)
+
+        assert auth_user is None
+
+
 class TestGetPasswordResetToken:
     @staticmethod
     def decode_reset_token(app: "Flask", auth_token: str) -> Dict:
@@ -264,8 +301,10 @@ class TestDecodePassordTokenToken:
         return token
 
     def test_it_raises_error_when_token_is_invalid(self, app: Flask) -> None:
+        invalid_token = random_string()
+
         with pytest.raises(jwt.exceptions.DecodeError):
-            decode_password_reset_token(random_string())
+            decode_password_reset_token(invalid_token)
 
     def test_it_raises_error_when_token_body_is_invalid(
         self, app: Flask
@@ -326,7 +365,7 @@ class TestDecodePassordTokenToken:
             user_id=1, now=datetime.now(timezone.utc), type_claim="invalid"
         )
         with pytest.raises(
-            InvalidJWTClaim,
+            InvalidJWT,
             match="invalid token, please request a new token",
         ):
             decode_password_reset_token(token)
