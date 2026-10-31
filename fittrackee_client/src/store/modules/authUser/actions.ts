@@ -301,14 +301,8 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
       .post('auth/logout')
-      .then((res) => {
-        if (res.data.status === 'success') {
-          removeAuthUserData(context)
-        } else {
-          handleError(context, null)
-        }
-      })
       .catch((error) => handleError(context, error))
+      .finally(() => removeAuthUserData(context))
   },
   [AUTH_USER_STORE.ACTIONS.APPEAL](
     context: ActionContext<IAuthUserState, IRootState>,
