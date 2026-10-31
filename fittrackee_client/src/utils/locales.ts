@@ -103,9 +103,9 @@ export const languageLabels: Record<TLanguage, string> = {
   es: 'Español (66%)', // Spanish
   eu: 'Euskara (96%)', // Basque
   fr: 'Français', // French
-  gl: 'Galego (99%)', // Galician
-  hr: 'Hrvatski (99%)', // Croatian
-  it: 'Italiano (97%)', // Italian
+  gl: 'Galego', // Galician
+  hr: 'Hrvatski', // Croatian
+  it: 'Italiano (99%)', // Italian
   nl: 'Nederlands (99%)', // Dutch
   nb: 'Norsk bokmål (42%)', // Norwegian Bokmål
   pl: 'Polski (99%)', // Polish
@@ -115,7 +115,7 @@ export const languageLabels: Record<TLanguage, string> = {
   // sv: 'Svenska', // Swedish
   // fi: 'Suomi', // Finnish
   kab: 'Taqbaylit (5%)', // Kabyle
-  tr: 'Türkçe (3%)', // Turkish
+  tr: 'Türkçe', // Turkish
   // ta: 'தமிழ்', // Tamil
   zh_Hans: '中文（简体）(99%)', // Chinese (Simplified Han script)
 }

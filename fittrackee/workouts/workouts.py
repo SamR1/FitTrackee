@@ -1806,7 +1806,9 @@ def get_segment_chart_data(
     :statuscode 403:
         - ``you do not have permissions``
         - ``you do not have permissions, your account is suspended``
-    :statuscode 404: ``workout not found``
+    :statuscode 404:
+        - ``workout not found``
+        - ``workout segment not found``
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """

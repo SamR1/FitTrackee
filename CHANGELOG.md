@@ -1,5 +1,59 @@
 # Change log
 
+## Version 1.3.7 (2026/10/31)
+
+This version includes a security fix ([GHSA-ff84-h4hf-gmxv](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-ff84-h4hf-gmxv)), thanks to [@ruben0315R](https://github.com/ruben0315R) for the report.
+
+**Note:**  
+- FitTrackee does not yet support **Python 3.15**.
+
+### Security
+
+* [PR#1246](https://codeberg.org/FitTrackee/FitTrackee/pulls/1246) - Check authentication token type
+
+### Bugs Fixed
+
+* [#1230](https://codeberg.org/FitTrackee/FitTrackee/issues/1230) - Media files stay on disk after media_attachment_ids: []
+* [#1231](https://codeberg.org/FitTrackee/FitTrackee/issues/1231) - API answers 500 to unknown keys on /api/workouts/no_gpx and to undecodable workout ids
+* [PR#1238](https://codeberg.org/FitTrackee/FitTrackee/pulls/1238) - fix login page redirection
+* [PR#1245](https://codeberg.org/FitTrackee/FitTrackee/pulls/1245) - Handle logout on error
+* [PR#1247](https://codeberg.org/FitTrackee/FitTrackee/pulls/1247) - Add checks on media and map file visibility
+* [ddd8a03](https://codeberg.org/FitTrackee/FitTrackee/commit/ddd8a038308134e21eb0e78287177ddbd9d5bb8b) - fix display after token expiration
+
+### Translations
+
+* [PR#1237](https://codeberg.org/FitTrackee/FitTrackee/pulls/1237) - Translations update from Hosted Weblate (Croatian, Galician and Italian) 
+* [PR#1244](https://codeberg.org/FitTrackee/FitTrackee/pulls/1244) - Translations update from Hosted Weblate (Turkish)
+
+Translation status for languages available on the interface:
+- Basque: 96%
+- Bulgarian: 50%
+- Catalan: 57%
+- Chinese (Simplified): 99%
+- Croatian: 100%
+- Czech: 48%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 99%
+- Italian: 99%
+- Kabyle: 5%
+- Norwegian Bokmål: 42%
+- Polish: 99%
+- Portuguese: 50%
+- Russian: 94%
+- Spanish: 66%
+- Turkish: 100%
+
+
+Thanks to the contributors:
+- [@ghose](https://codeberg.org/ghose)
+- [@iggydev](https://github.com/iggydev)
+- [@ildave](https://github.com/ildave)
+- Muhammet Savaş
+
+
 ## Version 1.3.6 (2026/10/11)
 
 This version contains JWT handling rewrite and several security fixes ([GHSA-r64h-qmpx-3m36](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-r64h-qmpx-3m36), [GHSA-rg49-m6q7-w94p](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-rg49-m6q7-w94p) and [GHSA-7949-4q4c-mp6h](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-7949-4q4c-mp6h)), thanks to [@SounLabs](https://github.com/SounLabs) and [@0xnh4tty](https://github.com/0xnh4tty) for the reports.
