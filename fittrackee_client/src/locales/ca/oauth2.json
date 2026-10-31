@@ -15,6 +15,7 @@
       "follow:read_DESCRIPTION": "garanteix l'accés de lectura als endpoints relacionats amb peticions de seguiment, i seguidors.",
       "follow:write_DESCRIPTION": "garanteix l'accés d'escriptura als endpoints relacionats amb les sol·licituds de seguiment i seguidors.",
       "geocode:read_DESCRIPTION": "dona accés de lectura als endpoints relacionats a la geocodificació.",
+      "media:read_DESCRIPTION": "garanteix l'accés de lectura als endpoints <code>media</code>.",
       "media:write_DESCRIPTION": "garanteix l'accés d'escriptura als endpoints <code>media</code>.",
       "notifications:read_DESCRIPTION": "garanteix l'accés de lectura als endpoints <code>notifications</code>.",
       "notifications:write_DESCRIPTION": "concedeix accés d'escriptura als endpoints <code>notifications</code>.",
