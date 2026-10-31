@@ -5,8 +5,6 @@ from authlib.integrations.flask_oauth2 import ResourceProtector
 from authlib.oauth2 import OAuth2Error
 from authlib.oauth2.rfc6749.errors import MissingAuthorizationError
 from flask import current_app, request
-from flask_jwt_extended import get_current_user, verify_jwt_in_request
-from jwt import DecodeError
 from werkzeug.exceptions import RequestEntityTooLarge
 
 from fittrackee.responses import (
@@ -14,6 +12,8 @@ from fittrackee.responses import (
     PayloadTooLargeErrorResponse,
     UnauthorizedErrorResponse,
 )
+from fittrackee.users.exceptions import InvalidJWT
+from fittrackee.users.utils.tokens import check_auth_token
 
 if TYPE_CHECKING:
     from flask import Request
@@ -51,10 +51,11 @@ class CustomResourceProtector(ResourceProtector):
                 # - scopes will be ignored
                 if not auth_header:
                     try:
-                        verify_jwt_in_request(optional=optional_auth_user)
-                        auth_user = get_current_user()
-                    except DecodeError:
-                        pass
+                        auth_user = check_auth_token(optional_auth_user)
+                    except InvalidJWT:
+                        return UnauthorizedErrorResponse(
+                            "provide a valid auth token"
+                        )
 
                 # Third-party applications (OAuth2)
                 # - JWT is in headers

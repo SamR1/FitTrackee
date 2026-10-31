@@ -289,7 +289,10 @@ def create_app(init_email: bool = True) -> Flask:
         try:
             exp_timestamp = get_jwt()["exp"]
             now = datetime.now(timezone.utc)
-            target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+            delta = app.config["JWT_ACCESS_TOKEN_EXPIRES"] - timedelta(
+                minutes=5
+            )
+            target_timestamp = datetime.timestamp(now + delta)
             if target_timestamp > exp_timestamp:
                 auth_user_id = get_jwt_identity()
                 auth_token = get_user_token(int(auth_user_id))

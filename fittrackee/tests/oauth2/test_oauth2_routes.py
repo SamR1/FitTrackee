@@ -921,7 +921,7 @@ class TestOAuthTokenRevocation(ApiTestCaseMixin):
         token = OAuth2Token.query.filter_by(
             client_id=oauth_client.client_id
         ).one()
-        assert token.access_token_revoked_at is not None
+        assert token.access_token_revoked_at != 0
 
     def test_it_revokes_user_token_when_user_is_suspended(
         self, app: Flask, user_1: User
@@ -948,7 +948,7 @@ class TestOAuthTokenRevocation(ApiTestCaseMixin):
         token = OAuth2Token.query.filter_by(
             client_id=oauth_client.client_id
         ).one()
-        assert token.access_token_revoked_at is not None
+        assert token.access_token_revoked_at != 0
 
 
 class TestOAuthGetClients(ApiTestCaseMixin):
