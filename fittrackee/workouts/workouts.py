@@ -137,6 +137,7 @@ DEFAULT_TASKS_PER_PAGE = 5
 ERROR_MESSAGE_ON_REFRESH = "Error when refreshing workout"
 MAX_MEDIA_ATTACHMENTS = 20
 TASK_NOT_FOUND_ERROR = "no task found"
+MAP_FILE_ERROR = "Map file does not exist"
 
 
 def get_tile_response_headers(headers: Mapping[str, str]) -> Dict[str, str]:
@@ -2035,7 +2036,10 @@ def download_workout_original_file(
 
 @workouts_blueprint.route("/workouts/map/<map_id>", methods=["GET"])
 @limiter.exempt
-def get_map(map_id: int) -> Union[HttpResponse, Response]:
+@require_auth(scopes=["workouts:read"], optional_auth_user=True)
+def get_map(
+    auth_user: Optional["User"], map_id: int
+) -> Union[HttpResponse, Response]:
     """
     Get map image for workouts with gpx.
 
@@ -2062,20 +2066,25 @@ def get_map(map_id: int) -> Union[HttpResponse, Response]:
         - ``invalid token, please log in again``
     :statuscode 403:
         - ``you do not have permissions, your account is suspended``
-    :statuscode 404: ``map does not exist``
+    :statuscode 404: ``map file does not exist``
     :statuscode 500: ``error, please try again or contact the administrator``
 
     """
     try:
         workout = Workout.query.filter_by(map_id=map_id).first()
         if not workout:
-            return NotFoundErrorResponse("Map does not exist.")
+            return NotFoundErrorResponse(MAP_FILE_ERROR)
+        can_see_map_data = can_view(
+            workout, "calculated_map_visibility", user=auth_user
+        )
+        if not can_see_map_data:
+            return NotFoundErrorResponse(MAP_FILE_ERROR)
         return send_from_directory(
             current_app.config["UPLOAD_FOLDER"],
             workout.map,
         )
     except NotFound:
-        return NotFoundErrorResponse("Map file does not exist.")
+        return NotFoundErrorResponse(MAP_FILE_ERROR)
     except Exception as e:
         return handle_error_and_return_response(e)
 

@@ -15,6 +15,7 @@
       "follow:read_DESCRIPTION": "takip istekleri ve takipçilerle ilgili uç noktalara okuma erişimi verir.",
       "follow:write_DESCRIPTION": "takip istekleri ve takipçilerle ilgili uç noktalara yazma erişimi verir.",
       "geocode:read_DESCRIPTION": "coğrafi kodlamayla ilgili uç noktalara okuma erişimi verir.",
+      "media:read_DESCRIPTION": "<code>media</code> uç noktalarına okuma erişimi verir.",
       "media:write_DESCRIPTION": "<code>media</code> uç noktalarına yazma erişimi verir.",
       "notifications:read_DESCRIPTION": "<code>notifications</code> uç noktalarına okuma erişimi verir.",
       "notifications:write_DESCRIPTION": "<code>notifications</code> uç noktalarına yazma erişimi verir.",
