@@ -1,1 +1,41 @@
-{}
+{
+  "CONTENT": {
+    "ACCOUNT_DELETION": {
+      "CONTENT": "Hesabınızın silinmesini istediğiniz zaman, bu adrese giderek (giriş yaptıktan sonra) hesap düzenleme sayfanızdaki \"Hesabımı sil\" düğmesine tıklayarak talep edebilirsiniz.",
+      "TITLE": "Hesap silme"
+    },
+    "CHANGES_TO_OUR_PRIVACY_POLICY": {
+      "CONTENT": "Gizlilik politikamızı değiştirmeye karar verirsek, bu değişiklikleri bu sayfada yayımlayacağız.\nBu belge [CC-BY-SA](https://creativecommons.org/licenses/by-sa/4.0/) lisansı altındadır. İlk olarak [Discourse](https://github.com/discourse/discourse) gizlilik politikasından uyarlanmıştır.",
+      "TITLE": "Gizlilik politikamızdaki değişiklikler"
+    },
+    "COOKIES": {
+      "CONTENT": "Evet. Çerezler, bir sitenin veya hizmet sağlayıcısının web tarayıcınız aracılığıyla (izin verirseniz) bilgisayarınızın sabit diskine aktardığı küçük dosyalardır.\nYalnızca FitTrackee'nin düzgün çalışması (giriş yapma) için gerekli çerezleri kullanıyoruz.\n**Çerezleri tamamen kapatırsanız FitTrackee düzgün çalışmaz (örneğin giriş yapamazsınız).**",
+      "TITLE": "'Çerez' kullanıyor muyuz?"
+    },
+    "DATA_COLLECTED": {
+      "CONTENT": "Aşağıdaki bilgiler toplanır:\n- Hesap bilgileri (kullanıcı adı, e-posta adresi ve şifre). Ayrıca ad, soyad, doğum tarihi, konum, biyografi gibi ek profil bilgileri girebilir ve bir profil resmi yükleyebilirsiniz.\n- [GPX](https://en.wikipedia.org/wiki/GPS_Exchange_Format), FIT, [TCX](https://en.wikipedia.org/wiki/Training_Center_XML), [KML ve KMZ](https://en.wikipedia.org/wiki/Keyhole_Markup_Language) dosyaları. Bu dosyalar etkinliklerinizle ilgili verileri (coğrafi koordinatlar, tarih, mesafe, süre, maksimum ve ortalama hız, yükseklik, başlık, açıklama, nabız…) içerir. Bazı verileri paylaşmak istemiyorsanız, yüklemeden önce bunları temizleyin veya antrenmanları dosyasız ekleyin.\n- Fotoğraflar.\n- Antrenman verileri (spor, başlık, açıklama, tarih, süre, mesafe, tırmanış, iniş, notlar).\n- Takipçiler ve takip edilen kullanıcılar.\n- Yorumlar ve beğeniler.\n- Teknik bilgiler (tarayıcı adı ve işletim sistemi).",
+      "TITLE": "Hangi bilgileri topluyoruz?"
+    },
+    "INFORMATION_DISCLOSURE": {
+      "CONTENT": "Kişisel olarak tanımlanabilir bilgilerinizi dış taraflara satmayız, takas etmeyiz veya başka bir şekilde aktarmayız.\nSitemizi işletmemize ve size hizmet vermemize yardımcı olan güvenilir üçüncü taraflar, bu bilgileri gizli tutmayı kabul ettikleri sürece bu kuralın dışındadır. \nAyrıca yasalara uymak, site politikalarımızı uygulamak ya da kendimizin veya başkalarının haklarını, mülkiyetini veya güvenliğini korumak için uygun gördüğümüzde bilgilerinizi açıklayabiliriz.\nBir üçüncü taraf uygulamanın hesabınızı kullanmasına izin verdiğinizde, onayladığınız izinlerin kapsamına bağlı olarak uygulama profil bilgilerinize veya antrenmanlarınıza erişebilir. Uygulamalar şifrenize hiçbir zaman erişemez.",
+      "TITLE": "Dış taraflara bilgi açıklıyor muyuz?"
+    },
+    "INFORMATION_PROTECTION": {
+      "CONTENT": "Kişisel bilgilerinizi girdiğinizde, gönderdiğinizde veya bunlara eriştiğinizde güvenliklerini sağlamak için çeşitli güvenlik önlemleri uyguluyoruz.",
+      "TITLE": "Bilgilerinizi nasıl koruyoruz?"
+    },
+    "INFORMATION_USAGE": {
+      "CONTENT": "Sizden topladığımız bilgilerin herhangi biri **FitTrackee**'nin temel işlevlerini sağlamak için kullanılabilir:\n- Dosyalar antrenman oluşturmak, izleri haritada ([OpenStreetMap](https://www.openstreetmap.org) ve yapılandırılmış karo sunucusuyla) ve grafiklerde göstermek, harita küçük resimleri oluşturmak, rekorları hesaplamak ve hava durumu verilerini almak (bir hava durumu sağlayıcısı ayarlanmışsa) için kullanılır.\n- Antrenmanlar ve yorumlar için ayarlanan görünürlük düzeyine (herkese açık, yalnızca takipçiler, özel ve bahsedilen kullanıcılar) bağlı olarak diğer kullanıcılar bunları görebilir ve bunlarla etkileşime girebilir. **Lütfen sunucuyu işleten ekibin veya moderasyon ekibinin kısıtlı görünürlükteki içerikleri görebileceğini unutmayın.**\nDiğer kişilerin etkinliklerini zaman akışınızda görmek için onları takip edebilirsiniz. Etkileşim için kullanıcının giriş yapması gerekir.\n- Kullanıcı adı, rol, kayıt tarihi, takipçi ve takip edilen sayısı, varsa askıya alma durumu ve antrenman sayısı dışındaki profil bilgileri herkese açık olarak gösterilmez.\n- Verdiğiniz e-posta adresi size bilgi ve bildirim göndermek veya hesap değişikliklerinizi onaylamak için kullanılabilir.",
+      "TITLE": "Bilgilerinizi ne için kullanıyoruz?"
+    },
+    "SITE_USAGE_BY_CHILDREN": {
+      "CONTENT": "Bu sunucu AB'de veya AEA'da ise: Sitemiz ve hizmetlerimiz en az 16 yaşındaki kişilere yöneliktir. 16 yaşından küçükseniz, [GDPR](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (Genel Veri Koruma Tüzüğü) gereklilikleri uyarınca bu siteyi kullanmayın.\nBu sunucu ABD'de ise: Sitemiz, ürünlerimiz ve hizmetlerimiz en az 13 yaşındaki kişilere yöneliktir. 13 yaşından küçükseniz, [COPPA](https://en.wikipedia.org/wiki/Children%27s_Online_Privacy_Protection_Act) (Çocukların Çevrimiçi Gizliliğini Koruma Yasası) gereklilikleri uyarınca bu siteyi kullanmayın.\nBu sunucu başka bir yargı bölgesindeyse yasal gereklilikler farklı olabilir.",
+      "TITLE": "Sitenin çocuklar tarafından kullanımı"
+    },
+    "YOUR_CONSENT": {
+      "CONTENT": "Sitemizi kullanarak web sitemizin gizlilik politikasını kabul etmiş olursunuz.",
+      "TITLE": "Onayınız"
+    }
+  },
+  "TITLE": "gizlilik politikası"
+}

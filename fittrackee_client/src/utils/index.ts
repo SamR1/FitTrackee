@@ -42,7 +42,7 @@ export const handleError = (
   error: AxiosError | null,
   msg = 'UNKNOWN'
 ): void => {
-  // if request is cancelled, no error to display
+  // if request is canceled, no error to display
   if (error?.message === 'canceled') {
     return
   }
@@ -54,7 +54,8 @@ export const handleError = (
   // if token is blacklisted, disconnect user
   if (
     error?.response?.status === 401 &&
-    errorInfo?.message === 'provide a valid auth token'
+    (errorInfo?.message === 'provide a valid auth token' ||
+      errorInfo?.error === 'invalid_token')
   ) {
     removeCookies()
     context.dispatch(AUTH_USER_STORE.ACTIONS.CHECK_AUTH_USER)

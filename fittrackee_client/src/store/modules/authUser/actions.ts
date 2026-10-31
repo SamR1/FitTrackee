@@ -1,3 +1,4 @@
+import type { AxiosError } from 'axios'
 import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
@@ -190,7 +191,10 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
           removeAuthUserData(context)
         }
       })
-      .catch((error) => {
+      .catch((error: AxiosError) => {
+        if (error.response?.status === 401) {
+          router.push('/')
+        }
         if (error.message !== 'canceled') {
           handleError(context, error)
           removeAuthUserData(context)
@@ -301,14 +305,8 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
     context.commit(ROOT_STORE.MUTATIONS.EMPTY_ERROR_MESSAGES)
     authApi
       .post('auth/logout')
-      .then((res) => {
-        if (res.data.status === 'success') {
-          removeAuthUserData(context)
-        } else {
-          handleError(context, null)
-        }
-      })
       .catch((error) => handleError(context, error))
+      .finally(() => removeAuthUserData(context))
   },
   [AUTH_USER_STORE.ACTIONS.APPEAL](
     context: ActionContext<IAuthUserState, IRootState>,

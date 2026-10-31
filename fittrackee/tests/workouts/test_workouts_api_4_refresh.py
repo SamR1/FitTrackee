@@ -63,6 +63,20 @@ class TestRefreshWorkout(WorkoutApiTestCaseMixin):
 
         self.assert_404(response)
 
+    def test_it_returns_404_when_workout_id_is_invalid(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.post(
+            "/api/workouts/invalid/refresh",
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        self.assert_404(response)
+
     def test_it_returns_401_when_user_is_not_authenticated(
         self,
         app: "Flask",

@@ -1,10 +1,11 @@
-from typing import TYPE_CHECKING, Dict, Tuple, Union
+from typing import TYPE_CHECKING, Dict, Optional, Tuple, Union
 
 import nh3
 from flask import Blueprint, current_app, request, send_from_directory
 from werkzeug.exceptions import RequestEntityTooLarge
 
 from fittrackee import appLog, db, limiter
+from fittrackee.exceptions import InvalidShortIdException
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     ForbiddenErrorResponse,
@@ -15,6 +16,8 @@ from fittrackee.responses import (
     handle_error_and_return_response,
 )
 from fittrackee.utils import decode_short_id
+from fittrackee.visibility_levels import can_view
+from fittrackee.workouts.models import Workout
 
 from .exceptions import MediaException
 from .media_service import MediaService
@@ -34,8 +37,11 @@ NOT_FOUND_MESSAGE = "media not found"
 
 
 @media_blueprint.route("/media/<media_file_name>", methods=["GET"])
+@require_auth(scopes=["media:read"], optional_auth_user=True)
 @limiter.exempt
-def get_media(media_file_name: str) -> Union["Response", "HttpResponse"]:
+def get_media(
+    auth_user: Optional["User"], media_file_name: str
+) -> Union["Response", "HttpResponse"]:
     """
     Get media.
 
@@ -73,6 +79,15 @@ def get_media(media_file_name: str) -> Union["Response", "HttpResponse"]:
         media = Media.query.filter_by(file_name=file_name).first()
         if not media:
             return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
+        if media.workout_id:
+            workout = Workout.query.filter_by(id=media.workout_id).first()
+            if workout and not can_view(
+                workout, "calculated_media_visibility", user=auth_user
+            ):
+                return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
+        elif not auth_user or media.user_id != auth_user.id:
+            return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
+
         return send_from_directory(
             current_app.config["UPLOAD_FOLDER"],
             media.thumbnail_file_path if is_thumbnail else media.file_path,
@@ -200,7 +215,12 @@ def update_media_description(
     if not data or "description" not in data:
         return InvalidPayloadErrorResponse()
 
-    media = Media.query.filter_by(uuid=decode_short_id(media_short_id)).first()
+    try:
+        media = Media.query.filter_by(
+            uuid=decode_short_id(media_short_id)
+        ).first()
+    except InvalidShortIdException:
+        return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
     if not media:
         return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
 
@@ -257,7 +277,12 @@ def delete_media(
     :statuscode 404: ``media not found``
     :statuscode 500: ``error, please try again or contact the administrator``
     """
-    media = Media.query.filter_by(uuid=decode_short_id(media_short_id)).first()
+    try:
+        media = Media.query.filter_by(
+            uuid=decode_short_id(media_short_id)
+        ).first()
+    except InvalidShortIdException:
+        return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
     if not media:
         return NotFoundErrorResponse(NOT_FOUND_MESSAGE)
     if media.user_id != auth_user.id:

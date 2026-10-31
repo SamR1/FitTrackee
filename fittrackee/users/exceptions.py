@@ -14,8 +14,9 @@ class InvalidEmailException(Exception):
     pass
 
 
-class InvalidJWTClaim(Exception):
-    pass
+class InvalidJWT(Exception):
+    def __init__(self) -> None:
+        super().__init__("invalid token, please request a new token")
 
 
 class InvalidNotificationTypeException(Exception):
