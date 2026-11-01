@@ -19,7 +19,7 @@ jobs:
     uses: ./.github/workflows/.workflow-python.yml
     strategy:
       matrix:
-        python-version:  [ "3.11", "3.12", "3.13", "3.14" ]
+        python-version:  [ "3.12", "3.13", "3.14", "3.15" ]
     with:
       ubuntu-version: "ubuntu-latest"
       python-version: ${{ matrix.python-version }}
