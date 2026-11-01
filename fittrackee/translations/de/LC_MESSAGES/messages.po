@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-12 00:02+0200\n"
-"PO-Revision-Date: 2026-08-29 11:52+0000\n"
-"Last-Translator: Ege Günes <senugege@gmail.com>\n"
+"POT-Creation-Date: 2026-11-01 21:06+0100\n"
+"PO-Revision-Date: 2026-11-01 09:51+0000\n"
+"Last-Translator: PeterPwr <peterpwr@users.noreply.hosted.weblate.org>\n"
 "Language: de\n"
 "Language-Team: German <https://hosted.weblate.org/projects/fittrackee"
 "/fittrackee-api-emails/de/>\n"
@@ -376,7 +376,7 @@ msgstr "Der Link ist nur für %(expiration_delay)s gültig."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:6
 msgid "It can only be used once."
-msgstr ""
+msgstr "Es kann nur einmal verwendet werden."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:14
 #: fittrackee/emails/templates/password_reset_request/body.txt:4
