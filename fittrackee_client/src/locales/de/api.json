@@ -2,6 +2,7 @@
   "ERROR": {
     "<time> is missing in gpx file": "<time>-Element fehlt in der .gpx-Datei.",
     "Error when updating elevation data source": "Fehler bei der Aktualisierung der Datenquelle für Höhendaten",
+    "IMAGE_PIXELS_SIZE_ERROR": "Die Bildgröße ({filePixels} pixels) überschreitet die maximale Größe ({maxPixels} pixels).",
     "INVALID_REDIRECT_URI_SCHEME": "Ungültiges Schema der Weiterleitungs-URL",
     "Network Error": "Netzwerkfehler.",
     "UNKNOWN": "Fehler. Bitte versuche es erneut oder kontaktiere den Administrator.",
@@ -37,6 +38,7 @@
     "invalid credentials": "Ungültige Anmeldedaten.",
     "invalid payload": "Die bereitgestellten Daten sind ungültig.",
     "invalid token, please log in again": "Ungültiges Token, bitte erneut anmelden.",
+    "invalid token, please request a new reset token": "Ungültiges Token, bitte fordere eine Zurücksetzung des Passworts an.",
     "invalid token, please request a new token": "Ungültiges Token, bitte erneut anmelden.",
     "max files in a zip archive must be equal or greater than max files in a zip archive processed synchronously": "Die maximale Anzahl von Dateien in einem ZIP-Archiv muss mindestens der maximalen Anzahl von Dateien in einem synchron verarbeiteten ZIP-Archiv entsprechen.",
     "new email must be different than current email": "Die neue E-Mail-Adresse muss sich von der aktuellen E-Mail-Adresse unterscheiden.",
