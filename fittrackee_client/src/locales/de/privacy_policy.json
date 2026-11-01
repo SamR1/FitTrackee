@@ -8,6 +8,10 @@
       "CONTENT": "Wenn wir uns dazu entschließen, unsere Datenschutzrichtlinie zu ändern, werden wir die Änderungen auf dieser Seite posten.\nDieses Dokument ist unter der [CC-BY-SA-Lizenz](https://creativecommons.org/licenses/by-sa/4.0/). Angepasst von der Datenschutzrichtlinie von [Discourse](https://github.com/discourse/discourse).",
       "TITLE": "Änderungen unserer Datenschutzrichtlinie"
     },
+    "COOKIES": {
+      "CONTENT": "Ja. Cookies sind kleine Dateien, die eine Website oder deren Dienstanbieter über deinen Webbrowser auf die Festplatte deines Computers überträgt (sofern du dies zulässt).\nWir verwenden ausschließlich Cookies, die für die ordnungsgemäße Funktion von FitTrackee erforderlich sind (Anmeldung).\n**Wenn du Cookies vollständig deaktivierst, funktioniert FitTrackee nicht ordnungsgemäß (z. B. kannst du dich nicht anmelden).**",
+      "TITLE": "Verwenden wir Cookies?"
+    },
     "DATA_COLLECTED": {
       "CONTENT": "Die folgenden Informationen werden gesammelt:\n- Kontoinformationen (Benutzername, E-Mail-Adresse und Password). Du kannst auch zusätzliche Profilinformationen wie Vor- und Nachname, Geburtsdatum, Standort und Biographie eingeben und ein Profilbild hochladen.\n- [GPX](https://de.wikipedia.org/wiki/GPS_Exchange_Format)-Dateien. Diese Dateien enthalten Daten, die mit deinen Aktivitäten zusammenhängen (geographische Koordinaten, Datum, Distanz, Dauer, maximale und durchschnittliche Geschwindigkeit, Höhe, Titel, Beschreibung, Pulsrate…). Wenn du einige dieser Daten nicht preisgeben möchtest, kannst du die Dateien vor dem Hochladen bereinigen oder Workouts ohne GPX-Dateien hochladen.\n- Workout-Daten (Sportart, Titel, Beschreibung, Datum, Dauer, Distanz, An- und Abstieg, Notizen).\n- Follower und gefolgte Nutzer.\n- Kommentare und Likes.\n- Technische Informationen (Browser und Betriebssystem).",
       "TITLE": "Welche Informationen sammeln wir?"
