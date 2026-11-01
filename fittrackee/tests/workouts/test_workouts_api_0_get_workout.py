@@ -491,6 +491,18 @@ class TestGetWorkoutAsUnauthenticatedUser(GetWorkoutTestCase):
         data = self.assert_404(response)
         assert len(data["data"]["workouts"]) == 0
 
+    def test_it_returns_404_when_workout_id_is_invalid(
+        self, app: Flask
+    ) -> None:
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid="invalid"),
+        )
+
+        data = self.assert_404(response)
+        assert len(data["data"]["workouts"]) == 0
+
     def test_it_returns_404_when_workout_is_suspended(
         self,
         app: Flask,
@@ -941,6 +953,21 @@ class TestGetWorkoutGeoJsonAsUnauthenticatedUser(
         )
         assert data["data"]["geojson"] is None
 
+    def test_it_returns_404_when_workout_id_is_invalid(
+        self, app: Flask
+    ) -> None:
+        random_short_id = "invalid"
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid=random_short_id),
+        )
+
+        data = self.assert_404_with_message(
+            response, f"workout not found (id: {random_short_id})"
+        )
+        assert data["data"]["geojson"] is None
+
     @pytest.mark.parametrize(
         "input_desc,input_map_visibility",
         [
@@ -1360,6 +1387,27 @@ class TestGetWorkoutSegmentGeoJsonAsUnauthenticatedUser(
             response, f"workout not found (id: {random_short_id})"
         )
         assert data["data"]["geojson"] is None
+
+    def test_it_returns_404_if_segment_id_is_invalid(
+        self,
+        app: Flask,
+        workout_cycling_user_1_with_coordinates: Workout,
+        workout_cycling_user_1_segment_0_with_coordinates: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1_with_coordinates,
+            map_visibility=VisibilityLevel.PUBLIC,
+        )
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1_with_coordinates.short_id,
+                segment_id="invalid",
+            ),
+        )
+
+        self.assert_404_with_message(response, "geojson not found")
 
     @pytest.mark.parametrize(
         "input_desc,input_map_visibility",
@@ -1929,6 +1977,21 @@ class TestGetWorkoutChartDataAsUnauthenticatedUser(
         )
         assert data["data"]["chart_data"] == ""
 
+    def test_it_returns_404_when_workout_id_is_invalid(
+        self, app: Flask
+    ) -> None:
+        random_short_id = "invalid"
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(workout_uuid=random_short_id),
+        )
+
+        data = self.assert_404_with_message(
+            response, f"workout not found (id: {random_short_id})"
+        )
+        assert data["data"]["chart_data"] == ""
+
     @pytest.mark.parametrize(
         "input_desc,input_analysis_visibility",
         [
@@ -2453,6 +2516,28 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
         )
         assert data["data"]["chart_data"] == ""
 
+    def test_it_returns_404_if_segment_id_is_invalid(
+        self,
+        app: Flask,
+        workout_cycling_user_1: Workout,
+        workout_cycling_user_1_segment: WorkoutSegment,
+    ) -> None:
+        self.init_test_data_for_public_workout(
+            workout_cycling_user_1,
+            analysis_visibility=VisibilityLevel.PUBLIC,
+            map_visibility=VisibilityLevel.PUBLIC,
+        )
+        client = app.test_client()
+
+        response = client.get(
+            self.route.format(
+                workout_uuid=workout_cycling_user_1.short_id,
+                segment_id="invalid",
+            ),
+        )
+
+        self.assert_404_with_message(response, "workout segment not found")
+
     @pytest.mark.parametrize(
         "input_desc,input_analysis_visibility",
         [
@@ -2527,11 +2612,9 @@ class TestGetWorkoutSegmentChartDataAsUnauthenticatedUser(
 class TestGetWorkoutMap(WorkoutApiTestCaseMixin):
     def test_it_returns_404_if_workout_has_no_map(self, app: Flask) -> None:
         client = app.test_client()
-        response = client.get(
-            f"/api/workouts/map/{self.random_string()}",
-        )
+        response = client.get(f"/api/workouts/map/{self.random_string()}")
 
-        self.assert_404_with_message(response, "Map does not exist")
+        self.assert_404_with_message(response, "Map file does not exist")
 
     def test_it_calls_send_from_directory_if_workout_has_map(
         self,
@@ -2544,14 +2627,16 @@ class TestGetWorkoutMap(WorkoutApiTestCaseMixin):
         map_file_path = self.random_string()
         workout_cycling_user_1.map_id = map_id
         workout_cycling_user_1.map = map_file_path
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.PUBLIC
+        workout_cycling_user_1.map_visibility = VisibilityLevel.PUBLIC
         client = app.test_client()
+
         with patch(
             "fittrackee.workouts.workouts.send_from_directory",
             return_value="file",
         ) as mock:
-            response = client.get(
-                f"/api/workouts/map/{map_id}",
-            )
+            response = client.get(f"/api/workouts/map/{map_id}")
 
         assert response.status_code == 200
         mock.assert_called_once_with(
@@ -2579,6 +2664,89 @@ class TestGetWorkoutMap(WorkoutApiTestCaseMixin):
 
         self.assert_404_with_message(response, "Map file does not exist")
 
+    def test_it_returns_404_if_map_file_is_not_visible_for_unauthenticated_user(  # noqa
+        self,
+        app: Flask,
+        sport_1_cycling: Sport,
+        workout_cycling_user_1: Workout,
+    ) -> None:
+        map_ip = self.random_string()
+        workout_cycling_user_1.map = self.random_string()
+        workout_cycling_user_1.map_id = map_ip
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.map_visibility = VisibilityLevel.FOLLOWERS
+        client = app.test_client()
+
+        with patch(
+            "fittrackee.workouts.workouts.send_from_directory",
+            return_value="file",
+        ) as mock:
+            response = client.get(f"/api/workouts/map/{map_ip}")
+
+        mock.assert_not_called()
+        self.assert_404_with_message(response, "Map file does not exist")
+
+    def test_it_returns_404_if_map_file_is_not_visible_for_authenticated_user(
+        self,
+        app: Flask,
+        workout_cycling_user_1: Workout,
+        user_2: User,
+    ) -> None:
+        map_ip = self.random_string()
+        workout_cycling_user_1.map = self.random_string()
+        workout_cycling_user_1.map_id = map_ip
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.map_visibility = VisibilityLevel.FOLLOWERS
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        response = client.get(
+            f"/api/workouts/map/{map_ip}",
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        with patch(
+            "fittrackee.workouts.workouts.send_from_directory",
+            return_value="file",
+        ) as mock:
+            response = client.get(f"/api/workouts/map/{map_ip}")
+
+        mock.assert_not_called()
+        self.assert_404_with_message(response, "Map file does not exist")
+
+    def test_it_returns_map_file_when_user_is_a_follower(
+        self,
+        app: Flask,
+        user_1: User,
+        user_2: User,
+        workout_cycling_user_1: Workout,
+        follow_request_from_user_2_to_user_1: FollowRequest,
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        map_ip = self.random_string()
+        workout_cycling_user_1.map = self.random_string()
+        workout_cycling_user_1.map_id = map_ip
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.analysis_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.map_visibility = VisibilityLevel.FOLLOWERS
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+        with patch(
+            "fittrackee.workouts.workouts.send_from_directory",
+            return_value="file",
+        ) as mock:
+            response = client.get(
+                f"/api/workouts/map/{map_ip}",
+                headers={"X-CSRF-TOKEN": auth_token},
+            )
+
+        mock.assert_called_once()
+        assert response.status_code == 200
+
 
 class TestWorkoutScope(WorkoutApiTestCaseMixin):
     @pytest.mark.parametrize(
@@ -2589,6 +2757,7 @@ class TestWorkoutScope(WorkoutApiTestCaseMixin):
             "/api/workouts/{workout_short_id}/chart_data",
             "/api/workouts/{workout_short_id}/gpx/segment/1",
             "/api/workouts/{workout_short_id}/chart_data/segment/1",
+            "/api/workouts/map/fa33f4d996844a5c73ecd1ae",
         ],
     )
     def test_expected_scope_is_workouts_read(

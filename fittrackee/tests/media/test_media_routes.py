@@ -7,16 +7,24 @@ from unittest.mock import patch
 
 from fittrackee import db
 from fittrackee.media.models import MEDIA_DESCRIPTION_MAX_CHARACTERS, Media
+from fittrackee.visibility_levels import VisibilityLevel
 
 from ..mixins import ApiTestCaseMixin, MediaMixin
 
 if TYPE_CHECKING:
     from flask import Flask
+    from werkzeug.test import TestResponse
 
-    from fittrackee.users.models import User
+    from fittrackee.users.models import FollowRequest, User
+    from fittrackee.workouts.models import Workout
 
 
-class TestMediaGet(ApiTestCaseMixin, MediaMixin):
+class MediaTestCase(ApiTestCaseMixin, MediaMixin):
+    def assert_media_not_found(self, response: "TestResponse") -> None:
+        self.assert_404_with_message(response, "media not found")
+
+
+class TestMediaGet(MediaTestCase):
     route = "/media/{filename}"
 
     def test_it_returns_404_when_media_not_found(self, app: "Flask") -> None:
@@ -24,19 +32,23 @@ class TestMediaGet(ApiTestCaseMixin, MediaMixin):
 
         response = client.get(self.route.format(filename="img.jpg"))
 
-        self.assert_404_with_message(response, "media not found")
+        self.assert_media_not_found(response)
 
     def test_it_calls_send_from_directory_if_media_exists(
         self, app: "Flask", user_1: "User"
     ) -> None:
         media = self.create_media(user_1)
-        client = app.test_client()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
         with patch(
             "fittrackee.media.routes.send_from_directory",
             return_value="file",
         ) as mock:
             response = client.get(
                 self.route.format(filename=media.file_name),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -48,13 +60,17 @@ class TestMediaGet(ApiTestCaseMixin, MediaMixin):
         self, app: "Flask", user_1: "User"
     ) -> None:
         media = self.create_media(user_1)
-        client = app.test_client()
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
         with patch(
             "fittrackee.media.routes.send_from_directory",
             return_value="file",
         ) as mock:
             response = client.get(
                 self.route.format(filename=media.thumbnail),
+                headers={"X-CSRF-TOKEN": auth_token},
             )
 
         assert response.status_code == 200
@@ -63,8 +79,134 @@ class TestMediaGet(ApiTestCaseMixin, MediaMixin):
             f"media/{user_1.id}/{media.thumbnail}",
         )
 
+    def test_it_returns_404_if_map_file_is_not_visible_for_unauthenticated_user(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.media_visibility = VisibilityLevel.FOLLOWERS
+        client = app.test_client()
 
-class TestMediaApiPost(ApiTestCaseMixin):
+        with patch(
+            "fittrackee.media.routes.send_from_directory",
+            return_value="file",
+        ) as mock:
+            response = client.get(
+                self.route.format(filename=media.thumbnail),
+            )
+
+        mock.assert_not_called()
+        self.assert_media_not_found(response)
+
+    def test_it_returns_404_if_map_file_is_not_visible_for_authenticated_user(
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        workout_cycling_user_1: "Workout",
+    ) -> None:
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.media_visibility = VisibilityLevel.FOLLOWERS
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        with patch(
+            "fittrackee.media.routes.send_from_directory",
+            return_value="file",
+        ) as mock:
+            response = client.get(
+                self.route.format(filename=media.thumbnail),
+                headers={"X-CSRF-TOKEN": auth_token},
+            )
+
+        mock.assert_not_called()
+        self.assert_media_not_found(response)
+
+    def test_it_returns_media_when_user_is_a_follower(
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        workout_cycling_user_1: "Workout",
+        follow_request_from_user_2_to_user_1: "FollowRequest",
+    ) -> None:
+        user_1.approves_follow_request_from(user_2)
+        media = self.create_media(user_1, workout_id=workout_cycling_user_1.id)
+        workout_cycling_user_1.workout_visibility = VisibilityLevel.FOLLOWERS
+        workout_cycling_user_1.media_visibility = VisibilityLevel.FOLLOWERS
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        with patch(
+            "fittrackee.media.routes.send_from_directory",
+            return_value="file",
+        ) as mock:
+            response = client.get(
+                self.route.format(filename=media.file_name),
+                headers={"X-CSRF-TOKEN": auth_token},
+            )
+
+        mock.assert_called_once()
+        assert response.status_code == 200
+
+    def test_it_returns_404_when_media_is_not_associated_with_workout_and_user_is_not_authenticated(  # noqa
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        media = self.create_media(user_1)
+        client = app.test_client()
+
+        with patch(
+            "fittrackee.media.routes.send_from_directory",
+            return_value="file",
+        ):
+            response = client.get(
+                self.route.format(filename=media.thumbnail),
+            )
+
+        self.assert_media_not_found(response)
+
+    def test_it_returns_404_when_media_is_not_associated_with_workout_and_user_is_not_owner(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+    ) -> None:
+        media = self.create_media(user_1)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_2.email
+        )
+
+        with patch(
+            "fittrackee.media.routes.send_from_directory",
+            return_value="file",
+        ):
+            response = client.get(
+                self.route.format(filename=media.file_name),
+                headers={"X-CSRF-TOKEN": auth_token},
+            )
+
+        self.assert_media_not_found(response)
+
+    def test_expected_scope_is_media_read(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        self.assert_response_scope(
+            app=app,
+            user=user_1,
+            client_method="get",
+            endpoint=self.route,
+            invalid_scope="workouts:read",
+            expected_endpoint_scope="media:read",
+        )
+
+
+class TestMediaApiPost(MediaTestCase):
     route = "/api/media"
 
     def test_it_returns_401_when_user_is_not_authenticated(
@@ -246,7 +388,7 @@ class TestMediaApiPost(ApiTestCaseMixin):
         )
 
 
-class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
+class TestMediaApiPatch(MediaTestCase):
     route = "/api/media/{media_short_id}"
 
     def test_it_returns_401_when_user_is_not_authenticated(
@@ -289,7 +431,22 @@ class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
             headers={"X-CSRF-TOKEN": auth_token},
         )
 
-        self.assert_404_with_message(response, "media not found")
+        self.assert_media_not_found(response)
+
+    def test_it_returns_404_when_media_id_is_invalid(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            self.route.format(media_short_id="invalid"),
+            json={"description": "new description"},
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        self.assert_media_not_found(response)
 
     def test_it_returns_403_when_user_is_not_media_owner(
         self, app: "Flask", user_1: "User", user_2: "User"
@@ -402,7 +559,7 @@ class TestMediaApiPatch(ApiTestCaseMixin, MediaMixin):
         )
 
 
-class TestMediaApiDelete(ApiTestCaseMixin, MediaMixin):
+class TestMediaApiDelete(MediaTestCase):
     route = "/api/media/{media_short_id}"
 
     def test_it_returns_401_when_user_is_not_authenticated(
@@ -442,7 +599,21 @@ class TestMediaApiDelete(ApiTestCaseMixin, MediaMixin):
             headers={"X-CSRF-TOKEN": auth_token},
         )
 
-        self.assert_404_with_message(response, "media not found")
+        self.assert_media_not_found(response)
+
+    def test_it_returns_404_when_media_id_is_invalid(
+        self, app: "Flask", user_1: "User"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.delete(
+            self.route.format(media_short_id="invalid"),
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        self.assert_media_not_found(response)
 
     def test_it_returns_403_when_user_is_not_media_owner(
         self, app: "Flask", user_1: "User", user_2: "User"

@@ -1,1 +1,14 @@
-{}
+{
+  "APP_ERROR": "Uygulama bazı sorunlarla karşılaşmış görünüyor.<br />Lütfen daha sonra tekrar deneyin veya yöneticiyle iletişime geçin.",
+  "ERRORS_ENCOUNTERED": "Hatalarla karşılaşıldı",
+  "NOT_FOUND": {
+    "COMMENT": "Yorum bulunamadı",
+    "PAGE": "Sayfa bulunamadı",
+    "REPORT": "Şikâyet bulunamadı",
+    "SEGMENT": "Segment bulunamadı",
+    "USER": "Kullanıcı bulunamadı",
+    "WORKOUT": "Antrenman bulunamadı"
+  },
+  "SOMETHING_WRONG": "Bir şeyler ters gitti",
+  "UNKNOWN": "Hata. Lütfen tekrar deneyin veya yöneticiyle iletişime geçin."
+}

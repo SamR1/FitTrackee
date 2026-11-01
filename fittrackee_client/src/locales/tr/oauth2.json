@@ -1,1 +1,46 @@
-{}
+{
+  "ADD_A_NEW_APP": "Yeni bir OAuth2 uygulaması ekle",
+  "APP": {
+    "CLIENT_ID": "Kimlik",
+    "CLIENT_SECRET": "Gizli anahtar",
+    "DESCRIPTION": "Uygulama açıklaması",
+    "ISSUE_AT": "Oluşturulma tarihi",
+    "NAME": "Uygulama adı",
+    "REDIRECT_URL": "Yönlendirme URL'si",
+    "SCOPE": {
+      "LABEL": "Kapsam",
+      "application:write_DESCRIPTION": "uygulama yapılandırmasına yazma erişimi verir.",
+      "equipments:read_DESCRIPTION": "<code>equipments</code> uç noktalarına okuma erişimi verir.",
+      "equipments:write_DESCRIPTION": "<code>equipments</code> uç noktalarına yazma erişimi verir.",
+      "follow:read_DESCRIPTION": "takip istekleri ve takipçilerle ilgili uç noktalara okuma erişimi verir.",
+      "follow:write_DESCRIPTION": "takip istekleri ve takipçilerle ilgili uç noktalara yazma erişimi verir.",
+      "geocode:read_DESCRIPTION": "coğrafi kodlamayla ilgili uç noktalara okuma erişimi verir.",
+      "media:read_DESCRIPTION": "<code>media</code> uç noktalarına okuma erişimi verir.",
+      "media:write_DESCRIPTION": "<code>media</code> uç noktalarına yazma erişimi verir.",
+      "notifications:read_DESCRIPTION": "<code>notifications</code> uç noktalarına okuma erişimi verir.",
+      "notifications:write_DESCRIPTION": "<code>notifications</code> uç noktalarına yazma erişimi verir.",
+      "profile:read_DESCRIPTION": "<code>auth</code> uç noktalarına okuma erişimi verir.",
+      "profile:write_DESCRIPTION": "<code>auth</code> uç noktalarına yazma erişimi verir.",
+      "reports:read_DESCRIPTION": "<code>reports</code> uç noktalarına okuma erişimi verir.",
+      "reports:write_DESCRIPTION": "<code>reports</code> uç noktalarına yazma erişimi verir.",
+      "users:read_DESCRIPTION": "<code>users</code> uç noktalarına okuma erişimi verir.",
+      "users:write_DESCRIPTION": "<code>users</code> uç noktalarına yazma erişimi verir.",
+      "workouts:read_DESCRIPTION": "antrenman ve yorum uç noktalarına okuma erişimi verir.",
+      "workouts:write_DESCRIPTION": "antrenman ve yorum uç noktalarına yazma erişimi verir."
+    },
+    "URL": "Uygulama URL'si"
+  },
+  "APPS_LIST": "OAuth2 uygulamaları",
+  "APP_CREATED_SUCCESSFULLY": "Uygulama başarıyla oluşturuldu. Gizli anahtarı şimdi kopyaladığınızdan emin olun, bir daha gösterilmeyecek.",
+  "APP_DELETION_CONFIRMATION": "Bu uygulamayı silmek istediğinizden emin misiniz?",
+  "APP_REQUESTING_ACCESS": "{0} uygulaması şunları istiyor:",
+  "AUTHORIZE_APP": "{0} uygulamasının hesabınızı kullanmasına izin verilsin mi?",
+  "COPY_TO_CLIPBOARD": "panoya kopyala",
+  "DELETE_APP": "Uygulamayı sil",
+  "NEW_APP": "Uygulama ekle",
+  "NO_APP": "Uygulama bulunamadı!",
+  "NO_APPS": "uygulama yok",
+  "REVOKE_ALL_TOKENS": "Tüm anahtarları iptal et",
+  "TOKENS_REVOCATION_CONFIRMATION": "Tüm anahtarları iptal etmek istediğinizden emin misiniz?",
+  "TOKENS_REVOKED": "İlişkili tüm mevcut anahtarlar iptal edildi."
+}

@@ -1,4 +1,5 @@
 import json
+import os
 from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING
 from unittest.mock import patch
@@ -7,6 +8,8 @@ import pytest
 
 from fittrackee import db
 from fittrackee.constants import ElevationDataSource, ElevationProcessing
+from fittrackee.files import get_absolute_file_path
+from fittrackee.media.models import Media
 from fittrackee.tests.fixtures.fixtures_workouts import VALHALLA_VALUES
 from fittrackee.visibility_levels import VisibilityLevel
 from fittrackee.workouts.models import WorkoutSegment
@@ -82,6 +85,22 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
         )
         response = client.patch(
             f"/api/workouts/{self.random_short_id()}",
+            content_type="application/json",
+            json={"sport_id": 2, "title": "Workout test"},
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        data = self.assert_404(response)
+        assert len(data["data"]["workouts"]) == 0
+
+    def test_it_returns_404_when_workout_id_is_invalid(
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
+    ) -> None:
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+        response = client.patch(
+            "/api/workouts/invalid",
             content_type="application/json",
             json={"sport_id": 2, "title": "Workout test"},
             headers={"X-CSRF-TOKEN": auth_token},
@@ -400,6 +419,49 @@ class TestEditWorkout(WorkoutApiTestCaseMixin, MediaMixin):
         assert data["data"]["workouts"][0]["media_attachments"] == [
             media.serialize()
         ]
+
+    def test_it_removes_and_delete_media_attachments_when_empty_list_is_provided(  # noqa
+        self,
+        app: "Flask",
+        user_1: "User",
+        user_2: "User",
+        workout_cycling_user_1: "Workout",
+        workout_cycling_user_2: "Workout",
+    ) -> None:
+        user_1_media = self.create_media(
+            user_1, workout_id=workout_cycling_user_1.id
+        )
+        os.makedirs(
+            os.path.join(app.config["UPLOAD_FOLDER"], "media", str(user_1.id)),
+            exist_ok=True,
+        )
+        absolute_path = get_absolute_file_path(user_1_media.file_path)
+        open(absolute_path, "x")
+        thumbnail_absolute_path = get_absolute_file_path(
+            user_1_media.thumbnail_file_path
+        )
+        open(thumbnail_absolute_path, "x")
+        self.create_media(user_2, workout_id=workout_cycling_user_2.id)
+        client, auth_token = self.get_test_client_and_auth_token(
+            app, user_1.email
+        )
+
+        response = client.patch(
+            f"/api/workouts/{workout_cycling_user_1.short_id}",
+            content_type="application/json",
+            data=json.dumps(dict(media_attachment_ids=[])),
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert "success" in data["status"]
+        assert len(data["data"]["workouts"]) == 1
+        assert data["data"]["workouts"][0]["media_attachments"] == []
+        assert Media.query.filter_by(user_id=user_1.id).count() == 0
+        assert os.path.isfile(absolute_path) is False
+        assert os.path.isfile(thumbnail_absolute_path) is False
+        assert Media.query.filter_by(user_id=user_2.id).count() == 1
 
     @patch("fittrackee.workouts.workouts.MAX_MEDIA_ATTACHMENTS", 2)
     def test_it_returns_400_when_number_of_media_exceeds_limit(

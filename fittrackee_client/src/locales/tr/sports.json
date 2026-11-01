@@ -1,1 +1,89 @@
-{}
+{
+  "Canoeing": {
+    "LABEL": "Kano"
+  },
+  "Canoeing (Whitewater)": {
+    "LABEL": "Kano (Akarsu)"
+  },
+  "Cycling (Sport)": {
+    "LABEL": "Bisiklet (Spor)"
+  },
+  "Cycling (Transport)": {
+    "LABEL": "Bisiklet (Ulaşım)"
+  },
+  "Cycling (Trekking)": {
+    "LABEL": "Bisiklet (Trekking)"
+  },
+  "Cycling (Virtual)": {
+    "LABEL": "Bisiklet (Sanal)"
+  },
+  "Halfbike": {
+    "LABEL": "Halfbike"
+  },
+  "Hiking": {
+    "LABEL": "Doğa yürüyüşü"
+  },
+  "Ice Skating": {
+    "LABEL": "Buz pateni"
+  },
+  "Inline Skating": {
+    "LABEL": "Sıralı paten"
+  },
+  "Kayaking": {
+    "LABEL": "Kayak (tekne)"
+  },
+  "Kayaking (Whitewater)": {
+    "LABEL": "Kayak (tekne, akarsu)"
+  },
+  "Mountain Biking": {
+    "LABEL": "Dağ bisikleti"
+  },
+  "Mountain Biking (Electric)": {
+    "LABEL": "Dağ bisikleti (Elektrikli)"
+  },
+  "Mountaineering": {
+    "LABEL": "Dağcılık"
+  },
+  "Open Water Swimming": {
+    "LABEL": "Açık su yüzme"
+  },
+  "Padel (Outdoor)": {
+    "LABEL": "Padel (Açık hava)"
+  },
+  "Paragliding": {
+    "LABEL": "Yamaç paraşütü"
+  },
+  "Rowing": {
+    "LABEL": "Kürek çekme"
+  },
+  "Running": {
+    "LABEL": "Koşu"
+  },
+  "Skiing (Alpine)": {
+    "LABEL": "Kayak (Alp disiplini)"
+  },
+  "Skiing (Cross Country)": {
+    "LABEL": "Kayak (Kros)"
+  },
+  "Snowshoes": {
+    "LABEL": "Kar ayakkabısı"
+  },
+  "Standup Paddleboarding": {
+    "LABEL": "Ayakta kürek sörfü (SUP)"
+  },
+  "Swimrun": {
+    "LABEL": "Swimrun"
+  },
+  "Tennis (Outdoor)": {
+    "LABEL": "Tenis (Açık hava)"
+  },
+  "Trail": {
+    "LABEL": "Patika koşusu"
+  },
+  "Walking": {
+    "LABEL": "Yürüyüş"
+  },
+  "Windsurfing": {
+    "LABEL": "Rüzgâr sörfü"
+  }
+}

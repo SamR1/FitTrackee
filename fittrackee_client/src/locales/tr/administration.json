@@ -1,1 +1,169 @@
-{}
+{
+  "ABOUT": {
+    "DESCRIPTION": "Kullanıcılarınız için yararlı olabilecek ek bilgiler.",
+    "TEXT": "Ayrıntılı sunucu bilgileri"
+  },
+  "ACTION": "İşlem | İşlemler",
+  "ACTIVATE_USER_ACCOUNT": "Hesabı etkinleştir",
+  "ACTIVE": "Aktif",
+  "ADMIN": "Yönetici",
+  "ADMINISTRATION": "Yönetim",
+  "ADMIN_RIGHTS_DELETE_USER_ACCOUNT": "Yönetici yetkisi ekle/kaldır, kullanıcı hesabını sil.",
+  "APPLICATION": "Uygulama",
+  "APP_CONFIG": {
+    "ADMIN_CONTACT": "İletişim için yönetici e-postası",
+    "ASYNCHRONOUS_UPLOAD_DISABLED": "Eşzamansız zip arşivi yükleme devre dışı.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_HELP": "Bu değer 50.000 antrenmanı aşamaz.",
+    "GLOBAL_MAP_WORKOUTS_LIMIT_LABEL": "Genel haritada gösterilecek maks. antrenman sayısı",
+    "MAX_FILES_IN_ZIP_LABEL": "Zip arşivindeki maks. dosya sayısı",
+    "MAX_IMAGE_SIZE_LABEL": "Görsellerin maks. boyutu (Mb)",
+    "MAX_SYNC_FILES_IN_ZIP_LABEL": "Eşzamanlı işleme için maks. dosya sayısı",
+    "MAX_USERS_HELP": "0 ise kayıt sınırı yoktur.",
+    "MAX_USERS_LABEL": "Maks. etkin kullanıcı sayısı",
+    "NO_CONTACT_EMAIL": "iletişim e-postası yok",
+    "SINGLE_UPLOAD_MAX_SIZE_LABEL": "Yüklenen dosyaların maks. boyutu (Mb)",
+    "STATS_WORKOUTS_LIMIT_HELP": "0 ise antrenman sayısında sınır yoktur.",
+    "STATS_WORKOUTS_LIMIT_LABEL": "İstatistikler için maks. antrenman sayısı",
+    "TITLE": "Uygulama yapılandırması",
+    "ZIP_UPLOAD_MAX_SIZE_LABEL": "Zip arşivinin maks. boyutu (Mb)"
+  },
+  "APP_MODERATION": {
+    "ACTIONS": {
+      "ADD_COMMENT": "Yorum ekle",
+      "MARK_AS_RESOLVED": "Çözüldü olarak işaretle",
+      "MARK_AS_UNRESOLVED": "Çözülmedi olarak işaretle",
+      "SEND_WARNING_EMAIL": "Uyarı gönder",
+      "SUSPEND_ACCOUNT": "Kullanıcı hesabını askıya al",
+      "SUSPEND_CONTENT": "İçeriği askıya al",
+      "UNSUSPEND_ACCOUNT": "Kullanıcı hesabını yeniden etkinleştir",
+      "UNSUSPEND_CONTENT": "İçeriği yeniden etkinleştir"
+    },
+    "APPEAL": {
+      "APPROVED": "Bu itiraz {0} onaylandı.",
+      "AUTOMATICALLY_APPROVED_BY_UNSUSPENSION": "Bu itiraz, askıya alma kaldırılarak onaylandı.",
+      "HIDE": "İtirazı gizle",
+      "REASON_IS": "Gerekçe:",
+      "REJECTED": "Bu itiraz {0} reddedildi.",
+      "SEE": "İtirazı gör"
+    },
+    "DESCRIPTION": "Şikâyet yönetimi.",
+    "NOTES_AND_ACTIONS": "Notlar ve işlemler",
+    "NO_REPORTS_FOUND": "Şikâyet yok",
+    "ORDER_BY": {
+      "CREATED_AT": "oluşturma tarihi",
+      "UPDATED_AT": "güncelleme tarihi"
+    },
+    "REASON": "Neden",
+    "REPORT": "şikâyet | şikâyetler",
+    "REPORTED_BY": "Şikâyet eden",
+    "REPORTED_CONTENT": "Şikâyet edilen içerik",
+    "REPORTED_USER": "Şikâyet edilen kullanıcı",
+    "REPORTER": "şikâyetçi",
+    "REPORT_ACTIONS": {
+      "comment_suspension": "Yorum {1} tarafından {2} askıya alındı.",
+      "comment_unsuspension": "Yorumun askıya alınması {1} tarafından {2} kaldırıldı.",
+      "report_reopening": "Şikâyet {1} tarafından {2} yeniden açıldı.",
+      "report_resolution": "Şikâyet {1} tarafından {2} çözüldü olarak işaretlendi.",
+      "user_suspension": "{0}, {1} tarafından {2} askıya alındı.",
+      "user_unsuspension": "{0} askıya alması {1} tarafından {2} kaldırıldı.",
+      "user_warning": "{0} kullanıcısına {1} tarafından {2} uyarı gönderildi.",
+      "user_warning_lifting": "{0} uyarısı {1} tarafından {2} kaldırıldı.",
+      "workout_suspension": "Antrenman {1} tarafından {2} askıya alındı.",
+      "workout_unsuspension": "Antrenmanın askıya alınması {1} tarafından {2} kaldırıldı."
+    },
+    "REPORT_NOTE": "Notu ekleyen",
+    "RESOLVED": {
+      "FALSE": "Çözülmedi",
+      "TRUE": "Çözüldü"
+    },
+    "RESOLVED_AT": "Çözülme tarihi",
+    "RESOLVED_BY": "Çözen",
+    "STATUS": "durum",
+    "TEXTAREA_PLACEHOLDER": {
+      "ADD_COMMENT": "Yorum, yapılan işlem veya yararlı başka bir bilgi ekleyin.",
+      "INFORMATION_VISIBLE_TO_USER": "Bu bilgi kullanıcı tarafından görülebilecek.",
+      "MARK_AS_RESOLVED": "Çözülme nedenini belirtin.",
+      "MARK_AS_UNRESOLVED": "Çözülmeme nedenini belirtin.",
+      "SEND_WARNING_EMAIL": "Uyarı nedenini belirtin (zorunlu değil).",
+      "SUSPEND": "Askıya alma nedenini belirtin (zorunlu değil).",
+      "UNSUSPEND": "Yorum ekleyin (zorunlu değil).",
+      "UPDATE_APPEAL": "Bu itirazın işlenme gerekçesini belirtin."
+    },
+    "TITLE": "Moderasyon",
+    "UNRESOLVED_REPORTS_EXIST": "Çözülmemiş şikâyetler var.",
+    "USERS_QUEUED_TASKS_EXIST": "Sırada bekleyen görevler var",
+    "VIEW_REPORT": "Şikâyeti görüntüle"
+  },
+  "BACK_TO_ADMIN": "Yönetime dön",
+  "CONFIRM_SUSPEND_ACCOUNT": "{0} hesabını askıya almak istediğinizden emin misiniz?",
+  "CONFIRM_SUSPEND_CONTENT": "Şikâyet edilen içeriği askıya almak istediğinizden emin misiniz?",
+  "CONFIRM_USER_ACCOUNT_DELETION": "{0} hesabını silmek istediğinizden emin misiniz? Tüm veriler silinecek, bu işlem geri alınamaz.",
+  "CONFIRM_USER_PASSWORD_RESET": "{0} şifresini sıfırlamak istediğinizden emin misiniz?",
+  "CURRENT_EMAIL": "Mevcut e-posta",
+  "DELETED_COMMENT": "Silinmiş yorum",
+  "DELETED_USER": "Silinmiş kullanıcı",
+  "DELETED_WORKOUT": "Silinmiş antrenman",
+  "DELETE_USER": "Kullanıcıyı sil",
+  "EMAIL_SENDING_DISABLED": "E-posta gönderimi devre dışı.",
+  "ENABLE_DISABLE_EQUIPMENT_TYPES": "Ekipman türlerini etkinleştir/devre dışı bırak.",
+  "ENABLE_DISABLE_SPORTS": "Sporları etkinleştir/devre dışı bırak.",
+  "EQUIPMENT_TYPES": {
+    "TABLE": {
+      "ACTIVE": "Aktif",
+      "HAS_EQUIPMENTS": "ekipman var",
+      "IMAGE": "Görsel",
+      "LABEL": "Etiket"
+    },
+    "TITLE": "Ekipman yönetimi"
+  },
+  "NEW_EMAIL": "Yeni e-posta",
+  "NO_TEXT_ENTERED": "Metin girilmedi",
+  "PASSWORD_RESET_SUCCESSFUL": "Şifre sıfırlandı.",
+  "PRIVACY_POLICY_DESCRIPTION": "Kendi gizlilik politikanızı ekleyin veya varsayılanı kullanmak için boş bırakın.",
+  "REGISTRATION_DISABLED": "Kayıt şu anda devre dışı.",
+  "REGISTRATION_ENABLED": "Kayıt şu anda açık.",
+  "RESET_USER_PASSWORD": "Şifreyi sıfırla",
+  "SPORTS": {
+    "TABLE": {
+      "ACTIVE": "Aktif",
+      "HAS_WORKOUTS": "antrenman var",
+      "IMAGE": "Görsel",
+      "LABEL": "Etiket"
+    },
+    "TITLE": "Spor yönetimi"
+  },
+  "UPDATE_APPLICATION_DESCRIPTION": "Uygulama yapılandırmasını güncelle.",
+  "UPDATE_USER_EMAIL": "E-postayı güncelle",
+  "USER": "kullanıcı | kullanıcılar",
+  "USERS": {
+    "SELECTS": {
+      "ORDER_BY": {
+        "CREATED_AT": "kayıt tarihi",
+        "IS_ACTIVE": "hesap durumu",
+        "ROLE": "rol",
+        "USERNAME": "kullanıcı adı",
+        "WORKOUTS_COUNT": "antrenman sayısı"
+      }
+    },
+    "TABLE": {
+      "CHANGE_ROLE": "Rolü değiştir",
+      "CHANGE_TO_ADMIN": "Yönetici yap",
+      "CHANGE_TO_MODERATOR": "Moderatör yap",
+      "CHANGE_TO_USER": "Kullanıcı yap"
+    },
+    "TITLE": "Yönetim - Kullanıcılar"
+  },
+  "USERS_QUEUED_TASKS": {
+    "DESCRIPTION": "Sıradaki görevleri göster",
+    "LABEL": "Sıradaki görevler",
+    "LIST_DESCRIPTION": "Çalışan işleyici (worker) yoksa, işlemek için lütfen CLI kullanın.",
+    "NO_USERS_QUEUED_TASKS": "Sırada görev yok",
+    "TASK_TYPES": {
+      "LABEL": "Görev türü",
+      "user_data_export": "Kullanıcı verisi dışa aktarımı",
+      "workouts_archive_upload": "Antrenman arşivi yüklemeleri"
+    },
+    "VIEW_OTHER_TASKS": "Sıradaki diğer görevleri görüntüle"
+  },
+  "USER_EMAIL_UPDATE_SUCCESSFUL": "E-posta adresi güncellendi."
+}

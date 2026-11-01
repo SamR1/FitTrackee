@@ -1,3 +1,4 @@
+import { AxiosError } from 'axios'
 import type { ActionContext, ActionTree } from 'vuex'
 
 import authApi from '@/api/authApi'
@@ -309,9 +310,13 @@ export const actions: ActionTree<IWorkoutsState, IRootState> &
           handleError(context, null)
         }
       })
-      .catch((error) => {
+      .catch((error: AxiosError) => {
         context.commit(WORKOUTS_STORE.MUTATIONS.EMPTY_WORKOUT)
-        handleError(context, error)
+        if (error.response?.status === 401) {
+          router.push('/')
+        } else {
+          handleError(context, error)
+        }
       })
       .finally(() =>
         context.commit(WORKOUTS_STORE.MUTATIONS.SET_WORKOUT_LOADING, false)

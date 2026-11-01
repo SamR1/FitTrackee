@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-10-12 00:02+0200\n"
+"POT-Creation-Date: 2026-11-01 08:04+0100\n"
 "PO-Revision-Date: 2026-03-10 06:09+0000\n"
 "Last-Translator: \"josé m.\" <correoxm@disroot.org>\n"
 "Language: gl\n"
@@ -368,7 +368,7 @@ msgstr ""
 
 #: fittrackee/emails/templates/password_reset_request/body.html:6
 msgid "It can only be used once."
-msgstr ""
+msgstr "Só se pode usar unha vez."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:14
 #: fittrackee/emails/templates/password_reset_request/body.txt:4

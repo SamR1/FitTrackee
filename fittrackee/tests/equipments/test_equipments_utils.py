@@ -67,6 +67,19 @@ class TestHandleEquipments(RandomMixin):
                 sport_id=sport_1_cycling.id,
             )
 
+    def test_it_raises_error_when_equipment_short_id_is_invalid(
+        self, app: "Flask", user_1: "User", sport_1_cycling: "Sport"
+    ) -> None:
+        with pytest.raises(
+            InvalidEquipmentException,
+            match="equipment with id invalid does not exist",
+        ):
+            handle_pieces_of_equipment(
+                equipment_short_ids=["invalid"],  # type: ignore
+                auth_user=user_1,
+                sport_id=sport_1_cycling.id,
+            )
+
     def test_it_raises_error_when_equipment_does_not_belong_to_user(
         self,
         app: "Flask",

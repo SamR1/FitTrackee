@@ -18,6 +18,7 @@ VALID_SCOPES = [
     "follow:read",
     "follow:write",
     "geocode:read",
+    "media:read",
     "media:write",
     "notifications:read",
     "notifications:write",

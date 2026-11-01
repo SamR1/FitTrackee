@@ -3,6 +3,7 @@ from typing import List, Optional, Set, Union
 from sqlalchemy.dialects.postgresql import insert
 
 from fittrackee.equipments.models import Equipment, EquipmentType
+from fittrackee.exceptions import InvalidShortIdException
 from fittrackee.users.models import (
     User,
     UserSportPreference,
@@ -97,9 +98,18 @@ def handle_pieces_of_equipment(
         if not isinstance(equipment_short_id, str):
             raise InvalidEquipmentsException(TYPE_ERROR_MESSAGE)
 
-        equipment = Equipment.query.filter_by(
-            uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
-        ).first()
+        try:
+            equipment = Equipment.query.filter_by(
+                uuid=decode_short_id(equipment_short_id), user_id=auth_user.id
+            ).first()
+        except InvalidShortIdException as e:
+            raise InvalidEquipmentException(
+                status="not_found",
+                message=(
+                    f"equipment with id {equipment_short_id} does not exist"
+                ),
+                equipment_short_id=equipment_short_id,
+            ) from e
         if not equipment:
             raise InvalidEquipmentException(
                 status="not_found",

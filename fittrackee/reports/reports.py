@@ -5,6 +5,7 @@ from sqlalchemy import asc, desc, exc, nullslast
 
 from fittrackee import db
 from fittrackee.comments.exceptions import CommentForbiddenException
+from fittrackee.exceptions import InvalidShortIdException
 from fittrackee.oauth2.server import require_auth
 from fittrackee.responses import (
     HttpResponse,
@@ -122,6 +123,7 @@ def create_report(auth_user: User) -> Union[Tuple[Dict, int], HttpResponse]:
         CommentForbiddenException,
         UserNotFoundException,
         WorkoutForbiddenException,
+        InvalidShortIdException,
     ):
         return NotFoundErrorResponse(
             f"{object_type} not found "
@@ -845,7 +847,13 @@ def process_appeal(
     :statuscode 500:
         - ``Error during report save.``
     """
-    appeal_uuid = decode_short_id(appeal_id)
+    try:
+        appeal_uuid = decode_short_id(appeal_id)
+    except InvalidShortIdException:
+        return NotFoundErrorResponse(
+            message=f"appeal not found (id: {appeal_id})"
+        )
+
     appeal = ReportActionAppeal.query.filter_by(uuid=appeal_uuid).first()
 
     if not appeal:

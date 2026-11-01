@@ -1,1 +1,35 @@
-{}
+{
+  "Bike": {
+    "LABEL": "Bisiklet"
+  },
+  "Bike Trainer": {
+    "LABEL": "Bisiklet antrenman cihazı"
+  },
+  "Board": {
+    "LABEL": "Sörf tahtası"
+  },
+  "Kayak_Boat": {
+    "LABEL": "Kayak teknesi/Tekne"
+  },
+  "Misc": {
+    "LABEL": "Diğer"
+  },
+  "Paddle": {
+    "LABEL": "Kürek"
+  },
+  "Racket": {
+    "LABEL": "Raket"
+  },
+  "Shoes": {
+    "LABEL": "Ayakkabı"
+  },
+  "Skates": {
+    "LABEL": "Paten"
+  },
+  "Skis": {
+    "LABEL": "Kayak takımı"
+  },
+  "Snowshoes": {
+    "LABEL": "Kar ayakkabısı"
+  }
+}
