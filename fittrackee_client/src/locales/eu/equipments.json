@@ -9,6 +9,7 @@
   "ERRORS": {
     "inactive": "'{equipmentLabel}' ekipamendu inaktibo.",
     "invalid": "'{equipmentLabel}' ekipamendua ez da baliozkoa kirol honetarako.",
+    "limit_exceeded": "Ekipamendu honek {sportEtiketak} kiroleko 5 itemeko gehienezko muga gainditzen du. | Ekipamendu honek 5 itemeko gehienezko muga gainditzen du kirol hauetarako: {sportEtiketak}.",
     "not_found": "Ekipamendua ez da aurkitu."
   },
   "NEW_EQUIPMENT": "Ekipamendu berria",
