@@ -8,16 +8,17 @@ msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
 "POT-Creation-Date: 2026-09-27 18:20+0200\n"
-"PO-Revision-Date: 2026-02-16 17:09+0000\n"
-"Last-Translator: Mikel Larreategi <mlarreategi@codesyntax.com>\n"
+"PO-Revision-Date: 2026-11-03 08:51+0000\n"
+"Last-Translator: aisaivia <aisaivia@users.noreply.hosted.weblate.org>\n"
 "Language: eu\n"
-"Language-Team: Basque <https://hosted.weblate.org/projects/fittrackee"
-"/fittrackee-api-emails/eu/>\n"
+"Language-Team: Basque <https://hosted.weblate.org/projects/fittrackee/"
+"fittrackee-api-emails/eu/>\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
+"X-Generator: Weblate 2026.11.1.dev0\n"
 
 #: fittrackee/emails/templates/layout.html:232
 #: fittrackee/emails/templates/layout.txt:1
@@ -369,7 +370,7 @@ msgstr "Pasahitza berrezartzeko esteka %(expiration_delay)s barru iraungiko da."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:6
 msgid "It can only be used once."
-msgstr ""
+msgstr "Behin bakarrik erabil daiteke."
 
 #: fittrackee/emails/templates/password_reset_request/body.html:14
 #: fittrackee/emails/templates/password_reset_request/body.txt:4
@@ -502,11 +503,11 @@ msgstr "Kayak"
 
 #: fittrackee/feeds/feeds/constants.py:14
 msgid "Ice Skating"
-msgstr ""
+msgstr "Izotz-irristaketa"
 
 #: fittrackee/feeds/feeds/constants.py:15
 msgid "Inline Skating"
-msgstr ""
+msgstr "Irristaketa"
 
 #: fittrackee/feeds/feeds/constants.py:16
 msgid "Kayaking (Whitewater)"
@@ -621,4 +622,3 @@ msgstr "Jaitsiera"
 #: fittrackee/feeds/templates/workout/body.html:4
 msgid "Description"
 msgstr "Deskribapena"
-
