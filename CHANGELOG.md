@@ -1,5 +1,40 @@
 # Change log
 
+## Version 1.3.8 (2026/11/01)
+
+### Bugs Fixed
+
+* [1252](https://codeberg.org/FitTrackee/FitTrackee/issues/1252) - Sports list is empty in User sports preferences 
+
+### Translations
+
+* [PR#1250](https://codeberg.org/FitTrackee/FitTrackee/pulls/1250) - Translations update from Hosted Weblate (German)
+
+Translation status for languages available on the interface:
+- Basque: 96%
+- Bulgarian: 50%
+- Catalan: 57%
+- Chinese (Simplified): 99%
+- Croatian: 100%
+- Czech: 48%
+- Dutch: 99%
+- English: 100%
+- French: 100%
+- Galician: 100%
+- German: 100%
+- Italian: 99%
+- Kabyle: 5%
+- Norwegian Bokmål: 42%
+- Polish: 99%
+- Portuguese: 50%
+- Russian: 94%
+- Spanish: 66%
+- Turkish: 100%
+
+
+Thanks to the contributors:
+- [@PeterPwr](https://codeberg.org/PeterPwr)
+
 ## Version 1.3.7 (2026/10/31)
 
 This version includes a security fix ([GHSA-ff84-h4hf-gmxv](https://github.com/SamR1/FitTrackee/security/advisories/GHSA-ff84-h4hf-gmxv)), thanks to [@ruben0315R](https://github.com/ruben0315R) for the report.

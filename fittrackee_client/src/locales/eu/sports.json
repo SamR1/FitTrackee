@@ -23,6 +23,12 @@
   "Hiking": {
     "LABEL": "Mendi ibilaldia"
   },
+  "Ice Skating": {
+    "LABEL": "Izotz-irristaketa"
+  },
+  "Inline Skating": {
+    "LABEL": "Irristaketa"
+  },
   "Kayaking": {
     "LABEL": "Kayak"
   },

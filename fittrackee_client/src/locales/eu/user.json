@@ -5,6 +5,7 @@
   "ACCOUNT_SUSPENDED_AT": "Kontua bertan behera utzi da {0}.",
   "ACTIVE_ACCOUNT": "Kontu hau aktibo dago",
   "ACTIVE_USER": "erabiltzaile aktibo | erabiltzaile aktibo",
+  "ADMIN_WILL_REVIEW_AND_ACTIVATE_ACCOUNT": "Administratzaile batek zure kontua berrikusi eta aktibatuko du, onargarria bada.",
   "ALREADY_HAVE_ACCOUNT": "Baduzu kontu bat?",
   "APPEAL": "Apelazioa",
   "APPEAL_APPROVED": "Apelazioa onartuta.",
@@ -235,7 +236,7 @@
     "USE_RAW_GPX_SPEED": {
       "FILTERED_SPEED": "Filtratuta",
       "HELP": "Filtratuta badago, ertzetako balioak ez dira erabiltzen abiadura maximoa kalkulatzean (GPSaren erroreak izan daitezke).",
-      "LABEL": "Abiadura maximoa kalkulatzeko estrategia",
+      "LABEL": "Abiadura max. kalkulatzeko estrategia",
       "RAW_SPEED": "Gordina"
     },
     "WORKOUT_CHARTS_DISPLAY": {
