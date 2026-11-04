@@ -8,13 +8,15 @@ Account
 .. versionchanged:: 0.6.0 email change
 .. versionchanged:: 0.7.13 data export
 .. versionchanged:: 0.10.0 notification when data export is completed
+.. versionchanged:: 1.4.0 sessions invalidation on password update
 
 Users can create, update and deleted their account.
 
 .. figure:: ../_images/user-account-edition.png
    :alt: User account edition on FitTrackee
 
-They can reset his password, can change their email address and update their profile image.
+| They can reset his password, can change their email address and update their profile image.
+| On password update, all sessions are logged out and  if any third-party applications are configured, OAuth2 tokens are revoked.
 
 | They can also request the export of their data.
 | It generates a zip archive containing 2 ``json`` files (user info and workouts data) and all uploaded files.

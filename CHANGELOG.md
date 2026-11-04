@@ -1,5 +1,38 @@
 # Change log
 
+## Version 1.4.0b2 (2026/11/04)
+
+**This is a pre-release. Don't install this version in production, you may not be able to safely downgrade to a stable version.**  
+If you find bugs, please report them.
+
+**Notes**: 
+- This version also includes the changes from the versions 1.3.5 to 1.3.8.
+- This version drops support for Python 3.11 and adds support for Python 3.15.
+- This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation/upgrade.html)). 
+
+### Bugs Fixed
+
+* [PR#1217](https://codeberg.org/FitTrackee/FitTrackee/pulls/1217) - prevent elevation data from being smoothed again on refresh
+* [PR#1218](https://codeberg.org/FitTrackee/FitTrackee/pulls/1218) - fix migration adding 'elevation_processing'
+* [#1219](https://codeberg.org/FitTrackee/FitTrackee/issues/1219) - [Sunnto] Sports are not detected correctly for multi-activities sports
+* [#1220](https://codeberg.org/FitTrackee/FitTrackee/issues/1220) - [Sunnto] The distance of the last segment can be null when the statistics are extracted from the file
+* [PR#1223](https://codeberg.org/FitTrackee/FitTrackee/pulls/1223) - allow to change elevation data source and smoothing to be applied regardless missing elevation
+* [PR#1256](https://codeberg.org/FitTrackee/FitTrackee/pulls/1256) - invalidate sessions on password update
+
+### Translations
+
+* [PR#1254](https://codeberg.org/FitTrackee/FitTrackee/pulls/1254) - Translations update from Hosted Weblate (Basque)
+
+### Misc
+
+* [#1249](https://codeberg.org/FitTrackee/FitTrackee/issues/1249) - Drop support for Python 3.11 and add support for 3.15
+
+Thanks to the contributors:
+- aisaivia
+
+And thanks to the beta-testers for feedback.
+
+
 ## Version 1.3.8 (2026/11/01)
 
 ### Bugs Fixed
@@ -1474,7 +1507,7 @@ This version introduces major changes:
 - This release contains database migrations (see upgrade instructions in [documentation](https://next.docs.fittrackee.org/en/installation/upgrade.html)).
 
 **Notes:** 
-- This version drops support **Python** 3.9 and **PostgreSQL** 12
+- This version drops for support **Python** 3.9 and **PostgreSQL** 12
  
 ### Features and enhancements
 
