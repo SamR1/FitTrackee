@@ -20,8 +20,8 @@ from flask_babel import Babel
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import (
     JWTManager,
+    get_current_user,
     get_jwt,
-    get_jwt_identity,
     set_access_cookies,
 )
 from flask_limiter import Limiter
@@ -294,8 +294,10 @@ def create_app(init_email: bool = True) -> Flask:
             )
             target_timestamp = datetime.timestamp(now + delta)
             if target_timestamp > exp_timestamp:
-                auth_user_id = get_jwt_identity()
-                auth_token = get_user_token(int(auth_user_id))
+                auth_user = get_current_user()
+                auth_token = get_user_token(
+                    user_id=auth_user.id, version=auth_user.token_version
+                )
                 set_access_cookies(response, auth_token)
             return response
         except (RuntimeError, KeyError):

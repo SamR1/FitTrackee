@@ -414,6 +414,9 @@ class User(BaseModel):
         server_default="True",
         nullable=False,
     )
+    token_version: Mapped[int] = mapped_column(
+        server_default="0", nullable=False
+    )
 
     workouts: Mapped[List["Workout"]] = relationship(
         "Workout", lazy=True, back_populates="user"

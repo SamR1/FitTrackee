@@ -116,6 +116,13 @@
               @passwordError="invalidateForm"
               autocomplete="current-password"
             />
+            <div v-if="action === 'reset'" class="info-box sessions-info">
+              <span>
+                <i class="fa fa-info-circle" aria-hidden="true" />
+                {{ $t('user.ALL_SESSIONS_WILL_BE_REVOKED') }}
+                {{ $t('user.ALL_OAUTH2_TOKENS_WILL_BE_REVOKED') }}
+              </span>
+            </div>
             <label
               v-if="action === 'register'"
               for="accepted_policy"
@@ -379,5 +386,9 @@
     @media screen and (max-width: $small-limit) {
       margin-top: $default-margin;
     }
+  }
+
+  .sessions-info {
+    margin: $default-margin;
   }
 </style>

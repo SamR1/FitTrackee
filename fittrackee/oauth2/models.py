@@ -103,3 +103,17 @@ class OAuth2Token(BaseModel, OAuth2TokenMixin):
             text(sql), {"client_id": client_id, "revoked_at": int(time.time())}
         )
         db.session.commit()
+
+    @classmethod
+    def revoke_all_clients_tokens_for_user(cls, user_id: int) -> None:
+        sql = """
+            UPDATE oauth2_token
+            SET access_token_revoked_at = :revoked_at
+            FROM oauth2_client 
+            WHERE oauth2_client.client_id = oauth2_token.client_id
+              AND oauth2_client.user_id = :user_id;
+        """
+        db.session.execute(
+            text(sql), {"user_id": user_id, "revoked_at": int(time.time())}
+        )
+        db.session.commit()

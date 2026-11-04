@@ -56,6 +56,13 @@
             autocomplete="new-password"
           />
         </label>
+        <div class="info-box sessions-info">
+          <span>
+            <i class="fa fa-info-circle" aria-hidden="true" />
+            {{ $t('user.OTHER_SESSIONS_WILL_BE_REVOKED') }}
+            {{ $t('user.ALL_OAUTH2_TOKENS_WILL_BE_REVOKED') }}
+          </span>
+        </div>
         <div class="form-buttons">
           <button class="confirm" type="submit">
             {{ $t('buttons.SUBMIT') }}
@@ -207,6 +214,10 @@
       @media screen and (max-width: $x-small-limit) {
         flex-direction: column;
       }
+    }
+
+    .sessions-info {
+      margin: $default-margin;
     }
   }
 </style>
