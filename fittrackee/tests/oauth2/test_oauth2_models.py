@@ -4,6 +4,7 @@ from unittest.mock import patch
 import pytest
 from flask import Flask
 
+from fittrackee import db
 from fittrackee.oauth2.models import OAuth2Client, OAuth2Token
 from fittrackee.users.models import User
 
@@ -116,3 +117,38 @@ class TestOAuth2Token(OAuth2Mixin):
         )
 
         assert token.is_refresh_token_active() is False
+
+
+class TestOAuth2TokenRevokeClientTokens(OAuth2Mixin):
+    def test_it_revokes_client_tokens(self, app: Flask, user_1: User) -> None:
+        client_1 = self.create_oauth2_client(user_1)
+        token_1 = self.create_oauth2_token(oauth_client=client_1)
+        client_2 = self.create_oauth2_client(user_1)
+        token_2 = self.create_oauth2_token(oauth_client=client_2)
+
+        OAuth2Token.revoke_client_tokens(client_id=client_1.client_id)
+
+        db.session.refresh(token_1)
+        assert token_1.access_token_revoked_at != 0
+        db.session.refresh(token_2)
+        assert token_2.access_token_revoked_at == 0
+
+
+class TestOAuth2TokenRevokeAllClientsTokensForUser(OAuth2Mixin):
+    def test_it_revokes_client_tokens(
+        self, app: Flask, user_1: User, user_2: User
+    ) -> None:
+        user_1_client_1 = self.create_oauth2_client(user_1)
+        user_1_token_1 = self.create_oauth2_token(oauth_client=user_1_client_1)
+        user_1_client_2 = self.create_oauth2_client(user_1)
+        user_1_token_2 = self.create_oauth2_token(oauth_client=user_1_client_2)
+        user_2_client_3 = self.create_oauth2_client(user_2)
+        user_2_token_3 = self.create_oauth2_token(oauth_client=user_2_client_3)
+
+        OAuth2Token.revoke_all_clients_tokens_for_user(user_id=user_1.id)
+
+        for token in (user_1_token_1, user_1_token_2):
+            db.session.refresh(token)
+            assert token.access_token_revoked_at != 0
+        db.session.refresh(user_2_token_3)
+        assert user_2_token_3.access_token_revoked_at == 0

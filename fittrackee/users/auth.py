@@ -38,6 +38,7 @@ from fittrackee.files import (
     get_absolute_file_path,
     get_image_from_file_storage_without_exif,
 )
+from fittrackee.oauth2.models import OAuth2Token
 from fittrackee.oauth2.server import require_auth
 from fittrackee.reports.models import ReportAction, ReportActionAppeal
 from fittrackee.responses import (
@@ -314,7 +315,9 @@ def login_user() -> Union[Response, HttpResponse]:
         ).first()
         if user and user.check_password(password):
             # generate auth token
-            auth_token = get_user_token(user.id)
+            auth_token = get_user_token(
+                user_id=user.id, version=user.token_version
+            )
             response = jsonify(
                 {"status": "success", "message": "successfully logged in"}
             )
@@ -691,7 +694,7 @@ def edit_user(auth_user: User) -> Union[Dict, HttpResponse]:
 
 @auth_blueprint.route("/auth/profile/edit/account", methods=["PATCH"])
 @require_auth(scopes=["profile:write"], allow_suspended_user=True)
-def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
+def update_user_account(auth_user: User) -> Response:
     """
     Update authenticated user email and password.
 
@@ -865,6 +868,7 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
 
     new_password = data.get("new_password")
     error_messages = ""
+    new_auth_token = None
     try:
         if email_to_confirm != auth_user.email:
             if is_valid_email(email_to_confirm):
@@ -884,6 +888,11 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
                     new_password
                 )
                 auth_user.password = hashed_password
+                auth_user.token_version += 1
+                OAuth2Token.revoke_all_clients_tokens_for_user(auth_user.id)
+                new_auth_token = get_user_token(
+                    user_id=auth_user.id, version=auth_user.token_version
+                )
 
         if error_messages != "":
             return InvalidPayloadErrorResponse(error_messages)
@@ -937,14 +946,24 @@ def update_user_account(auth_user: User) -> Union[Dict, HttpResponse]:
                     user_data, email_data, template="email_update_to_new_email"
                 )
 
-        return {
-            "status": "success",
-            "message": "user account updated",
-            "data": auth_user.serialize(current_user=auth_user, light=False),
-        }
+        response = jsonify(
+            {
+                "status": "success",
+                "message": "user account updated",
+                "data": auth_user.serialize(
+                    current_user=auth_user, light=False
+                ),
+            }
+        )
+        if new_auth_token:
+            set_access_cookies(response, new_auth_token)
+        return response
 
     except (exc.IntegrityError, exc.OperationalError, ValueError) as e:
-        return handle_error_and_return_response(e, db=db)
+        response = handle_error_and_return_response(e, db=db)
+        if new_auth_token:
+            set_access_cookies(response, new_auth_token)
+        return response
 
 
 @auth_blueprint.route("/auth/profile/edit/preferences", methods=["POST"])
@@ -2244,6 +2263,8 @@ def update_password() -> Union[Dict, HttpResponse]:
         return UnauthorizedErrorResponse()
     try:
         user.password = user.generate_password_hash(password)
+        user.token_version += 1
+        OAuth2Token.revoke_all_clients_tokens_for_user(user.id)
         db.session.commit()
 
         if current_app.config["CAN_SEND_EMAILS"]:
@@ -2376,7 +2397,9 @@ def confirm_account() -> Union[Response, HttpResponse]:
         db.session.commit()
 
         # generate auth token
-        auth_token = get_user_token(user.id)
+        auth_token = get_user_token(
+            user_id=user.id, version=user.token_version
+        )
 
         response = jsonify(
             {"status": "success", "message": "account confirmation successful"}

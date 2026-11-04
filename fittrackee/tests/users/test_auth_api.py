@@ -16,6 +16,7 @@ from fittrackee.constants import (
     PaceSpeedDisplay,
 )
 from fittrackee.equipments.models import Equipment
+from fittrackee.oauth2.models import OAuth2Token
 from fittrackee.reports.models import ReportActionAppeal
 from fittrackee.users.models import (
     MAX_BIO_LIMIT,
@@ -1227,6 +1228,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             app_wo_email_activation, user_1.email
         )
         new_email = "new.email@example.com"
+        current_token_version = user_1.token_version
 
         response = client.patch(
             "/api/auth/profile/edit/account",
@@ -1244,6 +1246,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         assert user_1.email == new_email
         assert user_1.email_to_confirm is None
         assert user_1.confirmation_token is None
+        assert user_1.token_version == current_token_version
 
     def test_it_calls_send_email_for_current_and_new_email_when_new_email_provided(  # noqa
         self,
@@ -1342,6 +1345,7 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
             app, user_1.email
         )
         current_hashed_password = user_1.password
+        current_token_version = user_1.token_version
 
         response = client.patch(
             "/api/auth/profile/edit/account",
@@ -1361,6 +1365,36 @@ class TestUserAccountUpdate(ApiTestCaseMixin):
         assert data["status"] == "success"
         assert data["message"] == "user account updated"
         assert current_hashed_password != user_1.password
+        assert user_1.token_version == current_token_version + 1
+
+    def test_it_revokes_oauth2_tokens_on_password_update(
+        self, app: Flask, user_1: User, auth_send_email_mock: MagicMock
+    ) -> None:
+        (
+            client,
+            oauth_client,
+            _,
+            auth_token,
+        ) = self.create_oauth2_client_and_issue_token(app, user_1)
+
+        response = client.patch(
+            "/api/auth/profile/edit/account",
+            content_type="application/json",
+            data=json.dumps(
+                dict(
+                    email=user_1.email,
+                    password="12345678",
+                    new_password=self.random_string(),
+                )
+            ),
+            headers={"X-CSRF-TOKEN": auth_token},
+        )
+
+        assert response.status_code == 200
+        token = OAuth2Token.query.filter_by(
+            client_id=oauth_client.client_id
+        ).one()
+        assert token.access_token_revoked_at != 0
 
     def test_it_updates_password_when_user_is_suspended(
         self,
@@ -3314,7 +3348,9 @@ class TestPasswordUpdate(ApiTestCaseMixin, TokenMixin):
     def test_it_returns_error_if_token_type_is_invalid(
         self, app: Flask, user_1: User
     ) -> None:
-        auth_token = get_user_token(user_1.id)
+        auth_token = get_user_token(
+            user_id=user_1.id, version=user_1.token_version
+        )
         client = app.test_client()
 
         response = client.post(
@@ -3418,6 +3454,55 @@ class TestPasswordUpdate(ApiTestCaseMixin, TokenMixin):
         data = json.loads(response.data.decode())
         assert data["status"] == "success"
         assert data["message"] == "password updated"
+
+    def test_it_updates_token_version(
+        self,
+        app: Flask,
+        user_1: User,
+        auth_send_email_mock: MagicMock,
+    ) -> None:
+        token = get_password_reset_token(user_1.id)
+        client = app.test_client()
+
+        response = client.post(
+            "/api/auth/password/update",
+            data=json.dumps(
+                dict(
+                    token=token,
+                    password=self.random_string(),
+                )
+            ),
+            content_type="application/json",
+        )
+
+        assert response.status_code == 200
+        assert user_1.token_version == 1
+
+    def test_it_revokes_oauth2_tokens_on_password_update(
+        self, app: Flask, user_1: User, auth_send_email_mock: MagicMock
+    ) -> None:
+        (
+            _,
+            oauth_client,
+            _,
+            _,
+        ) = self.create_oauth2_client_and_issue_token(app, user_1)
+        reset_password_token = get_password_reset_token(user_1.id)
+        client = app.test_client()
+        response = client.post(
+            "/api/auth/password/update",
+            json={
+                "token": reset_password_token,
+                "password": self.random_string(),
+            },
+            content_type="application/json",
+        )
+
+        assert response.status_code == 200
+        token = OAuth2Token.query.filter_by(
+            client_id=oauth_client.client_id
+        ).one()
+        assert token.access_token_revoked_at != 0
 
     def test_it_blacklists_reset_token(
         self,

@@ -19,9 +19,10 @@ if TYPE_CHECKING:
     from fittrackee.users.models import User
 
 
-def get_user_token(user_id: int) -> str:
+def get_user_token(*, user_id: int, version: int) -> str:
     token = create_access_token(
-        identity=str(user_id), additional_claims={"type": "auth"}
+        identity=str(user_id),
+        additional_claims={"type": "auth", "version": version},
     )
     return token
 
@@ -36,6 +37,8 @@ def check_auth_token(optional_auth_user: bool) -> Optional["User"]:
     if auth_user:
         payload = get_jwt()
         if payload["type"] != "auth":
+            raise InvalidJWT()
+        if payload.get("version") != auth_user.token_version:
             raise InvalidJWT()
     return auth_user
 

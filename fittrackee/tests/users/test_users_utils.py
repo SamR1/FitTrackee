@@ -191,21 +191,27 @@ class TestRegisterControls:
 class TestGetUserToken:
     def test_token_contains_user_id(self, app: Flask) -> None:
         user_id = 1
-        token = get_user_token(user_id=user_id)
+        token = get_user_token(user_id=user_id, version=1)
 
         decoded_token = decode_token(token)
         assert decoded_token["sub"] == str(user_id)
 
     def test_token_contains_auth_type(self, app: Flask) -> None:
-        user_id = 1
-        token = get_user_token(user_id=user_id)
+        token = get_user_token(user_id=1, version=1)
 
         decoded_token = decode_token(token)
         assert decoded_token["type"] == "auth"
 
+    def test_token_contains_version(self, app: Flask) -> None:
+        token_version = 10
+        token = get_user_token(user_id=1, version=token_version)
+
+        decoded_token = decode_token(token)
+        assert decoded_token["version"] == token_version
+
 
 class TestCheckAuthToken(ApiTestCaseMixin):
-    def test_it_raises_error_when_token_type_is_invalid(
+    def test_it_raises_error_when_token_version_is_invalid(
         self, app: Flask, user_1: User
     ) -> None:
         app.config["JWT_SECRET_KEY"] = app.config["SECRET_KEY"]
@@ -214,6 +220,20 @@ class TestCheckAuthToken(ApiTestCaseMixin):
         with (
             app.test_request_context(
                 headers={"Cookie": f"access_token_cookie={token}"}
+            ),
+            pytest.raises(InvalidJWT),
+        ):
+            check_auth_token(optional_auth_user=False)
+
+    def test_it_raises_error_when_token_type_is_invalid(
+        self, app: Flask, user_1: User
+    ) -> None:
+        _, auth_token, _ = self.get_test_client_and_tokens(app, user_1.email)
+        user_1.token_version += 1
+
+        with (
+            app.test_request_context(
+                headers={"Cookie": f"access_token_cookie={auth_token}"}
             ),
             pytest.raises(InvalidJWT),
         ):
@@ -394,7 +414,7 @@ class TestDecodePassordTokenToken:
 class TestBlacklistedTokensCleanup:
     @staticmethod
     def blacklisted_token(expiration_days: Optional[int] = None) -> str:
-        token = get_user_token(user_id=random_int())
+        token = get_user_token(user_id=random_int(), version=1)
         payload = decode_token(token)
         blacklisted_token = BlacklistedToken(
             jti=payload["jti"],

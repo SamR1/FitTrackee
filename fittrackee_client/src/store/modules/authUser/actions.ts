@@ -195,11 +195,9 @@ export const actions: ActionTree<IAuthUserState, IRootState> &
       })
       .catch((error: AxiosError) => {
         if (error.response?.status === 401) {
-          router.push('/')
-        }
-        if (error.message !== 'canceled') {
-          handleError(context, error)
           removeAuthUserData(context)
+        } else if (error.message !== 'canceled') {
+          handleError(context, error)
         }
       })
   },
