@@ -61,8 +61,7 @@
       v-if="workoutObject.aveSpeed !== null && workoutObject.maxSpeed !== null"
     >
       <i class="fa fa-tachometer" aria-hidden="true" />
-      <span class="label">{{ $t('workouts.AVERAGE_SPEED') }}</span
-      >:
+      <span class="label">{{ $t('workouts.AVERAGE_SPEED') }}</span>:
       <Distance
         :distance="workoutObject.aveSpeed"
         unitFrom="km"
@@ -90,16 +89,14 @@
         src="/img/workouts/mountains.svg"
         :alt="$t('workouts.ELEVATION')"
       />
-      <span class="label">{{ $t('workouts.MIN_ALTITUDE') }}</span
-      >:
+      <span class="label">{{ $t('workouts.MIN_ALTITUDE') }}</span>:
       <Distance
         :distance="workoutObject.minAlt"
         unitFrom="m"
         :strong="true"
         :useImperialUnits="useImperialUnits"
       /><br />
-      <span class="label">{{ $t('workouts.MAX_ALTITUDE') }}</span
-      >:
+      <span class="label">{{ $t('workouts.MAX_ALTITUDE') }}</span>:
       <Distance
         :distance="workoutObject.maxAlt"
         unitFrom="m"
@@ -112,8 +109,7 @@
       v-if="workoutObject.ascent !== null && workoutObject.descent !== null"
     >
       <i class="fa fa-location-arrow" aria-hidden="true" />
-      <span class="label">{{ $t('workouts.ASCENT') }}</span
-      >:
+      <span class="label">{{ $t('workouts.ASCENT') }}</span>:
       <Distance
         :distance="workoutObject.ascent"
         unitFrom="m"
@@ -145,15 +141,13 @@
         src="/img/workouts/cadence.svg"
         :alt="$t('workouts.CADENCE')"
       />
-      <span class="label">{{ $t('workouts.AVERAGE_CADENCE') }}</span
-      >:
+      <span class="label">{{ $t('workouts.AVERAGE_CADENCE') }}</span>:
       <span class="value" :title="t(`workouts.UNITS.${cadenceUnit}.LABEL`)"
         >{{ workoutObject.aveCadence }}
         {{ t(`workouts.UNITS.${cadenceUnit}.UNIT`) }}</span
       >
       <br />
-      <span class="label"> {{ $t('workouts.MAX_CADENCE') }}</span
-      >:
+      <span class="label"> {{ $t('workouts.MAX_CADENCE') }}</span>:
       <span class="value" :title="t(`workouts.UNITS.${cadenceUnit}.LABEL`)"
         >{{ workoutObject.maxCadence }}
         {{ t(`workouts.UNITS.${cadenceUnit}.UNIT`) }}</span
@@ -164,14 +158,12 @@
       v-if="workoutObject.avePower !== null && workoutObject.maxPower !== null"
     >
       <i class="fa fa-bolt" aria-hidden="true" />
-      <span class="label">{{ $t('workouts.AVERAGE_POWER') }}</span
-      >:
+      <span class="label">{{ $t('workouts.AVERAGE_POWER') }}</span>:
       <span class="value" :title="t('workouts.UNITS.watt.LABEL')">
         {{ workoutObject.avePower }} {{ t('workouts.UNITS.watt.UNIT') }}
       </span>
       <br />
-      <span class="label"> {{ $t('workouts.MAX_POWER') }}</span
-      >:
+      <span class="label"> {{ $t('workouts.MAX_POWER') }}</span>:
       <span class="value" :title="t('workouts.UNITS.watt.LABEL')">
         {{ workoutObject.maxPower }} {{ t('workouts.UNITS.watt.UNIT') }}
       </span>
@@ -181,22 +173,19 @@
       v-if="workoutObject.aveHr !== null && workoutObject.maxHr !== null"
     >
       <i class="fa fa-heartbeat" aria-hidden="true" />
-      <span class="label">{{ $t('workouts.AVERAGE_HR') }}</span
-      >:
+      <span class="label">{{ $t('workouts.AVERAGE_HR') }}</span>:
       <span class="value" :title="t(`workouts.UNITS.bpm.LABEL`)"
         >{{ workoutObject.aveHr }} {{ t(`workouts.UNITS.bpm.UNIT`) }}</span
       >
       <br />
-      <span class="label"> {{ $t('workouts.MAX_HR') }}</span
-      >:
+      <span class="label"> {{ $t('workouts.MAX_HR') }}</span>:
       <span class="value" :title="t(`workouts.UNITS.bpm.LABEL`)"
         >{{ workoutObject.maxHr }} {{ t(`workouts.UNITS.bpm.UNIT`) }}</span
       >
     </div>
     <div class="workout-data" v-if="workoutObject.calories">
       <i class="fa fa-fire" aria-hidden="true" />
-      <span class="label">{{ $t('workouts.CALORIES') }}</span
-      >:
+      <span class="label">{{ $t('workouts.CALORIES') }}</span>:
       <span class="value" :title="t(`workouts.UNITS.kcal.LABEL`)">
         {{ workoutObject.calories }} {{ t(`workouts.UNITS.kcal.UNIT`) }}</span
       >

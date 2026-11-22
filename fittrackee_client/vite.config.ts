@@ -33,7 +33,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: path.resolve(__dirname, '../fittrackee/dist'),
+    outDir: path.resolve(import.meta.dirname, '../fittrackee/dist'),
     emptyOutDir: true,
     assetsDir: 'static',
     rollupOptions: {

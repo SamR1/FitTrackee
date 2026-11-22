@@ -2,7 +2,9 @@ import { fileURLToPath } from 'node:url'
 
 import { mergeConfig, defineConfig, configDefaults } from 'vitest/config'
 
-import viteConfig from './vite.config'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
+import viteConfig from './vite.config.ts'
 
 export default mergeConfig(
   viteConfig,

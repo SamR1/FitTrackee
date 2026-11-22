@@ -39,7 +39,7 @@
           height: 35px;
           padding: $default-padding * 0.5 0;
         }
-        ::v-deep(.custom-textarea) {
+        .custom-textarea {
           textarea {
             padding: $default-padding * 0.5;
           }
